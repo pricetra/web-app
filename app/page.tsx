@@ -12,7 +12,7 @@ export default function LandingPage() {
             alt="Pricetra"
             width={207.4}
             height={40}
-            className="sm:h-[35px] hidden sm:block w-auto color-white"
+            className="sm:h-[30px] hidden sm:block w-auto color-white"
             priority
           />
 
@@ -21,7 +21,7 @@ export default function LandingPage() {
             alt="Pricetra"
             width={207.4}
             height={40}
-            className="h-[35px] block sm:hidden w-auto color-white"
+            className="h-[30px] block sm:hidden w-auto color-white"
             priority
           />
 
@@ -42,13 +42,13 @@ export default function LandingPage() {
       {/* Main Content */}
       <main className="flex-1 flex items-center justify-center px-6 md:px-8">
         <div className="container mx-auto text-center max-w-4xl">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-extrabold text-white mb-8 leading-tight">
+          <h1 className="text-2xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white mb-8 leading-tight">
             Beat Inflation.&nbsp;
             <span className="text-[#9fe342]">Track Prices.</span>&nbsp;
             <span className="text-[#5fae23]">Save Money.</span>
           </h1>
 
-          <p className="text-lg md:text-xl text-slate-300 mb-12 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-sm sm:text-lg md:text-xl text-slate-300 mb-12 max-w-2xl mx-auto leading-relaxed">
             Monitor price changes across thousands of products and never overpay
             again. Get alerts when prices drop and make smarter purchasing
             decisions.
