@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import typographyPlugin from '@tailwindcss/typography';
 
 // all in fixtures is set to tailwind v3 as interims solutions
 
@@ -100,7 +101,8 @@ const config: Config = {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out'
 			}
-		}
+		},
 	},
+	plugins: [typographyPlugin],
 };
 export default config;
