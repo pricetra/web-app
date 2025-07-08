@@ -6,12 +6,12 @@ import Markdown from "@/components/markdown";
 export const dynamic = "force-static"; // Ensures this route is pre-rendered at build time
 
 export const metadata: Metadata = {
-  title: "Privacy - Pricetra",
-  description: "Pricetra privacy policy",
+  title: "Terms - Pricetra",
+  description: "Pricetra terms of service",
 };
 
-export default async function PrivacyPage() {
-  const filePath = path.join(process.cwd(), "app", "privacy", "privacy.md");
+export default async function TermsPage() {
+  const filePath = path.join(process.cwd(), "app", "terms", "terms.md");
 
   return <Markdown filePath={filePath} />;
 }
