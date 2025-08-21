@@ -13,18 +13,27 @@ export default function LandingPage() {
             alt="Pricetra"
             width={210}
             height={40}
-            className="h-[28px] sm:h-[32px] w-auto"
+            className="sm:h-[30px] hidden sm:block w-auto color-white"
+            priority
+          />
+
+          <Image
+            src="/logo_black_color_dark_leaf.svg"
+            alt="Pricetra"
+            width={210}
+            height={40}
+            className="h-[30px] block sm:hidden w-auto color-white"
             priority
           />
 
           <div className="flex items-center gap-3">
             <Button
               variant="ghost"
-              className="text-slate-700 hover:text-pricetraGreenDark hover:bg-pricetraGreenLogo/10 px-3 md:px-4"
+              className="text-slate-700 hover:text-pricetraGreenHeavyDark hover:bg-pricetraGreenLogo/10 px-3 md:px-4 font-bold"
             >
               Login
             </Button>
-            <Button className="bg-pricetraGreenDark hover:bg-pricetraGreenHeavyDark text-white px-4 md:px-6 py-2 font-medium rounded-lg shadow-sm hover:shadow-md transition-all">
+            <Button className="bg-pricetraGreenDark hover:bg-pricetraGreenHeavyDark text-white px-4 md:px-6 py-2 font-medium rounded-lg shadow-sm hover:shadow-md transition-all font-bold">
               Create Account
             </Button>
           </div>
@@ -41,8 +50,7 @@ export default function LandingPage() {
         <div className="container mx-auto px-6 md:px-8 py-14 md:py-20">
           <div className="mx-auto max-w-5xl text-center">
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
-              Beat Inflation.{" "}
-              <span className="text-pricetraGreenLogo">Track Prices.</span>{" "}
+              Beat Inflation. <span className="">Track Prices.</span>{" "}
               <span className="text-pricetraGreenDark">Save Money.</span>
             </h1>
             <p className="mt-5 text-base sm:text-lg md:text-xl text-slate-600 max-w-3xl mx-auto">
@@ -53,13 +61,14 @@ export default function LandingPage() {
             <div className="mt-8 flex items-center justify-center gap-3">
               <Button
                 size="lg"
-                className="bg-pricetraGreenDark hover:bg-pricetraGreenHeavyDark text-white px-6 md:px-8 py-3 text-base md:text-lg font-semibold rounded-lg shadow-md hover:shadow-lg transition-all"
+                className="bg-pricetraGreenDark hover:bg-pricetraGreenHeavyDark text-white px-6 md:px-8 py-3 text-base md:text-lg font-bold rounded-lg shadow-md hover:shadow-lg transition-all"
               >
                 Start for Free
               </Button>
               <Button
+                size="lg"
                 variant="outline"
-                className="border-slate-300 text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+                className="border-slate-300 text-slate-700 hover:text-slate-900 hover:bg-slate-100 px-6 md:px-8 py-3 text-base"
               >
                 Learn More
               </Button>
@@ -155,9 +164,9 @@ export default function LandingPage() {
           <h2 className="text-center text-2xl md:text-4xl font-bold text-slate-900">
             How Pricetra works
           </h2>
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="rounded-xl bg-white border border-slate-200 p-6 shadow-sm">
-              <div className="text-sm font-semibold text-pricetraGreenDark">
+              <div className="text-sm font-semibold text-pricetraGreenHeavyDark">
                 Step 1
               </div>
               <h3 className="mt-2 font-semibold text-slate-900">
@@ -169,8 +178,20 @@ export default function LandingPage() {
               </p>
             </div>
             <div className="rounded-xl bg-white border border-slate-200 p-6 shadow-sm">
-              <div className="text-sm font-semibold text-pricetraGreenDark">
+              <div className="text-sm font-semibold text-pricetraGreenHeavyDark">
                 Step 2
+              </div>
+              <h3 className="mt-2 font-semibold text-slate-900">
+                Scan and Search prices
+              </h3>
+              <p className="mt-2 text-sm text-slate-600">
+                Finding prices for a product is as simple as scanning the
+                barcode. Scan and find prices and sales in nearby stores.
+              </p>
+            </div>
+            <div className="rounded-xl bg-white border border-slate-200 p-6 shadow-sm">
+              <div className="text-sm font-semibold text-pricetraGreenHeavyDark">
+                Step 3
               </div>
               <h3 className="mt-2 font-semibold text-slate-900">
                 Report accurate prices
@@ -181,15 +202,15 @@ export default function LandingPage() {
               </p>
             </div>
             <div className="rounded-xl bg-white border border-slate-200 p-6 shadow-sm">
-              <div className="text-sm font-semibold text-pricetraGreenDark">
-                Step 3
+              <div className="text-sm font-semibold text-pricetraGreenHeavyDark">
+                Step 4
               </div>
               <h3 className="mt-2 font-semibold text-slate-900">
                 Watch and get alerts
               </h3>
               <p className="mt-2 text-sm text-slate-600">
                 Add items or branches to your watchlist and get notified when
-                prices drop.
+                prices change.
               </p>
             </div>
           </div>
