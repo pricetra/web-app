@@ -50,14 +50,13 @@ export default function LandingPage() {
         <div className="container mx-auto px-6 md:px-8 py-14 md:py-20">
           <div className="mx-auto max-w-5xl text-center">
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
-              Beat Inflation.{" "}
-              <span className="text-pricetra-green-logo">Track Prices.</span>{" "}
+              Beat Inflation. <span>Track Prices.</span>{" "}
               <span className="text-pricetra-green-dark">Save Money.</span>
             </h1>
             <p className="mt-5 text-base sm:text-lg md:text-xl text-slate-600 max-w-3xl mx-auto">
               Pricetra is a community-powered price tracking app that helps
               shoppers discover the best deals nearby. Compare costs per unit,
-              watch your favorites, and get notified when prices drop.
+              watch your favorites, and get notified when prices change.
             </p>
             <div className="mt-8 flex items-center justify-center gap-3">
               <Button
@@ -98,7 +97,7 @@ export default function LandingPage() {
             <div className="flex-shrink-0 snap-center w-80">
               <div className="bg-slate-100 rounded-2xl p-4 mb-4">
                 <Image
-                  src="/screenshots/homepage-main-screenshot.PNG"
+                  src="/screenshots/homepage-category-milk-screenshot.PNG"
                   alt="Pricetra Homepage"
                   width={300}
                   height={600}
