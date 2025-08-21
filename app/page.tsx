@@ -6,7 +6,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-white via-white to-slate-50">
       {/* Header */}
-      <header className="w-full">
+      <header className="w-full z-10">
         <div className="container mx-auto flex items-center justify-between px-6 md:px-8 py-7 md:py-10">
           <Image
             src="/logotype_header_black.svg"
@@ -33,7 +33,7 @@ export default function LandingPage() {
             >
               Login
             </Button>
-            <Button className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-4 md:px-6 py-2 font-medium rounded-lg shadow-sm hover:shadow-md transition-all font-bold">
+            <Button className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-4 md:px-6 py-2 rounded-lg shadow-sm hover:shadow-md transition-all font-bold">
               Create Account
             </Button>
           </div>
@@ -41,18 +41,15 @@ export default function LandingPage() {
       </header>
 
       {/* Hero */}
-      <section className="relative">
-        <div className="absolute -z-10 inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-12 -right-12 w-64 h-64 bg-pricetra-green-logo/20 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-12 w-72 h-72 bg-pricetra-green-dark/10 rounded-full blur-3xl"></div>
-        </div>
-
+      <section className="relative container mx-auto">
         <div className="container mx-auto px-6 md:px-8 py-14 md:py-20">
           <div className="mx-auto max-w-5xl text-center">
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
-              Beat Inflation. <span>Track Prices.</span>{" "}
-              <span className="text-pricetra-green-dark">Save Money.</span>
-            </h1>
+            <div className="max-w-4xl mx-auto">
+              <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
+                Beat Inflation. <span>Track Prices.</span>{" "}
+                <span className="text-pricetra-green-dark">Save Money.</span>
+              </h1>
+            </div>
             <p className="mt-5 text-base sm:text-lg md:text-xl text-slate-600 max-w-3xl mx-auto">
               Pricetra is a community-powered price tracking app that helps
               shoppers discover the best deals nearby. Compare costs per unit,
@@ -66,9 +63,8 @@ export default function LandingPage() {
                 Start for Free
               </Button>
               <Button
-                size="lg"
                 variant="outline"
-                className="border-slate-300 text-slate-700 hover:text-slate-900 hover:bg-slate-100 px-6 md:px-8 py-3 text-base"
+                className="border-slate-300 text-slate-700 hover:text-slate-900 hover:bg-slate-100"
               >
                 Learn More
               </Button>
@@ -76,6 +72,22 @@ export default function LandingPage() {
             <p className="mt-3 text-xs md:text-sm text-slate-500">
               No credit card required • Free forever
             </p>
+          </div>
+        </div>
+
+        {/* Floating Phone Background */}
+        <div className="absolute bottom-0 right-0 -z-10">
+          <div className="relative">
+            <div className="absolute inset-0 bg-gradient-to-br from-pricetra-green-logo/20 to-pricetra-green-dark/20 rounded-3xl blur-xl transform rotate-6 scale-110"></div>
+            <div className="relative rounded-3xl p-2 shadow-2xl transform rotate-6">
+              <Image
+                src="/screenshots/homepage-main-screenshot.PNG"
+                alt="Pricetra Mobile App"
+                width={280}
+                height={560}
+                className="sm:w-40 md:w-56 lg:w-60 h-auto rounded-2xl shadow-lg"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -101,7 +113,7 @@ export default function LandingPage() {
                   alt="Pricetra Homepage"
                   width={300}
                   height={600}
-                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg"
+                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg bg-white"
                 />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">
@@ -119,7 +131,7 @@ export default function LandingPage() {
                   alt="Product Details"
                   width={300}
                   height={600}
-                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg"
+                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg bg-white"
                 />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">
@@ -137,7 +149,7 @@ export default function LandingPage() {
                   alt="Add Price"
                   width={300}
                   height={600}
-                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg"
+                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg bg-white"
                 />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">
@@ -155,7 +167,7 @@ export default function LandingPage() {
                   alt="Nearby Prices"
                   width={300}
                   height={600}
-                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg"
+                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg bg-white"
                 />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">
@@ -173,7 +185,7 @@ export default function LandingPage() {
                   alt="Store Products"
                   width={300}
                   height={600}
-                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg"
+                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg bg-white"
                 />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">Store View</h3>
