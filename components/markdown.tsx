@@ -24,7 +24,7 @@ export default async function Markdown({ filePath }: MarkdownProps) {
             alt="Pricetra"
             width={207.4}
             height={40}
-            className="sm:h-[40px] hidden sm:block w-auto color-white"
+            className="sm:h-[40px] h-[30px] w-auto color-white"
             priority
           />
         </Link>

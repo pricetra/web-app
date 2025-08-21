@@ -47,7 +47,7 @@ This location is only used to provide accurate local pricing information and is 
 
 ## Data Security
 
-- Passwords are stored securely using **bcrypt** hashing.
+- Passwords are never store in plain text. We hash and stored your passwords securely using an industry standard hashing algorithm.
 - Auth tokens are securely encrypted and stored.
 - All communication between the app and our servers is encrypted using **HTTPS**.
 
