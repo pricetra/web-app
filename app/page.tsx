@@ -41,16 +41,16 @@ export default function LandingPage() {
       </header>
 
       {/* Hero */}
-      <section className="relative container mx-auto">
-        <div className="container mx-auto px-6 md:px-8 py-14 md:py-20">
-          <div className="mx-auto max-w-5xl text-center">
+      <section className="relative container mx-auto flex flex-row gap-5 justify-between items-center py-10">
+        <div className="px-6 md:px-8 py-14 md:py-20 flex-1">
+          <div className="text-center relative z-10">
             <div className="max-w-4xl mx-auto">
               <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
                 Beat Inflation. <span>Track Prices.</span>{" "}
                 <span className="text-pricetra-green-dark">Save Money.</span>
               </h1>
             </div>
-            <p className="mt-5 text-base sm:text-lg md:text-xl text-slate-600 max-w-3xl mx-auto">
+            <p className="mt-5 text-base sm:text-lg md:text-xl text-slate-800 max-w-3xl mx-auto">
               Pricetra is a community-powered price tracking app that helps
               shoppers discover the best deals nearby. Compare costs per unit,
               watch your favorites, and get notified when prices change.
@@ -76,18 +76,15 @@ export default function LandingPage() {
         </div>
 
         {/* Floating Phone Background */}
-        <div className="absolute bottom-0 right-0 -z-10">
-          <div className="relative">
-            <div className="absolute inset-0 bg-gradient-to-br from-pricetra-green-logo/20 to-pricetra-green-dark/20 rounded-3xl blur-xl transform rotate-6 scale-110"></div>
-            <div className="relative rounded-3xl p-2 shadow-2xl transform rotate-6">
-              <Image
-                src="/screenshots/homepage-main-screenshot.PNG"
-                alt="Pricetra Mobile App"
-                width={280}
-                height={560}
-                className="sm:w-40 md:w-56 lg:w-60 h-auto rounded-2xl shadow-lg"
-              />
-            </div>
+        <div className="pointer-events-none hidden md:block">
+          <div className="relative rounded-4xl p-2 shadow-2xl transform rotate-6 bg-gray-100">
+            <Image
+              src="/screenshots/homepage-main-screenshot.PNG"
+              alt="Pricetra Mobile App"
+              width={280}
+              height={560}
+              className="md:w-52 lg:w-60 xl:w-64 h-auto rounded-3xl"
+            />
           </div>
         </div>
       </section>
@@ -107,13 +104,13 @@ export default function LandingPage() {
 
           <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-4">
             <div className="flex-shrink-0 snap-center w-80">
-              <div className="bg-slate-100 rounded-2xl p-4 mb-4">
+              <div className="bg-slate-100 rounded-3xl p-4 mb-4">
                 <Image
                   src="/screenshots/homepage-category-milk-screenshot.PNG"
                   alt="Pricetra Homepage"
                   width={300}
                   height={600}
-                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg bg-white"
+                  className="w-full max-w-[280px] mx-auto rounded-2xl shadow-lg bg-white"
                 />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">
@@ -125,13 +122,13 @@ export default function LandingPage() {
             </div>
 
             <div className="flex-shrink-0 snap-center w-80">
-              <div className="bg-slate-100 rounded-2xl p-4 mb-4">
+              <div className="bg-slate-100 rounded-3xl p-4 mb-4">
                 <Image
                   src="/screenshots/product-page-screenshot.PNG"
                   alt="Product Details"
                   width={300}
                   height={600}
-                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg bg-white"
+                  className="w-full max-w-[280px] mx-auto rounded-2xl shadow-lg bg-white"
                 />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">
@@ -143,13 +140,13 @@ export default function LandingPage() {
             </div>
 
             <div className="flex-shrink-0 snap-center w-80">
-              <div className="bg-slate-100 rounded-2xl p-4 mb-4">
+              <div className="bg-slate-100 rounded-3xl p-4 mb-4">
                 <Image
                   src="/screenshots/add-product-price-screenshot.PNG"
                   alt="Add Price"
                   width={300}
                   height={600}
-                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg bg-white"
+                  className="w-full max-w-[280px] mx-auto rounded-2xl shadow-lg bg-white"
                 />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">
@@ -161,13 +158,13 @@ export default function LandingPage() {
             </div>
 
             <div className="flex-shrink-0 snap-center w-80">
-              <div className="bg-slate-100 rounded-2xl p-4 mb-4">
+              <div className="bg-slate-100 rounded-3xl p-4 mb-4">
                 <Image
                   src="/screenshots/product-page-nearby-prices-screenshot.PNG"
                   alt="Nearby Prices"
                   width={300}
                   height={600}
-                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg bg-white"
+                  className="w-full max-w-[280px] mx-auto rounded-2xl shadow-lg bg-white"
                 />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">
@@ -179,13 +176,13 @@ export default function LandingPage() {
             </div>
 
             <div className="flex-shrink-0 snap-center w-80">
-              <div className="bg-slate-100 rounded-2xl p-4 mb-4">
+              <div className="bg-slate-100 rounded-3xl p-4 mb-4">
                 <Image
                   src="/screenshots/store-branch-products-scrrenshot.PNG"
                   alt="Store Products"
                   width={300}
                   height={600}
-                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg bg-white"
+                  className="w-full max-w-[280px] mx-auto rounded-2xl shadow-lg bg-white"
                 />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">Store View</h3>
@@ -195,13 +192,13 @@ export default function LandingPage() {
             </div>
 
             <div className="flex-shrink-0 snap-center w-80">
-              <div className="bg-slate-100 rounded-2xl p-4 mb-4">
+              <div className="bg-slate-100 rounded-3xl p-4 mb-4">
                 <Image
                   src="/screenshots/scan-product-screenshot.PNG"
                   alt="Scan Product"
                   width={300}
                   height={600}
-                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg"
+                  className="w-full max-w-[280px] mx-auto rounded-2xl shadow-lg"
                 />
               </div>
               <h3 className="font-semibold text-slate-900 mb-2">Quick Scan</h3>
@@ -297,7 +294,7 @@ export default function LandingPage() {
           <h2 className="text-center text-2xl md:text-4xl font-bold text-slate-900">
             How Pricetra works
           </h2>
-          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="max-w-4xl mx-auto mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="rounded-xl bg-white border border-slate-200 p-6 shadow-sm">
               <div className="text-sm font-semibold text-pricetra-green-dark">
                 Step 1
