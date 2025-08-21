@@ -29,11 +29,11 @@ export default function LandingPage() {
           <div className="flex items-center gap-3">
             <Button
               variant="ghost"
-              className="text-slate-700 hover:text-pricetraGreenHeavyDark hover:bg-pricetraGreenLogo/10 px-3 md:px-4 font-bold"
+              className="text-slate-700 hover:text-pricetra-green-dark hover:bg-pricetra-green-logo/10 px-3 md:px-4 font-bold"
             >
               Login
             </Button>
-            <Button className="bg-pricetraGreenDark hover:bg-pricetraGreenHeavyDark text-white px-4 md:px-6 py-2 font-medium rounded-lg shadow-sm hover:shadow-md transition-all font-bold">
+            <Button className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-4 md:px-6 py-2 font-medium rounded-lg shadow-sm hover:shadow-md transition-all font-bold">
               Create Account
             </Button>
           </div>
@@ -43,15 +43,16 @@ export default function LandingPage() {
       {/* Hero */}
       <section className="relative">
         <div className="absolute -z-10 inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute -top-12 -right-12 w-64 h-64 bg-pricetraGreenLogo/20 rounded-full blur-3xl"></div>
-          <div className="absolute bottom-0 left-12 w-72 h-72 bg-pricetraGreenDark/10 rounded-full blur-3xl"></div>
+          <div className="absolute -top-12 -right-12 w-64 h-64 bg-pricetra-green-logo/20 rounded-full blur-3xl"></div>
+          <div className="absolute bottom-0 left-12 w-72 h-72 bg-pricetra-green-dark/10 rounded-full blur-3xl"></div>
         </div>
 
         <div className="container mx-auto px-6 md:px-8 py-14 md:py-20">
           <div className="mx-auto max-w-5xl text-center">
             <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
-              Beat Inflation. <span className="">Track Prices.</span>{" "}
-              <span className="text-pricetraGreenDark">Save Money.</span>
+              Beat Inflation.{" "}
+              <span className="text-pricetra-green-logo">Track Prices.</span>{" "}
+              <span className="text-pricetra-green-dark">Save Money.</span>
             </h1>
             <p className="mt-5 text-base sm:text-lg md:text-xl text-slate-600 max-w-3xl mx-auto">
               Pricetra is a community-powered price tracking app that helps
@@ -61,7 +62,7 @@ export default function LandingPage() {
             <div className="mt-8 flex items-center justify-center gap-3">
               <Button
                 size="lg"
-                className="bg-pricetraGreenDark hover:bg-pricetraGreenHeavyDark text-white px-6 md:px-8 py-3 text-base md:text-lg font-bold rounded-lg shadow-md hover:shadow-lg transition-all"
+                className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-6 md:px-8 py-3 text-base md:text-lg font-semibold rounded-lg shadow-md hover:shadow-lg transition-all"
               >
                 Start for Free
               </Button>
@@ -76,6 +77,127 @@ export default function LandingPage() {
             <p className="mt-3 text-xs md:text-sm text-slate-500">
               No credit card required • Free forever
             </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Mobile App Showcase */}
+      <section className="bg-white py-16 md:py-20">
+        <div className="container mx-auto px-6 md:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
+              See Pricetra in action
+            </h2>
+            <p className="text-slate-600 max-w-2xl mx-auto">
+              Our mobile app makes it easy to track prices, compare deals, and
+              contribute to the community from anywhere.
+            </p>
+          </div>
+
+          <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-4">
+            <div className="flex-shrink-0 snap-center w-80">
+              <div className="bg-slate-100 rounded-2xl p-4 mb-4">
+                <Image
+                  src="/screenshots/homepage-main-screenshot.PNG"
+                  alt="Pricetra Homepage"
+                  width={300}
+                  height={600}
+                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg"
+                />
+              </div>
+              <h3 className="font-semibold text-slate-900 mb-2">
+                Browse Products
+              </h3>
+              <p className="text-sm text-slate-600">
+                Discover products and see current prices at stores near you
+              </p>
+            </div>
+
+            <div className="flex-shrink-0 snap-center w-80">
+              <div className="bg-slate-100 rounded-2xl p-4 mb-4">
+                <Image
+                  src="/screenshots/product-page-screenshot.PNG"
+                  alt="Product Details"
+                  width={300}
+                  height={600}
+                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg"
+                />
+              </div>
+              <h3 className="font-semibold text-slate-900 mb-2">
+                Product Details
+              </h3>
+              <p className="text-sm text-slate-600">
+                View detailed product information and price history
+              </p>
+            </div>
+
+            <div className="flex-shrink-0 snap-center w-80">
+              <div className="bg-slate-100 rounded-2xl p-4 mb-4">
+                <Image
+                  src="/screenshots/add-product-price-screenshot.PNG"
+                  alt="Add Price"
+                  width={300}
+                  height={600}
+                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg"
+                />
+              </div>
+              <h3 className="font-semibold text-slate-900 mb-2">
+                Report Prices
+              </h3>
+              <p className="text-sm text-slate-600">
+                Contribute to the community by reporting current prices
+              </p>
+            </div>
+
+            <div className="flex-shrink-0 snap-center w-80">
+              <div className="bg-slate-100 rounded-2xl p-4 mb-4">
+                <Image
+                  src="/screenshots/product-page-nearby-prices-screenshot.PNG"
+                  alt="Nearby Prices"
+                  width={300}
+                  height={600}
+                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg"
+                />
+              </div>
+              <h3 className="font-semibold text-slate-900 mb-2">
+                Compare Prices
+              </h3>
+              <p className="text-sm text-slate-600">
+                See prices across different stores to find the best deals
+              </p>
+            </div>
+
+            <div className="flex-shrink-0 snap-center w-80">
+              <div className="bg-slate-100 rounded-2xl p-4 mb-4">
+                <Image
+                  src="/screenshots/store-branch-products-scrrenshot.PNG"
+                  alt="Store Products"
+                  width={300}
+                  height={600}
+                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg"
+                />
+              </div>
+              <h3 className="font-semibold text-slate-900 mb-2">Store View</h3>
+              <p className="text-sm text-slate-600">
+                Browse all products available at specific store branches
+              </p>
+            </div>
+
+            <div className="flex-shrink-0 snap-center w-80">
+              <div className="bg-slate-100 rounded-2xl p-4 mb-4">
+                <Image
+                  src="/screenshots/scan-product-screenshot.PNG"
+                  alt="Scan Product"
+                  width={300}
+                  height={600}
+                  className="w-full max-w-[280px] mx-auto rounded-xl shadow-lg"
+                />
+              </div>
+              <h3 className="font-semibold text-slate-900 mb-2">Quick Scan</h3>
+              <p className="text-sm text-slate-600">
+                Scan barcodes to quickly find and report product prices
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -166,7 +288,7 @@ export default function LandingPage() {
           </h2>
           <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div className="rounded-xl bg-white border border-slate-200 p-6 shadow-sm">
-              <div className="text-sm font-semibold text-pricetraGreenHeavyDark">
+              <div className="text-sm font-semibold text-pricetra-green-dark">
                 Step 1
               </div>
               <h3 className="mt-2 font-semibold text-slate-900">
@@ -178,7 +300,7 @@ export default function LandingPage() {
               </p>
             </div>
             <div className="rounded-xl bg-white border border-slate-200 p-6 shadow-sm">
-              <div className="text-sm font-semibold text-pricetraGreenHeavyDark">
+              <div className="text-sm font-semibold text-pricetra-green-dark">
                 Step 2
               </div>
               <h3 className="mt-2 font-semibold text-slate-900">
@@ -190,7 +312,7 @@ export default function LandingPage() {
               </p>
             </div>
             <div className="rounded-xl bg-white border border-slate-200 p-6 shadow-sm">
-              <div className="text-sm font-semibold text-pricetraGreenHeavyDark">
+              <div className="text-sm font-semibold text-pricetra-green-dark">
                 Step 3
               </div>
               <h3 className="mt-2 font-semibold text-slate-900">
@@ -202,7 +324,7 @@ export default function LandingPage() {
               </p>
             </div>
             <div className="rounded-xl bg-white border border-slate-200 p-6 shadow-sm">
-              <div className="text-sm font-semibold text-pricetraGreenHeavyDark">
+              <div className="text-sm font-semibold text-pricetra-green-dark">
                 Step 4
               </div>
               <h3 className="mt-2 font-semibold text-slate-900">
@@ -230,7 +352,7 @@ export default function LandingPage() {
           <div className="mt-6">
             <Button
               size="lg"
-              className="bg-pricetraGreenDark hover:bg-pricetraGreenHeavyDark text-white px-8 py-3 font-semibold"
+              className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-8 py-3 font-semibold"
             >
               Create your free account
             </Button>
