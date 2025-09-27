@@ -79,7 +79,7 @@ export default function LandingPage() {
         <div className="pointer-events-none hidden md:block">
           <div className="relative rounded-4xl p-2 shadow-2xl transform rotate-6 bg-gray-100">
             <Image
-              src="/screenshots/homepage-main-screenshot.PNG"
+              src="/screenshots/homepage-main-screenshot.png"
               alt="Pricetra Mobile App"
               width={280}
               height={560}
@@ -106,7 +106,7 @@ export default function LandingPage() {
             <div className="flex-shrink-0 snap-center w-80">
               <div className="bg-slate-100 rounded-3xl p-4 mb-4">
                 <Image
-                  src="/screenshots/homepage-category-milk-screenshot.PNG"
+                  src="/screenshots/homepage-category-milk-screenshot.png"
                   alt="Pricetra Homepage"
                   width={300}
                   height={600}
@@ -124,7 +124,7 @@ export default function LandingPage() {
             <div className="flex-shrink-0 snap-center w-80">
               <div className="bg-slate-100 rounded-3xl p-4 mb-4">
                 <Image
-                  src="/screenshots/product-page-screenshot.PNG"
+                  src="/screenshots/product-page-screenshot.png"
                   alt="Product Details"
                   width={300}
                   height={600}
@@ -142,7 +142,7 @@ export default function LandingPage() {
             <div className="flex-shrink-0 snap-center w-80">
               <div className="bg-slate-100 rounded-3xl p-4 mb-4">
                 <Image
-                  src="/screenshots/add-product-price-screenshot.PNG"
+                  src="/screenshots/add-product-price-screenshot.png"
                   alt="Add Price"
                   width={300}
                   height={600}
@@ -160,7 +160,7 @@ export default function LandingPage() {
             <div className="flex-shrink-0 snap-center w-80">
               <div className="bg-slate-100 rounded-3xl p-4 mb-4">
                 <Image
-                  src="/screenshots/product-page-nearby-prices-screenshot.PNG"
+                  src="/screenshots/product-page-nearby-prices-screenshot.png"
                   alt="Nearby Prices"
                   width={300}
                   height={600}
@@ -178,7 +178,25 @@ export default function LandingPage() {
             <div className="flex-shrink-0 snap-center w-80">
               <div className="bg-slate-100 rounded-3xl p-4 mb-4">
                 <Image
-                  src="/screenshots/store-branch-products-scrrenshot.PNG"
+                  src="/screenshots/historic-price-data-screenshot.png"
+                  alt="Historic Prices"
+                  width={300}
+                  height={600}
+                  className="w-full max-w-[280px] mx-auto rounded-2xl shadow-lg bg-white"
+                />
+              </div>
+              <h3 className="font-semibold text-slate-900 mb-2">
+                Historic Price Data
+              </h3>
+              <p className="text-sm text-slate-600">
+                View price trends over time to see how costs change
+              </p>
+            </div>
+
+            <div className="flex-shrink-0 snap-center w-80">
+              <div className="bg-slate-100 rounded-3xl p-4 mb-4">
+                <Image
+                  src="/screenshots/store-branch-products-screenshot.png"
                   alt="Store Products"
                   width={300}
                   height={600}
@@ -194,7 +212,7 @@ export default function LandingPage() {
             <div className="flex-shrink-0 snap-center w-80">
               <div className="bg-slate-100 rounded-3xl p-4 mb-4">
                 <Image
-                  src="/screenshots/scan-product-screenshot.PNG"
+                  src="/screenshots/scan-product-screenshot.png"
                   alt="Scan Product"
                   width={300}
                   height={600}
