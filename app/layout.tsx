@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     "Monitor price changes across thousands of products and never overpay again. Get alerts when prices drop and make smarter purchasing decisions.",
 };
 
-const GA_TRACKING_ID = "G-V3SBXW0YP2";
+const GA_TRACKING_ID = "G-6HHHS9PFVQ";
 
 export default function RootLayout({
   children,
