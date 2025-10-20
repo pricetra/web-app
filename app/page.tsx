@@ -1,3 +1,7 @@
+import StepsPanel, { steps } from "@/components/landing-page/Screenshot";
+import ScreenshotShowcasePanel, {
+  screenshots,
+} from "@/components/landing-page/StepsPanel";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
@@ -103,205 +107,9 @@ export default function LandingPage() {
           </div>
 
           <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-4">
-            <div className="flex-shrink-0 snap-center w-80">
-              <div className="bg-slate-100 rounded-3xl p-4 mb-4">
-                <Image
-                  src="https://res.cloudinary.com/pricetra-cdn/image/upload/homepage-category-milk-screenshot.png"
-                  alt="Pricetra Homepage"
-                  width={300}
-                  height={600}
-                  className="w-full max-w-[280px] mx-auto rounded-2xl shadow-lg bg-white"
-                />
-              </div>
-              <h3 className="font-semibold text-slate-900 mb-2">
-                Browse Products
-              </h3>
-              <p className="text-sm text-slate-600">
-                Discover products and see current prices at stores near you
-              </p>
-            </div>
-
-            <div className="flex-shrink-0 snap-center w-80">
-              <div className="bg-slate-100 rounded-3xl p-4 mb-4">
-                <Image
-                  src="https://res.cloudinary.com/pricetra-cdn/image/upload/product-page-screenshot.png"
-                  alt="Product Details"
-                  width={300}
-                  height={600}
-                  className="w-full max-w-[280px] mx-auto rounded-2xl shadow-lg bg-white"
-                />
-              </div>
-              <h3 className="font-semibold text-slate-900 mb-2">
-                Product Details
-              </h3>
-              <p className="text-sm text-slate-600">
-                View detailed product information and price history
-              </p>
-            </div>
-
-            <div className="flex-shrink-0 snap-center w-80">
-              <div className="bg-slate-100 rounded-3xl p-4 mb-4">
-                <Image
-                  src="https://res.cloudinary.com/pricetra-cdn/image/upload/add-product-price-screenshot.png"
-                  alt="Add Price"
-                  width={300}
-                  height={600}
-                  className="w-full max-w-[280px] mx-auto rounded-2xl shadow-lg bg-white"
-                />
-              </div>
-              <h3 className="font-semibold text-slate-900 mb-2">
-                Report Prices
-              </h3>
-              <p className="text-sm text-slate-600">
-                Contribute to the community by reporting current prices
-              </p>
-            </div>
-
-            <div className="flex-shrink-0 snap-center w-80">
-              <div className="bg-slate-100 rounded-3xl p-4 mb-4">
-                <Image
-                  src="https://res.cloudinary.com/pricetra-cdn/image/upload/product-page-nearby-prices-screenshot.png"
-                  alt="Nearby Prices"
-                  width={300}
-                  height={600}
-                  className="w-full max-w-[280px] mx-auto rounded-2xl shadow-lg bg-white"
-                />
-              </div>
-              <h3 className="font-semibold text-slate-900 mb-2">
-                Compare Prices
-              </h3>
-              <p className="text-sm text-slate-600">
-                See prices across different stores to find the best deals
-              </p>
-            </div>
-
-            <div className="flex-shrink-0 snap-center w-80">
-              <div className="bg-slate-100 rounded-3xl p-4 mb-4">
-                <Image
-                  src="https://res.cloudinary.com/pricetra-cdn/image/upload/historic-price-data-screenshot.png"
-                  alt="Historic Prices"
-                  width={300}
-                  height={600}
-                  className="w-full max-w-[280px] mx-auto rounded-2xl shadow-lg bg-white"
-                />
-              </div>
-              <h3 className="font-semibold text-slate-900 mb-2">
-                Historic Price Data
-              </h3>
-              <p className="text-sm text-slate-600">
-                View price trends over time to see how costs change
-              </p>
-            </div>
-
-            <div className="flex-shrink-0 snap-center w-80">
-              <div className="bg-slate-100 rounded-3xl p-4 mb-4">
-                <Image
-                  src="https://res.cloudinary.com/pricetra-cdn/image/upload/store-branch-products-screenshot.png"
-                  alt="Store Products"
-                  width={300}
-                  height={600}
-                  className="w-full max-w-[280px] mx-auto rounded-2xl shadow-lg bg-white"
-                />
-              </div>
-              <h3 className="font-semibold text-slate-900 mb-2">Store View</h3>
-              <p className="text-sm text-slate-600">
-                Browse all products available at specific store branches
-              </p>
-            </div>
-
-            <div className="flex-shrink-0 snap-center w-80">
-              <div className="bg-slate-100 rounded-3xl p-4 mb-4">
-                <Image
-                  src="https://res.cloudinary.com/pricetra-cdn/image/upload/scan-product-screenshot.png"
-                  alt="Scan Product"
-                  width={300}
-                  height={600}
-                  className="w-full max-w-[280px] mx-auto rounded-2xl shadow-lg"
-                />
-              </div>
-              <h3 className="font-semibold text-slate-900 mb-2">Quick Scan</h3>
-              <p className="text-sm text-slate-600">
-                Scan barcodes to quickly find and report product prices
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Features */}
-      <section className="bg-white">
-        <div className="container mx-auto px-6 md:px-8 py-14 md:py-16">
-          <div className="mx-auto max-w-3xl text-center">
-            <h2 className="text-2xl md:text-4xl font-bold text-slate-900">
-              Everything you need to shop smarter
-            </h2>
-            <p className="mt-3 text-slate-600">
-              Powered by community data, geolocation validation, and smart
-              notifications.
-            </p>
-          </div>
-
-          <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="text-2xl">🧑‍🤝‍🧑</div>
-              <h3 className="mt-3 font-semibold text-slate-900">
-                Crowdsourced price tracking
-              </h3>
-              <p className="mt-2 text-sm text-slate-600">
-                Browse and report grocery and health product prices at local
-                store branches to keep data fresh.
-              </p>
-            </div>
-            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="text-2xl">📍</div>
-              <h3 className="mt-3 font-semibold text-slate-900">
-                Geolocation-powered accuracy
-              </h3>
-              <p className="mt-2 text-sm text-slate-600">
-                Only submit prices within ~500 meters of a store branch for
-                trustworthy, verified updates.
-              </p>
-            </div>
-            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="text-2xl">📊</div>
-              <h3 className="mt-3 font-semibold text-slate-900">
-                Smart product insights
-              </h3>
-              <p className="mt-2 text-sm text-slate-600">
-                Products include unit counts (like “12 eggs” or “126 loads”) to
-                compare true price per unit.
-              </p>
-            </div>
-            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="text-2xl">🔔</div>
-              <h3 className="mt-3 font-semibold text-slate-900">
-                Watchlist & notifications
-              </h3>
-              <p className="mt-2 text-sm text-slate-600">
-                Watch products or store branches and get alerts when prices
-                change or sales occur.
-              </p>
-            </div>
-            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="text-2xl">🧪</div>
-              <h3 className="mt-3 font-semibold text-slate-900">
-                Community-driven validation
-              </h3>
-              <p className="mt-2 text-sm text-slate-600">
-                Algorithmic checks catch outliers while the community helps
-                verify and improve accuracy.
-              </p>
-            </div>
-            <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="text-2xl">🛡️</div>
-              <h3 className="mt-3 font-semibold text-slate-900">
-                Secure accounts & data
-              </h3>
-              <p className="mt-2 text-sm text-slate-600">
-                Passwords hashed with bcrypt; auth uses JWT over HTTPS. Location
-                stored only with consent.
-              </p>
-            </div>
+            {screenshots.map((props, i) => (
+              <ScreenshotShowcasePanel {...props} key={`screenshot-${i}`} />
+            ))}
           </div>
         </div>
       </section>
@@ -313,54 +121,9 @@ export default function LandingPage() {
             How Pricetra works
           </h2>
           <div className="max-w-4xl mx-auto mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="rounded-xl bg-white border border-slate-200 p-6 shadow-sm">
-              <div className="text-sm font-semibold text-pricetra-green-dark">
-                Step 1
-              </div>
-              <h3 className="mt-2 font-semibold text-slate-900">
-                Find products and stores
-              </h3>
-              <p className="mt-2 text-sm text-slate-600">
-                Search products near you and browse branches to see current
-                prices and trends.
-              </p>
-            </div>
-            <div className="rounded-xl bg-white border border-slate-200 p-6 shadow-sm">
-              <div className="text-sm font-semibold text-pricetra-green-dark">
-                Step 2
-              </div>
-              <h3 className="mt-2 font-semibold text-slate-900">
-                Scan and Search prices
-              </h3>
-              <p className="mt-2 text-sm text-slate-600">
-                Finding prices for a product is as simple as scanning the
-                barcode. Scan and find prices and sales in nearby stores.
-              </p>
-            </div>
-            <div className="rounded-xl bg-white border border-slate-200 p-6 shadow-sm">
-              <div className="text-sm font-semibold text-pricetra-green-dark">
-                Step 3
-              </div>
-              <h3 className="mt-2 font-semibold text-slate-900">
-                Report accurate prices
-              </h3>
-              <p className="mt-2 text-sm text-slate-600">
-                Visit a store and submit a price within ~500 meters. Unit counts
-                help normalize costs.
-              </p>
-            </div>
-            <div className="rounded-xl bg-white border border-slate-200 p-6 shadow-sm">
-              <div className="text-sm font-semibold text-pricetra-green-dark">
-                Step 4
-              </div>
-              <h3 className="mt-2 font-semibold text-slate-900">
-                Watch and get alerts
-              </h3>
-              <p className="mt-2 text-sm text-slate-600">
-                Add items or branches to your watchlist and get notified when
-                prices change.
-              </p>
-            </div>
+            {steps.map((props, i) => (
+              <StepsPanel step={i + 1} {...props} key={`step-${i}`} />
+            ))}
           </div>
         </div>
       </section>
