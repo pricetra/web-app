@@ -6,7 +6,7 @@ export default function ScreenshotShowcasePanel(props: {
   description: string;
 }) {
   return (
-    <div className="flex-shrink-0 snap-center w-80">
+    <div className="flex-shrink-0 snap-center w-56">
       <div className="bg-slate-100 rounded-3xl p-4 mb-4">
         <Image
           src={`https://res.cloudinary.com/pricetra-cdn/image/upload/${props.screenshot}`}

@@ -1,3 +1,4 @@
+"use client";
 import StepsPanel, { steps } from "@/components/landing-page/Screenshot";
 import ScreenshotShowcasePanel, {
   screenshots,
@@ -93,6 +94,8 @@ export default function LandingPage() {
         </div>
       </section>
 
+      <section className="relative container mx-auto flex flex-row gap-5 justify-between items-center py-10"></section>
+
       {/* Mobile App Showcase */}
       <section className="bg-white py-16 md:py-20">
         <div className="container mx-auto px-6 md:px-8">
@@ -105,8 +108,10 @@ export default function LandingPage() {
               contribute to the community from anywhere.
             </p>
           </div>
+        </div>
 
-          <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-4">
+        <div className="container mx-auto">
+          <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-10 [mask-image:_linear-gradient(to_right,transparent_0,_black_100px,_black_calc(100%-100px),transparent_100%)] px-[100px]">
             {screenshots.map((props, i) => (
               <ScreenshotShowcasePanel {...props} key={`screenshot-${i}`} />
             ))}
