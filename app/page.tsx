@@ -6,8 +6,35 @@ import ScreenshotShowcasePanel, {
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
+import {
+  AllStoresDocument,
+  BranchesWithProductsDocument,
+} from "@/graphql/types/graphql";
+import { useQuery } from "@apollo/client/react";
+import StoreMini, { StoreMiniLoading } from "@/components/StoreMini";
 
 export default function LandingPage() {
+  const { data: allStoresData } = useQuery(AllStoresDocument, {
+    fetchPolicy: "cache-first",
+    variables: {
+      paginator: { page: 1, limit: 9 },
+    },
+  });
+
+  const {} = useQuery(BranchesWithProductsDocument, {
+    fetchPolicy: "no-cache",
+    variables: {
+      paginator: {
+        limit: 3,
+        page: 1,
+      },
+      productLimit: 10,
+      filters: {
+        branchIds: [2, 6, 14, 38, 42, 11].map((id) => String(id)),
+      },
+    },
+  });
+
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-white via-white to-slate-50">
       {/* Header */}
@@ -47,7 +74,7 @@ export default function LandingPage() {
 
       {/* Hero */}
       <section className="relative container mx-auto flex flex-row gap-5 justify-between items-center py-10">
-        <div className="px-6 md:px-8 py-14 md:py-20 flex-1">
+        <div className="px-6 md:px-8 py-12 md:py-20 flex-1">
           <div className="text-center relative z-10">
             <div className="max-w-4xl mx-auto">
               <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
@@ -94,7 +121,19 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="relative container mx-auto flex flex-row gap-5 justify-between items-center py-10"></section>
+      <section className="relative container mx-auto mt-5 mb-16">
+        <section className="flex flex-row flex-wrap items-center justify-center gap-5 px-5">
+          {!allStoresData
+            ? Array(10)
+                .fill(0)
+                .map((_, i) => <StoreMiniLoading key={`store-loading-${i}`} />)
+            : allStoresData.allStores.stores.map((store) => (
+                <StoreMini store={store} key={`store-${store.id}`} />
+              ))}
+        </section>
+
+        <section></section>
+      </section>
 
       {/* Mobile App Showcase */}
       <section className="bg-white py-16 md:py-20">
@@ -111,7 +150,7 @@ export default function LandingPage() {
         </div>
 
         <div className="container mx-auto">
-          <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-10 [mask-image:_linear-gradient(to_right,transparent_0,_black_100px,_black_calc(100%-100px),transparent_100%)] px-[100px]">
+          <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-10 [mask-image:_linear-gradient(to_right,transparent_0,_black_2em,_black_calc(100%-2em),transparent_100%)] px-24">
             {screenshots.map((props, i) => (
               <ScreenshotShowcasePanel {...props} key={`screenshot-${i}`} />
             ))}
