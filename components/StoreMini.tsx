@@ -40,8 +40,8 @@ export function StoreMiniShowMore() {
 export function StoreMiniLoading() {
   return (
     <div className="flex flex-col items-center justify-center gap-3">
-      <Skeleton className="size-16 rounded-lg" style={{width: 64}} />
-      <Skeleton className="h-4 w-20 rounded-md" style={{width: 64}} />
+      <Skeleton className="size-16 rounded-lg" style={{ width: 64 }} />
+      <Skeleton className="h-4 w-20 rounded-md" style={{ width: 64 }} />
     </div>
   );
 }

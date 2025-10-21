@@ -8,10 +8,14 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   AllStoresDocument,
+  Branch,
   BranchesWithProductsDocument,
+  Product,
 } from "@/graphql/types/graphql";
 import { useQuery } from "@apollo/client/react";
 import StoreMini, { StoreMiniLoading } from "@/components/StoreMini";
+import BranchItemWithLogo from "@/components/BranchItemWithLogo";
+import ProductItemHorizontal from "@/components/ProductItemHorizontal";
 
 export default function LandingPage() {
   const { data: allStoresData } = useQuery(AllStoresDocument, {
@@ -21,19 +25,22 @@ export default function LandingPage() {
     },
   });
 
-  const {} = useQuery(BranchesWithProductsDocument, {
-    fetchPolicy: "no-cache",
-    variables: {
-      paginator: {
-        limit: 3,
-        page: 1,
+  const { data: branchesWithProducts } = useQuery(
+    BranchesWithProductsDocument,
+    {
+      fetchPolicy: "no-cache",
+      variables: {
+        paginator: {
+          limit: 3,
+          page: 1,
+        },
+        productLimit: 10,
+        filters: {
+          branchIds: [2, 6, 14, 38, 42, 11],
+        },
       },
-      productLimit: 10,
-      filters: {
-        branchIds: [2, 6, 14, 38, 42, 11].map((id) => String(id)),
-      },
-    },
-  });
+    }
+  );
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-white via-white to-slate-50">
@@ -122,7 +129,7 @@ export default function LandingPage() {
       </section>
 
       <section className="relative container mx-auto mt-5 mb-16">
-        <section className="flex flex-row flex-wrap items-center justify-center gap-5 px-5">
+        <section className="flex flex-row flex-wrap items-center justify-center gap-5 px-5 mb-10">
           {!allStoresData
             ? Array(10)
                 .fill(0)
@@ -132,7 +139,33 @@ export default function LandingPage() {
               ))}
         </section>
 
-        <section></section>
+        <section className="flex flex-col my-10">
+          {!branchesWithProducts ? (
+            <></>
+          ) : (
+            branchesWithProducts.branchesWithProducts.branches.map((branch) => (
+              <article
+                className="my-7"
+                key={`branch-with-product-${branch.id}`}
+              >
+                <div className="mb-2 px-5">
+                  <BranchItemWithLogo branch={branch as Branch} />
+                </div>
+
+                <div className="overflow-x-auto py-2">
+                  <div className="px-5 flex flex-row gap-5 ">
+                    {branch.products?.map((product) => (
+                      <ProductItemHorizontal
+                        product={product as Product}
+                        key={`branch-product-${branch.id}-${product.id}`}
+                      />
+                    ))}
+                  </div>
+                </div>
+              </article>
+            ))
+          )}
+        </section>
       </section>
 
       {/* Mobile App Showcase */}
