@@ -1,14 +1,19 @@
 import { type ClassValue, clsx } from 'clsx';
 import convert from 'convert-units';
 import dayjs from 'dayjs';
+import { configureReanimatedLogger } from 'react-native-reanimated';
 import { twMerge } from 'tailwind-merge';
 
 import { postgresArrayToNumericArray } from './strings';
 
 import { Category, Price, Product } from '@/graphql/types/graphql';
 
+configureReanimatedLogger({
+  strict: false,
+});
+
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
 export const CATEGORY_DELIM = ' > ';
@@ -35,7 +40,7 @@ export function categoriesFromChild(category: Category): Category[] {
   return categories;
 }
 
-export function diffObjects<T extends Record<string, unknown>>(obj1: T, obj2: T): Partial<T> {
+export function diffObjects<T extends Record<string, any>>(obj1: T, obj2: T): Partial<T> {
   const result: Partial<T> = {};
   for (const key in obj1) {
     if (!obj1.hasOwnProperty(key)) continue;
@@ -90,8 +95,7 @@ export function extractUndefined(value?: string): string | undefined {
   return value;
 }
 
-export function getRandomElement(arr: unknown[]) {
+export function getRandomElement(arr: any[]) {
   const randomIndex = Math.floor(Math.random() * arr.length);
   return arr[randomIndex];
 }
-
