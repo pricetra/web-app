@@ -1,5 +1,3 @@
-import * as ImagePicker from 'expo-image-picker';
-
 import { Price, ProductWeightComponents } from '@/graphql/types/graphql';
 
 export function titleCase(str: string) {
@@ -29,7 +27,7 @@ export function formatNutrient(value?: number | null): string {
   }).format(value);
 }
 
-export function enumToNormalizedString(e: any): string {
+export function enumToNormalizedString(e: object): string {
   return titleCase(e.toString().split('_').join(' '));
 }
 
@@ -43,7 +41,7 @@ export function currencyFormat(v: number): string {
   );
 }
 
-export function buildBase64ImageString(picture: ImagePicker.ImagePickerAsset): string {
+export function buildBase64ImageString(picture: { mimeType: string; base64: string }): string {
   return `data:${picture.mimeType};base64,${picture.base64}`;
 }
 
