@@ -152,7 +152,7 @@ export default function LandingPage() {
                     className="my-7"
                     key={`branch-with-product-loading-${i}`}
                   >
-                    <div className="mb-2 px-5">
+                    <div className="mb-5 px-5">
                       <BranchItemWithLogoLoading />
                     </div>
 
@@ -175,7 +175,7 @@ export default function LandingPage() {
                     className="my-7"
                     key={`branch-with-product-${branch.id}`}
                   >
-                    <div className="mb-2 px-5">
+                    <div className="mb-5 px-5">
                       <BranchItemWithLogo branch={branch as Branch} />
                     </div>
 
