@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 import typographyPlugin from '@tailwindcss/typography';
+import tailwindLineClamp from '@tailwindcss/line-clamp'
 
 // all in fixtures is set to tailwind v3 as interims solutions
 
@@ -103,6 +104,6 @@ const config: Config = {
 			}
 		},
 	},
-	plugins: [typographyPlugin],
+	plugins: [typographyPlugin, tailwindLineClamp],
 };
 export default config;
