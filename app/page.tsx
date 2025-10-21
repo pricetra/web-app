@@ -14,8 +14,12 @@ import {
 } from "@/graphql/types/graphql";
 import { useQuery } from "@apollo/client/react";
 import StoreMini, { StoreMiniLoading } from "@/components/StoreMini";
-import BranchItemWithLogo from "@/components/BranchItemWithLogo";
-import ProductItemHorizontal from "@/components/ProductItemHorizontal";
+import BranchItemWithLogo, {
+  BranchItemWithLogoLoading,
+} from "@/components/BranchItemWithLogo";
+import ProductItemHorizontal, {
+  ProductLoadingItemHorizontal,
+} from "@/components/ProductItemHorizontal";
 
 export default function LandingPage() {
   const { data: allStoresData } = useQuery(AllStoresDocument, {
@@ -140,31 +144,54 @@ export default function LandingPage() {
         </section>
 
         <section className="flex flex-col my-10">
-          {!branchesWithProducts ? (
-            <></>
-          ) : (
-            branchesWithProducts.branchesWithProducts.branches.map((branch) => (
-              <article
-                className="my-7"
-                key={`branch-with-product-${branch.id}`}
-              >
-                <div className="mb-2 px-5">
-                  <BranchItemWithLogo branch={branch as Branch} />
-                </div>
+          {!branchesWithProducts
+            ? Array(3)
+                .fill(0)
+                .map((_, i) => (
+                  <article
+                    className="my-7"
+                    key={`branch-with-product-loading-${i}`}
+                  >
+                    <div className="mb-2 px-5">
+                      <BranchItemWithLogoLoading />
+                    </div>
 
-                <div className="overflow-x-auto py-2">
-                  <div className="px-5 flex flex-row gap-5 ">
-                    {branch.products?.map((product) => (
-                      <ProductItemHorizontal
-                        product={product as Product}
-                        key={`branch-product-${branch.id}-${product.id}`}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </article>
-            ))
-          )}
+                    <div className="overflow-x-auto py-2">
+                      <div className="px-5 flex flex-row gap-5 ">
+                        {Array(10)
+                          .fill(0)
+                          .map((_, j) => (
+                            <ProductLoadingItemHorizontal
+                              key={`branch-product-${i}-${j}`}
+                            />
+                          ))}
+                      </div>
+                    </div>
+                  </article>
+                ))
+            : branchesWithProducts.branchesWithProducts.branches.map(
+                (branch) => (
+                  <article
+                    className="my-7"
+                    key={`branch-with-product-${branch.id}`}
+                  >
+                    <div className="mb-2 px-5">
+                      <BranchItemWithLogo branch={branch as Branch} />
+                    </div>
+
+                    <div className="overflow-x-auto py-2">
+                      <div className="px-5 flex flex-row gap-5 ">
+                        {branch.products?.map((product) => (
+                          <ProductItemHorizontal
+                            product={product as Product}
+                            key={`branch-product-${branch.id}-${product.id}`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  </article>
+                )
+              )}
         </section>
       </section>
 

@@ -11,10 +11,13 @@ export default function StoreMini({
   store: { id, name, logo },
 }: StoreMiniProps) {
   return (
-    <a href={`/stores/${id}`} className="flex flex-col items-center justify-center gap-3">
+    <a
+      href={`/stores/${id}`}
+      className="flex flex-col items-center justify-center gap-3"
+    >
       <Image
         src={createCloudinaryUrl(logo, 300, 300)}
-        className="size-16 rounded-lg border-[1px] border-gray-200"
+        className="size-16 rounded-xl border-[1px] border-gray-200"
         alt={name}
         width={300}
         height={300}

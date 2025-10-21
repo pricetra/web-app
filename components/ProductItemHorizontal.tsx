@@ -33,7 +33,10 @@ export default function ProductItemHorizontal({
   }, [product.stock?.latestPrice, isExpired]);
 
   return (
-    <div className="flex flex-col gap-2">
+    <a
+      href={`/products/${product.id}?stockId=${product.stock?.id}`}
+      className="flex flex-col gap-2"
+    >
       <div style={{ position: "relative" }}>
         {product.stock?.latestPrice?.sale && !isExpired && (
           <div className="absolute left-1 top-1 z-[1] w-[40px]">
@@ -108,7 +111,7 @@ export default function ProductItemHorizontal({
           </div>
         )}
       </div>
-    </div>
+    </a>
   );
 }
 
