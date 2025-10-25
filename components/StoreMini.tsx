@@ -17,7 +17,7 @@ export default function StoreMini({
     >
       <Image
         src={createCloudinaryUrl(logo, 300, 300)}
-        className="size-16 rounded-xl border-[1px] border-gray-200"
+        className="size-10 md:size-14 lg:size-16 rounded-lg md:rounded-xl border-[1px] border-gray-200"
         alt={name}
         width={300}
         height={300}
@@ -43,7 +43,10 @@ export function StoreMiniShowMore() {
 export function StoreMiniLoading() {
   return (
     <div className="flex flex-col items-center justify-center gap-3">
-      <Skeleton className="size-16 rounded-lg" style={{ width: 64 }} />
+      <Skeleton
+        className="size-10 md:size-14 lg:size-16 rounded-lg md:rounded-xl"
+        style={{ width: 64 }}
+      />
       <Skeleton className="h-4 w-20 rounded-md" style={{ width: 64 }} />
     </div>
   );

@@ -47,7 +47,7 @@ export default function LandingPage() {
   );
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-white via-white to-slate-50">
+    <div className="min-h-screen flex flex-col bg-gradient-to-b from-white via-white to-slate-50 overflow-x-hidden">
       {/* Header */}
       <header className="w-full z-10">
         <div className="container mx-auto flex items-center justify-between px-6 md:px-8 py-7 md:py-10">
@@ -84,7 +84,7 @@ export default function LandingPage() {
       </header>
 
       {/* Hero */}
-      <section className="relative container mx-auto flex flex-row gap-5 justify-between items-center py-10">
+      <section className="relative container mx-auto flex flex-row gap-5 justify-between items-center py-6 md:py-10">
         <div className="px-6 md:px-8 py-12 md:py-20 flex-1">
           <div className="text-center relative z-10">
             <div className="max-w-4xl mx-auto">
@@ -132,10 +132,10 @@ export default function LandingPage() {
         </div>
       </section>
 
-      <section className="relative container mx-auto mt-5 mb-16">
-        <section className="flex flex-row flex-wrap items-center justify-center gap-5 px-5 mb-10">
+      <section className="relative w-full max-w-[1000px] mx-auto mt-5 mb-16">
+        <section className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-9 gap-5 px-5 mb-10">
           {!allStoresData
-            ? Array(10)
+            ? Array(9)
                 .fill(0)
                 .map((_, i) => <StoreMiniLoading key={`store-loading-${i}`} />)
             : allStoresData.allStores.stores.map((store) => (

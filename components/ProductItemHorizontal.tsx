@@ -79,7 +79,7 @@ export default function ProductItemHorizontal({
               <h5 className="text-xs text-gray-600">{product.brand}</h5>
             )}
           </div>
-          <h3 className="line-clamp-2">{product.name}</h3>
+          <h3 className="line-clamp-2 leading-5">{product.name}</h3>
         </div>
 
         {product.stock?.latestPrice && (
