@@ -35,10 +35,12 @@ export default function RootLayout({
 
         {process.env.NODE_ENV === "production" && (
           <>
+            {/* Google Tag Manager */}
             <Script
               src={`https://www.googletagmanager.com/gtag/js?id=${GA_TRACKING_ID}`}
               strategy="afterInteractive"
             />
+            {/* Google Analytics */}
             <Script
               id="gtag-init"
               strategy="afterInteractive"
@@ -52,6 +54,13 @@ export default function RootLayout({
                   });
                 `,
               }}
+            />
+
+            {/* AdSense code */}
+            <Script
+              async
+              src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9688831646501290"
+              crossOrigin="anonymous"
             />
           </>
         )}
