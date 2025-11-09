@@ -59,16 +59,7 @@ export default function LandingPage() {
             alt="Pricetra"
             width={210}
             height={40}
-            className="sm:h-[30px] hidden sm:block w-auto color-white"
-            priority
-          />
-
-          <Image
-            src="/logo_black_color_dark_leaf.svg"
-            alt="Pricetra"
-            width={210}
-            height={40}
-            className="h-[30px] block sm:hidden w-auto color-white"
+            className="h-[23px] sm:h-[30px] block w-auto color-white"
             priority
           />
 
@@ -79,7 +70,7 @@ export default function LandingPage() {
             >
               Login
             </Button>
-            <Button className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-4 md:px-6 py-2 rounded-lg shadow-sm hover:shadow-md transition-all font-bold">
+            <Button className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-4 md:px-6 py-2 rounded-lg shadow-sm hover:shadow-md transition-all font-bold hidden sm:block">
               Create Account
             </Button>
           </div>
