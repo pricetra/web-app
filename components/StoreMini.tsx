@@ -3,6 +3,8 @@ import { createCloudinaryUrl } from "@/lib/files";
 import Image from "next/image";
 import Skeleton from "react-loading-skeleton";
 
+import { FiArrowRight } from "react-icons/fi";
+
 export type StoreMiniProps = {
   store: Store;
 };
@@ -22,7 +24,7 @@ export default function StoreMini({
         width={300}
         height={300}
       />
-      <h3 className="text-sm max-w-20 truncate">{name}</h3>
+      <h3 className="text-sm max-w-14 sm:max-w-20 truncate">{name}</h3>
     </a>
   );
 }
@@ -31,11 +33,11 @@ export function StoreMiniShowMore() {
   return (
     <a
       href="/stores"
-      className="flex flex-col items-center gap-1 rounded-xl border-[1px] border-gray-200 bg-gray-50 px-2 py-3"
+      className="flex flex-col items-center justify-center gap-1 rounded-lg border-[1px] border-gray-200 bg-gray-50 px-1 py-2"
     >
-      <div className="size-[20px]" />
+      <FiArrowRight size={20} color="#374151" className="mt-1" />
 
-      <h3 className="text-xs color-gray-700">See All</h3>
+      <h3 className="text-xs color-gray-700 text-center">See All</h3>
     </a>
   );
 }
@@ -47,7 +49,10 @@ export function StoreMiniLoading() {
         className="size-10 md:size-14 lg:size-16 rounded-lg md:rounded-xl"
         style={{ width: 64 }}
       />
-      <Skeleton className="h-4 w-20 rounded-md" style={{ width: 64 }} />
+      <Skeleton
+        className="h-4 max-w-14 sm:max-w-20 rounded-md"
+        style={{ width: 64 }}
+      />
     </div>
   );
 }

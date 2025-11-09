@@ -13,7 +13,10 @@ import {
   Product,
 } from "@/graphql/types/graphql";
 import { useQuery } from "@apollo/client/react";
-import StoreMini, { StoreMiniLoading } from "@/components/StoreMini";
+import StoreMini, {
+  StoreMiniLoading,
+  StoreMiniShowMore,
+} from "@/components/StoreMini";
 import BranchItemWithLogo, {
   BranchItemWithLogoLoading,
 } from "@/components/BranchItemWithLogo";
@@ -133,14 +136,19 @@ export default function LandingPage() {
       </section>
 
       <section className="relative w-full max-w-[1000px] mx-auto mt-5 mb-16">
-        <section className="grid grid-cols-3 sm:grid-cols-5 md:grid-cols-9 gap-5 px-5 mb-10">
-          {!allStoresData
-            ? Array(9)
-                .fill(0)
-                .map((_, i) => <StoreMiniLoading key={`store-loading-${i}`} />)
-            : allStoresData.allStores.stores.map((store) => (
+        <section className="grid grid-cols-5 md:grid-cols-10 gap-x-2 gap-y-5 sm:gap-5 px-5 mb-10">
+          {!allStoresData ? (
+            Array(10)
+              .fill(0)
+              .map((_, i) => <StoreMiniLoading key={`store-loading-${i}`} />)
+          ) : (
+            <>
+              {allStoresData.allStores.stores.map((store) => (
                 <StoreMini store={store} key={`store-${store.id}`} />
               ))}
+              <StoreMiniShowMore />
+            </>
+          )}
         </section>
 
         <section className="flex flex-col my-10">
