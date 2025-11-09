@@ -47,11 +47,11 @@ export function StoreMiniLoading() {
     <div className="flex flex-col items-center justify-center gap-3">
       <Skeleton
         className="size-10 md:size-14 lg:size-16 rounded-lg md:rounded-xl"
-        style={{ width: 64 }}
+        style={{ width: 64, borderRadius: 10 }}
       />
       <Skeleton
         className="h-4 max-w-14 sm:max-w-20 rounded-md"
-        style={{ width: 64 }}
+        style={{ width: 64, borderRadius: 5 }}
       />
     </div>
   );

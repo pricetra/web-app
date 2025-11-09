@@ -123,12 +123,15 @@ export function ProductLoadingItemHorizontal({
   return (
     <div className="flex max-w-full flex-col gap-2">
       <div style={{ width: imgWidth, height: imgWidth }}>
-        <Skeleton className="size-full rounded-xl" />
+        <Skeleton
+          className="size-full rounded-xl"
+          style={{ borderRadius: 10 }}
+        />
       </div>
       <div className="max-w-full flex-1 gap-2">
-        <Skeleton className="h-6 w-full" />
-        <Skeleton className="h-6 w-full" />
-        <Skeleton className="mt-5 h-6 w-[100px]" />
+        <Skeleton className="h-6 w-full" style={{ borderRadius: 7 }} />
+        <Skeleton className="h-6 w-full" style={{ borderRadius: 7 }} />
+        <Skeleton className="mt-5 h-6 w-[100px]" style={{ borderRadius: 7 }} />
       </div>
     </div>
   );

@@ -45,14 +45,23 @@ export function BranchItemWithLogoLoading() {
   return (
     <div className="flex flex-row justify-between gap-5">
       <div className="flex flex-1 flex-row gap-4">
-        <Skeleton className="size-[40px] rounded-xl" style={{ width: 40 }} />
+        <Skeleton
+          className="size-[40px] rounded-xl"
+          style={{ width: 40, borderRadius: 7 }}
+        />
         <div className="flex flex-row pr-[60px] flex-wrap">
           <div className="flex w-full flex-row flex-wrap items-center gap-3">
-            <Skeleton className="h-4 w-24 rounded-md" style={{ width: 96 }} />
+            <Skeleton
+              className="h-4 w-24 rounded-md"
+              style={{ width: 96, borderRadius: 5 }}
+            />
           </div>
 
           <div className="w-full">
-            <Skeleton className="h-3 w-40 rounded-md" style={{ width: 160 }} />
+            <Skeleton
+              className="h-3 w-40 rounded-md"
+              style={{ width: 160, borderRadius: 5 }}
+            />
           </div>
         </div>
       </div>
