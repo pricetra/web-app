@@ -93,7 +93,7 @@ export default function AuthContainer({
                       <div className="grid grid-cols-2 gap-4">
                         <Button
                           variant="outline"
-                          className="w-full"
+                          className="w-full cursor-pointer"
                           onClick={onPressApple}
                         >
                           <svg
@@ -109,7 +109,7 @@ export default function AuthContainer({
                         </Button>
                         <Button
                           variant="outline"
-                          className="w-full"
+                          className="w-full cursor-pointer"
                           onClick={onPressGoogle}
                         >
                           <svg
