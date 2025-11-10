@@ -16,24 +16,28 @@ export default function BranchItemWithLogo({
       <div className="flex flex-1 flex-row gap-4">
         <Image
           src={createCloudinaryUrl(branch.store?.logo ?? "", 500, 500)}
-          className="size-[50px] rounded-xl border-[1px] border-gray-200"
+          className="size-[40px] sm:size-[50px] rounded-lg border-[1px] border-gray-200"
           width={500}
           height={500}
           alt={branch.name}
         />
-        <div className="flex flex-row pr-[60px] flex-wrap">
-          <div className="flex w-full flex-row flex-wrap items-center gap-3">
-            <h5 className="text-lg font-bold">{branch.store?.name}</h5>
-          </div>
-
-          <div className="w-full">
-            <span className="text-xs">{branch.address?.fullAddress}</span>
+        <div className="flex flex-col pr-[60px]">
+          <div className="flex w-full flex-row flex-nowrap items-center gap-x-3">
+            <h5 className="sm:text-lg font-bold line-clamp-1">
+              {branch.store?.name}
+            </h5>
 
             {branch.address?.distance && (
-              <span className="mt-1 text-xs">
-                {metersToMiles(branch.address.distance)} mi
-              </span>
+              <div className="rounded-full bg-pricetraGreenDark/10 px-2 py-0.5">
+                <div className="text-[10px] color-pricetraGreenHeavyDark">
+                  {metersToMiles(branch.address.distance)} mi
+                </div>
+              </div>
             )}
+          </div>
+
+          <div className="text-[10px] sm:text-xs w-full line-clamp-1">
+            <span>{branch.address?.fullAddress}</span>
           </div>
         </div>
       </div>
