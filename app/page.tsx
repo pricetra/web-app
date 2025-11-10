@@ -1,4 +1,4 @@
-import LandingPage from "@/components/pages/LandingPage";
+import LandingPage from "@/app/LandingPage";
 import { headers } from "next/headers";
 import type { Metadata } from "next";
 
