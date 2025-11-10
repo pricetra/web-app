@@ -43,6 +43,7 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
       loginGoogle({
         variables: {
           accessToken: tokenResponse.access_token,
+          device: AuthDeviceType.Web,
           ipAddress,
         },
       }).then(({ data }) => {

@@ -87,7 +87,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
             </Link>
             <Link
               href="signup"
-              className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white md:px-6 rounded-lg shadow-sm hover:shadow-md transition-all font-bold hidden sm:block py-2 px-5 rounded-lg text-sm"
+              className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white md:px-6 rounded-lg shadow-sm hover:shadow-md transition-all font-bold hidden sm:block py-2 px-5 text-sm"
             >
               Create Account
             </Link>
@@ -138,6 +138,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
               alt="Pricetra Mobile App"
               width={280}
               height={560}
+              quality={100}
               className="md:w-52 lg:w-60 xl:w-64 h-auto rounded-3xl"
             />
           </div>
