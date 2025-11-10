@@ -1,4 +1,5 @@
 import { Price, ProductWeightComponents } from '@/graphql/types/graphql';
+import { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers';
 
 export function titleCase(str: string) {
   return str
@@ -60,4 +61,8 @@ export function parseWeight(rawWeight: string): ProductWeightComponents {
     weightValue: +splitWeight[0],
     weightType: splitWeight.slice(1).join(' '),
   };
+}
+
+export function getIpAddressFromRequestHeaders(headerList: ReadonlyHeaders) {
+  return headerList.get("x-forwarded-for")?.split(",")[0] ?? headerList.get("x-real-ip");
 }
