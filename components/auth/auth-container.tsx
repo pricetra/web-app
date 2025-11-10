@@ -11,6 +11,7 @@ import { FaApple } from "react-icons/fa";
 
 export type AuthContainerProps = {
   title: string;
+  buttonLabel: string;
   description?: string;
   error?: string;
   children: ReactNode;
@@ -23,6 +24,7 @@ export type AuthContainerProps = {
 
 export default function AuthContainer({
   title,
+  buttonLabel,
   description,
   error,
   children,
@@ -80,7 +82,7 @@ export default function AuthContainer({
                       {loading ? (
                         <CgSpinner className="animate-spin" />
                       ) : (
-                        "Login"
+                        buttonLabel
                       )}
                     </Button>
                   </div>
@@ -100,7 +102,7 @@ export default function AuthContainer({
                           disabled
                         >
                           <FaApple />
-                          <span className="sr-only">Login with Apple</span>
+                          <span className="sr-only">Apple</span>
                         </Button>
                         <Button
                           variant="outline"
@@ -108,7 +110,7 @@ export default function AuthContainer({
                           onClick={onPressGoogle}
                         >
                           <FcGoogle />
-                          <span className="sr-only">Login with Google</span>
+                          <span className="sr-only">Google</span>
                         </Button>
                       </div>
                     </>

@@ -56,6 +56,7 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
   return (
     <AuthContainer
       title="Welcome back"
+      buttonLabel="Login"
       description="Login to your Pricetra account"
       onPressSubmit={onPressLoginInternal}
       error={error?.message}
@@ -65,7 +66,7 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
       extras={
         <div className="text-center text-sm">
           Don&apos;t have an account?{" "}
-          <Link href="/signup" className="underline underline-offset-4">
+          <Link href="/auth/signup" className="underline underline-offset-4">
             Sign up
           </Link>
         </div>

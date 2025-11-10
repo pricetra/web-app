@@ -86,13 +86,13 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
 
           <div className="flex items-center gap-3">
             <Link
-              href="login"
+              href="/auth/login"
               className="text-slate-700 hover:text-pricetra-green-dark hover:bg-pricetra-green-logo/10 md:px-4 font-bold rounded-lg py-2 px-5 text-sm"
             >
               Login
             </Link>
             <Link
-              href="signup"
+              href="/auth/signup"
               className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white md:px-6 rounded-lg shadow-sm hover:shadow-md transition-all font-bold hidden sm:block py-2 px-5 text-sm"
             >
               Create Account
@@ -116,19 +116,19 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
               shoppers discover the best deals nearby. Compare costs per unit,
               watch your favorites, and get notified when prices change.
             </p>
-            <div className="mt-8 flex items-center justify-center gap-3">
-              <Button
-                size="lg"
-                className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-6 md:px-8 py-3 text-base md:text-lg font-semibold rounded-lg shadow-md hover:shadow-lg transition-all"
+            <div className="mt-8 flex flex-row items-center justify-center gap-5 flex-wrap">
+              <Link
+                href="/auth/signup"
+                className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-8 py-3 text-base md:text-lg font-bold rounded-lg shadow-md hover:shadow-lg transition-all"
               >
                 Start for Free
-              </Button>
-              <Button
-                variant="outline"
-                className="border-slate-300 text-slate-700 hover:text-slate-900 hover:bg-slate-100"
+              </Link>
+              <a
+                href="#showcase"
+                className="border-slate-300 text-slate-700 hover:text-slate-900 hover:bg-slate-100 px-5 py-3 rounded-lg"
               >
                 Learn More
-              </Button>
+              </a>
             </div>
             <p className="mt-3 text-xs md:text-sm text-slate-500">
               No credit card required • Free forever
@@ -227,7 +227,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
       </section>
 
       {/* Mobile App Showcase */}
-      <section className="bg-white py-16 md:py-20">
+      <section className="bg-white py-16 md:py-20" id="showcase">
         <div className="container mx-auto px-6 md:px-8">
           <div className="text-center mb-12">
             <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
