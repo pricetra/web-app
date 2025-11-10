@@ -8,7 +8,7 @@ export default async function LandingPageServer() {
     headerList.get("x-real-ip") ??
     "46.110.121.165";
   if (process.env.NODE_ENV !== "production") {
-    ipAddress = "46.110.121.165";
+    ipAddress = "70.91.104.137";
   }
   return <LandingPage ipAddress={ipAddress} />;
 }
