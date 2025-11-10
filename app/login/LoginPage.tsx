@@ -76,7 +76,7 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
         <Input
           id="email"
           type="email"
-          placeholder="m@example.com"
+          placeholder="user@example.com"
           required
           value={email}
           onChange={(v) => setEmail(v.target.value)}
@@ -86,16 +86,17 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
       <div className="grid gap-2">
         <div className="flex items-center">
           <Label htmlFor="password">Password</Label>
-          <a
-            href="#"
+          <Link
+            href="/forgot-password"
             className="ml-auto text-xs underline-offset-2 hover:underline text-gray-600 hover:text-black"
           >
             Forgot password?
-          </a>
+          </Link>
         </div>
         <Input
           id="password"
           type="password"
+          placeholder="Password"
           required
           value={password}
           onChange={(v) => setPassword(v.target.value)}
