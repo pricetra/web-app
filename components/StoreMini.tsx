@@ -31,14 +31,16 @@ export default function StoreMini({
 
 export function StoreMiniShowMore() {
   return (
-    <a
-      href="/stores"
-      className="flex flex-col items-center justify-center gap-1 rounded-lg border-[1px] border-gray-200 bg-gray-50 px-1 py-2"
-    >
-      <FiArrowRight size={20} color="#374151" className="mt-1" />
+    <div className="flex flex-row items-center justify-center">
+      <a
+        href="/stores"
+        className="flex flex-col items-center justify-center gap-1 rounded-lg border-[1px] border-gray-200 bg-gray-50 px-1 py-2 max-w-[80px] w-[80px] h-full"
+      >
+        <FiArrowRight size={20} color="#374151" className="mt-1" />
 
-      <h3 className="text-xs color-gray-700 text-center">See All</h3>
-    </a>
+        <h3 className="text-xs color-gray-700 text-center">See All</h3>
+      </a>
+    </div>
   );
 }
 
