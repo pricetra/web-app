@@ -1,5 +1,12 @@
 import LandingPage from "@/components/pages/LandingPage";
 import { headers } from "next/headers";
+import type { Metadata } from "next";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return {
+    title: "Pricetra - Your Price Tracking Companion",
+  };
+}
 
 export default async function LandingPageServer() {
   const headerList = await headers();

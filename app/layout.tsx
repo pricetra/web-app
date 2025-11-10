@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Pricetra - Your Price Tracking Companion",
+  title: "Pricetra",
   description:
     "Monitor price changes across thousands of products and never overpay again. Get alerts when prices drop and make smarter purchasing decisions.",
 };
