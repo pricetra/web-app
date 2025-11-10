@@ -79,15 +79,18 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
           />
 
           <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              className="text-slate-700 hover:text-pricetra-green-dark hover:bg-pricetra-green-logo/10 px-3 md:px-4 font-bold"
+            <Link
+              href="login"
+              className="text-slate-700 hover:text-pricetra-green-dark hover:bg-pricetra-green-logo/10 md:px-4 font-bold rounded-lg py-2 px-5 text-sm"
             >
               Login
-            </Button>
-            <Button className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-4 md:px-6 py-2 rounded-lg shadow-sm hover:shadow-md transition-all font-bold hidden sm:block">
+            </Link>
+            <Link
+              href="signup"
+              className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white md:px-6 rounded-lg shadow-sm hover:shadow-md transition-all font-bold hidden sm:block py-2 px-5 rounded-lg text-sm"
+            >
               Create Account
-            </Button>
+            </Link>
           </div>
         </div>
       </header>
