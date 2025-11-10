@@ -9,7 +9,6 @@ import {
   AuthDeviceType,
   CreateAccountDocument,
   GoogleOAuthDocument,
-  LoginInternalDocument,
 } from "@/graphql/types/graphql";
 import AuthContainer from "@/components/auth/auth-container";
 import { useGoogleLogin } from "@react-oauth/google";
