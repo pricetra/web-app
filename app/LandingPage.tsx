@@ -26,6 +26,8 @@ import ProductItemHorizontal, {
   ProductLoadingItemHorizontal,
 } from "@/components/ProductItemHorizontal";
 import { useEffect } from "react";
+import Aos from "aos";
+import "aos/dist/aos.css";
 
 export default function LandingPage({ ipAddress }: { ipAddress: string }) {
   const { data: ipToAddressData } = useQuery(IpToAddressDocument, {
@@ -46,6 +48,10 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
       fetchPolicy: "no-cache",
     }
   );
+
+  useEffect(() => {
+    Aos.init({ duration: 500 });
+  }, []);
 
   useEffect(() => {
     if (!ipToAddressData) return;
@@ -98,7 +104,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
       {/* Hero */}
       <section className="relative container mx-auto flex flex-row gap-5 justify-between items-center py-6 md:py-10">
         <div className="px-6 md:px-8 py-12 md:py-20 flex-1">
-          <div className="text-center relative z-10">
+          <div className="text-center relative z-10" data-aos="fade-down">
             <div className="max-w-4xl mx-auto">
               <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
                 Beat Inflation. <span>Track Prices.</span>{" "}
@@ -132,7 +138,10 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
 
         {/* Floating Phone Background */}
         <div className="pointer-events-none hidden md:block">
-          <div className="relative rounded-4xl p-2 shadow-2xl transform rotate-6 bg-gray-100">
+          <div
+            className="relative rounded-4xl p-2 shadow-2xl transform rotate-6 bg-gray-100"
+            data-aos="fade-up"
+          >
             <Image
               src="https://res.cloudinary.com/pricetra-cdn/image/upload/homepage-main-screenshot.png"
               alt="Pricetra Mobile App"
