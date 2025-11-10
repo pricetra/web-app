@@ -7,6 +7,7 @@ import { useState } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
 import {
   AuthDeviceType,
+  CreateAccountDocument,
   GoogleOAuthDocument,
   LoginInternalDocument,
 } from "@/graphql/types/graphql";
@@ -15,27 +16,29 @@ import { useGoogleLogin } from "@react-oauth/google";
 
 export default function SignupPage({ ipAddress }: { ipAddress: string }) {
   const [email, setEmail] = useState("");
-  const [fullname, setFullname] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
-  const [login, { error: loginInternalError, loading: loginInternalLoading }] =
-    useMutation(LoginInternalDocument, {
+  const [signup, { error: signupError, loading: signupLoading }] = useMutation(
+    CreateAccountDocument,
+    {
       fetchPolicy: "no-cache",
-    });
+    }
+  );
   const [
     loginGoogle,
     { error: loginGoogleError, loading: loginGoogleLoading },
   ] = useLazyQuery(GoogleOAuthDocument, {
     fetchPolicy: "no-cache",
   });
-  const loading = loginInternalLoading || loginGoogleLoading;
-  const error = loginInternalError || loginGoogleError;
+  const loading = signupLoading || loginGoogleLoading;
+  const error = signupError || loginGoogleError;
 
-  function onPressLoginInternal() {
-    login({
-      variables: { email, password, device: AuthDeviceType.Web, ipAddress },
+  function onPressSignup() {
+    signup({
+      variables: { email, password, name },
     }).then(({ data }) => {
       if (!data) return;
-      console.log(data.login);
+      console.log(data.createAccount);
     });
   }
 
@@ -59,7 +62,7 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
       title="Create your account"
       buttonLabel="Sign Up"
       description="Signup to start tracking prices and managing your purchases"
-      onPressSubmit={onPressLoginInternal}
+      onPressSubmit={onPressSignup}
       error={error?.message}
       onPressApple={() => {}}
       onPressGoogle={googleOAuthCallback}
@@ -92,21 +95,13 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
           type="text"
           placeholder="John Doe"
           required
-          value={fullname}
-          onChange={(v) => setFullname(v.target.value)}
+          value={name}
+          onChange={(v) => setName(v.target.value)}
           disabled={loading}
         />
       </div>
       <div className="grid gap-2">
-        <div className="flex items-center">
-          <Label htmlFor="password">Password</Label>
-          <Link
-            href="/forgot-password"
-            className="ml-auto text-xs underline-offset-2 hover:underline text-gray-600 hover:text-black"
-          >
-            Forgot password?
-          </Link>
-        </div>
+        <Label htmlFor="password">Password</Label>
         <Input
           id="password"
           type="password"
