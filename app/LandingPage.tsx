@@ -12,6 +12,7 @@ import {
   Branch,
   BranchesWithProductsDocument,
   IpToAddressDocument,
+  PaginatorInput,
   Product,
 } from "@/graphql/types/graphql";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
@@ -29,18 +30,22 @@ import { useEffect } from "react";
 import Aos from "aos";
 import "aos/dist/aos.css";
 
+const paginator: PaginatorInput = { page: 1, limit: 9 };
+const productLimit = 10;
+
 export default function LandingPage({ ipAddress }: { ipAddress: string }) {
-  const { data: ipToAddressData } = useQuery(IpToAddressDocument, {
-    fetchPolicy: "cache-first",
-    variables: {
-      ipAddress,
-    },
-  });
+  const { data: ipToAddressData, error: ipAddressError } = useQuery(
+    IpToAddressDocument,
+    {
+      fetchPolicy: "cache-first",
+      variables: {
+        ipAddress,
+      },
+    }
+  );
   const { data: allStoresData } = useQuery(AllStoresDocument, {
     fetchPolicy: "cache-first",
-    variables: {
-      paginator: { page: 1, limit: 9 },
-    },
+    variables: { paginator: { page: 1, limit: 9 } },
   });
   const [getBranchProducts, { data: branchesWithProducts }] = useLazyQuery(
     BranchesWithProductsDocument,
@@ -54,11 +59,24 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
   }, []);
 
   useEffect(() => {
+    if (!ipAddressError) return;
+    getBranchProducts({
+      variables: {
+        paginator,
+        productLimit,
+        filters: {
+          branchIds: [2, 6, 14, 38, 42, 11],
+        },
+      },
+    });
+  }, [getBranchProducts, ipAddressError]);
+
+  useEffect(() => {
     if (!ipToAddressData) return;
     getBranchProducts({
       variables: {
-        paginator: { page: 1, limit: 3 },
-        productLimit: 10,
+        paginator,
+        productLimit,
         filters: {
           location: {
             latitude: ipToAddressData.ipToAddress.latitude,
