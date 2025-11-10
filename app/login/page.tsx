@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import LoginPage from "./LoginPage";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -6,10 +7,6 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function LoginPage() {
-  return (
-    <>
-      <div>Login page</div>
-    </>
-  );
+export default function LoginPageServer() {
+  return <LoginPage />;
 }
