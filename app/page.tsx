@@ -23,7 +23,6 @@ import BranchItemWithLogo, {
 import ProductItemHorizontal, {
   ProductLoadingItemHorizontal,
 } from "@/components/ProductItemHorizontal";
-import { ScrollMenu } from "react-horizontal-scrolling-menu";
 
 export default function LandingPage() {
   const { data: allStoresData } = useQuery(AllStoresDocument, {
@@ -179,14 +178,16 @@ export default function LandingPage() {
                       <BranchItemWithLogo branch={branch as Branch} />
                     </div>
 
-                    <ScrollMenu>
-                      {(branch.products ?? []).map((product) => (
-                        <ProductItemHorizontal
-                          product={product as Product}
-                          key={`branch-product-${branch.id}-${product.id}`}
-                        />
-                      ))}
-                    </ScrollMenu>
+                    <div className="overflow-x-auto py-2">
+                      <div className="px-5 flex flex-row gap-5 ">
+                        {(branch.products ?? []).map((product) => (
+                          <ProductItemHorizontal
+                            product={product as Product}
+                            key={`branch-product-${branch.id}-${product.id}`}
+                          />
+                        ))}
+                      </div>
+                    </div>
                   </article>
                 )
               )}
