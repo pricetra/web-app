@@ -456,3 +456,21 @@ export const BRANCHES_WITH_PRODUCTS_QUERY = gql(`
     }
   }
 `);
+
+export const IP_TO_ADDRESS_QUERY = gql(`
+  query IpToAddress($ipAddress: String!) {
+    ipToAddress(ipAddress: $ipAddress) {
+      id
+      latitude
+      longitude
+      mapsLink
+      fullAddress
+      street
+      city
+      administrativeDivision
+      zipCode
+      countryCode
+      country
+    }
+  }
+`);
