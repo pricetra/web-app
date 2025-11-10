@@ -14,6 +14,10 @@ import { TypedDocumentNode as DocumentNode } from '@graphql-typed-document-node/
  * Learn more about it here: https://the-guild.dev/graphql/codegen/plugins/presets/preset-client#reducing-bundle-size
  */
 type Documents = {
+    "\n  mutation CreateAccount($email: String!, $name: String!, $password: String!) {\n    createAccount(input: { email: $email, name: $name, password: $password }) {\n      id\n      name\n      email\n      phoneNumber\n      createdAt\n      updatedAt\n      authPlatform\n      role\n    }\n  }\n": typeof types.CreateAccountDocument,
+    "\n  mutation VerifyEmail($verificationCode: String!) {\n    verifyEmail(verificationCode: $verificationCode) {\n      id\n      name\n      email\n      avatar\n      createdAt\n      updatedAt\n      active\n      authPlatform\n      authStateId\n      role\n    }\n  }\n": typeof types.VerifyEmailDocument,
+    "\n  mutation ResendVerification($email: String!) {\n    resendEmailVerificationCode(email: $email)\n  }\n": typeof types.ResendVerificationDocument,
+    "\n  mutation Logout {\n    logout\n  }\n": typeof types.LogoutDocument,
     "\n  query GetAllCountries {\n    getAllCountries {\n      code\n      name\n      administrativeDivisions {\n        name\n        cities\n      }\n      currency {\n        currencyCode\n        name\n        symbol\n        symbolNative\n        decimals\n        numToBasic\n      }\n      callingCode\n      language\n    }\n  }\n": typeof types.GetAllCountriesDocument,
     "\n  query LoginInternal(\n    $email: String!\n    $password: String!\n    $ipAddress: String\n    $device: AuthDeviceType\n  ) {\n    login(email: $email, password: $password, ipAddress: $ipAddress, device: $device) {\n      token\n      user {\n        id\n        name\n        email\n        avatar\n        createdAt\n        updatedAt\n        active\n        authPlatform\n        authStateId\n        expoPushToken\n        role\n        addressId\n        address {\n          id\n          latitude\n          longitude\n          mapsLink\n          fullAddress\n          street\n          city\n          administrativeDivision\n          countryCode\n          country\n          zipCode\n        }\n      }\n    }\n  }\n": typeof types.LoginInternalDocument,
     "\n  query GoogleOAuth($accessToken: String!, $ipAddress: String, $device: AuthDeviceType) {\n    googleOAuth(accessToken: $accessToken, ipAddress: $ipAddress, device: $device) {\n      token\n      user {\n        id\n        name\n        email\n        avatar\n        createdAt\n        updatedAt\n        active\n        authPlatform\n        authStateId\n        expoPushToken\n        role\n        addressId\n        address {\n          id\n          latitude\n          longitude\n          mapsLink\n          fullAddress\n          street\n          city\n          administrativeDivision\n          countryCode\n          country\n          zipCode\n        }\n      }\n      isNewUser\n    }\n  }\n": typeof types.GoogleOAuthDocument,
@@ -26,6 +30,10 @@ type Documents = {
     "\n  query IpToAddress($ipAddress: String!) {\n    ipToAddress(ipAddress: $ipAddress) {\n      id\n      latitude\n      longitude\n      mapsLink\n      fullAddress\n      street\n      city\n      administrativeDivision\n      zipCode\n      countryCode\n      country\n    }\n  }\n": typeof types.IpToAddressDocument,
 };
 const documents: Documents = {
+    "\n  mutation CreateAccount($email: String!, $name: String!, $password: String!) {\n    createAccount(input: { email: $email, name: $name, password: $password }) {\n      id\n      name\n      email\n      phoneNumber\n      createdAt\n      updatedAt\n      authPlatform\n      role\n    }\n  }\n": types.CreateAccountDocument,
+    "\n  mutation VerifyEmail($verificationCode: String!) {\n    verifyEmail(verificationCode: $verificationCode) {\n      id\n      name\n      email\n      avatar\n      createdAt\n      updatedAt\n      active\n      authPlatform\n      authStateId\n      role\n    }\n  }\n": types.VerifyEmailDocument,
+    "\n  mutation ResendVerification($email: String!) {\n    resendEmailVerificationCode(email: $email)\n  }\n": types.ResendVerificationDocument,
+    "\n  mutation Logout {\n    logout\n  }\n": types.LogoutDocument,
     "\n  query GetAllCountries {\n    getAllCountries {\n      code\n      name\n      administrativeDivisions {\n        name\n        cities\n      }\n      currency {\n        currencyCode\n        name\n        symbol\n        symbolNative\n        decimals\n        numToBasic\n      }\n      callingCode\n      language\n    }\n  }\n": types.GetAllCountriesDocument,
     "\n  query LoginInternal(\n    $email: String!\n    $password: String!\n    $ipAddress: String\n    $device: AuthDeviceType\n  ) {\n    login(email: $email, password: $password, ipAddress: $ipAddress, device: $device) {\n      token\n      user {\n        id\n        name\n        email\n        avatar\n        createdAt\n        updatedAt\n        active\n        authPlatform\n        authStateId\n        expoPushToken\n        role\n        addressId\n        address {\n          id\n          latitude\n          longitude\n          mapsLink\n          fullAddress\n          street\n          city\n          administrativeDivision\n          countryCode\n          country\n          zipCode\n        }\n      }\n    }\n  }\n": types.LoginInternalDocument,
     "\n  query GoogleOAuth($accessToken: String!, $ipAddress: String, $device: AuthDeviceType) {\n    googleOAuth(accessToken: $accessToken, ipAddress: $ipAddress, device: $device) {\n      token\n      user {\n        id\n        name\n        email\n        avatar\n        createdAt\n        updatedAt\n        active\n        authPlatform\n        authStateId\n        expoPushToken\n        role\n        addressId\n        address {\n          id\n          latitude\n          longitude\n          mapsLink\n          fullAddress\n          street\n          city\n          administrativeDivision\n          countryCode\n          country\n          zipCode\n        }\n      }\n      isNewUser\n    }\n  }\n": types.GoogleOAuthDocument,
@@ -52,6 +60,22 @@ const documents: Documents = {
  */
 export function graphql(source: string): unknown;
 
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation CreateAccount($email: String!, $name: String!, $password: String!) {\n    createAccount(input: { email: $email, name: $name, password: $password }) {\n      id\n      name\n      email\n      phoneNumber\n      createdAt\n      updatedAt\n      authPlatform\n      role\n    }\n  }\n"): (typeof documents)["\n  mutation CreateAccount($email: String!, $name: String!, $password: String!) {\n    createAccount(input: { email: $email, name: $name, password: $password }) {\n      id\n      name\n      email\n      phoneNumber\n      createdAt\n      updatedAt\n      authPlatform\n      role\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation VerifyEmail($verificationCode: String!) {\n    verifyEmail(verificationCode: $verificationCode) {\n      id\n      name\n      email\n      avatar\n      createdAt\n      updatedAt\n      active\n      authPlatform\n      authStateId\n      role\n    }\n  }\n"): (typeof documents)["\n  mutation VerifyEmail($verificationCode: String!) {\n    verifyEmail(verificationCode: $verificationCode) {\n      id\n      name\n      email\n      avatar\n      createdAt\n      updatedAt\n      active\n      authPlatform\n      authStateId\n      role\n    }\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation ResendVerification($email: String!) {\n    resendEmailVerificationCode(email: $email)\n  }\n"): (typeof documents)["\n  mutation ResendVerification($email: String!) {\n    resendEmailVerificationCode(email: $email)\n  }\n"];
+/**
+ * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
+ */
+export function graphql(source: "\n  mutation Logout {\n    logout\n  }\n"): (typeof documents)["\n  mutation Logout {\n    logout\n  }\n"];
 /**
  * The graphql function is used to parse GraphQL queries into a document that can be used by GraphQL clients.
  */
