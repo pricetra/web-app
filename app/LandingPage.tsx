@@ -154,7 +154,10 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
         </div>
       </section>
 
-      <section className="relative w-full max-w-[1000px] mx-auto mt-5 mb-16">
+      <section
+        className="relative w-full max-w-[1000px] mx-auto mt-5 mb-16"
+        data-aos="fade-up"
+      >
         <section className="grid grid-cols-5 md:grid-cols-10 gap-x-2 gap-y-5 sm:gap-5 px-5 mb-10">
           {!allStoresData ? (
             Array(10)
