@@ -28,11 +28,14 @@ import ProductItemHorizontal, {
 } from "@/components/product-item-horizontal";
 import { useEffect } from "react";
 import Aos from "aos";
+import { useAuth } from "@/context/user-context";
+import { createCloudinaryUrl } from "@/lib/files";
 
 const paginator: PaginatorInput = { page: 1, limit: 4 };
 const productLimit = 10;
 
 export default function LandingPage({ ipAddress }: { ipAddress: string }) {
+  const { loggedIn, user } = useAuth();
   const { data: ipToAddressData, error: ipAddressError } = useQuery(
     IpToAddressDocument,
     {
@@ -101,20 +104,38 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
             priority
           />
 
-          <div className="flex items-center gap-3">
-            <Link
-              href="/auth/login"
-              className="text-slate-700 hover:text-pricetra-green-dark hover:bg-pricetra-green-logo/10 md:px-4 font-bold rounded-lg py-2 px-5 text-sm"
-            >
-              Login
-            </Link>
-            <Link
-              href="/auth/signup"
-              className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white md:px-6 rounded-lg shadow-sm hover:shadow-md transition-all font-bold hidden sm:block py-2 px-5 text-sm"
-            >
-              Create Account
-            </Link>
-          </div>
+          {!loggedIn || !user ? (
+            <div className="flex items-center gap-3">
+              <Link
+                href="/auth/login"
+                className="text-slate-700 hover:text-pricetra-green-dark hover:bg-pricetra-green-logo/10 md:px-4 font-bold rounded-lg py-2 px-5 text-sm"
+              >
+                Login
+              </Link>
+              <Link
+                href="/auth/signup"
+                className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white md:px-6 rounded-lg shadow-sm hover:shadow-md transition-all font-bold hidden sm:block py-2 px-5 text-sm"
+              >
+                Create Account
+              </Link>
+            </div>
+          ) : (
+            <div className="flex gap-2 items-center">
+              <Image
+                src={createCloudinaryUrl(user.avatar ?? "no_avatar", 100, 100)}
+                alt="Avatar"
+                className="rounded-full size-8"
+                width={50}
+                height={50}
+                quality={100}
+              />
+
+              <div className="flex flex-col">
+                <h4 className="font-semibold text-xs">{user.name}</h4>
+                <h5 className="text-[11px] text-gray-700">{user.email}</h5>
+              </div>
+            </div>
+          )}
         </div>
       </header>
 
@@ -133,23 +154,28 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
               shoppers discover the best deals nearby. Compare costs per unit,
               watch your favorites, and get notified when prices change.
             </p>
-            <div className="mt-8 flex flex-row items-center justify-center gap-5 flex-wrap">
-              <Link
-                href="/auth/signup"
-                className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-8 py-3 text-base md:text-lg font-bold rounded-lg shadow-md hover:shadow-lg transition-all"
-              >
-                Start for Free
-              </Link>
-              <a
-                href="#showcase"
-                className="border-slate-300 text-slate-700 hover:text-slate-900 hover:bg-slate-100 px-5 py-3 rounded-lg"
-              >
-                Learn More
-              </a>
-            </div>
-            <p className="mt-3 text-xs md:text-sm text-slate-500">
-              No credit card required • Free forever
-            </p>
+
+            {!loggedIn && (
+              <div>
+                <div className="mt-8 flex flex-row items-center justify-center gap-5 flex-wrap">
+                  <Link
+                    href="/auth/signup"
+                    className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-8 py-3 text-base md:text-lg font-bold rounded-lg shadow-md hover:shadow-lg transition-all"
+                  >
+                    Start for Free
+                  </Link>
+                  <a
+                    href="#showcase"
+                    className="border-slate-300 text-slate-700 hover:text-slate-900 hover:bg-slate-100 px-5 py-3 rounded-lg"
+                  >
+                    Learn More
+                  </a>
+                </div>
+                <p className="mt-3 text-xs md:text-sm text-slate-500">
+                  No credit card required • Free forever
+                </p>
+              </div>
+            )}
           </div>
         </div>
 
