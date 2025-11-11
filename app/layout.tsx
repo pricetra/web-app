@@ -4,6 +4,8 @@ import "@/public/globals.css";
 import Script from "next/script";
 import ApolloWrapper from "@/graphql/ApolloWrapper";
 import "react-loading-skeleton/dist/skeleton.css";
+import { Suspense } from "react";
+import { SuspenseFallback } from "@/components/suspence-fallback";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -73,7 +75,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <ApolloWrapper>{children}</ApolloWrapper>
+        <Suspense fallback={<SuspenseFallback />}>
+          <ApolloWrapper>{children}</ApolloWrapper>
+        </Suspense>
       </body>
     </html>
   );
