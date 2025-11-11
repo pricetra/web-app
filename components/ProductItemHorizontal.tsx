@@ -10,13 +10,9 @@ import ProductMetadataBadge from "./ProductMetadataBadge";
 
 export type ProductItemHorizontalProps = {
   product: ProductSimple | Product;
-  imgWidth?: number;
 };
 
-export default function ProductItemHorizontal({
-  product,
-  imgWidth = 130,
-}: ProductItemHorizontalProps) {
+export default function ProductItemHorizontal({ product }: ProductItemHorizontalProps) {
   const isExpired = useMemo(
     () =>
       product.stock?.latestPrice
@@ -37,7 +33,7 @@ export default function ProductItemHorizontal({
       href={`/products/${product.id}?stockId=${product.stock?.id}`}
       className="flex flex-col gap-2"
     >
-      <div style={{ position: "relative" }}>
+      <div className="relative size-[130px] md:size-[180px]">
         {product.stock?.latestPrice?.sale && !isExpired && (
           <div className="absolute left-1 top-1 z-[1] w-[40px]">
             <span className="inline-block rounded-md bg-red-700 px-1.5 py-1 text-center text-[9px] font-bold text-white">
@@ -49,7 +45,6 @@ export default function ProductItemHorizontal({
         <Image
           src={createCloudinaryUrl(product.code, 500)}
           className="rounded-xl"
-          style={{ maxWidth: imgWidth, height: imgWidth }}
           width={500}
           height={500}
           alt={product.name}
@@ -117,20 +112,16 @@ export default function ProductItemHorizontal({
   );
 }
 
-export function ProductLoadingItemHorizontal({
-  imgWidth = 130,
-}: {
-  imgWidth?: number;
-}) {
+export function ProductLoadingItemHorizontal() {
   return (
     <div className="flex max-w-full flex-col gap-2">
-      <div style={{ width: imgWidth, height: imgWidth }}>
+      <div className="size-[130px] md:size-[180px]">
         <Skeleton
           className="size-full rounded-xl"
           style={{ borderRadius: 10 }}
         />
       </div>
-      <div className="max-w-full flex-1 gap-2">
+      <div className="max-w-full gap-2">
         <Skeleton className="h-6 w-full" style={{ borderRadius: 7 }} />
         <Skeleton className="h-6 w-full" style={{ borderRadius: 7 }} />
         <Skeleton className="mt-5 h-6 w-[100px]" style={{ borderRadius: 7 }} />

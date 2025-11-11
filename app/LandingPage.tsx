@@ -28,7 +28,6 @@ import ProductItemHorizontal, {
 } from "@/components/ProductItemHorizontal";
 import { useEffect } from "react";
 import Aos from "aos";
-import { useMediaQuery } from "react-responsive";
 
 const paginator: PaginatorInput = { page: 1, limit: 4 };
 const productLimit = 10;
@@ -53,9 +52,6 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
       fetchPolicy: "no-cache",
     }
   );
-
-  const isSmallScreen = useMediaQuery({ query: "(max-width: 700px)" });
-  const productCardWidth = isSmallScreen ? 130 : 180;
 
   useEffect(() => {
     Aos.init({ duration: 500 });
@@ -207,7 +203,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                       <BranchItemWithLogoLoading />
                     </div>
 
-                    <div className="flex flex-row gap-5 overflow-x-auto py-2.5">
+                    <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:[mask-image:_linear-gradient(to_right,transparent_0,_black_2em,_black_calc(100%-2em),transparent_100%)]">
                       {Array(10)
                         .fill(0)
                         .map((_, j) => (
@@ -215,9 +211,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                             className="first:pl-5 last:pr-5"
                             key={`branch-product-${i}-${j}`}
                           >
-                            <ProductLoadingItemHorizontal
-                              imgWidth={productCardWidth}
-                            />
+                            <ProductLoadingItemHorizontal />
                           </div>
                         ))}
                     </div>
@@ -239,10 +233,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                           className="first:pl-5 last:pr-5"
                           key={`branch-product-${branch.id}-${product.id}`}
                         >
-                          <ProductItemHorizontal
-                            product={product as Product}
-                            imgWidth={productCardWidth}
-                          />
+                          <ProductItemHorizontal product={product as Product} />
                         </div>
                       ))}
                     </div>
