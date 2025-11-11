@@ -29,8 +29,9 @@ import ProductItemHorizontal, {
 import { useEffect } from "react";
 import Aos from "aos";
 import "aos/dist/aos.css";
+import { useMediaQuery } from "react-responsive";
 
-const paginator: PaginatorInput = { page: 1, limit: 9 };
+const paginator: PaginatorInput = { page: 1, limit: 4 };
 const productLimit = 10;
 
 export default function LandingPage({ ipAddress }: { ipAddress: string }) {
@@ -53,6 +54,9 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
       fetchPolicy: "no-cache",
     }
   );
+
+  const isSmallScreen = useMediaQuery({ query: "(max-width: 700px)" });
+  const productCardWidth = isSmallScreen ? 130 : 180;
 
   useEffect(() => {
     Aos.init({ duration: 500 });
@@ -212,7 +216,9 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                             className="first:pl-5 last:pr-5"
                             key={`branch-product-${i}-${j}`}
                           >
-                            <ProductLoadingItemHorizontal />
+                            <ProductLoadingItemHorizontal
+                              imgWidth={productCardWidth}
+                            />
                           </div>
                         ))}
                     </div>
@@ -234,7 +240,10 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                           className="first:pl-5 last:pr-5"
                           key={`branch-product-${branch.id}-${product.id}`}
                         >
-                          <ProductItemHorizontal product={product as Product} />
+                          <ProductItemHorizontal
+                            product={product as Product}
+                            imgWidth={productCardWidth}
+                          />
                         </div>
                       ))}
                     </div>
