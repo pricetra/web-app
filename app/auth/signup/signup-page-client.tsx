@@ -13,8 +13,13 @@ import {
 import AuthContainer from "@/components/auth/auth-container";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useCookies } from "react-cookie";
+import { AUTH_TOKEN_KEY, cookieDefaults, SITE_COOKIES } from "@/lib/cookies";
+import { useAuth } from "@/context/user-context";
 
 export default function SignupPage({ ipAddress }: { ipAddress: string }) {
+  const { loggedIn } = useAuth();
+  const [, setCookie] = useCookies(SITE_COOKIES);
   const router = useRouter();
   const searchParams = useSearchParams();
   const emailSearchParam = searchParams.get("email");
@@ -56,10 +61,15 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
         },
       }).then(({ data }) => {
         if (!data) return;
-        console.log(data.googleOAuth);
+        setCookie(AUTH_TOKEN_KEY, data.googleOAuth.token, cookieDefaults);
       });
     },
   });
+
+  useEffect(() => {
+    if (!loggedIn) return;
+    router.replace("/");
+  }, [loggedIn, router]);
 
   useEffect(() => {
     if (!emailSearchParam) return;
