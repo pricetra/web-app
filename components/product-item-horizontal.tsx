@@ -7,12 +7,15 @@ import { currencyFormat, getPriceUnit } from "@/lib/strings";
 import { isSaleExpired } from "@/lib/utils";
 import Skeleton from "react-loading-skeleton";
 import ProductMetadataBadge from "./product-metadata-badge";
+import Link from "next/link";
 
 export type ProductItemHorizontalProps = {
   product: ProductSimple | Product;
 };
 
-export default function ProductItemHorizontal({ product }: ProductItemHorizontalProps) {
+export default function ProductItemHorizontal({
+  product,
+}: ProductItemHorizontalProps) {
   const isExpired = useMemo(
     () =>
       product.stock?.latestPrice
@@ -29,7 +32,7 @@ export default function ProductItemHorizontal({ product }: ProductItemHorizontal
   }, [product.stock?.latestPrice, isExpired]);
 
   return (
-    <a
+    <Link
       href={`/products/${product.id}?stockId=${product.stock?.id}`}
       className="flex flex-col gap-2"
     >
@@ -108,7 +111,7 @@ export default function ProductItemHorizontal({ product }: ProductItemHorizontal
           </div>
         )}
       </div>
-    </a>
+    </Link>
   );
 }
 
