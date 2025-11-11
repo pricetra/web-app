@@ -11,10 +11,10 @@ export default function LogoutClientPage() {
   useEffect(() => {
     if (!loggedIn) return;
 
-    logout().then(() => {
-      router.replace("/");
+    logout().finally(() => {
+      setTimeout(() => router.replace("/"), 1000);
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedIn]);
 
   return (

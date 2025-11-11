@@ -70,23 +70,6 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   const [logout] = useMutation(LogoutDocument);
   const [loading, setLoading] = useState(true);
 
-  const removeJwtCookie = useCallback(() => {
-    removeCookie("auth_token");
-  }, [removeCookie]);
-
-  const initiateLogout = useCallback(
-    () =>
-      logout()
-        .then(({ data, error }) => {
-          if (error || !data) return;
-          removeJwtCookie();
-          setUser(undefined);
-          setUserLists(undefined);
-        })
-        .catch(() => removeJwtCookie()),
-    [logout, removeJwtCookie]
-  );
-
   // set loading to false is jwt isn't set
   useEffect(() => {
     if (jwt) return;
@@ -96,8 +79,8 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   // remove jwt cookie if me query fails
   useEffect(() => {
     if (!meError) return;
-    removeJwtCookie();
-  }, [meError, removeJwtCookie]);
+    removeCookie("auth_token");
+  }, [meError, removeCookie]);
 
   // set user anytime me query is updated
   useEffect(() => {
@@ -141,9 +124,9 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
 
         getPostAuthUserData();
       })
-      .catch(() => removeJwtCookie())
+      .catch(() => removeCookie("auth_token"))
       .finally(() => setLoading(false));
-  }, [getPostAuthUserData, jwt, me, removeJwtCookie]);
+  }, [getPostAuthUserData, jwt, me, removeCookie]);
 
   if (loading) return <SuspenseFallbackLogo />;
 
@@ -160,7 +143,17 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
         },
         allGroceryLists,
         updateUser: (updatedUser) => setUser(updatedUser),
-        logout: initiateLogout,
+        logout: () =>
+          logout()
+            .then(({ data, error }) => {
+              if (error || !data) return;
+              removeCookie("auth_token");
+            })
+            .catch(() => removeCookie("auth_token"))
+            .finally(() => {
+              setUser(undefined);
+              setUserLists(undefined);
+            }),
       }}
     >
       {children}
