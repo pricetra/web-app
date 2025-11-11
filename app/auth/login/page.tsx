@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import LoginPage from "./LoginPage";
+import LoginPage from "./login-page-client";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { headers } from "next/headers";
 import { getIpAddressFromRequestHeaders } from "@/lib/strings";

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { headers } from "next/headers";
 import { getIpAddressFromRequestHeaders } from "@/lib/strings";
-import SignupPage from "./SignupPage";
+import SignupPage from "./signup-page-client";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {

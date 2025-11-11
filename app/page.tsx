@@ -1,4 +1,4 @@
-import LandingPage from "@/app/LandingPage";
+import LandingPage from "@/app/landing-page-client";
 import { headers } from "next/headers";
 import type { Metadata } from "next";
 import { getIpAddressFromRequestHeaders } from "@/lib/strings";

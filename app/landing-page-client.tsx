@@ -1,9 +1,9 @@
 "use client";
 
-import StepsPanel, { steps } from "@/components/landing-page/Screenshot";
+import StepsPanel, { steps } from "@/components/landing-page/screenshot";
 import ScreenshotShowcasePanel, {
   screenshots,
-} from "@/components/landing-page/StepsPanel";
+} from "@/components/landing-page/steps-panel";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
@@ -19,13 +19,13 @@ import { useLazyQuery, useQuery } from "@apollo/client/react";
 import StoreMini, {
   StoreMiniLoading,
   StoreMiniShowMore,
-} from "@/components/StoreMini";
+} from "@/components/store-mini";
 import BranchItemWithLogo, {
   BranchItemWithLogoLoading,
-} from "@/components/BranchItemWithLogo";
+} from "@/components/branch-item-with-logo";
 import ProductItemHorizontal, {
   ProductLoadingItemHorizontal,
-} from "@/components/ProductItemHorizontal";
+} from "@/components/product-item-horizontal";
 import { useEffect } from "react";
 import Aos from "aos";
 

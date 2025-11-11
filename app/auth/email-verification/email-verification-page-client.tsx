@@ -62,7 +62,7 @@ export default function EmailVerificationPage() {
         <div className="text-center text-sm">
           Didn&apos;t get an email?{" "}
           <Link href="#" className="underline underline-offset-4" onClick={() => resend({ variables: {email: emailSearchParam ?? ''} })}>
-            Send verification code again
+            Resend verification code
           </Link>
         </div>
       }

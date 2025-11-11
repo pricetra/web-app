@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import EmailVerificationPage from "./EmailVerificationPage";
+import EmailVerificationPage from "./email-verification-page-client";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {

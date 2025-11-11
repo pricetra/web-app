@@ -6,7 +6,7 @@ import { createCloudinaryUrl } from "@/lib/files";
 import { currencyFormat, getPriceUnit } from "@/lib/strings";
 import { isSaleExpired } from "@/lib/utils";
 import Skeleton from "react-loading-skeleton";
-import ProductMetadataBadge from "./ProductMetadataBadge";
+import ProductMetadataBadge from "./product-metadata-badge";
 
 export type ProductItemHorizontalProps = {
   product: ProductSimple | Product;
