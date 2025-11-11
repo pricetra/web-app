@@ -13,8 +13,13 @@ import {
 import AuthContainer from "@/components/auth/auth-container";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useSearchParams } from "next/navigation";
+import { useCookies } from "react-cookie";
+import { cookieDefaults, SITE_COOKIES } from "@/lib/cookies";
+import dayjs from "dayjs";
 
 export default function LoginPage({ ipAddress }: { ipAddress: string }) {
+  const [, setCookie] = useCookies(SITE_COOKIES);
+
   const searchParams = useSearchParams();
   const emailSearchParam = searchParams.get("email");
 
@@ -33,12 +38,19 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
   const loading = loginInternalLoading || loginGoogleLoading;
   const error = loginInternalError || loginGoogleError;
 
+  function setAuthCookie(token: string) {
+    setCookie("auth_token", token, {
+      ...cookieDefaults,
+      expires: dayjs().add(30, "days").toDate(),
+    });
+  }
+
   function onPressLoginInternal() {
     login({
       variables: { email, password, device: AuthDeviceType.Web, ipAddress },
     }).then(({ data }) => {
       if (!data) return;
-      console.log(data.login);
+      setAuthCookie(data.login.token);
     });
   }
 
@@ -52,7 +64,7 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
         },
       }).then(({ data }) => {
         if (!data) return;
-        console.log(data.googleOAuth);
+        setAuthCookie(data.googleOAuth.token);
       });
     },
   });

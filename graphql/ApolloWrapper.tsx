@@ -5,6 +5,7 @@ import { SetContextLink } from "@apollo/client/link/context";
 import { RetryLink } from "@apollo/client/link/retry";
 import { ApolloProvider } from "@apollo/client/react";
 import { ReactNode } from "react";
+import { CookiesProvider } from "react-cookie";
 
 export const uri =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080/graphql";
@@ -49,5 +50,9 @@ function newClient(jwt?: string) {
 type ApolloWrapperProps = { jwt?: string; children: ReactNode };
 
 export default function ApolloWrapper({ jwt, children }: ApolloWrapperProps) {
-  return <ApolloProvider client={newClient(jwt)}>{children}</ApolloProvider>;
+  return (
+    <CookiesProvider>
+      <ApolloProvider client={newClient(jwt)}>{children}</ApolloProvider>
+    </CookiesProvider>
+  );
 }
