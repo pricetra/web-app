@@ -19,10 +19,14 @@ import dayjs from "dayjs";
 import { toBoolean } from "@/lib/utils";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { BsEnvelopeCheck } from "react-icons/bs";
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/user-context";
 
 export default function LoginPage({ ipAddress }: { ipAddress: string }) {
+  const { loggedIn } = useAuth();
   const [, setCookie] = useCookies(SITE_COOKIES);
 
+  const router = useRouter();
   const searchParams = useSearchParams();
   const emailSearchParam = searchParams.get("email");
   const emailVerificationStatus = toBoolean(
@@ -57,6 +61,7 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
     }).then(({ data }) => {
       if (!data) return;
       setAuthCookie(data.login.token);
+      router.push("/");
     });
   }
 
@@ -71,9 +76,19 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
       }).then(({ data }) => {
         if (!data) return;
         setAuthCookie(data.googleOAuth.token);
+        router.push("/");
       });
     },
+    onError: (err) => {
+      alert(err.error);
+    },
   });
+
+  useEffect(() => {
+    if (!loggedIn) return;
+
+    router.replace("/");
+  }, [loggedIn, router]);
 
   useEffect(() => {
     if (!emailSearchParam) return;
