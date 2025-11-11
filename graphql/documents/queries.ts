@@ -506,3 +506,16 @@ export const POST_AUTH_USER_DATA_QUERIES = gql(`
     }
   }
 `);
+
+export const PRODUCT_SUMMARY_QUERY = gql(`
+  query ProductSummary($productId: ID!) {
+    productSummary(id: $productId) {
+      id
+      name
+      image
+      description
+      brand
+      code
+    }
+  }
+`);
