@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
-import ApolloWrapper from "@/graphql/ApolloWrapper";
 import { Suspense } from "react";
 import { SuspenseFallback } from "@/components/suspence-fallback";
 import "@/public/globals.css";
 import "react-loading-skeleton/dist/skeleton.css";
 import "aos/dist/aos.css";
+import AppProvider from "@/providers/app-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -77,7 +77,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Suspense fallback={<SuspenseFallback />}>
-          <ApolloWrapper>{children}</ApolloWrapper>
+          <AppProvider>{children}</AppProvider>
         </Suspense>
       </body>
     </html>
