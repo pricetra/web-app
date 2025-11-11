@@ -10,10 +10,10 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function LoginPageServer() {
+export default async function LogoutPageServer() {
   const cookieStore = await cookies();
   if (!cookieStore.get(AUTH_TOKEN_KEY)) {
-    redirect('/');
+    redirect("/");
   }
   return <LogoutClientPage />;
 }
