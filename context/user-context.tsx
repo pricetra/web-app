@@ -74,11 +74,19 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
     removeCookie("auth_token");
   }, [removeCookie]);
 
+  // set loading to false is jwt isn't set
+  useEffect(() => {
+    if (jwt) return;
+    setLoading(false);
+  }, [jwt]);
+
+  // remove jwt cookie if me query fails
   useEffect(() => {
     if (!meError) return;
     removeJwtCookie();
   }, [meError, removeJwtCookie]);
 
+  // set user anytime me query is updated
   useEffect(() => {
     if (!meData) return;
     setUser(meData.me as User);
@@ -105,6 +113,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
     });
   }, [postAuthUserData?.groceryLists]);
 
+  // call me query
   useEffect(() => {
     if (!jwt) return;
 
