@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { headers } from "next/headers";
-import { getIpAddressFromRequestHeaders } from "@/lib/strings";
 import SignupPage from "./SignupPage";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -11,14 +9,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function LoginPageServer() {
-  const headerList = await headers();
-  const ipAddress =
-    getIpAddressFromRequestHeaders(headerList) ?? "46.110.121.165";
   return (
     <GoogleOAuthProvider
       clientId={process.env.NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID ?? ""}
     >
-      <SignupPage ipAddress={ipAddress} />
+      <SignupPage />
     </GoogleOAuthProvider>
   );
 }

@@ -14,7 +14,7 @@ import AuthContainer from "@/components/auth/auth-container";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function SignupPage({ ipAddress }: { ipAddress: string }) {
+export default function SignupPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const emailSearchParam = searchParams.get("email");
