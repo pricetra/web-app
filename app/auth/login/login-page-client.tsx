@@ -16,12 +16,18 @@ import { useSearchParams } from "next/navigation";
 import { useCookies } from "react-cookie";
 import { cookieDefaults, SITE_COOKIES } from "@/lib/cookies";
 import dayjs from "dayjs";
+import { toBoolean } from "@/lib/utils";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { BsEnvelopeCheck } from "react-icons/bs";
 
 export default function LoginPage({ ipAddress }: { ipAddress: string }) {
   const [, setCookie] = useCookies(SITE_COOKIES);
 
   const searchParams = useSearchParams();
   const emailSearchParam = searchParams.get("email");
+  const emailVerificationStatus = toBoolean(
+    searchParams.get("emailVerificationStatus") ?? undefined
+  );
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -96,6 +102,16 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
         </div>
       }
     >
+      {!error && emailVerificationStatus && (
+        <Alert variant="success">
+          <BsEnvelopeCheck />
+          <AlertTitle>Email verified!</AlertTitle>
+          <AlertDescription>
+            Your email address was successfully verified
+          </AlertDescription>
+        </Alert>
+      )}
+
       <div className="grid gap-2">
         <Label htmlFor="email">Email</Label>
         <Input

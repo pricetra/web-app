@@ -41,7 +41,9 @@ export default function EmailVerificationPage() {
       variables: { verificationCode },
     }).then(({ data }) => {
       if (!data) return;
-      router.push(`/auth/login?email=${data.verifyEmail.email}`)
+      router.push(
+        `/auth/login?email=${data.verifyEmail.email}&emailVerificationStatus=${data.verifyEmail.active}`
+      );
     });
   }
 
