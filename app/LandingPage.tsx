@@ -28,7 +28,6 @@ import ProductItemHorizontal, {
 } from "@/components/ProductItemHorizontal";
 import { useEffect } from "react";
 import Aos from "aos";
-import "aos/dist/aos.css";
 import { useMediaQuery } from "react-responsive";
 
 const paginator: PaginatorInput = { page: 1, limit: 4 };

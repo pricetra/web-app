@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "@/public/globals.css";
 import Script from "next/script";
 import ApolloWrapper from "@/graphql/ApolloWrapper";
-import "react-loading-skeleton/dist/skeleton.css";
 import { Suspense } from "react";
 import { SuspenseFallback } from "@/components/suspence-fallback";
+import "@/public/globals.css";
+import "react-loading-skeleton/dist/skeleton.css";
+import "aos/dist/aos.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
