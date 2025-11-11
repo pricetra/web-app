@@ -39,7 +39,7 @@ export type UserContextType = {
   allGroceryLists?: GroceryListsType;
   token?: string;
   updateUser: (updatedUser: User) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
 };
 
 export const UserAuthContext = createContext<UserContextType>(
@@ -73,6 +73,19 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   const removeJwtCookie = useCallback(() => {
     removeCookie("auth_token");
   }, [removeCookie]);
+
+  const initiateLogout = useCallback(
+    () =>
+      logout()
+        .then(({ data, error }) => {
+          if (error || !data) return;
+          removeJwtCookie();
+          setUser(undefined);
+          setUserLists(undefined);
+        })
+        .catch(() => removeJwtCookie()),
+    [logout, removeJwtCookie]
+  );
 
   // set loading to false is jwt isn't set
   useEffect(() => {
@@ -147,12 +160,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
         },
         allGroceryLists,
         updateUser: (updatedUser) => setUser(updatedUser),
-        logout: () => {
-          logout().then(({ data, error }) => {
-            if (error || !data || !data.logout) return;
-            removeJwtCookie();
-          });
-        },
+        logout: initiateLogout,
       }}
     >
       {children}
