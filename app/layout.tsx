@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import { Suspense } from "react";
-import { SuspenseFallback } from "@/components/suspence-fallback";
+import { SuspenseFallback } from "@/components/suspense-fallback";
 import "@/public/globals.css";
 import "react-loading-skeleton/dist/skeleton.css";
 import "aos/dist/aos.css";
