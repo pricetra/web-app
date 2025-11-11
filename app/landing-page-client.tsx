@@ -94,7 +94,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-white via-white to-slate-50 overflow-x-hidden">
       {/* Header */}
       <header className="w-full z-10">
-        <div className="container mx-auto flex items-center justify-between px-6 md:px-8 py-7 md:py-10">
+        <div className="container mx-auto flex items-center justify-between px-6 md:px-8 py-7 md:py-10 gap-5">
           <Image
             src="/logotype_header_black.svg"
             alt="Pricetra"
@@ -120,7 +120,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
               </Link>
             </div>
           ) : (
-            <div className="flex gap-2 items-center">
+            <div className="flex gap-2 items-center flex-nowrap">
               <Image
                 src={createCloudinaryUrl(user.avatar ?? "no_avatar", 100, 100)}
                 alt="Avatar"
@@ -130,9 +130,13 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                 quality={100}
               />
 
-              <div className="flex flex-col">
-                <h4 className="font-semibold text-xs">{user.name}</h4>
-                <h5 className="text-[11px] text-gray-700">{user.email}</h5>
+              <div className="flex-1 flex flex-col max-w-[130px] sm:max-w-[200px]">
+                <h4 className="font-semibold text-xs line-clamp-1">
+                  {user.name}
+                </h4>
+                <h5 className="text-[11px] text-gray-700 line-clamp-1 break-all">
+                  {user.email}
+                </h5>
               </div>
             </div>
           )}
@@ -151,8 +155,8 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
             </div>
             <p className="mt-5 text-base sm:text-lg md:text-xl text-slate-800 max-w-3xl mx-auto">
               Pricetra is a community-powered price tracking app that helps
-              shoppers discover the best deals nearby. Compare costs per unit,
-              watch your favorites, and get notified when prices change.
+              shoppers discover the best deals nearby. Compare prices, and get
+              notified when prices change.
             </p>
 
             {!loggedIn && (
