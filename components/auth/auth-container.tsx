@@ -59,7 +59,7 @@ export default function AuthContainer({
                   <div className="flex flex-col mb-3">
                     <h1 className="text-2xl font-bold">{title}</h1>
                     {description && (
-                      <p className="text-balance text-muted-foreground">
+                      <p className="text-muted-foreground leading-5 mt-1">
                         {description}
                       </p>
                     )}
