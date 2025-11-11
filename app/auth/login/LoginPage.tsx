@@ -66,7 +66,10 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
       extras={
         <div className="text-center text-sm">
           Don&apos;t have an account?{" "}
-          <Link href="/auth/signup" className="underline underline-offset-4">
+          <Link
+            href={`/auth/signup?email=${email}`}
+            className="underline underline-offset-4"
+          >
             Sign up
           </Link>
         </div>

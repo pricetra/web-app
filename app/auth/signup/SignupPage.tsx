@@ -3,7 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
 import {
   AuthDeviceType,
@@ -12,8 +12,13 @@ import {
 } from "@/graphql/types/graphql";
 import AuthContainer from "@/components/auth/auth-container";
 import { useGoogleLogin } from "@react-oauth/google";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function SignupPage({ ipAddress }: { ipAddress: string }) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const emailSearchParam = searchParams.get("email");
+
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -37,7 +42,7 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
       variables: { email, password, name },
     }).then(({ data }) => {
       if (!data) return;
-      console.log(data.createAccount);
+      router.push(`/auth/email-verification?email=${data.createAccount.email}`);
     });
   }
 
@@ -56,11 +61,15 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
     },
   });
 
+  useEffect(() => {
+    if (!emailSearchParam) return;
+    setEmail(emailSearchParam);
+  }, [emailSearchParam]);
+
   return (
     <AuthContainer
       title="Create your account"
       buttonLabel="Sign Up"
-      description="Signup to start tracking prices and managing your purchases"
       onPressSubmit={onPressSignup}
       error={error?.message}
       onPressApple={() => {}}
