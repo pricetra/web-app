@@ -14,7 +14,7 @@ import AuthContainer from "@/components/auth/auth-container";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useRouter, useSearchParams } from "next/navigation";
 
-export default function SignupPage() {
+export default function SignupPage({ ipAddress }: { ipAddress: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const emailSearchParam = searchParams.get("email");
@@ -78,7 +78,10 @@ export default function SignupPage() {
       extras={
         <div className="text-center text-sm">
           Already have an account?{" "}
-          <Link href="/auth/login" className="underline underline-offset-4">
+          <Link
+            href={`/auth/login?email=${email}`}
+            className="underline underline-offset-4"
+          >
             Login
           </Link>
         </div>

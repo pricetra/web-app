@@ -3,7 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLazyQuery } from "@apollo/client/react";
 import {
   AuthDeviceType,
@@ -12,8 +12,12 @@ import {
 } from "@/graphql/types/graphql";
 import AuthContainer from "@/components/auth/auth-container";
 import { useGoogleLogin } from "@react-oauth/google";
+import { useSearchParams } from "next/navigation";
 
 export default function LoginPage({ ipAddress }: { ipAddress: string }) {
+  const searchParams = useSearchParams();
+  const emailSearchParam = searchParams.get("email");
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [login, { error: loginInternalError, loading: loginInternalLoading }] =
@@ -52,6 +56,11 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
       });
     },
   });
+
+  useEffect(() => {
+    if (!emailSearchParam) return;
+    setEmail(emailSearchParam);
+  }, [emailSearchParam]);
 
   return (
     <AuthContainer
