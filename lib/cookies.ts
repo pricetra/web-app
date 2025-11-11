@@ -1,6 +1,12 @@
 import { CookieSetOptions } from 'universal-cookie'
 
-export const SITE_COOKIES = ['auth_token'];
+export const AUTH_TOKEN_KEY = 'auth_token';
+
+export interface SiteCookieValues {
+  auth_token?: string;
+}
+
+export const SITE_COOKIES = [AUTH_TOKEN_KEY];
 
 export const cookieDefaults: CookieSetOptions = {
   path: "/",
