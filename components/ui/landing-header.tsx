@@ -24,7 +24,7 @@ export default function LandingHeader() {
           <div className="flex items-center gap-3">
             <Link
               href="/auth/login"
-              className="text-slate-700 hover:text-pricetra-green-dark hover:bg-pricetra-green-logo/10 md:px-4 font-bold rounded-lg py-2 px-5 text-sm"
+              className="text-pricetra-green-heavy-dark hover:text-pricetra-green-heavy-dark hover:bg-pricetra-green-logo/10 md:px-4 font-bold rounded-lg py-2 px-5 text-sm"
             >
               Login
             </Link>

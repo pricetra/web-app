@@ -26,7 +26,7 @@ export default function ProductPageClient({
       variables: { productId },
     }
   );
-  const [getStock, { data: stockData }] = useLazyQuery(StockDocument, {
+  const [getStock] = useLazyQuery(StockDocument, {
     fetchPolicy: "no-cache",
   });
 
