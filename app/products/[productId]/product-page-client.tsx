@@ -8,6 +8,7 @@ import {
 } from "@/graphql/types/graphql";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
 import { useEffect } from "react";
+import LandingHeader from "@/components/ui/landing-header";
 
 export type ProductPageClientProps = {
   productId: number;
@@ -39,18 +40,22 @@ export default function ProductPageClient({
   }, [stockId, productData, getStock]);
 
   return (
-    <section className="grid grid-cols-2 gap-4 container mx-auto my-10">
-      <article className="">
-        {productData && !productLoading ? (
-          <ProductFull
-            product={productData.product as Product}
-            hideDescription
-          />
-        ) : (
-          <ProductFullLoading />
-        )}
-      </article>
-      <div className=""></div>
-    </section>
+    <div>
+      <LandingHeader />
+
+      <section className="grid grid-cols-1 lg:grid-cols-2 gap-4 container mx-auto my-10">
+        <article className="px-5 py-7">
+          {productData && !productLoading ? (
+            <ProductFull
+              product={productData.product as Product}
+              hideDescription
+            />
+          ) : (
+            <ProductFullLoading />
+          )}
+        </article>
+        <div className=""></div>
+      </section>
+    </div>
   );
 }

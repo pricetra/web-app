@@ -29,13 +29,13 @@ import ProductItemHorizontal, {
 import { useEffect } from "react";
 import Aos from "aos";
 import { useAuth } from "@/context/user-context";
-import { createCloudinaryUrl } from "@/lib/files";
+import LandingHeader from "@/components/ui/landing-header";
 
 const paginator: PaginatorInput = { page: 1, limit: 4 };
 const productLimit = 10;
 
 export default function LandingPage({ ipAddress }: { ipAddress: string }) {
-  const { loggedIn, user } = useAuth();
+  const { loggedIn } = useAuth();
   const { data: ipToAddressData, error: ipAddressError } = useQuery(
     IpToAddressDocument,
     {
@@ -92,56 +92,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-white via-white to-slate-50 overflow-x-hidden">
-      {/* Header */}
-      <header className="w-full z-10">
-        <div className="container mx-auto flex items-center justify-between px-6 md:px-8 py-7 md:py-10 gap-5">
-          <Image
-            src="/logotype_header_black.svg"
-            alt="Pricetra"
-            width={210}
-            height={40}
-            className="h-[23px] sm:h-[30px] block w-auto color-white"
-            priority
-          />
-
-          {!loggedIn || !user ? (
-            <div className="flex items-center gap-3">
-              <Link
-                href="/auth/login"
-                className="text-slate-700 hover:text-pricetra-green-dark hover:bg-pricetra-green-logo/10 md:px-4 font-bold rounded-lg py-2 px-5 text-sm"
-              >
-                Login
-              </Link>
-              <Link
-                href="/auth/signup"
-                className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white md:px-6 rounded-lg shadow-sm hover:shadow-md transition-all font-bold hidden sm:block py-2 px-5 text-sm"
-              >
-                Create Account
-              </Link>
-            </div>
-          ) : (
-            <div className="flex gap-2 items-center flex-nowrap">
-              <Image
-                src={createCloudinaryUrl(user.avatar ?? "no_avatar", 100, 100)}
-                alt="Avatar"
-                className="rounded-full size-8"
-                width={50}
-                height={50}
-                quality={100}
-              />
-
-              <div className="flex-1 flex flex-col max-w-[130px] sm:max-w-[200px]">
-                <h4 className="font-semibold text-xs line-clamp-1">
-                  {user.name}
-                </h4>
-                <h5 className="text-[11px] text-gray-700 line-clamp-1 break-all">
-                  {user.email}
-                </h5>
-              </div>
-            </div>
-          )}
-        </div>
-      </header>
+      <LandingHeader />
 
       {/* Hero */}
       <section className="relative container mx-auto flex flex-row gap-5 justify-between items-center py-6 md:py-10">
