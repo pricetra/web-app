@@ -34,7 +34,7 @@ export default function ProductItemHorizontal({
   return (
     <Link
       href={`/products/${product.id}?stockId=${product.stock?.id}`}
-      className="flex flex-col gap-2"
+      className="flex flex-col gap-2 max-w-[130px] md:max-w-[180px]"
     >
       <div className="relative size-[130px] md:size-[180px]">
         {product.stock?.latestPrice?.sale && !isExpired && (
@@ -117,7 +117,7 @@ export default function ProductItemHorizontal({
 
 export function ProductLoadingItemHorizontal() {
   return (
-    <div className="flex max-w-full flex-col gap-2">
+    <div className="flex max-w-full flex-col gap-2 max-w-[130px] md:max-w-[180px]">
       <div className="size-[130px] md:size-[180px]">
         <Skeleton
           className="size-full rounded-xl"
