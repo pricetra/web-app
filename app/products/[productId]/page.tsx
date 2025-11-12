@@ -6,6 +6,7 @@ import {
 } from "@/graphql/types/graphql";
 import { fetchGraphql } from "@/lib/graphql-client-ssr";
 import ProductPageClient from "./product-page-client";
+import { notFound } from "next/navigation";
 
 type Props = {
   params: Promise<{ productId: string }>;
@@ -43,11 +44,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function LandingPageServer({ params, searchParams }: Props) {
+export default async function LandingPageServer({
+  params,
+  searchParams,
+}: Props) {
   const { productId } = await params;
-  const { stockId } = await searchParams;
   const parsedProductId = parseInt(productId, 10);
-  const parsedStockId = stockId ? parseInt(stockId, 10) : undefined
+  const { stockId } = await searchParams;
+  const parsedStockId = stockId ? parseInt(stockId, 10) : undefined;
 
-  return <ProductPageClient productId={parsedProductId} stockId={parsedStockId} />;
+  const { data } = await fetchGraphql<
+    ProductSummaryQueryVariables,
+    ProductSummaryQuery
+  >(PRODUCT_SUMMARY_QUERY, "query", { productId: parsedProductId });
+  if (!data) {
+    notFound();
+  }
+
+  return (
+    <ProductPageClient productId={parsedProductId} stockId={parsedStockId} />
+  );
 }

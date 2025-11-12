@@ -1,6 +1,11 @@
 "use client";
 
-import { ProductDocument, StockDocument } from "@/graphql/types/graphql";
+import ProductFull, { ProductFullLoading } from "@/components/product-details";
+import {
+  Product,
+  ProductDocument,
+  StockDocument,
+} from "@/graphql/types/graphql";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
 import { useEffect } from "react";
 
@@ -13,14 +18,13 @@ export default function ProductPageClient({
   productId,
   stockId,
 }: ProductPageClientProps) {
-  const {
-    data: productData,
-    loading: productLoading,
-    error: productError,
-  } = useQuery(ProductDocument, {
-    fetchPolicy: "network-only",
-    variables: { productId },
-  });
+  const { data: productData, loading: productLoading } = useQuery(
+    ProductDocument,
+    {
+      fetchPolicy: "network-only",
+      variables: { productId },
+    }
+  );
   const [getStock, { data: stockData }] = useLazyQuery(StockDocument, {
     fetchPolicy: "no-cache",
   });
@@ -32,11 +36,21 @@ export default function ProductPageClient({
         stockId,
       },
     });
-  }, [stockId, productData]);
+  }, [stockId, productData, getStock]);
 
   return (
-    <section>
-      <h1>{productData?.product.name}</h1>
+    <section className="grid grid-cols-2 gap-4 container mx-auto my-10">
+      <article className="">
+        {productData && !productLoading ? (
+          <ProductFull
+            product={productData.product as Product}
+            hideDescription
+          />
+        ) : (
+          <ProductFullLoading />
+        )}
+      </article>
+      <div className=""></div>
     </section>
   );
 }

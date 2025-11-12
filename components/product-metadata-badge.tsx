@@ -14,18 +14,20 @@ export default function ProductMetadataBadge({
   return (
     <div
       className={cn(
-        'rounded-lg bg-gray-100 px-2 py-1 leading-0',
-        type === 'weight' ? 'bg-green-100' : '',
-        type === 'quantity' ? 'bg-blue-100' : '',
-        size === 'md' ? 'px-3 py-3' : '',
-        size === 'sm' ? 'px-2 py-2' : ''
-      )}>
+        "rounded-2xl bg-gray-100 px-2 py-1 leading-0",
+        type === "weight" ? "bg-green-100" : "",
+        type === "quantity" ? "bg-blue-100" : "",
+        size === "md" ? "px-2.5 py-1" : "",
+        size === "sm" ? "px-2 py-2" : ""
+      )}
+    >
       <span
         className={cn(
-          'color-black',
-          size === 'md' ? 'text-sm' : '',
-          size === 'sm' ? 'text-[10px]' : ''
-        )}>
+          "color-black leading-none",
+          size === "md" ? "text-xs" : "",
+          size === "sm" ? "text-[10px]" : ""
+        )}
+      >
         {text}
       </span>
     </div>
