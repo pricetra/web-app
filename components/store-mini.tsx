@@ -4,6 +4,7 @@ import Image from "next/image";
 import Skeleton from "react-loading-skeleton";
 
 import { FiArrowRight } from "react-icons/fi";
+import Link from "next/link";
 
 export type StoreMiniProps = {
   store: Store;
@@ -13,7 +14,7 @@ export default function StoreMini({
   store: { id, name, logo },
 }: StoreMiniProps) {
   return (
-    <a
+    <Link
       href={`/stores/${id}`}
       className="flex flex-col items-center justify-center gap-3"
     >
@@ -24,23 +25,26 @@ export default function StoreMini({
         width={300}
         height={300}
       />
-      <h3 className="text-sm max-w-14 sm:max-w-20 truncate">{name}</h3>
-    </a>
+      <h3 className="text-xs md:text-sm max-w-14 sm:max-w-20 truncate">
+        {name}
+      </h3>
+    </Link>
   );
 }
 
 export function StoreMiniShowMore() {
   return (
-    <div className="flex flex-row items-center justify-center">
-      <a
-        href="/stores"
-        className="flex flex-col items-center justify-center gap-1 rounded-lg border-[1px] border-gray-200 bg-gray-50 px-1 py-2 max-w-[80px] w-[80px] h-full"
-      >
-        <FiArrowRight size={20} color="#374151" className="mt-1" />
-
-        <h3 className="text-xs color-gray-700 text-center">See All</h3>
-      </a>
-    </div>
+    <Link
+      href="/stores"
+      className="flex flex-col items-center justify-center gap-3"
+    >
+      <div className="size-10 md:size-14 lg:size-16 rounded-lg md:rounded-xl border-[1px] border-gray-200 bg-gray-50 flex items-center justify-center">
+        <FiArrowRight className="size-[20px] md:size-[27px]" color="#374151" />
+      </div>
+      <h3 className="text-xs md:text-sm max-w-14 sm:max-w-20 text-center leading-5 truncate-1">
+        All Stores
+      </h3>
+    </Link>
   );
 }
 

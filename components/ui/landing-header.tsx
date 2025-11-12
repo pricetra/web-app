@@ -4,7 +4,7 @@ import { createCloudinaryUrl } from "@/lib/files";
 import { useAuth } from "@/context/user-context";
 
 export default function LandingHeader() {
-  const { loggedIn, user } = useAuth()
+  const { loggedIn, user } = useAuth();
 
   return (
     <header className="w-full z-10">
@@ -38,7 +38,11 @@ export default function LandingHeader() {
         ) : (
           <div className="flex gap-2 items-center flex-nowrap">
             <Image
-              src={createCloudinaryUrl(user.avatar ?? "no_avatar", 100, 100)}
+              src={createCloudinaryUrl(
+                user.avatar ?? "f89a1553-b74e-426c-a82a-359787168a53",
+                100,
+                100
+              )}
               alt="Avatar"
               className="rounded-full size-8"
               width={50}
@@ -46,7 +50,7 @@ export default function LandingHeader() {
               quality={100}
             />
 
-            <div className="flex-1 flex flex-col max-w-[130px] sm:max-w-[200px]">
+            <div className="flex-1 flex-col hidden max-w-[130px] sm:flex">
               <h4 className="font-semibold text-xs line-clamp-1">
                 {user.name}
               </h4>

@@ -44,7 +44,7 @@ export default function ProductPageClient({
       <LandingHeader />
 
       <section className="grid grid-cols-1 lg:grid-cols-2 gap-4 container mx-auto my-10">
-        <article className="px-5 py-7">
+        <article className="px-0 sm:px-5 py-7">
           {productData && !productLoading ? (
             <ProductFull
               product={productData.product as Product}
