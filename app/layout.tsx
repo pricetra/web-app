@@ -6,6 +6,14 @@ import "@/public/globals.css";
 import "react-loading-skeleton/dist/skeleton.css";
 import "aos/dist/aos.css";
 import AppProvider from "@/providers/app-provider";
+import dayjs from "dayjs";
+import LocalizedFormat from "dayjs/plugin/localizedFormat";
+import relativeTime from "dayjs/plugin/relativeTime";
+import utc from "dayjs/plugin/utc";
+
+dayjs.extend(LocalizedFormat);
+dayjs.extend(relativeTime);
+dayjs.extend(utc);
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

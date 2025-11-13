@@ -1,13 +1,12 @@
-import { useMemo } from "react";
-
 import Image from "next/image";
 import { Product, ProductSimple } from "@/graphql/types/graphql";
 import { createCloudinaryUrl } from "@/lib/files";
 import { currencyFormat, getPriceUnit } from "@/lib/strings";
-import { isSaleExpired } from "@/lib/utils";
 import Skeleton from "react-loading-skeleton";
 import ProductMetadataBadge from "./product-metadata-badge";
 import Link from "next/link";
+import useIsSaleExpired from "@/hooks/useIsSaleExpired";
+import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 
 export type ProductItemHorizontalProps = {
   product: ProductSimple | Product;
@@ -16,20 +15,11 @@ export type ProductItemHorizontalProps = {
 export default function ProductItemHorizontal({
   product,
 }: ProductItemHorizontalProps) {
-  const isExpired = useMemo(
-    () =>
-      product.stock?.latestPrice
-        ? isSaleExpired(product.stock.latestPrice)
-        : false,
-    [product.stock?.latestPrice]
-  );
-  const calculatedAmount = useMemo(() => {
-    if (!product.stock?.latestPrice) return 0;
-    return !isExpired
-      ? product.stock.latestPrice.amount
-      : product.stock.latestPrice.originalPrice ??
-          product.stock.latestPrice.amount;
-  }, [product.stock?.latestPrice, isExpired]);
+  const isExpired = useIsSaleExpired(product.stock?.latestPrice);
+  const calculatedAmount = useCalculatedPrice({
+    isExpired,
+    latestPrice: product.stock?.latestPrice,
+  });
 
   return (
     <Link
@@ -117,7 +107,7 @@ export default function ProductItemHorizontal({
 
 export function ProductLoadingItemHorizontal() {
   return (
-    <div className="flex max-w-full flex-col gap-2 max-w-[130px] md:max-w-[180px]">
+    <div className="flex flex-col gap-2 max-w-[130px] md:max-w-[180px]">
       <div className="size-[130px] md:size-[180px]">
         <Skeleton
           className="size-full rounded-xl"
