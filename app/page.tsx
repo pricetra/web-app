@@ -4,8 +4,19 @@ import type { Metadata } from "next";
 import { getIpAddressFromRequestHeaders } from "@/lib/strings";
 
 export async function generateMetadata(): Promise<Metadata> {
+  const title = "Pricetra - Your Price Tracking Companion";
+  const description =
+    "Monitor price changes across thousands of products and never overpay again. Get alerts when prices drop and make smarter purchasing decisions.";
   return {
-    title: "Pricetra - Your Price Tracking Companion",
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: "https://pricetra.com",
+      images:
+        "https://res.cloudinary.com/pricetra-cdn/image/upload/v1763021499/banner_c3gig7.png",
+    },
   };
 }
 

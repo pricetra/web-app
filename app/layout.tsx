@@ -1,4 +1,3 @@
-import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import { Suspense } from "react";
@@ -18,12 +17,6 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Pricetra",
-  description:
-    "Monitor price changes across thousands of products and never overpay again. Get alerts when prices drop and make smarter purchasing decisions.",
-};
-
 const GA_TRACKING_ID = "G-6HHHS9PFVQ";
 
 export default function RootLayout({
@@ -35,6 +28,11 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <link rel="manifest" href="/manifest.json" />
+        <meta name="theme-color" content="#ffffff" />
+        <link rel="apple-touch-icon" href="/icons/192.png" />
+        <meta name="apple-mobile-web-app-status-bar" content="#ffffff" />
 
         {process.env.NODE_ENV === "production" && (
           <>
