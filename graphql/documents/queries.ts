@@ -40,6 +40,7 @@ export const LOGIN_INTERNAL_QUERY = gql`
         createdAt
         updatedAt
         active
+        authDevice
         authPlatform
         authStateId
         expoPushToken
@@ -75,6 +76,7 @@ export const GOOGLE_OAUTH_QUERY = gql`
         createdAt
         updatedAt
         active
+        authDevice
         authPlatform
         authStateId
         expoPushToken
@@ -109,6 +111,7 @@ export const ME_QUERY = gql`
       createdAt
       updatedAt
       active
+      authDevice
       authPlatform
       authStateId
       expoPushToken
