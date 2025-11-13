@@ -1,6 +1,6 @@
 "use client";
 
-import ProductFull, { ProductFullLoading } from "@/components/product-details";
+import ProductFull, { ProductFullLoading } from "@/components/product-full";
 import {
   Product,
   ProductDocument,
