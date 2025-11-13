@@ -7,22 +7,30 @@ import {
 import { fetchGraphql } from "@/lib/graphql-client-ssr";
 import ProductPageClient from "./product-page-client";
 import { notFound } from "next/navigation";
+import { cache } from "react";
 
 type Props = {
   params: Promise<{ productId: string }>;
   searchParams: Promise<{ stockId?: string }>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { productId } = await params;
-  const parsedProductId = parseInt(productId, 10);
+export const cachedFetchProductSummary = cache(async (productId: number) => {
   const { data } = await fetchGraphql<
     ProductSummaryQueryVariables,
     ProductSummaryQuery
-  >(PRODUCT_SUMMARY_QUERY, "query", { productId: parsedProductId });
-  if (!data) return { title: "Pricetra" };
+  >(PRODUCT_SUMMARY_QUERY, "query", { productId });
+  if (!data || !data.productSummary) return null;
 
-  const { name, brand, description, image } = data.productSummary;
+  return data.productSummary;
+});
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { productId } = await params;
+  const parsedProductId = parseInt(productId, 10);
+  const productSummary = await cachedFetchProductSummary(parsedProductId);
+  if (!productSummary) return { title: "Pricetra" };
+
+  const { name, brand, description, image } = productSummary;
 
   const titleComponents = [name];
   if (brand.length > 0 || brand !== "N/A") {
@@ -53,11 +61,8 @@ export default async function LandingPageServer({
   const { stockId } = await searchParams;
   const parsedStockId = stockId ? parseInt(stockId, 10) : undefined;
 
-  const { data } = await fetchGraphql<
-    ProductSummaryQueryVariables,
-    ProductSummaryQuery
-  >(PRODUCT_SUMMARY_QUERY, "query", { productId: parsedProductId });
-  if (!data) {
+  const productSummary = await cachedFetchProductSummary(parsedProductId);
+  if (!productSummary) {
     notFound();
   }
 
