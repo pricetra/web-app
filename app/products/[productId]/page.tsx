@@ -14,7 +14,7 @@ type Props = {
   searchParams: Promise<{ stockId?: string }>;
 };
 
-export const cachedFetchProductSummary = cache(async (productId: number) => {
+const cachedFetchProductSummary = cache(async (productId: number) => {
   const { data } = await fetchGraphql<
     ProductSummaryQueryVariables,
     ProductSummaryQuery
