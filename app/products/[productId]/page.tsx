@@ -11,7 +11,11 @@ import { cache } from "react";
 
 type Props = {
   params: Promise<{ productId: string }>;
-  searchParams: Promise<{ stockId?: string }>;
+  searchParams: Promise<{
+    stockId?: string;
+    sharedBy?: string;
+    sharedFrom?: string;
+  }>;
 };
 
 const cachedFetchProductSummary = cache(async (productId: number) => {
@@ -58,8 +62,10 @@ export default async function LandingPageServer({
 }: Props) {
   const { productId } = await params;
   const parsedProductId = parseInt(productId, 10);
-  const { stockId } = await searchParams;
+
+  const { stockId, sharedBy, sharedFrom } = await searchParams;
   const parsedStockId = stockId ? parseInt(stockId, 10) : undefined;
+  const parsedSharedById = sharedBy ? parseInt(sharedBy, 10) : undefined;
 
   const productSummary = await cachedFetchProductSummary(parsedProductId);
   if (!productSummary) {
@@ -67,6 +73,11 @@ export default async function LandingPageServer({
   }
 
   return (
-    <ProductPageClient productId={parsedProductId} stockId={parsedStockId} />
+    <ProductPageClient
+      productId={parsedProductId}
+      stockId={parsedStockId}
+      sharedBy={parsedSharedById}
+      sharedFrom={sharedFrom}
+    />
   );
 }

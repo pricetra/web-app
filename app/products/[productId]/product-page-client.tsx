@@ -17,6 +17,8 @@ import SelectedStock, {
 export type ProductPageClientProps = {
   productId: number;
   stockId?: number;
+  sharedBy?: number;
+  sharedFrom?: string;
 };
 
 export default function ProductPageClient({
@@ -27,7 +29,7 @@ export default function ProductPageClient({
     ProductDocument,
     {
       fetchPolicy: "network-only",
-      variables: { productId },
+      variables: { productId, viewerTrail: { stockId } },
     }
   );
   const [getStock, { data: stockData, loading: stockLoading }] = useLazyQuery(
