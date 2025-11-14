@@ -18,12 +18,16 @@ export default function ProductFull({
 }: ProductFullProps) {
   const [imgAvailable, setImgAvailable] = useState(true);
   const weight = useProductWeightBuilder(product);
-  const categories = useMemo(() => product.category ? categoriesFromChild(product.category) : undefined, [product.category]);
+  const categories = useMemo(
+    () =>
+      product.category ? categoriesFromChild(product.category) : undefined,
+    [product.category]
+  );
 
   return (
     <div className="flex flex-col gap-3">
       {imgAvailable && (
-        <div className="relative mx-auto p-5 w-full max-w-sm">
+        <div className="relative mx-auto w-full max-w-sm">
           <div className="w-full aspect-square size-full">
             <Image
               src={product.image}
@@ -38,7 +42,7 @@ export default function ProductFull({
         </div>
       )}
 
-      <div className="p-5">
+      <div>
         <div className="flex flex-col gap-2">
           <div className="mb-3 flex flex-row items-center gap-3">
             {product.weightValue && product.weightType && (
@@ -89,14 +93,14 @@ export function ProductFullLoading() {
   return (
     <div className="flex flex-col gap-3">
       {/* Image skeleton */}
-      <div className="relative mx-auto p-5 w-full max-w-sm">
+      <div className="relative mx-auto w-full max-w-sm">
         <div className="w-full aspect-square size-full">
           <Skeleton className="!w-full !h-full" borderRadius={12} />
         </div>
       </div>
 
       {/* Product metadata skeletons */}
-      <div className="p-5 pt-[4px]">
+      <div className="pt-[4px]">
         <div className="flex flex-col gap-2">
           {/* Weight + Quantity badges */}
           <div className="mb-3 flex flex-row items-center gap-3">
