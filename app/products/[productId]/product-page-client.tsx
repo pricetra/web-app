@@ -2,13 +2,15 @@
 
 import ProductFull, { ProductFullLoading } from "@/components/product-full";
 import {
+  Branch,
+  BranchesWithProductsDocument,
   Product,
   ProductDocument,
   Stock,
   StockDocument,
 } from "@/graphql/types/graphql";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import LandingHeader from "@/components/ui/landing-header";
 import SelectedStock, {
   SelectedStockLoading,
@@ -21,6 +23,14 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import ProductSpecs from "@/components/product-specs";
+import BranchItemWithLogo, {
+  BranchItemWithLogoLoading,
+} from "@/components/branch-item-with-logo";
+import ProductItemHorizontal, {
+  ProductLoadingItemHorizontal,
+} from "@/components/product-item-horizontal";
+import { useAuth } from "@/context/user-context";
+import useLocationInput from "@/hooks/useLocationInput";
 
 export type ProductPageClientProps = {
   productId: number;
@@ -33,6 +43,8 @@ export default function ProductPageClient({
   productId,
   stockId,
 }: ProductPageClientProps) {
+  const { loggedIn, lists } = useAuth();
+  const locationInput = useLocationInput();
   const { data: productData, loading: productLoading } = useQuery(
     ProductDocument,
     {
@@ -46,6 +58,18 @@ export default function ProductPageClient({
       fetchPolicy: "no-cache",
     }
   );
+  const [getBranchProducts, { data: branchesWithProducts }] = useLazyQuery(
+    BranchesWithProductsDocument,
+    { fetchPolicy: "no-cache" }
+  );
+
+  const favoriteBranchIds = useMemo(
+    () =>
+      (lists?.favorites?.branchList ?? [])
+        .map(({ branchId }) => branchId)
+        .filter((id) => id !== stockData?.stock?.branchId),
+    [lists?.favorites.branchList, stockData?.stock]
+  );
 
   useEffect(() => {
     if (!stockId || !productData) return;
@@ -56,44 +80,86 @@ export default function ProductPageClient({
     });
   }, [stockId, productData, getStock]);
 
+  useEffect(() => {
+    if (!productData || !productData.product.category) return;
+    if (!locationInput) return;
+
+    if (loggedIn) {
+      getBranchProducts({
+        variables: {
+          paginator: {
+            limit: favoriteBranchIds.length + (stockData ? 1 : 0),
+            page: 1,
+          },
+          productLimit: 10,
+          filters: {
+            location: locationInput.locationInput,
+            category: productData.product.category.name,
+            sortByPrice: "acs",
+            branchIds: stockData
+              ? [stockData.stock.branchId, ...favoriteBranchIds]
+              : favoriteBranchIds,
+          },
+        },
+      });
+    } else {
+      getBranchProducts({
+        variables: {
+          paginator: {
+            limit: 4,
+            page: 1,
+          },
+          productLimit: 10,
+          filters: {
+            location: locationInput.locationInput,
+            category: productData.product.category.name,
+            sortByPrice: "acs",
+          },
+        },
+      });
+    }
+  }, [loggedIn, locationInput, favoriteBranchIds, productData, stockData]);
+
   return (
     <div>
       <LandingHeader />
 
-      <div className="flex flex-col lg:flex-row gap-4 container mx-auto mb-10 mt-0 sm:mt-5 pb-7 pt-0 sm:pt-7">
-        <section className="px-5 w-full">
-          <article>
-            {productData && !productLoading ? (
-              <ProductFull
-                product={productData.product as Product}
-                hideDescription
-              />
-            ) : (
-              <ProductFullLoading />
-            )}
-          </article>
+      <div className="flex flex-col lg:flex-row gap-4 container mx-auto mb-10 mt-0 sm:mt-5 pb-7 pt-0 sm:pt-7 relative">
+        <section className="px-5 w-full flex-1">
+          <div className="lg:sticky top-0">
+            <article className="bg-white">
+              {productData && !productLoading ? (
+                <ProductFull
+                  product={productData.product as Product}
+                  hideDescription
+                />
+              ) : (
+                <ProductFullLoading />
+              )}
+            </article>
 
-          {stockId &&
-            (stockData && !stockLoading && productData ? (
-              <div className="my-5">
-                <div className="rounded-xl bg-gray-50 p-5">
-                  <SelectedStock
-                    stock={stockData.stock as Stock}
-                    quantityType={productData.product.quantityType}
-                    quantityValue={productData.product.quantityValue}
-                  />
+            {stockId &&
+              (stockData && !stockLoading && productData ? (
+                <div className="my-5">
+                  <div className="rounded-xl bg-gray-50 p-5">
+                    <SelectedStock
+                      stock={stockData.stock as Stock}
+                      quantityType={productData.product.quantityType}
+                      quantityValue={productData.product.quantityValue}
+                    />
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div className="my-5">
-                <div className="rounded-xl bg-gray-50 p-5">
-                  <SelectedStockLoading />
+              ) : (
+                <div className="my-5">
+                  <div className="rounded-xl bg-gray-50 p-5">
+                    <SelectedStockLoading />
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))}
+          </div>
         </section>
 
-        <section className="px-5 w-full">
+        <section className="px-5 w-full flex-2 max-w-full lg:max-w-xl xl:max-w-3xl">
           <Accordion
             type="multiple"
             defaultChecked
@@ -116,6 +182,60 @@ export default function ProductPageClient({
               </AccordionContent>
             </AccordionItem>
           </Accordion>
+
+          <section className="w-full mt-[60px]">
+            {!branchesWithProducts
+              ? Array(3)
+                  .fill(0)
+                  .map((_, i) => (
+                    <article
+                      className="my-7"
+                      key={`branch-with-product-loading-${i}`}
+                    >
+                      <div className="mb-5 px-5">
+                        <BranchItemWithLogoLoading />
+                      </div>
+
+                      <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:[mask-image:_linear-gradient(to_right,transparent_0,_black_2em,_black_calc(100%-2em),transparent_100%)]">
+                        {Array(10)
+                          .fill(0)
+                          .map((_, j) => (
+                            <div
+                              className="first:pl-5 last:pr-5"
+                              key={`branch-product-${i}-${j}`}
+                            >
+                              <ProductLoadingItemHorizontal />
+                            </div>
+                          ))}
+                      </div>
+                    </article>
+                  ))
+              : branchesWithProducts.branchesWithProducts.branches.map(
+                  (branch) => (
+                    <article
+                      className="my-7"
+                      key={`branch-with-product-${branch.id}`}
+                    >
+                      <div className="mb-5 px-5">
+                        <BranchItemWithLogo branch={branch as Branch} />
+                      </div>
+
+                      <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:[mask-image:_linear-gradient(to_right,transparent_0,_black_2em,_black_calc(100%-2em),transparent_100%)]">
+                        {(branch.products ?? []).map((product) => (
+                          <div
+                            className="first:pl-5 last:pr-5"
+                            key={`branch-product-${branch.id}-${product.id}`}
+                          >
+                            <ProductItemHorizontal
+                              product={product as Product}
+                            />
+                          </div>
+                        ))}
+                      </div>
+                    </article>
+                  )
+                )}
+          </section>
         </section>
       </div>
     </div>
