@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import { cookies, headers } from "next/headers";
+import { headers } from "next/headers";
 import { getIpAddressFromRequestHeaders } from "@/lib/strings";
 import SignupPage from "./signup-page-client";
-import { AUTH_TOKEN_KEY } from "@/lib/cookies";
-import { redirect } from "next/navigation";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
@@ -13,10 +11,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function LoginPageServer() {
-  const cookieStore = await cookies();
-  if (cookieStore.get(AUTH_TOKEN_KEY)) {
-    redirect("/");
-  }
+  // TODO: /auth/logout does not clear cookie so this does not work properly
+  // const cookieStore = await cookies();
+  // if (cookieStore.get(AUTH_TOKEN_KEY)) {
+  //   redirect("/");
+  // }
 
   const headerList = await headers();
   const ipAddress =
