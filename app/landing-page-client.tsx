@@ -4,7 +4,6 @@ import StepsPanel, { steps } from "@/components/landing-page/screenshot";
 import ScreenshotShowcasePanel, {
   screenshots,
 } from "@/components/landing-page/steps-panel";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import {
