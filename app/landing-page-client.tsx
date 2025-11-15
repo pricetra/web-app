@@ -11,7 +11,6 @@ import {
   AllStoresDocument,
   Branch,
   BranchesWithProductsDocument,
-  IpToAddressDocument,
   PaginatorInput,
   Product,
 } from "@/graphql/types/graphql";
@@ -30,21 +29,14 @@ import { useEffect } from "react";
 import Aos from "aos";
 import { useAuth } from "@/context/user-context";
 import LandingHeader from "@/components/ui/landing-header";
+import useLocationInput from "@/hooks/useLocationInput";
 
 const paginator: PaginatorInput = { page: 1, limit: 4 };
 const productLimit = 10;
 
 export default function LandingPage({ ipAddress }: { ipAddress: string }) {
   const { loggedIn } = useAuth();
-  const { data: ipToAddressData, error: ipAddressError } = useQuery(
-    IpToAddressDocument,
-    {
-      fetchPolicy: "cache-first",
-      variables: {
-        ipAddress,
-      },
-    }
-  );
+  const fullLocationInput = useLocationInput(ipAddress);
   const { data: allStoresData } = useQuery(AllStoresDocument, {
     fetchPolicy: "cache-first",
     variables: { paginator: { page: 1, limit: 9 } },
@@ -61,34 +53,17 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
   }, []);
 
   useEffect(() => {
-    if (!ipAddressError) return;
+    if (!fullLocationInput) return;
     getBranchProducts({
       variables: {
         paginator,
         productLimit,
         filters: {
-          branchIds: [2, 6, 14, 38, 42, 11],
+          location: fullLocationInput.locationInput,
         },
       },
     });
-  }, [getBranchProducts, ipAddressError]);
-
-  useEffect(() => {
-    if (!ipToAddressData) return;
-    getBranchProducts({
-      variables: {
-        paginator,
-        productLimit,
-        filters: {
-          location: {
-            latitude: ipToAddressData.ipToAddress.latitude,
-            longitude: ipToAddressData.ipToAddress.longitude,
-            radiusMeters: 100_000,
-          },
-        },
-      },
-    });
-  }, [getBranchProducts, ipToAddressData]);
+  }, [getBranchProducts, fullLocationInput]);
 
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-b from-white via-white to-slate-50 overflow-x-hidden">
