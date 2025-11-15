@@ -121,7 +121,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
       .then(async ({ data: userData }) => {
         if (!userData) return;
 
-        getPostAuthUserData();
+        await getPostAuthUserData();
       })
       .catch(() => removeCookie("auth_token"))
       .finally(() => setLoading(false));
