@@ -12,6 +12,7 @@ export type LocationInputWithFullAddress = {
 
 export type LocationContextType = {
   currentLocation?: LocationInputWithFullAddress;
+  locationSetInProgress: boolean;
   setCurrentLocation: (location?: LocationInputWithFullAddress) => void;
   resetCurrentLocation: () => LocationInputWithFullAddress | undefined;
 };
@@ -22,9 +23,13 @@ export type LocationContextProviderProps = {
   children: ReactNode;
 };
 
-export default function LocationContextProvider({ children }: LocationContextProviderProps) {
-  const { user } = useAuth();
-  const [currentLocation, setCurrentLocation] = useState<LocationInputWithFullAddress>();
+export default function LocationContextProvider({
+  children,
+}: LocationContextProviderProps) {
+  const { token, user } = useAuth();
+  const [currentLocation, setCurrentLocation] =
+    useState<LocationInputWithFullAddress>();
+  const [locationSetInProgress, setLocationSetInProgress] = useState(true);
 
   function resetCurrentLocation() {
     if (!user?.address) return;
@@ -42,24 +47,33 @@ export default function LocationContextProvider({ children }: LocationContextPro
   }
 
   useEffect(() => {
+    if (token) return;
+    setLocationSetInProgress(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [locationSetInProgress]);
+
+  useEffect(() => {
     resetCurrentLocation();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    setLocationSetInProgress(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.address]);
 
   if (user && !user.address) {
-    window.alert("User's address is undefined"); // TODO: Add location setup screen
+    // TODO: Add location setup screen
   }
 
   return (
     <LocationContext.Provider
       value={{
         currentLocation,
+        locationSetInProgress,
         setCurrentLocation: (l) => {
           if (!l) return resetCurrentLocation();
           setCurrentLocation(l);
         },
         resetCurrentLocation,
-      }}>
+      }}
+    >
       {children}
     </LocationContext.Provider>
   );
