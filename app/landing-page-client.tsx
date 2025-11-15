@@ -247,12 +247,12 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
             smarter.
           </p>
           <div className="mt-6">
-            <Button
-              size="lg"
-              className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-8 py-3 font-semibold"
+            <Link
+              href="/auth/signup"
+              className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-8 py-3 font-semibold rounded-lg"
             >
               Create your free account
-            </Button>
+            </Link>
           </div>
         </div>
       </section>
