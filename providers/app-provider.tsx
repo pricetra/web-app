@@ -1,4 +1,5 @@
 'use client'
+import LocationContextProvider from "@/context/location-context";
 import { UserContextProvider } from "@/context/user-context";
 import ApolloWrapper from "@/graphql/apollo-wrapper";
 import { ReactNode } from "react";
@@ -12,7 +13,9 @@ export default function AppProvider({ children }: AppProviderProps) {
   return (
     <CookiesProvider>
       <ApolloWrapper>
-        <UserContextProvider>{children}</UserContextProvider>
+        <UserContextProvider>
+          <LocationContextProvider>{children}</LocationContextProvider>
+        </UserContextProvider>
       </ApolloWrapper>
     </CookiesProvider>
   );
