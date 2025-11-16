@@ -69,7 +69,7 @@ export default function StockItemMini({
             {stock.branch.address?.street}, {stock.branch.address?.city}
           </p>
 
-          <div className="mt-2 flex flex-col gap-0.5">
+          <div className="mt-1 flex flex-col gap-0.5">
             {stock?.latestPrice?.sale &&
               !isExpired &&
               stock.latestPrice.originalPrice && (

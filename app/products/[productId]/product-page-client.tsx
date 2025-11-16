@@ -210,38 +210,33 @@ export default function ProductPageClient({
               "nutrition-facts",
             ]}
           >
-            {productData && stocksData && (
-              <AccordionItem value="available-stocks">
-                <AccordionTrigger>Available at</AccordionTrigger>
-                <AccordionContent>
+            <AccordionItem value="available-stocks">
+              <AccordionTrigger>Available at</AccordionTrigger>
+              <AccordionContent>
+                {productData && stocksData && (
                   <section className="grid grid-cols-2 gap-5 mt-5">
                     {stocksData.getProductStocks.stocks.map((s, i) => (
-                      <StockItemMini
-                        stock={s as Stock}
-                        quantityValue={productData.product.quantityValue}
-                        quantityType={productData.product.quantityType}
+                      <div
+                        className="mb-3"
                         key={`${s.id}-${i}-available-stock`}
-                      />
+                      >
+                        <StockItemMini
+                          stock={s as Stock}
+                          quantityValue={productData.product.quantityValue}
+                          quantityType={productData.product.quantityType}
+                        />
+                      </div>
                     ))}
                   </section>
-                </AccordionContent>
-              </AccordionItem>
-            )}
-
-            {productData && productData.product.description.length > 0 && (
-              <AccordionItem value="description">
-                <AccordionTrigger>Description</AccordionTrigger>
-                <AccordionContent className="flex flex-col gap-4 text-balance">
-                  <p>{productData?.product?.description}</p>
-                </AccordionContent>
-              </AccordionItem>
-            )}
+                )}
+              </AccordionContent>
+            </AccordionItem>
 
             {productData && productNutritionData && (
               <AccordionItem value="nutrition-facts">
                 <AccordionTrigger>Nutrition Facts</AccordionTrigger>
                 <AccordionContent className="flex flex-col gap-4 text-balance">
-                  <div className="mb-10 flex flex-row items-center justify-end gap-2">
+                  <div className="mb-5 flex flex-row items-center justify-end gap-2">
                     <a
                       className="bg-gray-700 px-3 py-1.5 rounded-md text-white"
                       href={`https://world.openfoodfacts.org/cgi/product.pl?type=edit&code=${productData.product.code}`}
@@ -285,6 +280,15 @@ export default function ProductPageClient({
                         </p>
                       </div>
                     )}
+                </AccordionContent>
+              </AccordionItem>
+            )}
+
+            {productData && productData.product.description.length > 0 && (
+              <AccordionItem value="description">
+                <AccordionTrigger>Description</AccordionTrigger>
+                <AccordionContent className="flex flex-col gap-4 text-balance">
+                  <p>{productData?.product?.description}</p>
                 </AccordionContent>
               </AccordionItem>
             )}
