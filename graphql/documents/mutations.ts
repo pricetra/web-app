@@ -43,3 +43,14 @@ export const LOGOUT_MUTATION = gql(`
     logout
   }
 `);
+
+export const UPDATE_PRODUCT_NUTRITION_MUTATION = gql(`
+  mutation UpdateProductNutritionData($productId: ID!) {
+    updateProductNutritionData(productId: $productId) {
+      productId
+      openfoodfactsUpdatedAt
+      createdAt
+      updatedAt
+    }
+  }
+`);

@@ -4,12 +4,15 @@ import ProductFull, { ProductFullLoading } from "@/components/product-full";
 import {
   Branch,
   BranchesWithProductsDocument,
+  GetProductNutritionDataDocument,
   Product,
   ProductDocument,
+  ProductNutrition,
   Stock,
   StockDocument,
+  UpdateProductNutritionDataDocument,
 } from "@/graphql/types/graphql";
-import { useLazyQuery, useQuery } from "@apollo/client/react";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import { useEffect, useMemo } from "react";
 import LandingHeader from "@/components/ui/landing-header";
 import SelectedStock, {
@@ -31,6 +34,8 @@ import ProductItemHorizontal, {
 } from "@/components/product-item-horizontal";
 import { useAuth } from "@/context/user-context";
 import useLocationInput from "@/hooks/useLocationInput";
+import NutritionFacts from "@/components/nutrition-facts";
+import { Button } from "@/components/ui/button";
 
 export type ProductPageClientProps = {
   productId: number;
@@ -62,6 +67,14 @@ export default function ProductPageClient({
     BranchesWithProductsDocument,
     { fetchPolicy: "no-cache" }
   );
+  const [getProductNutritionData, { data: productNutritionData }] =
+    useLazyQuery(GetProductNutritionDataDocument, {
+      fetchPolicy: "network-only",
+    });
+  const [updateProductNutrition, { loading: updatingProductNutrition }] =
+    useMutation(UpdateProductNutritionDataDocument, {
+      refetchQueries: [GetProductNutritionDataDocument],
+    });
 
   const favoriteBranchIds = useMemo(
     () =>
@@ -79,6 +92,15 @@ export default function ProductPageClient({
       },
     });
   }, [stockId, productData, getStock]);
+
+  useEffect(() => {
+    if (!productData) return;
+    getProductNutritionData({
+      variables: {
+        productId: productData.product.id,
+      },
+    });
+  }, [productData]);
 
   useEffect(() => {
     if (!productData || !productData.product.category) return;
@@ -171,6 +193,60 @@ export default function ProductPageClient({
                 <AccordionTrigger>Description</AccordionTrigger>
                 <AccordionContent className="flex flex-col gap-4 text-balance">
                   <p>{productData?.product?.description}</p>
+                </AccordionContent>
+              </AccordionItem>
+            )}
+
+            {productData && productNutritionData && (
+              <AccordionItem value="description">
+                <AccordionTrigger>Nutrition Facts</AccordionTrigger>
+                <AccordionContent className="flex flex-col gap-4 text-balance">
+                  <div className="mb-10 flex flex-row items-center justify-end gap-2">
+                    <a
+                      className="bg-gray-700 px-3 py-1.5 rounded-md text-white"
+                      href={`https://world.openfoodfacts.org/cgi/product.pl?type=edit&code=${productData.product.code}`}
+                      target="_blank"
+                    >
+                      Edit
+                    </a>
+
+                    <Button
+                      size="sm"
+                      className="cursor-pointer"
+                      onClick={() =>
+                        updateProductNutrition({
+                          variables: { productId: productId },
+                        })
+                      }
+                      disabled={updatingProductNutrition}
+                    >
+                      Refetch
+                    </Button>
+                  </div>
+
+                  {productNutritionData.getProductNutritionData.nutriments && (
+                    <div className="mt-5">
+                      <NutritionFacts
+                        {...(productNutritionData.getProductNutritionData as ProductNutrition)}
+                      />
+                    </div>
+                  )}
+
+                  {productNutritionData.getProductNutritionData
+                    .ingredientList &&
+                    productNutritionData.getProductNutritionData.ingredientList
+                      .length > 0 && (
+                      <div className="mt-7">
+                        <h5 className="mb-1.5 text-base font-semibold">
+                          Ingredients
+                        </h5>
+                        <p className="text-sm">
+                          {productNutritionData.getProductNutritionData.ingredientList
+                            .map((i) => i.toUpperCase())
+                            .join(", ")}
+                        </p>
+                      </div>
+                    )}
                 </AccordionContent>
               </AccordionItem>
             )}
