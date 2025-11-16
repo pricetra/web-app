@@ -101,6 +101,7 @@ export default function ProductPageClient({
         productId: productData.product.id,
       },
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productData]);
 
   useEffect(() => {
@@ -136,7 +137,7 @@ export default function ProductPageClient({
 
       <div className="flex flex-col lg:flex-row gap-4 container mx-auto mb-10 mt-0 sm:mt-5 pb-7 pt-0 sm:pt-7 relative">
         <section className="px-5 w-full flex-1">
-          <div className="lg:sticky top-0">
+          <div className="lg:sticky top-0 flex flex-col gap-5">
             <article className="bg-white">
               {productData && !productLoading ? (
                 <ProductFull
@@ -174,7 +175,7 @@ export default function ProductPageClient({
             type="multiple"
             defaultChecked
             className="w-full px-5"
-            defaultValue={["description"]}
+            defaultValue={["description", "nutrition-facts"]}
           >
             {productData && productData.product.description.length > 0 && (
               <AccordionItem value="description">
@@ -186,7 +187,7 @@ export default function ProductPageClient({
             )}
 
             {productData && productNutritionData && (
-              <AccordionItem value="description">
+              <AccordionItem value="nutrition-facts">
                 <AccordionTrigger>Nutrition Facts</AccordionTrigger>
                 <AccordionContent className="flex flex-col gap-4 text-balance">
                   <div className="mb-10 flex flex-row items-center justify-end gap-2">
@@ -213,11 +214,9 @@ export default function ProductPageClient({
                   </div>
 
                   {productNutritionData.getProductNutritionData.nutriments && (
-                    <div className="mt-5">
-                      <NutritionFacts
-                        {...(productNutritionData.getProductNutritionData as ProductNutrition)}
-                      />
-                    </div>
+                    <NutritionFacts
+                      {...(productNutritionData.getProductNutritionData as ProductNutrition)}
+                    />
                   )}
 
                   {productNutritionData.getProductNutritionData

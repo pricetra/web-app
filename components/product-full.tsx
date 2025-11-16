@@ -59,18 +59,18 @@ export default function ProductFull({
 
           <div className="flex flex-row flex-wrap items-center gap-1">
             {product.brand && product.brand !== "N/A" && (
-              <h2>{product.brand}</h2>
+              <h2 className="text-sm sm:text-base">{product.brand}</h2>
             )}
           </div>
 
-          <h1 className="text-2xl font-semibold">{product.name}</h1>
+          <h1 className="text-xl sm:text-2xl font-semibold">{product.name}</h1>
 
           {categories && (
-            <div className="flex flex-row flex-wrap items-center gap-2">
+            <div className="flex flex-row flex-wrap items-center gap-1 sm:gap-2">
               {categories.map((c, i) => (
                 <Fragment key={c.id}>
                   {i !== 0 && <IoIosArrowForward size={10} color="#1e2939" />}
-                  <span className="text-sm text-gray-800 leading-none">
+                  <span className="text-xs sm:text-sm text-gray-800 leading-none">
                     {c.name}
                   </span>
                 </Fragment>
