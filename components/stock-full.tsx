@@ -53,7 +53,7 @@ export default function StockFull({
         >
           {stock.latestPrice?.sale && !isExpired && (
             <div className="w-[35px]">
-              <span className="inline-block rounded-md bg-red-700 px-1.5 py-1 text-center text-[9px] font-bold color-white">
+              <span className="inline-block rounded-md bg-red-700 px-1.5 py-1 text-center text-[9px] font-bold text-white">
                 SALE
               </span>
             </div>
@@ -66,7 +66,7 @@ export default function StockFull({
 
             {stock.branch.address?.distance && (
               <div className="rounded-full bg-pricetraGreenDark/10 px-2 py-0.5">
-                <span className="text-xs color-pricetraGreenHeavyDark">
+                <span className="text-xs text-pricetraGreenHeavyDark">
                   {metersToMiles(stock.branch.address.distance)} mi
                 </span>
               </div>
@@ -83,12 +83,10 @@ export default function StockFull({
             {stock.latestPrice?.sale &&
               !isExpired &&
               stock.latestPrice?.expiresAt && (
-                  <p className="bg-yellow-200 text-xs italic">
-                    Valid until{" "}
-                    <b>
-                      {dayjs(stock.latestPrice.expiresAt).format("LL")}
-                    </b>
-                  </p>
+                <p className="bg-yellow-200 text-xs italic">
+                  Valid until{" "}
+                  <b>{dayjs(stock.latestPrice.expiresAt).format("LL")}</b>
+                </p>
               )}
 
             {!isExpired && stock.latestPrice?.condition && (
@@ -104,7 +102,7 @@ export default function StockFull({
         {stock?.latestPrice?.sale &&
           !isExpired &&
           stock.latestPrice.originalPrice && (
-            <h6 className="text text-right line-through color-red-700">
+            <h6 className="text text-right line-through text-red-700">
               {currencyFormat(stock.latestPrice.originalPrice)}
             </h6>
           )}
@@ -114,14 +112,14 @@ export default function StockFull({
             <span className="text-xl font-black">
               {currencyFormat(calculatedAmount)}
             </span>
-            <span className="text-xs color-gray-500">
+            <span className="text-xs text-gray-500">
               {getPriceUnitOrEach(stock.latestPrice)}
             </span>
           </div>
         )}
 
         {stock.latestPrice?.amount && quantityValue && quantityValue > 1 && (
-          <span className="text-right text-[10px] color-gray-500">
+          <span className="text-right text-[10px] text-gray-500">
             {`${currencyFormat(
               calculatedAmount / quantityValue
             )}/${quantityType}`}

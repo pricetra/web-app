@@ -33,7 +33,7 @@ export default function PriceUserAndTimestamp({
         <h6 className="text-xs font-bold">{user.name}</h6>
         {timestamp && (
           <span className="mt-1 text-[10px] italic leading-none block">
-            {dayjs(timestamp).format('D/M/YY')}
+            {dayjs(timestamp).fromNow()}
           </span>
         )}
       </div>
