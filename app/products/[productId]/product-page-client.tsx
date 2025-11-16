@@ -4,6 +4,7 @@ import ProductFull, { ProductFullLoading } from "@/components/product-full";
 import {
   Branch,
   BranchesWithProductsDocument,
+  BranchesWithProductsQueryVariables,
   GetProductNutritionDataDocument,
   Product,
   ProductDocument,
@@ -106,40 +107,27 @@ export default function ProductPageClient({
     if (!productData || !productData.product.category) return;
     if (!locationInput) return;
 
+    const variables = {
+      paginator: {
+        limit: favoriteBranchIds.length + (stockData ? 1 : 0),
+        page: 1,
+      },
+      productLimit: 10,
+      filters: {
+        location: locationInput.locationInput,
+        category: productData.product.category.name,
+        sortByPrice: "asc",
+      },
+    } as BranchesWithProductsQueryVariables;
     if (loggedIn) {
-      getBranchProducts({
-        variables: {
-          paginator: {
-            limit: favoriteBranchIds.length + (stockData ? 1 : 0),
-            page: 1,
-          },
-          productLimit: 10,
-          filters: {
-            location: locationInput.locationInput,
-            category: productData.product.category.name,
-            sortByPrice: "acs",
-            branchIds: stockData
-              ? [stockData.stock.branchId, ...favoriteBranchIds]
-              : favoriteBranchIds,
-          },
-        },
-      });
-    } else {
-      getBranchProducts({
-        variables: {
-          paginator: {
-            limit: 4,
-            page: 1,
-          },
-          productLimit: 10,
-          filters: {
-            location: locationInput.locationInput,
-            category: productData.product.category.name,
-            sortByPrice: "acs",
-          },
-        },
-      });
+      variables.filters = {
+        ...variables.filters,
+        branchIds: stockData
+          ? [stockData.stock.branchId, ...favoriteBranchIds]
+          : favoriteBranchIds,
+      };
     }
+    getBranchProducts({ variables });
   }, [loggedIn, locationInput, favoriteBranchIds, productData, stockData]);
 
   return (
