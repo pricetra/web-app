@@ -6,6 +6,7 @@ import {
   BranchesWithProductsDocument,
   BranchesWithProductsQueryVariables,
   GetProductNutritionDataDocument,
+  GetProductStocksDocument,
   Product,
   ProductDocument,
   ProductNutrition,
@@ -37,6 +38,7 @@ import { useAuth } from "@/context/user-context";
 import useLocationInput from "@/hooks/useLocationInput";
 import NutritionFacts from "@/components/nutrition-facts";
 import { Button } from "@/components/ui/button";
+import StockItemMini from "@/components/stock-item-mini";
 
 export type ProductPageClientProps = {
   productId: number;
@@ -60,10 +62,16 @@ export default function ProductPageClient({
   );
   const [getStock, { data: stockData, loading: stockLoading }] = useLazyQuery(
     StockDocument,
-    {
-      fetchPolicy: "no-cache",
-    }
+    { fetchPolicy: "no-cache" }
   );
+  const [getProductStocks, { data: stocksData }] = useLazyQuery(
+    GetProductStocksDocument,
+    { fetchPolicy: "no-cache" }
+  );
+  // const [getFavBranchesPrices, { data: favBranchesPriceData }] = useLazyQuery(
+  //   FavoriteBranchesWithPricesDocument,
+  //   { fetchPolicy: "no-cache" }
+  // );
   const [getBranchProducts, { data: branchesWithProducts }] = useLazyQuery(
     BranchesWithProductsDocument,
     { fetchPolicy: "no-cache" }
@@ -85,6 +93,7 @@ export default function ProductPageClient({
     [lists?.favorites.branchList, stockData?.stock]
   );
 
+  // Get stock from stockId
   useEffect(() => {
     if (!stockId || !productData) return;
     getStock({
@@ -94,6 +103,23 @@ export default function ProductPageClient({
     });
   }, [stockId, productData, getStock]);
 
+  // All available stocks for product
+  useEffect(() => {
+    if (!productData) return;
+    getProductStocks({
+      variables: {
+        paginator: {
+          page: 1,
+          limit: 10,
+        },
+        productId,
+        location: locationInput?.locationInput,
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [productData, locationInput]);
+
+  // Get nutrition info
   useEffect(() => {
     if (!productData) return;
     getProductNutritionData({
@@ -178,8 +204,30 @@ export default function ProductPageClient({
             type="multiple"
             defaultChecked
             className="w-full px-5"
-            defaultValue={["description", "nutrition-facts"]}
+            defaultValue={[
+              "available-stocks",
+              "description",
+              "nutrition-facts",
+            ]}
           >
+            {productData && stocksData && (
+              <AccordionItem value="available-stocks">
+                <AccordionTrigger>Available at</AccordionTrigger>
+                <AccordionContent>
+                  <section className="grid grid-cols-2 gap-5 mt-5">
+                    {stocksData.getProductStocks.stocks.map((s, i) => (
+                      <StockItemMini
+                        stock={s as Stock}
+                        quantityValue={productData.product.quantityValue}
+                        quantityType={productData.product.quantityType}
+                        key={`${s.id}-${i}-available-stock`}
+                      />
+                    ))}
+                  </section>
+                </AccordionContent>
+              </AccordionItem>
+            )}
+
             {productData && productData.product.description.length > 0 && (
               <AccordionItem value="description">
                 <AccordionTrigger>Description</AccordionTrigger>
