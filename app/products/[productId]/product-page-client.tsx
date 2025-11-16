@@ -159,19 +159,21 @@ export default function ProductPageClient({
           </div>
         </section>
 
-        <section className="px-5 w-full flex-2 max-w-full lg:max-w-xl xl:max-w-3xl">
+        <section className="w-full flex-2 max-w-full lg:max-w-xl xl:max-w-3xl">
           <Accordion
             type="multiple"
             defaultChecked
-            className="w-full"
+            className="w-full px-5"
             defaultValue={["description"]}
           >
-            <AccordionItem value="description">
-              <AccordionTrigger>Description</AccordionTrigger>
-              <AccordionContent className="flex flex-col gap-4 text-balance">
-                <p>{productData?.product?.description}</p>
-              </AccordionContent>
-            </AccordionItem>
+            {productData && productData.product.description.length > 0 && (
+              <AccordionItem value="description">
+                <AccordionTrigger>Description</AccordionTrigger>
+                <AccordionContent className="flex flex-col gap-4 text-balance">
+                  <p>{productData?.product?.description}</p>
+                </AccordionContent>
+              </AccordionItem>
+            )}
 
             <AccordionItem value="specifications">
               <AccordionTrigger>Specifications</AccordionTrigger>
