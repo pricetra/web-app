@@ -5,6 +5,8 @@ import {
   Branch,
   BranchesWithProductsDocument,
   BranchesWithProductsQueryVariables,
+  BranchListWithPrices,
+  FavoriteBranchesWithPricesDocument,
   GetProductNutritionDataDocument,
   GetProductStocksDocument,
   Product,
@@ -39,6 +41,28 @@ import useLocationInput from "@/hooks/useLocationInput";
 import NutritionFacts from "@/components/nutrition-facts";
 import { Button } from "@/components/ui/button";
 import StockItemMini from "@/components/stock-item-mini";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+
+export type StockWithApproximatePrice = Stock & {
+  approximatePrice?: number;
+};
+
+function stockToApproxMap(
+  data: BranchListWithPrices
+): StockWithApproximatePrice {
+  return {
+    id: data.stock?.id ?? 0,
+    productId: data.stock?.productId,
+    latestPriceId: data.stock?.latestPrice?.id ?? 0,
+    latestPrice: { ...data.stock?.latestPrice },
+    branchId: data.branchId,
+    branch: data.branch,
+    store: data.branch?.store,
+    storeId: data.branch?.storeId,
+    approximatePrice: data.approximatePrice,
+  } as StockWithApproximatePrice;
+}
 
 export type ProductPageClientProps = {
   productId: number;
@@ -68,10 +92,10 @@ export default function ProductPageClient({
     GetProductStocksDocument,
     { fetchPolicy: "no-cache" }
   );
-  // const [getFavBranchesPrices, { data: favBranchesPriceData }] = useLazyQuery(
-  //   FavoriteBranchesWithPricesDocument,
-  //   { fetchPolicy: "no-cache" }
-  // );
+  const [getFavBranchesPrices, { data: favBranchesPriceData }] = useLazyQuery(
+    FavoriteBranchesWithPricesDocument,
+    { fetchPolicy: "no-cache" }
+  );
   const [getBranchProducts, { data: branchesWithProducts }] = useLazyQuery(
     BranchesWithProductsDocument,
     { fetchPolicy: "no-cache" }
@@ -93,6 +117,15 @@ export default function ProductPageClient({
     [lists?.favorites.branchList, stockData?.stock]
   );
 
+  const mappedFavBranches = useMemo(
+    () =>
+      (
+        (favBranchesPriceData?.getFavoriteBranchesWithPrices ??
+          []) as BranchListWithPrices[]
+      ).map(stockToApproxMap),
+    [favBranchesPriceData]
+  );
+
   // Get stock from stockId
   useEffect(() => {
     if (!stockId || !productData) return;
@@ -105,6 +138,17 @@ export default function ProductPageClient({
 
   // All available stocks for product
   useEffect(() => {
+    if (!loggedIn || !productData) return;
+    getFavBranchesPrices({
+      variables: {
+        productId: productData.product.id,
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loggedIn, productData, locationInput]);
+
+  // All available stocks for product
+  useEffect(() => {
     if (!productData) return;
     getProductStocks({
       variables: {
@@ -112,7 +156,7 @@ export default function ProductPageClient({
           page: 1,
           limit: 10,
         },
-        productId,
+        productId: productData.product.id,
         location: locationInput?.locationInput,
       },
     });
@@ -210,6 +254,63 @@ export default function ProductPageClient({
               "nutrition-facts",
             ]}
           >
+            <AccordionItem value="available-stocks">
+              <AccordionTrigger>Favorite Stores</AccordionTrigger>
+              <AccordionContent>
+                {loggedIn ? (
+                  <>
+                    {productData && favBranchesPriceData && (
+                      <section className="grid grid-cols-2 gap-5 mt-5">
+                        {mappedFavBranches.map(
+                          ({ approximatePrice, ...s }, i) => (
+                            <div
+                              className={cn(
+                                "mb-3",
+                                s.id === 0 && !approximatePrice
+                                  ? "opacity-30"
+                                  : "opacity-100"
+                              )}
+                              key={`${s.id}-${i}-fav-store-stock`}
+                            >
+                              <StockItemMini
+                                stock={s as Stock}
+                                approximatePrice={approximatePrice ?? undefined}
+                                quantityValue={
+                                  productData.product.quantityValue
+                                }
+                                quantityType={productData.product.quantityType}
+                              />
+                            </div>
+                          )
+                        )}
+                      </section>
+                    )}
+                  </>
+                ) : (
+                  <div className="my-10">
+                    <h3 className="text-center text-lg font-bold mb-5">
+                      View prices from your Favorite Stores
+                    </h3>
+
+                    <div className="flex flex-row items-center justify-center gap-5">
+                      <Link
+                        href="/auth/login"
+                        className="bg-gray-800 hover:bg-black text-white md:px-6 rounded-lg shadow-sm hover:shadow-md transition-all font-bold hidden sm:block py-2 px-5 text-sm"
+                      >
+                        Login
+                      </Link>
+                      <Link
+                        href="/auth/signup"
+                        className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white md:px-6 rounded-lg shadow-sm hover:shadow-md transition-all font-bold hidden sm:block py-2 px-5 text-sm"
+                      >
+                        Create Account
+                      </Link>
+                    </div>
+                  </div>
+                )}
+              </AccordionContent>
+            </AccordionItem>
+
             <AccordionItem value="available-stocks">
               <AccordionTrigger>Available at</AccordionTrigger>
               <AccordionContent>
