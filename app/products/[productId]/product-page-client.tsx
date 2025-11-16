@@ -150,7 +150,10 @@ export default function ProductPageClient({
             </article>
 
             {stockId &&
-              (stockData && !stockLoading && productData ? (
+              (stockData &&
+              !stockLoading &&
+              productData &&
+              stockData.stock.productId === productData.product.id ? (
                 <div className="my-5">
                   <div className="rounded-xl bg-gray-50 p-5">
                     <SelectedStock
