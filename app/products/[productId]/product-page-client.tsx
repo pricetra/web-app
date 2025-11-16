@@ -249,12 +249,13 @@ export default function ProductPageClient({
             defaultChecked
             className="w-full px-5"
             defaultValue={[
+              "favorite-stores",
               "available-stocks",
-              "description",
               "nutrition-facts",
+              "description",
             ]}
           >
-            <AccordionItem value="available-stocks">
+            <AccordionItem value="favorite-stores">
               <AccordionTrigger>Favorite Stores</AccordionTrigger>
               <AccordionContent>
                 {loggedIn ? (
