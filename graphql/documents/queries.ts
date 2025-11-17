@@ -213,13 +213,16 @@ export const ALL_PRODUCTS_QUERY = gql(`
           storeId
           store {
             id
+            slug
             name
             logo
           }
           branchId
           branch {
             id
+            slug
             name
+            addressId
             address {
               id
               latitude
@@ -337,12 +340,14 @@ export const GET_PRODUCT_STOCKS_QUERY = gql(`
         storeId
         store {
           id
+          slug
           name
           logo
         }
         branchId
         branch {
           id
+          slug
           name
           address {
             id
@@ -403,6 +408,7 @@ export const ALL_STORES_QUERY = gql(`
     allStores(paginator: $paginator, search: $search) {
       stores {
         id
+        slug
         name
         logo
         website
@@ -420,9 +426,10 @@ export const ALL_STORES_QUERY = gql(`
 `);
 
 export const FIND_STORE_QUERY = gql(`
-  query FindStore($storeId: ID!) {
-    findStore(id: $storeId) {
+  query FindStore($storeId: ID, $storeSlug: String) {
+    findStore(id: $storeId, slug: $storeSlug) {
       id
+      slug
       name
       logo
       website
@@ -431,13 +438,15 @@ export const FIND_STORE_QUERY = gql(`
 `);
 
 export const ALL_BRANCHES_QUERY = gql(`
-  query AllBranches($storeId: ID!, $paginator: PaginatorInput!, $search: String, $location: LocationInput) {
-    allBranches(storeId: $storeId, paginator: $paginator, search: $search, location: $location) {
+  query AllBranches($storeId: ID, $storeSlug: String, $paginator: PaginatorInput!, $search: String, $location: LocationInput) {
+    allBranches(storeId: $storeId, storeSlug: $storeSlug, paginator: $paginator, search: $search, location: $location) {
       branches {
         id
+        slug
         name
         addressId
         storeId
+        storeSlug
         address {
           id
           latitude
@@ -466,12 +475,14 @@ export const ALL_BRANCHES_QUERY = gql(`
 `);
 
 export const BRANCH_QUERY = gql(`
-  query Branch($branchId: ID!, $storeId: ID!) {
-    findBranch(id: $branchId, storeId: $storeId) {
+  query Branch($branchId: ID, $branchSlug: String, $storeId: ID, $storeSlug: String) {
+    findBranch(id: $branchId, slug: $branchSlug, storeId: $storeId, storeSlug: $storeSlug) {
       id
+      slug
       name
       addressId
       storeId
+      storeSlug
       address {
         id
         latitude
@@ -487,8 +498,9 @@ export const BRANCH_QUERY = gql(`
       }
     }
 
-    findStore(id: $storeId) {
+    findStore(id: $storeId, slug: $storeSlug) {
       id
+      slug
       name
       logo
       website
@@ -497,12 +509,14 @@ export const BRANCH_QUERY = gql(`
 `);
 
 export const FIND_BRANCH_QUERY = gql(`
-  query FindBranch($branchId: ID!, $storeId: ID!) {
-    findBranch(id: $branchId, storeId: $storeId) {
+  query FindBranch($branchId: ID, $branchSlug: String, $storeId: ID, $storeSlug: String) {
+    findBranch(id: $branchId, slug: $branchSlug, storeId: $storeId, storeSlug: $storeSlug) {
       id
+      slug
       name
       addressId
       storeId
+      storeSlug
       address {
         id
         latitude
@@ -533,15 +547,18 @@ export const FIND_BRANCHES_BY_DISTANCE_QUERY = gql(`
   query FindBranchesByDistance($lat: Float!, $lon: Float!, $radiusMeters: Int!) {
     findBranchesByDistance(lat: $lat, lon: $lon, radiusMeters: $radiusMeters) {
       id
+      slug
       name
       storeId
-      addressId
+      storeSlug
       store {
         id
+        slug
         name
         website
         logo
       }
+      addressId
       address {
         id
         distance
@@ -650,6 +667,7 @@ export const GET_STOCK_BY_ID = gql(`
       productId
       storeId
       store {
+        slug
         id
         name
         logo
@@ -657,7 +675,9 @@ export const GET_STOCK_BY_ID = gql(`
       branchId
       branch {
         id
+        slug
         name
+        addressId
         address {
           id
           latitude
@@ -711,12 +731,17 @@ export const GET_FAVORITE_BRANCHES_WITH_PRICE_DATA_QUERY = gql(`
       branchId
       branch {
         id
+        slug
         name
+        storeId
+        storeSlug
         store {
           id
+          slug
           name
           logo
         }
+        addressId
         address {
           id
           distance
@@ -809,13 +834,16 @@ export const GET_ALL_PRODUCT_LISTS_BY_LIST_ID = gql(`
         storeId
         store {
           id
+          slug
           name
           logo
         }
         branchId
         branch {
           id
+          slug
           name
+          addressId
           address {
             id
             latitude
@@ -858,7 +886,9 @@ export const GET_ALL_BRANCH_LISTS_BY_LIST_ID = gql(`
       branchId
       branch {
         id
+        slug
         name
+        addressId
         address {
           id
           latitude
@@ -873,8 +903,10 @@ export const GET_ALL_BRANCH_LISTS_BY_LIST_ID = gql(`
           zipCode
         }
         storeId
+        storeSlug
         store {
           id
+          slug
           name
           logo
         }
@@ -959,13 +991,17 @@ export const BRANCHES_WITH_PRODUCTS_QUERY = gql(`
     ) {
       branches {
         id
+        slug
         name
         storeId
+        storeSlug
         store {
           id
+          slug
           name
           logo
         }
+        addressId
         address {
           id
           distance
