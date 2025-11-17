@@ -27,7 +27,7 @@ export default function ProductFull({
   return (
     <div className="flex flex-col gap-3">
       {imgAvailable && (
-        <div className="relative mx-auto w-full max-w-sm">
+        <div className="relative mx-auto h-[30vh] mb-5">
           <div className="w-full aspect-square size-full">
             <Image
               src={product.image}
@@ -93,7 +93,7 @@ export function ProductFullLoading() {
   return (
     <div className="flex flex-col gap-3">
       {/* Image skeleton */}
-      <div className="relative mx-auto w-full max-w-sm">
+      <div className="relative mx-auto h-[30vh] mb-5">
         <div className="w-full aspect-square size-full">
           <Skeleton className="!w-full !h-full" borderRadius={12} />
         </div>

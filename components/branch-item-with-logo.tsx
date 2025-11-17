@@ -23,20 +23,20 @@ export default function BranchItemWithLogo({
         />
         <div className="flex flex-col pr-[60px]">
           <div className="flex w-full flex-row flex-nowrap items-center gap-x-3">
-            <h5 className="sm:text-lg font-bold line-clamp-1">
+            <h5 className="sm:text-lg font-bold line-clamp-1 break-all">
               {branch.store?.name}
             </h5>
 
             {branch.address?.distance && (
               <div className="rounded-full bg-pricetraGreenDark/10 px-2 py-0.5">
-                <div className="text-[10px] color-pricetraGreenHeavyDark">
+                <div className="text-[10px] color-pricetraGreenHeavyDark text-nowrap">
                   {metersToMiles(branch.address.distance)} mi
                 </div>
               </div>
             )}
           </div>
 
-          <div className="text-[10px] sm:text-xs w-full line-clamp-1">
+          <div className="text-[10px] sm:text-xs w-full line-clamp-1 break-all">
             <span>{branch.address?.fullAddress}</span>
           </div>
         </div>

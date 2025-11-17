@@ -23,7 +23,7 @@ export default function ProductMetadataBadge({
     >
       <span
         className={cn(
-          "color-black leading-none",
+          "color-black leading-0 block",
           size === "md" ? "text-xs" : "",
           size === "sm" ? "text-[10px]" : ""
         )}
