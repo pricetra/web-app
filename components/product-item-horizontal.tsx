@@ -26,7 +26,7 @@ export default function ProductItemHorizontal({
       href={`/products/${product.id}?stockId=${product.stock?.id}`}
       className="flex flex-col gap-2 max-w-[130px] md:max-w-[180px]"
     >
-      <div className="relative size-[130px] md:size-[180px]">
+      <div className="relative size-[130px] md:size-[180px] overflow-hidden rounded-xl bg-white">
         {product.stock?.latestPrice?.sale && !isExpired && (
           <div className="absolute left-1 top-1 z-[1] w-[40px]">
             <span className="inline-block rounded-md bg-red-700 px-1.5 py-1 text-center text-[9px] font-bold text-white">
@@ -37,7 +37,7 @@ export default function ProductItemHorizontal({
 
         <Image
           src={createCloudinaryUrl(product.code, 500)}
-          className="rounded-xl"
+          className="h-full w-full object-cover"
           width={500}
           height={500}
           alt={product.name}

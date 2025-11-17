@@ -28,10 +28,10 @@ export default function ProductFull({
     <div className="flex flex-col gap-3">
       {imgAvailable && (
         <div className="relative mx-auto h-[30vh] mb-5">
-          <div className="w-full aspect-square size-full">
+          <div className="w-full aspect-square size-full overflow-hidden">
             <Image
               src={product.image}
-              className="size-full rounded-xl"
+              className="h-full w-full object-cover rounded-xl bg-white"
               onError={() => setImgAvailable(false)}
               alt="Product image"
               width={500}

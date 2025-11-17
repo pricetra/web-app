@@ -208,7 +208,7 @@ export default function ProductPageClient({
       <div className="flex flex-col lg:flex-row gap-4 container mx-auto mb-10 mt-0 sm:mt-5 pb-7 pt-0 sm:pt-7 relative">
         <section className="px-5 w-full flex-1">
           <div className="lg:sticky top-0 flex flex-col gap-5">
-            <article className="bg-white">
+            <article>
               {productData && !productLoading ? (
                 <ProductFull
                   product={productData.product as Product}
