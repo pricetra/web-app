@@ -10,12 +10,10 @@ export type StoreMiniProps = {
   store: Store;
 };
 
-export default function StoreMini({
-  store: { id, name, logo },
-}: StoreMiniProps) {
+export default function StoreMini({ store: { slug, name, logo } }: StoreMiniProps) {
   return (
     <Link
-      href={`/stores/${id}`}
+      href={`/stores/${slug}`}
       className="flex flex-col items-center justify-center gap-3"
     >
       <Image
