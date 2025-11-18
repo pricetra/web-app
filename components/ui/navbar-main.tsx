@@ -4,40 +4,61 @@ import { createCloudinaryUrl } from "@/lib/files";
 import { useAuth } from "@/context/user-context";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "./input-group";
 import { IoIosSearch } from "react-icons/io";
+import { useNavbar } from "@/context/navbar-context";
 
 export const NAVBAR_HEIGHT = 60;
 
 export default function NavbarMain() {
   const { loggedIn, user } = useAuth();
+  const { pageIndicator, hideLogotype } = useNavbar();
 
   return (
     <>
       <header
-        className="w-full z-50 fixed top-0 left-0 bg-white shadow-md"
+        className="w-full z-50 fixed top-0 left-0 bg-white shadow-sm"
         style={{ height: NAVBAR_HEIGHT }}
       >
-        <div className="container mx-auto flex items-center justify-between px-5 md:px-8 gap-5 h-full">
-          <div className="flex flex-row gap-3 items-center justify-start flex-1 max-w-2xl w-full">
-            <div className="logo">
-              <Link href="/" className="p-3 block">
-                <Image
-                  src="/logotype_header_black.svg"
-                  alt="Pricetra"
-                  width={210}
-                  height={40}
-                  className="h-[23px] hidden md:block w-auto color-white"
-                  priority
-                />
+        <div className="container mx-auto flex items-center justify-between gap-5 h-full">
+          <div className="flex flex-row gap-6 items-center justify-start flex-1 max-w-2xl w-full px-5">
+            <div className="page-indicator flex flex-row gap-3 items-center justify-start">
+              <Link href="/" className="block">
+                {pageIndicator || hideLogotype ? (
+                  <Image
+                    src="/logo_black_color_dark_leaf.svg"
+                    alt="Pricetra"
+                    width={210}
+                    height={40}
+                    className="h-[23px] block w-auto color-white"
+                    priority
+                  />
+                ) : (
+                  <>
+                    <Image
+                      src="/logotype_header_black.svg"
+                      alt="Pricetra"
+                      width={210}
+                      height={40}
+                      className="h-[23px] hidden md:block w-auto color-white"
+                      priority
+                    />
 
-                <Image
-                  src="/logo_black_color_dark_leaf.svg"
-                  alt="Pricetra"
-                  width={210}
-                  height={40}
-                  className="h-[23px] block md:hidden w-auto color-white"
-                  priority
-                />
+                    <Image
+                      src="/logo_black_color_dark_leaf.svg"
+                      alt="Pricetra"
+                      width={210}
+                      height={40}
+                      className="h-[23px] block md:hidden w-auto color-white"
+                      priority
+                    />
+                  </>
+                )}
               </Link>
+
+              {pageIndicator && (
+                <div className="flex flex-row items-center gap-3 justify-start">
+                  {pageIndicator}
+                </div>
+              )}
             </div>
 
             <div className="search-bar flex-1">
@@ -53,7 +74,7 @@ export default function NavbarMain() {
             </div>
           </div>
 
-          <div className="right">
+          <div className="right pr-5">
             {!loggedIn || !user ? (
               <div className="flex items-center gap-2">
                 <Link
