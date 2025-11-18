@@ -19,9 +19,12 @@ export default function NavbarMain() {
         style={{ height: NAVBAR_HEIGHT }}
       >
         <div className="container mx-auto flex items-center justify-between gap-5 h-full">
-          <div className="flex flex-row gap-6 items-center justify-start flex-1 max-w-2xl w-full px-5">
-            <div className="page-indicator flex flex-row gap-3 items-center justify-start">
-              <Link href="/" className="block">
+          <div className="flex flex-row gap-6 items-center justify-start flex-1 max-w-2xl w-full pl-5 pr-0 sm:pr-5">
+            <div className="page-indicator flex flex-row items-center justify-start">
+              <Link
+                href="/"
+                className="min-h-[35px] flex flex-row items-center justify-center"
+              >
                 {pageIndicator || hideLogotype ? (
                   <Image
                     src="/logo_black_color_dark_leaf.svg"
@@ -55,14 +58,14 @@ export default function NavbarMain() {
               </Link>
 
               {pageIndicator && (
-                <div className="flex flex-row items-center gap-3 justify-start">
+                <div className="flex flex-row items-center ml-3 sm:mr-3 mr-0 pl-3 gap-2 justify-start border-l-[1px] border-gray-200 min-h-[35px]">
                   {pageIndicator}
                 </div>
               )}
             </div>
 
             <div className="search-bar flex-1">
-              <InputGroup className="rounded-md bg-gray-100 px-0 sm:px-2 py-3 border-transparent text-xs sm:text-base">
+              <InputGroup className="rounded-md bg-gray-100 px-0 sm:px-2 py-3 border-transparent text-xs sm:text-base shadow-none">
                 <InputGroupInput
                   placeholder="Search..."
                   className="text-sm sm:text-base"
