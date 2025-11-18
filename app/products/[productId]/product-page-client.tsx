@@ -18,7 +18,6 @@ import {
 } from "@/graphql/types/graphql";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import { useEffect, useMemo } from "react";
-import LandingHeader from "@/components/ui/landing-header";
 import SelectedStock, {
   SelectedStockLoading,
 } from "@/components/selected-stock";
@@ -43,6 +42,8 @@ import { Button } from "@/components/ui/button";
 import StockItemMini from "@/components/stock-item-mini";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
+import NavbarMain, { NAVBAR_HEIGHT } from "@/components/ui/navbar-main";
+import Footer from "@/components/ui/footer";
 
 export type StockWithApproximatePrice = Stock & {
   approximatePrice?: number;
@@ -203,11 +204,14 @@ export default function ProductPageClient({
 
   return (
     <div>
-      <LandingHeader />
+      <NavbarMain />
 
-      <div className="flex flex-col lg:flex-row gap-4 container mx-auto mb-10 mt-0 sm:mt-5 pb-7 pt-0 sm:pt-7 relative">
+      <div className="flex flex-col lg:flex-row gap-4 container mx-auto mt-5 relative">
         <section className="px-5 w-full flex-1">
-          <div className="lg:sticky top-0 flex flex-col gap-5">
+          <div
+            className="lg:sticky flex flex-col gap-5"
+            style={{ top: NAVBAR_HEIGHT + 20 }}
+          >
             <article>
               {productData && !productLoading ? (
                 <ProductFull
@@ -460,6 +464,8 @@ export default function ProductPageClient({
           </section>
         </section>
       </div>
+
+      <Footer />
     </div>
   );
 }
