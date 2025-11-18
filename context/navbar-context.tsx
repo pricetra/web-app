@@ -4,11 +4,13 @@ export type NavbarContextType = {
   hideLogotype: boolean;
   setHideLogotype: (v: boolean) => void;
 
-  pageIndicator?: ReactNode
+  pageIndicator?: ReactNode;
   setPageIndicator: (elem?: ReactNode) => void;
 
   subHeader?: ReactNode;
   setSubHeader: (elem?: ReactNode) => void;
+
+  resetAll: () => void;
 };
 
 export const NavbarContext = createContext({} as NavbarContextType);
@@ -27,6 +29,11 @@ export const NavbarProvider = ({ children }: { children: ReactNode }) => {
         setPageIndicator,
         subHeader,
         setSubHeader,
+        resetAll: () => {
+          setHideLogotype(false);
+          setPageIndicator(undefined);
+          setSubHeader(undefined);
+        },
       }}
     >
       {children}

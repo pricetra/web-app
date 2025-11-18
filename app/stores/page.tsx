@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import StorePageClient from "./store-page-client";
+import LayoutProvider from "@/providers/layout-provider";
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = "Stores - Pricetra";
@@ -12,5 +14,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AllStoresPageServer() {
-  return <h1>Stores</h1>;
+  return (
+    <LayoutProvider>
+      <StorePageClient />
+    </LayoutProvider>
+  );
 }
