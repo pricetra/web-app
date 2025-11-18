@@ -42,8 +42,7 @@ import { Button } from "@/components/ui/button";
 import StockItemMini from "@/components/stock-item-mini";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
-import NavbarMain, { NAVBAR_HEIGHT } from "@/components/ui/navbar-main";
-import Footer from "@/components/ui/footer";
+import { NAVBAR_HEIGHT } from "@/components/ui/navbar-main";
 
 export type StockWithApproximatePrice = Stock & {
   approximatePrice?: number;
@@ -203,269 +202,255 @@ export default function ProductPageClient({
   }, [loggedIn, locationInput, favoriteBranchIds, productData, stockData]);
 
   return (
-    <div>
-      <NavbarMain />
-
-      <div className="flex flex-col lg:flex-row gap-4 container mx-auto mt-5 relative">
-        <section className="px-5 w-full flex-1">
-          <div
-            className="lg:sticky flex flex-col gap-5"
-            style={{ top: NAVBAR_HEIGHT + 20 }}
-          >
-            <article>
-              {productData && !productLoading ? (
-                <ProductFull
-                  product={productData.product as Product}
-                  hideDescription
-                />
-              ) : (
-                <ProductFullLoading />
-              )}
-            </article>
-
-            {stockId &&
-              (stockData &&
-              !stockLoading &&
-              productData &&
-              stockData.stock.productId === productData.product.id ? (
-                <div className="my-5">
-                  <div className="rounded-xl bg-gray-50 p-5">
-                    <SelectedStock
-                      stock={stockData.stock as Stock}
-                      quantityType={productData.product.quantityType}
-                      quantityValue={productData.product.quantityValue}
-                    />
-                  </div>
-                </div>
-              ) : (
-                <div className="my-5">
-                  <div className="rounded-xl bg-gray-50 p-5">
-                    <SelectedStockLoading />
-                  </div>
-                </div>
-              ))}
-          </div>
-        </section>
-
-        <section className="w-full flex-2 max-w-full lg:max-w-xl xl:max-w-3xl">
-          <Accordion
-            type="multiple"
-            defaultChecked
-            className="w-full px-5"
-            defaultValue={[
-              "favorite-stores",
-              "available-stocks",
-              "nutrition-facts",
-              "description",
-            ]}
-          >
-            <AccordionItem value="favorite-stores">
-              <AccordionTrigger>Favorite Stores</AccordionTrigger>
-              <AccordionContent>
-                {loggedIn ? (
-                  <>
-                    {productData && favBranchesPriceData && (
-                      <section className="grid grid-cols-2 gap-5 mt-5">
-                        {mappedFavBranches.map(
-                          ({ approximatePrice, ...s }, i) => (
-                            <div
-                              className={cn(
-                                "mb-3",
-                                s.id === 0 && !approximatePrice
-                                  ? "opacity-30"
-                                  : "opacity-100"
-                              )}
-                              key={`${s.id}-${i}-fav-store-stock`}
-                            >
-                              <StockItemMini
-                                stock={s as Stock}
-                                approximatePrice={approximatePrice ?? undefined}
-                                quantityValue={
-                                  productData.product.quantityValue
-                                }
-                                quantityType={productData.product.quantityType}
-                              />
-                            </div>
-                          )
-                        )}
-                      </section>
-                    )}
-                  </>
-                ) : (
-                  <div className="my-10">
-                    <h3 className="text-center text-lg font-bold mb-5">
-                      View prices from your Favorite Stores
-                    </h3>
-
-                    <div className="flex flex-row items-center justify-center gap-5">
-                      <Link
-                        href="/auth/login"
-                        className="bg-gray-800 hover:bg-black text-white md:px-6 rounded-lg shadow-sm hover:shadow-md transition-all font-bold hidden sm:block py-2 px-5 text-sm"
-                      >
-                        Login
-                      </Link>
-                      <Link
-                        href="/auth/signup"
-                        className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white md:px-6 rounded-lg shadow-sm hover:shadow-md transition-all font-bold hidden sm:block py-2 px-5 text-sm"
-                      >
-                        Create Account
-                      </Link>
-                    </div>
-                  </div>
-                )}
-              </AccordionContent>
-            </AccordionItem>
-
-            <AccordionItem value="available-stocks">
-              <AccordionTrigger>Available at</AccordionTrigger>
-              <AccordionContent>
-                {productData && stocksData && (
-                  <section className="grid grid-cols-2 gap-5 mt-5">
-                    {stocksData.getProductStocks.stocks.map((s, i) => (
-                      <div
-                        className="mb-3"
-                        key={`${s.id}-${i}-available-stock`}
-                      >
-                        <StockItemMini
-                          stock={s as Stock}
-                          quantityValue={productData.product.quantityValue}
-                          quantityType={productData.product.quantityType}
-                        />
-                      </div>
-                    ))}
-                  </section>
-                )}
-              </AccordionContent>
-            </AccordionItem>
-
-            {productData && productNutritionData && (
-              <AccordionItem value="nutrition-facts">
-                <AccordionTrigger>Nutrition Facts</AccordionTrigger>
-                <AccordionContent className="flex flex-col gap-4 text-balance">
-                  <div className="mb-5 flex flex-row items-center justify-end gap-2">
-                    <a
-                      className="bg-gray-700 px-3 py-1.5 rounded-md text-white"
-                      href={`https://world.openfoodfacts.org/cgi/product.pl?type=edit&code=${productData.product.code}`}
-                      target="_blank"
-                    >
-                      Edit
-                    </a>
-
-                    <Button
-                      size="sm"
-                      className="cursor-pointer"
-                      onClick={() =>
-                        updateProductNutrition({
-                          variables: { productId: productId },
-                        })
-                      }
-                      disabled={updatingProductNutrition}
-                    >
-                      Refetch
-                    </Button>
-                  </div>
-
-                  {productNutritionData.getProductNutritionData.nutriments && (
-                    <NutritionFacts
-                      {...(productNutritionData.getProductNutritionData as ProductNutrition)}
-                    />
-                  )}
-
-                  {productNutritionData.getProductNutritionData
-                    .ingredientList &&
-                    productNutritionData.getProductNutritionData.ingredientList
-                      .length > 0 && (
-                      <div className="mt-7">
-                        <h5 className="mb-1.5 text-base font-semibold">
-                          Ingredients
-                        </h5>
-                        <p className="text-sm">
-                          {productNutritionData.getProductNutritionData.ingredientList
-                            .map((i) => i.toUpperCase())
-                            .join(", ")}
-                        </p>
-                      </div>
-                    )}
-                </AccordionContent>
-              </AccordionItem>
+    <div className="w-full flex flex-col lg:flex-row gap-4">
+      <section className="px-5 w-full flex-1">
+        <div
+          className="lg:sticky flex flex-col gap-5"
+          style={{ top: NAVBAR_HEIGHT + 20 }}
+        >
+          <article>
+            {productData && !productLoading ? (
+              <ProductFull
+                product={productData.product as Product}
+                hideDescription
+              />
+            ) : (
+              <ProductFullLoading />
             )}
+          </article>
 
-            {productData && productData.product.description.length > 0 && (
-              <AccordionItem value="description">
-                <AccordionTrigger>Description</AccordionTrigger>
-                <AccordionContent className="flex flex-col gap-4 text-balance">
-                  <p>{productData?.product?.description}</p>
-                </AccordionContent>
-              </AccordionItem>
-            )}
+          {stockId &&
+            (stockData &&
+            !stockLoading &&
+            productData &&
+            stockData.stock.productId === productData.product.id ? (
+              <div className="my-5">
+                <div className="rounded-xl bg-gray-50 p-5">
+                  <SelectedStock
+                    stock={stockData.stock as Stock}
+                    quantityType={productData.product.quantityType}
+                    quantityValue={productData.product.quantityValue}
+                  />
+                </div>
+              </div>
+            ) : (
+              <div className="my-5">
+                <div className="rounded-xl bg-gray-50 p-5">
+                  <SelectedStockLoading />
+                </div>
+              </div>
+            ))}
+        </div>
+      </section>
 
-            <AccordionItem value="specifications">
-              <AccordionTrigger>Specifications</AccordionTrigger>
-              <AccordionContent className="flex flex-col gap-4 text-balance">
-                {productData && (
-                  <ProductSpecs product={productData.product as Product} />
-                )}
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
-
-          <section className="w-full mt-[60px]">
-            {!branchesWithProducts
-              ? Array(3)
-                  .fill(0)
-                  .map((_, i) => (
-                    <article
-                      className="my-7"
-                      key={`branch-with-product-loading-${i}`}
-                    >
-                      <div className="mb-5 px-5">
-                        <BranchItemWithLogoLoading />
-                      </div>
-
-                      <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:[mask-image:_linear-gradient(to_right,transparent_0,_black_2em,_black_calc(100%-2em),transparent_100%)]">
-                        {Array(10)
-                          .fill(0)
-                          .map((_, j) => (
-                            <div
-                              className="first:pl-5 last:pr-5"
-                              key={`branch-product-${i}-${j}`}
-                            >
-                              <ProductLoadingItemHorizontal />
-                            </div>
-                          ))}
-                      </div>
-                    </article>
-                  ))
-              : branchesWithProducts.branchesWithProducts.branches.map(
-                  (branch) => (
-                    <article
-                      className="my-7"
-                      key={`branch-with-product-${branch.id}`}
-                    >
-                      <div className="mb-5 px-5">
-                        <BranchItemWithLogo branch={branch as Branch} />
-                      </div>
-
-                      <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:[mask-image:_linear-gradient(to_right,transparent_0,_black_2em,_black_calc(100%-2em),transparent_100%)]">
-                        {(branch.products ?? []).map((product) => (
+      <section className="w-full flex-2 max-w-full lg:max-w-xl xl:max-w-3xl">
+        <Accordion
+          type="multiple"
+          defaultChecked
+          className="w-full px-5"
+          defaultValue={[
+            "favorite-stores",
+            "available-stocks",
+            "nutrition-facts",
+            "description",
+          ]}
+        >
+          <AccordionItem value="favorite-stores">
+            <AccordionTrigger>Favorite Stores</AccordionTrigger>
+            <AccordionContent>
+              {loggedIn ? (
+                <>
+                  {productData && favBranchesPriceData && (
+                    <section className="grid grid-cols-2 gap-5 mt-5">
+                      {mappedFavBranches.map(
+                        ({ approximatePrice, ...s }, i) => (
                           <div
-                            className="first:pl-5 last:pr-5"
-                            key={`branch-product-${branch.id}-${product.id}`}
+                            className={cn(
+                              "mb-3",
+                              s.id === 0 && !approximatePrice
+                                ? "opacity-30"
+                                : "opacity-100"
+                            )}
+                            key={`${s.id}-${i}-fav-store-stock`}
                           >
-                            <ProductItemHorizontal
-                              product={product as Product}
+                            <StockItemMini
+                              stock={s as Stock}
+                              approximatePrice={approximatePrice ?? undefined}
+                              quantityValue={productData.product.quantityValue}
+                              quantityType={productData.product.quantityType}
                             />
                           </div>
-                        ))}
-                      </div>
-                    </article>
-                  )
-                )}
-          </section>
-        </section>
-      </div>
+                        )
+                      )}
+                    </section>
+                  )}
+                </>
+              ) : (
+                <div className="my-10">
+                  <h3 className="text-center text-lg font-bold mb-5">
+                    View prices from your Favorite Stores
+                  </h3>
 
-      <Footer />
+                  <div className="flex flex-row items-center justify-center gap-5">
+                    <Link
+                      href="/auth/login"
+                      className="bg-gray-800 hover:bg-black text-white md:px-6 rounded-lg shadow-sm hover:shadow-md transition-all font-bold hidden sm:block py-2 px-5 text-sm"
+                    >
+                      Login
+                    </Link>
+                    <Link
+                      href="/auth/signup"
+                      className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white md:px-6 rounded-lg shadow-sm hover:shadow-md transition-all font-bold hidden sm:block py-2 px-5 text-sm"
+                    >
+                      Create Account
+                    </Link>
+                  </div>
+                </div>
+              )}
+            </AccordionContent>
+          </AccordionItem>
+
+          <AccordionItem value="available-stocks">
+            <AccordionTrigger>Available at</AccordionTrigger>
+            <AccordionContent>
+              {productData && stocksData && (
+                <section className="grid grid-cols-2 gap-5 mt-5">
+                  {stocksData.getProductStocks.stocks.map((s, i) => (
+                    <div className="mb-3" key={`${s.id}-${i}-available-stock`}>
+                      <StockItemMini
+                        stock={s as Stock}
+                        quantityValue={productData.product.quantityValue}
+                        quantityType={productData.product.quantityType}
+                      />
+                    </div>
+                  ))}
+                </section>
+              )}
+            </AccordionContent>
+          </AccordionItem>
+
+          {productData && productNutritionData && (
+            <AccordionItem value="nutrition-facts">
+              <AccordionTrigger>Nutrition Facts</AccordionTrigger>
+              <AccordionContent className="flex flex-col gap-4 text-balance">
+                <div className="mb-5 flex flex-row items-center justify-end gap-2">
+                  <a
+                    className="bg-gray-700 px-3 py-1.5 rounded-md text-white"
+                    href={`https://world.openfoodfacts.org/cgi/product.pl?type=edit&code=${productData.product.code}`}
+                    target="_blank"
+                  >
+                    Edit
+                  </a>
+
+                  <Button
+                    size="sm"
+                    className="cursor-pointer"
+                    onClick={() =>
+                      updateProductNutrition({
+                        variables: { productId: productId },
+                      })
+                    }
+                    disabled={updatingProductNutrition}
+                  >
+                    Refetch
+                  </Button>
+                </div>
+
+                {productNutritionData.getProductNutritionData.nutriments && (
+                  <NutritionFacts
+                    {...(productNutritionData.getProductNutritionData as ProductNutrition)}
+                  />
+                )}
+
+                {productNutritionData.getProductNutritionData.ingredientList &&
+                  productNutritionData.getProductNutritionData.ingredientList
+                    .length > 0 && (
+                    <div className="mt-7">
+                      <h5 className="mb-1.5 text-base font-semibold">
+                        Ingredients
+                      </h5>
+                      <p className="text-sm">
+                        {productNutritionData.getProductNutritionData.ingredientList
+                          .map((i) => i.toUpperCase())
+                          .join(", ")}
+                      </p>
+                    </div>
+                  )}
+              </AccordionContent>
+            </AccordionItem>
+          )}
+
+          {productData && productData.product.description.length > 0 && (
+            <AccordionItem value="description">
+              <AccordionTrigger>Description</AccordionTrigger>
+              <AccordionContent className="flex flex-col gap-4 text-balance">
+                <p>{productData?.product?.description}</p>
+              </AccordionContent>
+            </AccordionItem>
+          )}
+
+          <AccordionItem value="specifications">
+            <AccordionTrigger>Specifications</AccordionTrigger>
+            <AccordionContent className="flex flex-col gap-4 text-balance">
+              {productData && (
+                <ProductSpecs product={productData.product as Product} />
+              )}
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
+
+        <section className="w-full mt-[60px]">
+          {!branchesWithProducts
+            ? Array(3)
+                .fill(0)
+                .map((_, i) => (
+                  <article
+                    className="my-7"
+                    key={`branch-with-product-loading-${i}`}
+                  >
+                    <div className="mb-5 px-5">
+                      <BranchItemWithLogoLoading />
+                    </div>
+
+                    <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:[mask-image:_linear-gradient(to_right,transparent_0,_black_2em,_black_calc(100%-2em),transparent_100%)]">
+                      {Array(10)
+                        .fill(0)
+                        .map((_, j) => (
+                          <div
+                            className="first:pl-5 last:pr-5"
+                            key={`branch-product-${i}-${j}`}
+                          >
+                            <ProductLoadingItemHorizontal />
+                          </div>
+                        ))}
+                    </div>
+                  </article>
+                ))
+            : branchesWithProducts.branchesWithProducts.branches.map(
+                (branch) => (
+                  <article
+                    className="my-7"
+                    key={`branch-with-product-${branch.id}`}
+                  >
+                    <div className="mb-5 px-5">
+                      <BranchItemWithLogo branch={branch as Branch} />
+                    </div>
+
+                    <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:[mask-image:_linear-gradient(to_right,transparent_0,_black_2em,_black_calc(100%-2em),transparent_100%)]">
+                      {(branch.products ?? []).map((product) => (
+                        <div
+                          className="first:pl-5 last:pr-5"
+                          key={`branch-product-${branch.id}-${product.id}`}
+                        >
+                          <ProductItemHorizontal product={product as Product} />
+                        </div>
+                      ))}
+                    </div>
+                  </article>
+                )
+              )}
+        </section>
+      </section>
     </div>
   );
 }

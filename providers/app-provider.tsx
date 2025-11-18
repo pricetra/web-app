@@ -9,6 +9,7 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
 import { NavbarProvider } from "@/context/navbar-context";
+import LayoutProvider from "./layout-provider";
 
 dayjs.extend(localizedFormat);
 dayjs.extend(relativeTime);
@@ -24,7 +25,9 @@ export default function AppProvider({ children }: AppProviderProps) {
       <ApolloWrapper>
         <UserContextProvider>
           <LocationContextProvider>
-            <NavbarProvider>{children}</NavbarProvider>
+            <NavbarProvider>
+              <LayoutProvider>{children}</LayoutProvider>
+            </NavbarProvider>
           </LocationContextProvider>
         </UserContextProvider>
       </ApolloWrapper>
