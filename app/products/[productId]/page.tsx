@@ -8,6 +8,7 @@ import { fetchGraphql } from "@/lib/graphql-client-ssr";
 import ProductPageClient from "./product-page-client";
 import { notFound } from "next/navigation";
 import { cache } from "react";
+import LayoutProvider from "@/providers/layout-provider";
 
 type Props = {
   params: Promise<{ productId: string }>;
@@ -73,11 +74,13 @@ export default async function LandingPageServer({
   }
 
   return (
-    <ProductPageClient
-      productId={parsedProductId}
-      stockId={parsedStockId}
-      sharedBy={parsedSharedById}
-      sharedFrom={sharedFrom}
-    />
+    <LayoutProvider>
+      <ProductPageClient
+        productId={parsedProductId}
+        stockId={parsedStockId}
+        sharedBy={parsedSharedById}
+        sharedFrom={sharedFrom}
+      />
+    </LayoutProvider>
   );
 }
