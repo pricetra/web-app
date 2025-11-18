@@ -17,38 +17,40 @@ export default function NavbarMain() {
         style={{ height: NAVBAR_HEIGHT }}
       >
         <div className="container mx-auto flex items-center justify-between px-5 md:px-8 gap-5 h-full">
-          <div className="logo">
-            <Link href="/" className="p-3 block">
-              <Image
-                src="/logotype_header_black.svg"
-                alt="Pricetra"
-                width={210}
-                height={40}
-                className="h-[23px] hidden sm:block w-auto color-white"
-                priority
-              />
+          <div className="flex flex-row gap-3 items-center justify-start flex-1 max-w-2xl w-full">
+            <div className="logo">
+              <Link href="/" className="p-3 block">
+                <Image
+                  src="/logotype_header_black.svg"
+                  alt="Pricetra"
+                  width={210}
+                  height={40}
+                  className="h-[23px] hidden md:block w-auto color-white"
+                  priority
+                />
 
-              <Image
-                src="/logo_black_color_dark_leaf.svg"
-                alt="Pricetra"
-                width={210}
-                height={40}
-                className="h-[23px] block sm:hidden w-auto color-white"
-                priority
-              />
-            </Link>
-          </div>
+                <Image
+                  src="/logo_black_color_dark_leaf.svg"
+                  alt="Pricetra"
+                  width={210}
+                  height={40}
+                  className="h-[23px] block md:hidden w-auto color-white"
+                  priority
+                />
+              </Link>
+            </div>
 
-          <div className="middle flex-1">
-            <InputGroup className="rounded-md bg-gray-100 px-2 py-3 border-transparent">
-              <InputGroupInput placeholder="Search..." />
-              <InputGroupAddon className="ml-0 mr-2">
-                <IoIosSearch className="size-[20px]" />
-              </InputGroupAddon>
-              {/* <InputGroupAddon align="inline-end">
-                <InputGroupButton>Search</InputGroupButton>
-              </InputGroupAddon> */}
-            </InputGroup>
+            <div className="search-bar flex-1">
+              <InputGroup className="rounded-md bg-gray-100 px-0 sm:px-2 py-3 border-transparent text-xs sm:text-base">
+                <InputGroupInput
+                  placeholder="Search..."
+                  className="text-sm sm:text-base"
+                />
+                <InputGroupAddon className="ml-0 mr-1 sm:mr-2">
+                  <IoIosSearch className="size-[17px] sm:size-[20px]" />
+                </InputGroupAddon>
+              </InputGroup>
+            </div>
           </div>
 
           <div className="right">
@@ -82,7 +84,7 @@ export default function NavbarMain() {
                   quality={100}
                 />
 
-                <div className="flex-1 flex-col hidden max-w-[130px] md:flex">
+                <div className="flex-1 flex-col hidden max-w-[130px] lg:flex">
                   <h4 className="font-semibold text-xs line-clamp-1">
                     {user.name}
                   </h4>
