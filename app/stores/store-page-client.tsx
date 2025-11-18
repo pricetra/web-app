@@ -39,7 +39,7 @@ export default function StorePageClient() {
   }, [setPageIndicator]);
 
   return (
-    <div className="px-5 mt-10">
+    <div className="px-5 mt-0 sm:mt-10">
       {data?.allStores ? (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-3 gap-y-7">
           {data.allStores.stores.map((s, i) => (
