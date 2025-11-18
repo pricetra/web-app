@@ -2,11 +2,14 @@ import {
   FindStoreDocument,
   FindStoreQuery,
   FindStoreQueryVariables,
+  Store,
 } from "@/graphql/types/graphql";
 import { fetchGraphql } from "@/lib/graphql-client-ssr";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache } from "react";
+import SelectedStorePageClient from "./selected-store-page-client";
+import LayoutProvider from "@/providers/layout-provider";
 
 const cachedStore = cache(async (store: string) => {
   const storeId = parseInt(store, 10);
@@ -47,10 +50,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function LandingPageServer({ params }: Props) {
+export default async function SelectedStorePageServer({ params }: Props) {
   const { store } = await params;
   const storeData = await cachedStore(store);
   if (!storeData) notFound();
 
-  return <h1>{storeData.name} store page</h1>;
+  return (
+    <LayoutProvider>
+      <SelectedStorePageClient store={storeData as Store} />
+    </LayoutProvider>
+  );
 }

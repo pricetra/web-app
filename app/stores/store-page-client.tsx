@@ -36,7 +36,8 @@ export default function StorePageClient() {
     return () => {
       resetAll();
     };
-  }, [setPageIndicator]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="px-5 mt-0 sm:mt-10">
