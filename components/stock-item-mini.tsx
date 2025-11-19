@@ -7,6 +7,7 @@ import { currencyFormat, getPriceUnitOrEach } from "@/lib/strings";
 import { cn, metersToMiles } from "@/lib/utils";
 import Image from 'next/image'
 import { useMemo } from "react";
+import Link from "next/link";
 
 export type StockItemMiniProps = {
   stock: Stock;
@@ -38,7 +39,10 @@ export default function StockItemMini({
 
   return (
     <div className="flex flex-col gap-2">
-      <div className={cn("flex gap-2", stackLogo ? "flex-col" : "flex-row")}>
+      <Link
+        href={stock.id !== 0 ? `?stockId=${stock.id}` : "#"}
+        className={cn("flex gap-2", stackLogo ? "flex-col" : "flex-row")}
+      >
         <Image
           src={createCloudinaryUrl(stock.store.logo, 100, 100)}
           className="size-[30px] sm:size-[40px] rounded-lg border-[1px] border-gray-100"
@@ -120,7 +124,7 @@ export default function StockItemMini({
             )}
           </div>
         </div>
-      </div>
+      </Link>
 
       {stock.latestPrice?.sale && !isExpired && (
         <div className="flex flex-col gap-1">
