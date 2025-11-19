@@ -2,6 +2,7 @@
 import BranchItemWithLogo, {
   BranchItemWithLogoLoading,
 } from "@/components/branch-item-with-logo";
+import LoginSignupButtons from "@/components/login-signup-buttons";
 import ProductItemHorizontal, {
   ProductLoadingItemHorizontal,
 } from "@/components/product-item-horizontal";
@@ -9,6 +10,7 @@ import StoreMini, {
   StoreMiniLoading,
   StoreMiniShowMore,
 } from "@/components/store-mini";
+import { useAuth } from "@/context/user-context";
 import {
   AllStoresDocument,
   Branch,
@@ -19,6 +21,7 @@ import useLocationInput from "@/hooks/useLocationInput";
 import { useQuery } from "@apollo/client/react";
 
 export default function HomePageClient() {
+  const { loggedIn } = useAuth();
   const location = useLocationInput();
   const { data: allStoresData } = useQuery(AllStoresDocument, {
     fetchPolicy: "cache-first",
@@ -41,7 +44,29 @@ export default function HomePageClient() {
   );
 
   return (
-    <div className="w-full max-w-[1000px] mt-8">
+    <div className="w-full max-w-[1000px] mt-5">
+      {!loggedIn && (
+        <div className="px-5 sm:px-0 mb-10">
+          <div className="text-center bg-gray-50 border-1 border-gray-200 px-7 py-8 sm:py-10 rounded-xl">
+            <div className="max-w-4xl mx-auto">
+              <h1 className="text-3xl md:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
+                Beat Inflation. <span>Track Prices.</span>{" "}
+                <span className="text-pricetra-green-dark">Save Money.</span>
+              </h1>
+            </div>
+            <p className="mt-5 text-sm md:text-base text-slate-800 max-w-3xl mx-auto">
+              Pricetra is a community-powered price tracking app that helps
+              shoppers discover the best deals nearby. Compare prices, and get
+              notified when prices change.
+            </p>
+
+            <div className="mt-10">
+              <LoginSignupButtons />
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-5 lg:grid-cols-10 gap-x-2 gap-y-5 sm:gap-5 px-5 mb-10">
         {!allStoresData ? (
           Array(10)
