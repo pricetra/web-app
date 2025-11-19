@@ -26,7 +26,7 @@ export default function NavbarMain() {
             <div className="page-indicator flex flex-row items-center justify-start">
               <Link
                 href="/home"
-                className="min-h-[35px] flex flex-row items-center justify-center"
+                className="min-h-[35px] min-w-[35px] flex flex-row items-center justify-center"
               >
                 {pageIndicator || hideLogotype ? (
                   <Image
@@ -61,7 +61,7 @@ export default function NavbarMain() {
               </Link>
 
               {pageIndicator && (
-                <div className="flex flex-row items-center ml-3 sm:mr-3 mr-0 pl-3 gap-2 justify-start border-l-[1px] border-gray-200 min-h-[35px]">
+                <div className="flex flex-1 flex-row items-center ml-3 sm:mr-3 mr-0 pl-3 gap-2 justify-start border-l-[1px] border-gray-200 min-h-[35px]">
                   {pageIndicator}
                 </div>
               )}

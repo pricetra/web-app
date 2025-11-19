@@ -8,6 +8,7 @@ import { useLayoutEffect } from "react";
 import { MdStorefront } from "react-icons/md";
 import Image from "next/image";
 import Link from "next/link";
+import NavPageIndicator from "@/components/ui/nav-page-indicator";
 
 export default function StorePageClient() {
   const { setPageIndicator, resetAll } = useNavbar();
@@ -21,17 +22,7 @@ export default function StorePageClient() {
   });
 
   useLayoutEffect(() => {
-    setPageIndicator(
-      <>
-        <div className="flex size-[35px] items-center justify-center rounded-full bg-pricetraGreenHeavyDark/10">
-          <MdStorefront size={20} name="storefront" color="#396a12" />
-        </div>
-
-        <h2 className="font-bold line-clamp-1 break-all flex-1 sm:text-base text-sm">
-          Stores
-        </h2>
-      </>
-    );
+    setPageIndicator(<NavPageIndicator title="Stores" icon={MdStorefront} />);
 
     return () => {
       resetAll();

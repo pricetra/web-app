@@ -9,7 +9,6 @@ import {
 } from "@/graphql/types/graphql";
 import { createCloudinaryUrl } from "@/lib/files";
 import { useLayoutEffect } from "react";
-import Image from "next/image";
 import { useQuery } from "@apollo/client/react";
 import BranchItemWithLogo, {
   BranchItemWithLogoLoading,
@@ -18,6 +17,7 @@ import ProductItemHorizontal, {
   ProductLoadingItemHorizontal,
 } from "@/components/product-item-horizontal";
 import useLocationInput from "@/hooks/useLocationInput";
+import NavPageIndicator from "@/components/ui/nav-page-indicator";
 
 export default function SelectedStorePageClient({ store }: { store: Store }) {
   const { setPageIndicator, resetAll } = useNavbar();
@@ -45,20 +45,10 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
 
   useLayoutEffect(() => {
     setPageIndicator(
-      <>
-        <Image
-          alt={store.name}
-          src={createCloudinaryUrl(store.logo, 100, 100)}
-          width={100}
-          height={100}
-          quality={100}
-          className="flex size-[30px] items-center justify-center rounded-md bg-white"
-        />
-
-        <h2 className="font-bold line-clamp-1 break-all flex-1 sm:text-sm text-xs leading-none">
-          {store.name}
-        </h2>
-      </>
+      <NavPageIndicator
+        title={store.name}
+        imgSrc={createCloudinaryUrl(store.logo, 100, 100)}
+      />
     );
 
     return () => {

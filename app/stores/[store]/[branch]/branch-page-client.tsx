@@ -9,10 +9,9 @@ import {
 } from "@/graphql/types/graphql";
 import { createCloudinaryUrl } from "@/lib/files";
 import { useLayoutEffect } from "react";
-import Image from "next/image";
 import { useQuery } from "@apollo/client/react";
 import ProductItem from "@/components/product-item";
-import Link from "next/link";
+import NavPageIndicator from "@/components/ui/nav-page-indicator";
 
 export default function BranchPageClient({
   store,
@@ -39,32 +38,13 @@ export default function BranchPageClient({
 
   useLayoutEffect(() => {
     setPageIndicator(
-      <>
-        <Link href={`/stores/${store.slug}`} className="block">
-          <Image
-            alt={store.name}
-            src={createCloudinaryUrl(store.logo, 100, 100)}
-            width={100}
-            height={100}
-            quality={100}
-            className="flex size-[30px] items-center justify-center rounded-sm bg-white"
-          />
-        </Link>
-
-        <div className="flex flex-col gap-1">
-          <Link href={`/stores/${store.slug}`}>
-            <h2 className="font-bold line-clamp-1 break-all flex-1 sm:text-sm text-xs leading-none">
-              {store.name}
-            </h2>
-          </Link>
-
-          <a href={branch.address.mapsLink} className="block">
-            <span className="break-all line-clamp-1 text-[10px] leading-none block hover:underline">
-              {branch.address.fullAddress}
-            </span>
-          </a>
-        </div>
-      </>
+      <NavPageIndicator
+        title={store.name}
+        href={`/stores/${store.slug}`}
+        imgSrc={createCloudinaryUrl(store.logo, 100, 100)}
+        subTitle={branch.address.fullAddress}
+        subTitleHref={branch.address.mapsLink}
+      />
     );
 
     return () => {
