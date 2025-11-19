@@ -55,7 +55,7 @@ export default function StockItemMini({
           {(stock.branch.address?.distance || sale) && (
             <div className="flex flex-row items-center gap-1 sm:gap-2">
               {sale && (
-                <div className="mb-1 rounded-full bg-red-700 p-2 sm:p-2.5">
+                <div className="mb-1 rounded-full bg-red-700 px-1.5 py-2 sm:px-2 sm:py-2.5">
                   <span className="text-[8px] sm:text-[10px] text-white leading-0 block font-bold">
                     SALE
                   </span>
@@ -63,7 +63,7 @@ export default function StockItemMini({
               )}
 
               {stock.branch.address?.distance && (
-                <div className="mb-1 rounded-full bg-pricetraGreenDark/10 p-2 sm:p-2.5">
+                <div className="mb-1 rounded-full bg-pricetraGreenDark/10 px-1.5 py-2 sm:px-2 sm:py-2.5">
                   <span className="text-[8px] sm:text-[10px] text-pricetraGreenHeavyDark leading-0 block">
                     {metersToMiles(stock.branch.address.distance)} mi
                   </span>
