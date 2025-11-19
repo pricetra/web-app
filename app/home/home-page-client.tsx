@@ -44,7 +44,7 @@ export default function HomePageClient() {
   );
 
   return (
-    <div className="w-full max-w-[1000px] mt-5">
+    <div className="w-full max-w-[1000px] mt-10">
       {!loggedIn && (
         <div className="px-5 lg:px-0 mb-10">
           <div className="text-center bg-gray-50 border-1 border-gray-200 px-7 py-8 sm:py-10 rounded-xl">

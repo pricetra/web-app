@@ -52,10 +52,10 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
           width={100}
           height={100}
           quality={100}
-          className="flex size-[35px] items-center justify-center rounded-md bg-white"
+          className="flex size-[30px] items-center justify-center rounded-md bg-white"
         />
 
-        <h2 className="font-bold line-clamp-1 break-all flex-1 sm:text-base text-sm">
+        <h2 className="font-bold line-clamp-1 break-all flex-1 sm:text-sm text-xs leading-none">
           {store.name}
         </h2>
       </>

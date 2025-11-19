@@ -1,0 +1,76 @@
+import {
+  Branch,
+  BranchDocument,
+  BranchQuery,
+  BranchQueryVariables,
+  Store,
+} from "@/graphql/types/graphql";
+import { fetchGraphql } from "@/lib/graphql-client-ssr";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { cache } from "react";
+import LayoutProvider from "@/providers/layout-provider";
+import BranchPageClient from "./branch-page-client";
+
+const cachedStoreAndBranch = cache(async (store: string, branch: string) => {
+  const storeId = parseInt(store, 10);
+  const branchId = parseInt(branch, 10);
+
+  const queryVars: BranchQueryVariables = {};
+  if (isNaN(storeId)) {
+    // store might be a slug
+    queryVars.storeSlug = store;
+  } else {
+    queryVars.storeId = storeId;
+  }
+
+  if (isNaN(branchId)) {
+    // store might be a slug
+    queryVars.branchSlug = branch;
+  } else {
+    queryVars.branchId = branchId;
+  }
+
+  const { data } = await fetchGraphql<BranchQueryVariables, BranchQuery>(
+    BranchDocument,
+    "query",
+    queryVars
+  );
+  if (!data || !data.findStore) return null;
+
+  return data;
+});
+
+type Props = {
+  params: Promise<{ store: string; branch: string }>;
+};
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { store, branch } = await params;
+  const storeData = await cachedStoreAndBranch(store, branch);
+  if (!storeData) return {};
+
+  const title = `${storeData.findBranch.name} - Pricetra`;
+  return {
+    title,
+    openGraph: {
+      title,
+      url: `https://pricetra.com/stores/${storeData.findStore.slug}/${storeData.findBranch.slug}`,
+    },
+  };
+}
+
+export default async function StoreBranchPageServer({ params }: Props) {
+  const { store, branch } = await params;
+  const storeData = await cachedStoreAndBranch(store, branch);
+  if (!storeData) notFound();
+
+  return (
+    <LayoutProvider>
+      <BranchPageClient
+        store={storeData.findStore as Store}
+        branch={storeData.findBranch as Branch}
+      />
+    </LayoutProvider>
+  );
+}
