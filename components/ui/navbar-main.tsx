@@ -23,7 +23,7 @@ export default function NavbarMain() {
           <div className="flex flex-row gap-6 items-center justify-start flex-1 w-full max-w-4xl pl-5 pr-0 sm:pr-5">
             <div className="page-indicator flex flex-row items-center justify-start">
               <Link
-                href="/"
+                href="/home"
                 className="min-h-[35px] flex flex-row items-center justify-center"
               >
                 {pageIndicator || hideLogotype ? (

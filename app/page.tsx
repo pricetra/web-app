@@ -1,7 +1,9 @@
 import LandingPage from "@/app/landing-page-client";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 import type { Metadata } from "next";
 import { getIpAddressFromRequestHeaders } from "@/lib/strings";
+import { AUTH_TOKEN_KEY } from "@/lib/cookies";
+import { redirect } from "next/navigation";
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = "Pricetra - Your Price Tracking Companion";
@@ -21,6 +23,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function LandingPageServer() {
+  const cookieStore = await cookies();
+  if (cookieStore.get(AUTH_TOKEN_KEY)) {
+    redirect("/home");
+  }
   const headerList = await headers();
   let ipAddress =
     getIpAddressFromRequestHeaders(headerList) ?? "46.110.121.165";

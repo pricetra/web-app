@@ -5,12 +5,14 @@ import { ReactNode } from "react";
 
 export default function LayoutProvider({ children }: { children: ReactNode }) {
   return (
-    <>
+    <main>
       <NavbarMain />
 
-      <div className="container mx-auto mt-5 relative">{children}</div>
+      <div className="container mx-auto mt-5 relative overflow-hidden">
+        {children}
+      </div>
 
       <Footer />
-    </>
+    </main>
   );
 }
