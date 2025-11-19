@@ -2,29 +2,44 @@ import { Branch } from '@/graphql/types/graphql';
 import { createCloudinaryUrl } from '@/lib/files';
 import { metersToMiles } from '@/lib/utils';
 import Image from "next/image"
+import { useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 
 export type BranchItemWithLogoProps = {
   branch: Branch;
+  hideStoreLogo?: boolean;
+  branchName?: boolean;
+  cityName?: boolean;
 };
 
 export default function BranchItemWithLogo({
   branch,
+  hideStoreLogo = false,
+  branchName = false,
+  cityName = false,
 }: BranchItemWithLogoProps) {
+  const name = useMemo(() => {
+    if (branchName) return branch.name;
+    if (cityName && branch.address) return branch.address.city;
+    return branch.store?.name ?? branch.name;
+  }, [branch, cityName, branchName]);
+
   return (
     <div className="flex flex-row justify-between gap-5">
       <div className="flex flex-1 flex-row gap-4">
-        <Image
-          src={createCloudinaryUrl(branch.store?.logo ?? "", 500, 500)}
-          className="size-[40px] sm:size-[50px] rounded-lg border-[1px] border-gray-200"
-          width={500}
-          height={500}
-          alt={branch.name}
-        />
+        {!hideStoreLogo && (
+          <Image
+            src={createCloudinaryUrl(branch.store?.logo ?? "", 500, 500)}
+            className="size-[40px] sm:size-[50px] rounded-lg border-[1px] border-gray-200"
+            width={500}
+            height={500}
+            alt={branch.name}
+          />
+        )}
         <div className="flex flex-col pr-[60px]">
           <div className="flex w-full flex-row flex-nowrap items-center gap-x-3">
             <h5 className="sm:text-lg font-bold line-clamp-1 break-all">
-              {branch.store?.name}
+              {name}
             </h5>
 
             {branch.address?.distance && (
@@ -45,14 +60,20 @@ export default function BranchItemWithLogo({
   );
 }
 
-export function BranchItemWithLogoLoading() {
+export function BranchItemWithLogoLoading({
+  hideStoreLogo = false,
+}: {
+  hideStoreLogo?: boolean;
+}) {
   return (
     <div className="flex flex-row justify-between gap-5">
       <div className="flex flex-1 flex-row gap-4">
-        <Skeleton
-          className="size-[40px] rounded-xl"
-          style={{ width: 40, borderRadius: 7 }}
-        />
+        {!hideStoreLogo && (
+          <Skeleton
+            className="size-[40px] rounded-xl"
+            style={{ width: 40, borderRadius: 7 }}
+          />
+        )}
         <div className="flex flex-row pr-[60px] flex-wrap">
           <div className="flex w-full flex-row flex-wrap items-center gap-3">
             <Skeleton
