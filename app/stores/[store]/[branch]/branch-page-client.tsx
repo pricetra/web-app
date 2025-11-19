@@ -44,6 +44,7 @@ export default function BranchPageClient({
         imgSrc={createCloudinaryUrl(store.logo, 100, 100)}
         subTitle={branch.address.fullAddress}
         subTitleHref={branch.address.mapsLink}
+        subTitleHrefTargetBlank
       />
     );
 

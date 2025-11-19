@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { IconType } from "react-icons/lib";
@@ -9,6 +10,7 @@ export type NavPageIndicatorProps = {
   imgSrc?: string;
   subTitle?: string;
   subTitleHref?: string;
+  subTitleHrefTargetBlank?: boolean;
 };
 
 export default function NavPageIndicator({
@@ -18,6 +20,7 @@ export default function NavPageIndicator({
   imgSrc,
   subTitle,
   subTitleHref,
+  subTitleHrefTargetBlank = false,
 }: NavPageIndicatorProps) {
   return (
     <Link
@@ -43,14 +46,18 @@ export default function NavPageIndicator({
         )}
       </div>
 
-      <div className="flex flex-col gap-1 w-full max-w-[200px]">
+      <div className="flex flex-col w-full max-w-[200px]">
         <h2 className="font-bold line-clamp-1 break-all flex-1 sm:text-sm text-xs">
           {title}
         </h2>
 
         {subTitle && (
-          <a href={subTitleHref} className="hover:underline">
-            <span className="line-clamp-1 break-all text-[10px]">
+          <a
+            href={subTitleHref}
+            target={subTitleHrefTargetBlank ? "_blank" : undefined}
+            className={cn("", subTitleHref ? "hover:underline" : "")}
+          >
+            <span className="line-clamp-1 break-all text-[10px] block">
               {subTitle}
             </span>
           </a>
