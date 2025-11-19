@@ -41,8 +41,8 @@ import NutritionFacts from "@/components/nutrition-facts";
 import { Button } from "@/components/ui/button";
 import StockItemMini from "@/components/stock-item-mini";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
 import { NAVBAR_HEIGHT } from "@/components/ui/navbar-main";
+import LoginSignupButtons from "@/components/login-signup-buttons";
 
 export type StockWithApproximatePrice = Stock & {
   approximatePrice?: number;
@@ -199,6 +199,7 @@ export default function ProductPageClient({
       };
     }
     getBranchProducts({ variables });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedIn, locationInput, favoriteBranchIds, productData, stockData]);
 
   return (
@@ -291,20 +292,7 @@ export default function ProductPageClient({
                     View prices from your Favorite Stores
                   </h3>
 
-                  <div className="flex flex-row items-center justify-center gap-5">
-                    <Link
-                      href="/auth/login"
-                      className="bg-gray-800 hover:bg-black text-white md:px-6 rounded-lg shadow-sm hover:shadow-md transition-all font-bold hidden sm:block py-2 px-5 text-sm"
-                    >
-                      Login
-                    </Link>
-                    <Link
-                      href="/auth/signup"
-                      className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white md:px-6 rounded-lg shadow-sm hover:shadow-md transition-all font-bold hidden sm:block py-2 px-5 text-sm"
-                    >
-                      Create Account
-                    </Link>
-                  </div>
+                  <LoginSignupButtons />
                 </div>
               )}
             </AccordionContent>

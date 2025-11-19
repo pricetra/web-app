@@ -6,12 +6,14 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "./input-group";
 import { IoIosSearch } from "react-icons/io";
 import { useNavbar } from "@/context/navbar-context";
 import { Button } from "./button";
+import { usePathname } from "next/navigation";
 
 export const NAVBAR_HEIGHT = 60;
 
 export default function NavbarMain() {
   const { loggedIn, user } = useAuth();
   const { pageIndicator, hideLogotype } = useNavbar();
+  const pathname = usePathname();
 
   return (
     <>
@@ -86,13 +88,13 @@ export default function NavbarMain() {
             {!loggedIn || !user ? (
               <>
                 <Link
-                  href="/auth/login"
+                  href={`/auth/login?return=${pathname}`}
                   className="text-pricetra-green-heavy-dark hover:text-pricetra-green-heavy-dark hover:bg-pricetra-green-logo/10 md:px-4 font-bold rounded-lg py-2 px-5 text-sm"
                 >
                   Login
                 </Link>
                 <Link
-                  href="/auth/signup"
+                  href={`/auth/signup?return=${pathname}`}
                   className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white md:px-6 rounded-lg shadow-sm hover:shadow-md transition-all font-bold hidden sm:block py-2 px-5 text-sm"
                 >
                   Sign Up
