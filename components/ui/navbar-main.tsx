@@ -5,6 +5,7 @@ import { useAuth } from "@/context/user-context";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "./input-group";
 import { IoIosSearch } from "react-icons/io";
 import { useNavbar } from "@/context/navbar-context";
+import { Button } from "./button";
 
 export const NAVBAR_HEIGHT = 60;
 
@@ -19,7 +20,7 @@ export default function NavbarMain() {
         style={{ height: NAVBAR_HEIGHT }}
       >
         <div className="container mx-auto flex items-center justify-between gap-5 h-full">
-          <div className="flex flex-row gap-6 items-center justify-start flex-1 max-w-2xl w-full pl-5 pr-0 sm:pr-5">
+          <div className="flex flex-row gap-6 items-center justify-start flex-1 w-full max-w-4xl pl-5 pr-0 sm:pr-5">
             <div className="page-indicator flex flex-row items-center justify-start">
               <Link
                 href="/"
@@ -64,7 +65,7 @@ export default function NavbarMain() {
               )}
             </div>
 
-            <div className="search-bar flex-1">
+            <div className="search-bar flex-1 hidden sm:block">
               <InputGroup className="rounded-md bg-gray-100 px-0 sm:px-2 py-3 border-transparent text-xs sm:text-base shadow-none">
                 <InputGroupInput
                   placeholder="Search..."
@@ -77,9 +78,13 @@ export default function NavbarMain() {
             </div>
           </div>
 
-          <div className="right pr-5">
+          <div className="right pr-5 flex gap-2 items-center flex-nowrap">
+            <Button variant="ghost" className="block sm:hidden">
+              <IoIosSearch className="size-[20px]" />
+            </Button>
+
             {!loggedIn || !user ? (
-              <div className="flex items-center gap-2">
+              <>
                 <Link
                   href="/auth/login"
                   className="text-pricetra-green-heavy-dark hover:text-pricetra-green-heavy-dark hover:bg-pricetra-green-logo/10 md:px-4 font-bold rounded-lg py-2 px-5 text-sm"
@@ -92,9 +97,12 @@ export default function NavbarMain() {
                 >
                   Sign Up
                 </Link>
-              </div>
+              </>
             ) : (
-              <div className="flex gap-2 items-center flex-nowrap">
+              <Link
+                href="/auth/logout"
+                className="flex flex-row items-center gap-2"
+              >
                 <Image
                   src={createCloudinaryUrl(
                     user.avatar ?? "f89a1553-b74e-426c-a82a-359787168a53",
@@ -102,7 +110,7 @@ export default function NavbarMain() {
                     100
                   )}
                   alt="Avatar"
-                  className="rounded-full size-8"
+                  className="rounded-full size-7"
                   width={50}
                   height={50}
                   quality={100}
@@ -116,7 +124,7 @@ export default function NavbarMain() {
                     {user.email}
                   </h5>
                 </div>
-              </div>
+              </Link>
             )}
           </div>
         </div>
