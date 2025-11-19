@@ -8,9 +8,7 @@ export default function LayoutProvider({ children }: { children: ReactNode }) {
     <main>
       <NavbarMain />
 
-      <div className="container mx-auto mt-5 relative overflow-hidden">
-        {children}
-      </div>
+      <div className="container mx-auto mt-5 relative">{children}</div>
 
       <Footer />
     </main>

@@ -204,9 +204,9 @@ export default function ProductPageClient({
 
   return (
     <div className="w-full flex flex-col lg:flex-row gap-4">
-      <section className="px-5 w-full flex-1">
+      <section className="w-full flex-1 relative">
         <div
-          className="lg:sticky flex flex-col gap-5"
+          className="lg:sticky flex flex-col gap-5 left-0 p-5 bg-white"
           style={{ top: NAVBAR_HEIGHT + 20 }}
         >
           <article>
