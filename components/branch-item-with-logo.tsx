@@ -30,7 +30,10 @@ export default function BranchItemWithLogo({
     <div className="flex flex-row justify-between gap-2">
       <div className="flex flex-1 flex-row gap-4">
         {!hideStoreLogo && (
-          <Link href={`/stores/${branch.storeSlug}`} className="block">
+          <Link
+            href={`/stores/${branch.storeSlug}`}
+            className="block min-w-[40px] sm:min-w-[50px]"
+          >
             <Image
               src={createCloudinaryUrl(branch.store?.logo ?? "", 500, 500)}
               className="size-[40px] sm:size-[50px] rounded-lg border-[1px] border-gray-200"
@@ -40,12 +43,12 @@ export default function BranchItemWithLogo({
             />
           </Link>
         )}
-        <div className="flex flex-col pr-[60px]">
+        <div className="flex flex-col flex-1">
           <Link
             href={`/stores/${branch.storeSlug}/${branch.slug}`}
             className="flex w-full flex-row flex-nowrap items-center gap-x-3"
           >
-            <h5 className="sm:text-lg font-bold line-clamp-1 break-all">
+            <h5 className="text-sm xs:text-base sm:text-lg font-bold line-clamp-1 break-all">
               {name}
             </h5>
 
