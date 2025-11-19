@@ -61,7 +61,7 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
     }).then(({ data }) => {
       if (!data) return;
       setAuthCookie(data.login.token);
-      router.push("/");
+      router.replace(searchParams.get("return") ?? "/home");
     });
   }
 
@@ -76,7 +76,7 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
       }).then(({ data }) => {
         if (!data) return;
         setAuthCookie(data.googleOAuth.token);
-        router.push("/");
+        router.replace(searchParams.get("return") ?? "/home");
       });
     },
     onError: (err) => {
