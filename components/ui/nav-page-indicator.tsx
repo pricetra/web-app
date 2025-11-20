@@ -23,11 +23,8 @@ export default function NavPageIndicator({
   subTitleHrefTargetBlank = false,
 }: NavPageIndicatorProps) {
   return (
-    <Link
-      href={href}
-      className="flex flex-row items-center gap-2 justify-start"
-    >
-      <div className="block min-w-[35px]">
+    <div className="flex flex-row items-center gap-2 justify-start">
+      <Link href={href} className="block min-w-[35px]">
         {imgSrc && (
           <Image
             alt={title}
@@ -44,25 +41,28 @@ export default function NavPageIndicator({
             <Icon size={20} color="#396a12" />
           </div>
         )}
-      </div>
+      </Link>
 
-      <div className="flex flex-col w-full max-w-[200px]">
-        <h2 className="font-bold line-clamp-1 break-all flex-1 sm:text-sm text-xs">
-          {title}
-        </h2>
+      <div className="flex flex-col w-full max-w-[200px] flex-1">
+        <Link href={href}>
+          <h2 className="font-bold line-clamp-1 break-all sm:text-sm text-xs">
+            {title}
+          </h2>
+        </Link>
 
         {subTitle && (
           <a
             href={subTitleHref}
             target={subTitleHrefTargetBlank ? "_blank" : undefined}
-            className={cn("", subTitleHref ? "hover:underline" : "")}
+            className={cn(
+              "line-clamp-1 break-all text-[10px]",
+              subTitleHref ? "hover:underline" : ""
+            )}
           >
-            <span className="line-clamp-1 break-all text-[10px] block">
-              {subTitle}
-            </span>
+            {subTitle}
           </a>
         )}
       </div>
-    </Link>
+    </div>
   );
 }

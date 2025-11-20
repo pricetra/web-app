@@ -68,10 +68,10 @@ export default function NavbarMain() {
             </div>
 
             <div className="search-bar flex-1 hidden sm:block">
-              <InputGroup className="rounded-md bg-gray-100 px-0 sm:px-2 py-3 border-transparent text-xs sm:text-base shadow-none">
+              <InputGroup className="rounded-md bg-gray-100 px-0 sm:px-2 py-3 border-transparent text-xs sm:text-sm shadow-none">
                 <InputGroupInput
                   placeholder="Search..."
-                  className="text-sm sm:text-base"
+                  className="text-xs sm:text-sm"
                 />
                 <InputGroupAddon className="ml-0 mr-1 sm:mr-2">
                   <IoIosSearch className="size-[17px] sm:size-[20px]" />
