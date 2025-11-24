@@ -16,6 +16,7 @@ import { FaHandSparkles } from "react-icons/fa";
 import { useAuth } from "@/context/user-context";
 import { isRoleAuthorized } from "@/lib/roles";
 import { useMutation } from "@apollo/client/react";
+import { CgSpinner } from "react-icons/cg";
 
 export type ProductFullProps = {
   product: Product;
@@ -34,10 +35,13 @@ export default function ProductFull({
       product.category ? categoriesFromChild(product.category) : undefined,
     [product.category]
   );
-  const [sanitizeProduct] = useMutation(SanitizeProductDocument, {
-    variables: { id: product.id },
-    refetchQueries: [ProductDocument],
-  });
+  const [sanitizeProduct, { loading: sanitizing }] = useMutation(
+    SanitizeProductDocument,
+    {
+      variables: { id: product.id },
+      refetchQueries: [ProductDocument],
+    }
+  );
 
   return (
     <div className="flex flex-col gap-3">
@@ -47,8 +51,17 @@ export default function ProductFull({
             <Button
               className="absolute top-2 right-2"
               onClick={() => sanitizeProduct()}
+              disabled={sanitizing}
             >
-              <FaHandSparkles /> Sanitize
+              {sanitizing ? (
+                <>
+                  <CgSpinner className="animate-spin" /> Sanitizing
+                </>
+              ) : (
+                <>
+                  <FaHandSparkles /> Sanitize
+                </>
+              )}
             </Button>
           )}
 
