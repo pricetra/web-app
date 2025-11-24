@@ -41,7 +41,7 @@ const LeftArrow = memo(() => {
       onClick={() => visibility.scrollPrev()}
       className="left-3"
     >
-      <LuArrowLeft className="size-[20px]" />
+      <LuArrowLeft className="size-[27px]" />
     </Arrow>
   );
 });
@@ -64,7 +64,7 @@ const RightArrow = memo(() => {
       onClick={() => visibility.scrollNext()}
       className="right-3"
     >
-      <LuArrowRight className="size-[20px]" />
+      <LuArrowRight className="size-[27px]" />
     </Arrow>
   );
 });
@@ -88,7 +88,7 @@ const Arrow = ({
       onClick={() => startTransition(onClick)}
       className={cn(
         className,
-        "rounded-full bg-pricetra-green-heavy-dark color-white absolute z-[2] top-1/2 translate-y-[-50%] shadow-md disabled:opacity-0 text-4xl hidden lg:flex"
+        "rounded-full bg-pricetra-green-heavy-dark color-white absolute z-[2] top-1/2 translate-y-[-50%] shadow-md shadow-black/40 disabled:opacity-0 text-4xl hidden lg:flex size-[42px] hover:bg-gray-900"
       )}
       size="icon"
     >
