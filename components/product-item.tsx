@@ -50,8 +50,7 @@ ProductItemProps) {
         <Image
           src={createCloudinaryUrl(product.code, 500)}
           alt={product.code}
-          className="rounded-xl"
-          style={{ width: imgWidth, height: imgWidth }}
+          className="h-full w-full object-cover rounded-xl"
           width={500}
           height={500}
         />
