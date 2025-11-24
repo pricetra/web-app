@@ -54,3 +54,34 @@ export const UPDATE_PRODUCT_NUTRITION_MUTATION = gql(`
     }
   }
 `);
+
+export const SANITIZE_PRODUCT_MUTATION = gql(`
+  mutation SanitizeProduct($id: ID!) {
+    sanitizeProduct(id: $id) {
+      id
+      name
+      image
+      description
+      brand
+      code
+      model
+      categoryId
+      category {
+        id
+        name
+        categoryAlias
+        expandedPathname
+        path
+      }
+      approximateWeight
+      netWeight
+      weightValue
+      weightType
+      quantityValue
+      quantityType
+      createdAt
+      updatedAt
+      views
+    }
+  }
+`);

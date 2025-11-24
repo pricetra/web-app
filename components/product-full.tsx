@@ -1,4 +1,9 @@
-import { Product } from "@/graphql/types/graphql";
+import {
+  Product,
+  ProductDocument,
+  SanitizeProductDocument,
+  UserRole,
+} from "@/graphql/types/graphql";
 import ProductMetadataBadge from "./product-metadata-badge";
 import { Fragment, useMemo, useState } from "react";
 import { categoriesFromChild } from "@/lib/utils";
@@ -6,6 +11,11 @@ import { IoIosArrowForward } from "react-icons/io";
 import Image from "next/image";
 import useProductWeightBuilder from "@/hooks/useProductWeightBuilder";
 import Skeleton from "react-loading-skeleton";
+import { Button } from "./ui/button";
+import { FaHandSparkles } from "react-icons/fa";
+import { useAuth } from "@/context/user-context";
+import { isRoleAuthorized } from "@/lib/roles";
+import { useMutation } from "@apollo/client/react";
 
 export type ProductFullProps = {
   product: Product;
@@ -16,6 +26,7 @@ export default function ProductFull({
   product,
   hideDescription,
 }: ProductFullProps) {
+  const { user } = useAuth();
   const [imgAvailable, setImgAvailable] = useState(true);
   const weight = useProductWeightBuilder(product);
   const categories = useMemo(
@@ -23,11 +34,24 @@ export default function ProductFull({
       product.category ? categoriesFromChild(product.category) : undefined,
     [product.category]
   );
+  const [sanitizeProduct] = useMutation(SanitizeProductDocument, {
+    variables: { id: product.id },
+    refetchQueries: [ProductDocument],
+  });
 
   return (
     <div className="flex flex-col gap-3">
       {imgAvailable && (
         <div className="relative mx-auto h-[30vh] mb-5">
+          {user && isRoleAuthorized(UserRole.Contributor, user.role) && (
+            <Button
+              className="absolute top-2 right-2"
+              onClick={() => sanitizeProduct()}
+            >
+              <FaHandSparkles /> Sanitize
+            </Button>
+          )}
+
           <div className="w-full aspect-square size-full overflow-hidden">
             <Image
               src={product.image}
