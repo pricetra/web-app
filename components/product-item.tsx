@@ -58,15 +58,19 @@ ProductItemProps) {
       <div className="flex max-w-full flex-1 flex-col gap-3 px-2">
         <div className="flex flex-col gap-1">
           <div className="mb-1 flex flex-row items-center gap-1">
-            {product.weightValue && product.weightType && (
+            {product.weightValue && product.weightType ? (
               <ProductMetadataBadge type="weight" size="sm" text={weight} />
+            ) : (
+              <></>
             )}
-            {product.quantityValue && product.quantityType && (
+            {product.quantityValue && product.quantityType ? (
               <ProductMetadataBadge
                 type="quantity"
                 size="sm"
                 text={`${product.quantityValue} ${product.quantityType}`}
               />
+            ) : (
+              <></>
             )}
           </div>
 

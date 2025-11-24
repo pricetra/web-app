@@ -46,19 +46,23 @@ export default function ProductItemHorizontal({
       <div className="flex flex-col justify-between gap-2">
         <div className="flex flex-col gap-1">
           <div className="mb-1 flex flex-row items-center gap-1">
-            {product.weightValue && product.weightType && (
+            {product.weightValue && product.weightType ? (
               <ProductMetadataBadge
                 type="weight"
                 size="sm"
                 text={`${product.weightValue} ${product.weightType}`}
               />
+            ) : (
+              <></>
             )}
-            {product.quantityValue && product.quantityType && (
+            {product.quantityValue && product.quantityType ? (
               <ProductMetadataBadge
                 type="quantity"
                 size="sm"
                 text={`${product.quantityValue} ${product.quantityType}`}
               />
+            ) : (
+              <></>
             )}
           </div>
 

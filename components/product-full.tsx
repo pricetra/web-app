@@ -82,15 +82,19 @@ export default function ProductFull({
       <div>
         <div className="flex flex-col gap-2">
           <div className="mb-3 flex flex-row items-center gap-3">
-            {product.weightValue && product.weightType && (
+            {product.weightValue && product.weightType ? (
               <ProductMetadataBadge type="weight" size="md" text={weight} />
+            ) : (
+              <></>
             )}
-            {product.quantityValue && product.quantityType && (
+            {product.quantityValue && product.quantityType ? (
               <ProductMetadataBadge
                 type="quantity"
                 size="md"
                 text={`${product.quantityValue} ${product.quantityType}`}
               />
+            ) : (
+              <></>
             )}
           </div>
 
