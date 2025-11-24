@@ -43,6 +43,7 @@ import StockItemMini from "@/components/stock-item-mini";
 import { cn } from "@/lib/utils";
 import { NAVBAR_HEIGHT } from "@/components/ui/navbar-main";
 import LoginSignupButtons from "@/components/login-signup-buttons";
+import ScrollContainer from "@/components/scroll-container";
 
 export type StockWithApproximatePrice = Stock & {
   approximatePrice?: number;
@@ -415,7 +416,7 @@ export default function ProductPageClient({
                   </article>
                 ))
             : branchesWithProducts.branchesWithProducts.branches.map(
-                (branch) => (
+                (branch, i) => (
                   <article
                     className="my-7"
                     key={`branch-with-product-${branch.id}`}
@@ -424,16 +425,14 @@ export default function ProductPageClient({
                       <BranchItemWithLogo branch={branch as Branch} />
                     </div>
 
-                    <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:[mask-image:_linear-gradient(to_right,transparent_0,_black_2em,_black_calc(100%-2em),transparent_100%)]">
+                    <ScrollContainer>
                       {(branch.products ?? []).map((product) => (
-                        <div
-                          className="first:pl-5 last:pr-5"
-                          key={`branch-product-${branch.id}-${product.id}`}
-                        >
-                          <ProductItemHorizontal product={product as Product} />
-                        </div>
+                        <ProductItemHorizontal
+                          product={product as Product}
+                          key={`related-branch-product-${branch.id}-${product.id}-${i}`}
+                        />
                       ))}
-                    </div>
+                    </ScrollContainer>
                   </article>
                 )
               )}

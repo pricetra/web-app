@@ -29,6 +29,7 @@ import Aos from "aos";
 import { useAuth } from "@/context/user-context";
 import LandingHeader from "@/components/ui/landing-header";
 import useLocationInput from "@/hooks/useLocationInput";
+import ScrollContainer from "@/components/scroll-container";
 
 const paginator: PaginatorInput = { page: 1, limit: 4 };
 const productLimit = 10;
@@ -182,16 +183,14 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                       <BranchItemWithLogo branch={branch as Branch} />
                     </div>
 
-                    <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:[mask-image:_linear-gradient(to_right,transparent_0,_black_2em,_black_calc(100%-2em),transparent_100%)]">
+                    <ScrollContainer>
                       {(branch.products ?? []).map((product) => (
-                        <div
-                          className="first:pl-5 last:pr-5"
+                        <ProductItemHorizontal
+                          product={product as Product}
                           key={`branch-product-${branch.id}-${product.id}`}
-                        >
-                          <ProductItemHorizontal product={product as Product} />
-                        </div>
+                        />
                       ))}
-                    </div>
+                    </ScrollContainer>
                   </article>
                 )
               )}
