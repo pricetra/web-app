@@ -27,7 +27,7 @@ export default function BranchItemWithLogo({
   }, [branch, cityName, branchName]);
 
   return (
-    <div className="flex flex-row justify-between gap-2">
+    <div className="flex flex-row justify-between items-center gap-2">
       <div className="flex flex-1 flex-row gap-4">
         {!hideStoreLogo && (
           <Link
@@ -43,11 +43,11 @@ export default function BranchItemWithLogo({
             />
           </Link>
         )}
-        <div className="flex flex-col flex-1">
-          <Link
-            href={`/stores/${branch.storeSlug}/${branch.slug}`}
-            className="flex w-full flex-row flex-nowrap items-center gap-x-3"
-          >
+        <Link
+          href={`/stores/${branch.storeSlug}/${branch.slug}`}
+          className="flex flex-col flex-1"
+        >
+          <div className="flex w-full flex-row flex-nowrap items-center gap-x-3">
             <h5 className="text-sm xs:text-base sm:text-lg font-bold line-clamp-1 break-all">
               {name}
             </h5>
@@ -59,18 +59,14 @@ export default function BranchItemWithLogo({
                 </div>
               </div>
             )}
-          </Link>
+          </div>
 
           {branch.address && (
-            <a
-              href={branch.address.mapsLink}
-              target="_blank"
-              className="text-[10px] sm:text-xs w-full line-clamp-1 break-all hover:underline"
-            >
-              <span>{branch.address.fullAddress}</span>
-            </a>
+            <span className="text-[10px] sm:text-xs w-full line-clamp-1 break-all">
+              {branch.address.fullAddress}
+            </span>
           )}
-        </div>
+        </Link>
       </div>
 
       <Link href={`/stores/${branch.storeSlug}/${branch.slug}`} className="p-2">
