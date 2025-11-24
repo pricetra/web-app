@@ -2,9 +2,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import { Suspense } from "react";
 import { SuspenseFallback } from "@/components/suspense-fallback";
-import "@/public/globals.css";
 import "react-loading-skeleton/dist/skeleton.css";
 import "aos/dist/aos.css";
+import "react-horizontal-scrolling-menu/dist/styles.css";
+import "@/public/globals.css";
 import AppProvider from "@/providers/app-provider";
 
 const geistSans = Geist({
