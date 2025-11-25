@@ -52,6 +52,7 @@ export default function ProductFull({
               className="absolute top-2 right-2"
               onClick={() => sanitizeProduct()}
               disabled={sanitizing}
+              size="sm"
             >
               {sanitizing ? (
                 <>
