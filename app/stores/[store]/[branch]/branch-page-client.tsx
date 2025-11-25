@@ -68,7 +68,7 @@ export default function BranchPageClient({
 
       {productsData?.allProducts?.paginator && (
         <div className="mt-20">
-          <SmartPagination paginator={productsData?.allProducts?.paginator} />
+          <SmartPagination paginator={productsData.allProducts.paginator} />
         </div>
       )}
     </div>

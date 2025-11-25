@@ -19,8 +19,12 @@ import ProductItemHorizontal, {
 import useLocationInput from "@/hooks/useLocationInput";
 import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import ScrollContainer from "@/components/scroll-container";
+import { SmartPagination } from "@/components/ui/smart-pagination";
+import { useSearchParams } from "next/navigation";
 
 export default function SelectedStorePageClient({ store }: { store: Store }) {
+  const searchParams = useSearchParams();
+  const pageString = searchParams.get("page");
   const { setPageIndicator, resetAll } = useNavbar();
   const location = useLocationInput();
 
@@ -30,7 +34,7 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
       fetchPolicy: "no-cache",
       variables: {
         paginator: {
-          page: 1,
+          page: +(pageString ?? 1),
           limit: 10,
         },
         productLimit: 10,
@@ -60,48 +64,61 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
 
   return (
     <div className="mt-0 sm:mt-10">
-      {!branchesWithProducts
-        ? Array(3)
-            .fill(0)
-            .map((_, i) => (
+      <section>
+        {!branchesWithProducts
+          ? Array(3)
+              .fill(0)
+              .map((_, i) => (
+                <article
+                  className="my-7"
+                  key={`branch-with-product-loading-${i}`}
+                >
+                  <div className="mb-5 px-5">
+                    <BranchItemWithLogoLoading />
+                  </div>
+
+                  <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:[mask-image:_linear-gradient(to_right,transparent_0,_black_2em,_black_calc(100%-2em),transparent_100%)]">
+                    {Array(10)
+                      .fill(0)
+                      .map((_, j) => (
+                        <div
+                          className="first:pl-5 last:pr-5"
+                          key={`branch-product-${i}-${j}`}
+                        >
+                          <ProductLoadingItemHorizontal />
+                        </div>
+                      ))}
+                  </div>
+                </article>
+              ))
+          : branchesWithProducts.branchesWithProducts.branches.map((branch) => (
               <article
                 className="my-7"
-                key={`branch-with-product-loading-${i}`}
+                key={`branch-with-product-${branch.id}`}
               >
                 <div className="mb-5 px-5">
-                  <BranchItemWithLogoLoading />
+                  <BranchItemWithLogo branch={branch as Branch} cityName />
                 </div>
 
-                <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:[mask-image:_linear-gradient(to_right,transparent_0,_black_2em,_black_calc(100%-2em),transparent_100%)]">
-                  {Array(10)
-                    .fill(0)
-                    .map((_, j) => (
-                      <div
-                        className="first:pl-5 last:pr-5"
-                        key={`branch-product-${i}-${j}`}
-                      >
-                        <ProductLoadingItemHorizontal />
-                      </div>
-                    ))}
-                </div>
+                <ScrollContainer>
+                  {(branch.products ?? []).map((product) => (
+                    <ProductItemHorizontal
+                      product={product as Product}
+                      key={`branch-product-${branch.id}-${product.id}`}
+                    />
+                  ))}
+                </ScrollContainer>
               </article>
-            ))
-        : branchesWithProducts.branchesWithProducts.branches.map((branch) => (
-            <article className="my-7" key={`branch-with-product-${branch.id}`}>
-              <div className="mb-5 px-5">
-                <BranchItemWithLogo branch={branch as Branch} cityName />
-              </div>
+            ))}
+      </section>
 
-              <ScrollContainer>
-                {(branch.products ?? []).map((product) => (
-                  <ProductItemHorizontal
-                    product={product as Product}
-                    key={`branch-product-${branch.id}-${product.id}`}
-                  />
-                ))}
-              </ScrollContainer>
-            </article>
-          ))}
+      {branchesWithProducts?.branchesWithProducts?.paginator && (
+        <div className="mt-20">
+          <SmartPagination
+            paginator={branchesWithProducts.branchesWithProducts.paginator}
+          />
+        </div>
+      )}
     </div>
   );
 }

@@ -11,6 +11,7 @@ import StoreMini, {
   StoreMiniLoading,
   StoreMiniShowMore,
 } from "@/components/store-mini";
+import { SmartPagination } from "@/components/ui/smart-pagination";
 import { useAuth } from "@/context/user-context";
 import {
   AllStoresDocument,
@@ -20,8 +21,11 @@ import {
 } from "@/graphql/types/graphql";
 import useLocationInput from "@/hooks/useLocationInput";
 import { useQuery } from "@apollo/client/react";
+import { useSearchParams } from "next/navigation";
 
 export default function HomePageClient() {
+  const searchParams = useSearchParams();
+  const pageString = searchParams.get("page");
   const { loggedIn } = useAuth();
   const location = useLocationInput();
   const { data: allStoresData } = useQuery(AllStoresDocument, {
@@ -33,7 +37,7 @@ export default function HomePageClient() {
     {
       fetchPolicy: "no-cache",
       variables: {
-        paginator: { page: 1, limit: 9 },
+        paginator: { page: +(pageString ?? 1), limit: 10 },
         productLimit: 10,
         filters: {
           location: location
@@ -130,6 +134,14 @@ export default function HomePageClient() {
               </article>
             ))}
       </div>
+
+      {branchesWithProducts?.branchesWithProducts?.paginator && (
+        <div className="mt-20">
+          <SmartPagination
+            paginator={branchesWithProducts.branchesWithProducts.paginator}
+          />
+        </div>
+      )}
     </div>
   );
 }
