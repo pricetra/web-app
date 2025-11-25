@@ -76,12 +76,16 @@ ProductItemProps) {
 
           <div className="flex flex-row flex-wrap items-center gap-1">
             {product.brand && product.brand !== "N/A" && (
-              <h4 className="text-xs text-gray-600">{product.brand}</h4>
+              <h4 className="text-[11px] sm:text-xs text-gray-600">
+                {product.brand}
+              </h4>
             )}
           </div>
 
           <Link href={`/products/${product.id}?stockId=${product.stock?.id}`}>
-            <h3 className="line-clamp-3">{product.name}</h3>
+            <h3 className="text-sm sm:text-base line-clamp-3">
+              {product.name}
+            </h3>
           </Link>
         </div>
 

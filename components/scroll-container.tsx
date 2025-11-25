@@ -16,7 +16,7 @@ export default function ScrollContainer({
       LeftArrow={LeftArrow}
       RightArrow={RightArrow}
       wrapperClassName="relative py-2.5"
-      itemClassName="md:px-2.5 first:pl-5 last:pr-5 md:first:pl-7 md:last:pr-7"
+      itemClassName="px-2.5 first:pl-5 last:pr-5 md:first:pl-7 md:last:pr-7"
     >
       {children}
     </ScrollMenu>

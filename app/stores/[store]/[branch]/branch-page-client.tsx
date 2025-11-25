@@ -14,6 +14,7 @@ import ProductItem from "@/components/product-item";
 import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { SmartPagination } from "@/components/ui/smart-pagination";
 import { useSearchParams } from "next/navigation";
+import { useMediaQuery } from "react-responsive";
 
 export default function BranchPageClient({
   store,
@@ -25,6 +26,9 @@ export default function BranchPageClient({
   const searchParams = useSearchParams();
   const pageString = searchParams.get("page");
   const { setPageIndicator, resetAll } = useNavbar();
+  const isMobile = useMediaQuery({
+    query: "(max-width: 640px)",
+  });
 
   const { data: productsData } = useQuery(AllProductsDocument, {
     fetchPolicy: "no-cache",
@@ -59,10 +63,14 @@ export default function BranchPageClient({
   }, []);
 
   return (
-    <div className="w-full max-w-[1000px] mt-0 sm:mt-10 px-5">
+    <div className="w-full max-w-[1000px] mt-10 px-5">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-y-7 gap-x-3">
         {productsData?.allProducts?.products?.map((p, i) => (
-          <ProductItem product={p as Product} key={`product-${p.id}-${i}`} />
+          <ProductItem
+            product={p as Product}
+            imgWidth={isMobile ? 110 : 130}
+            key={`product-${p.id}-${i}`}
+          />
         ))}
       </div>
 
