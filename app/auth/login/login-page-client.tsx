@@ -4,11 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { useLazyQuery } from "@apollo/client/react";
+import { useLazyQuery, useMutation } from "@apollo/client/react";
 import {
+  Auth,
   AuthDeviceType,
   GoogleOAuthDocument,
   LoginInternalDocument,
+  ResendVerificationDocument,
 } from "@/graphql/types/graphql";
 import AuthContainer from "@/components/auth/auth-container";
 import { useGoogleLogin } from "@react-oauth/google";
@@ -45,8 +47,14 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
   ] = useLazyQuery(GoogleOAuthDocument, {
     fetchPolicy: "no-cache",
   });
-  const loading = loginInternalLoading || loginGoogleLoading;
-  const error = loginInternalError || loginGoogleError;
+  const [resend, { error: resendError, loading: resendLoading }] = useMutation(
+    ResendVerificationDocument,
+    {
+      fetchPolicy: "no-cache",
+    }
+  );
+  const loading = loginInternalLoading || loginGoogleLoading || resendLoading;
+  const error = loginInternalError || loginGoogleError || resendError;
 
   function setAuthCookie(token: string) {
     setCookie("auth_token", token, {
@@ -55,14 +63,30 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
     });
   }
 
+  function handleAuthSuccess(auth?: Auth) {
+    if (!auth) return;
+    if (!auth.user.active) {
+      resend({
+        variables: { email: auth.user.email },
+      }).then(({ data }) => {
+        if (!data) return;
+        router.push(
+          `/auth/email-verification?email=${encodeURIComponent(
+            auth.user.email
+          )}`
+        );
+      });
+      return;
+    }
+
+    setAuthCookie(auth.token);
+    router.replace(searchParams.get("return") ?? "/home");
+  }
+
   function onPressLoginInternal() {
     login({
       variables: { email, password, device: AuthDeviceType.Web, ipAddress },
-    }).then(({ data }) => {
-      if (!data) return;
-      setAuthCookie(data.login.token);
-      router.replace(searchParams.get("return") ?? "/home");
-    });
+    }).then(({ data }) => handleAuthSuccess(data?.login as Auth));
   }
 
   const googleOAuthCallback = useGoogleLogin({
@@ -73,11 +97,7 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
           device: AuthDeviceType.Web,
           ipAddress,
         },
-      }).then(({ data }) => {
-        if (!data) return;
-        setAuthCookie(data.googleOAuth.token);
-        router.replace(searchParams.get("return") ?? "/home");
-      });
+      }).then(({ data }) => handleAuthSuccess(data?.googleOAuth as Auth));
     },
     onError: (err) => {
       alert(err.error);
