@@ -1,17 +1,21 @@
 "use client";
 
 import { useAuth } from "@/context/user-context";
+import { cookieDefaults, SITE_COOKIES } from "@/lib/cookies";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { useCookies } from "react-cookie";
 
 export default function LogoutClientPage() {
   const router = useRouter();
   const { loggedIn, logout } = useAuth();
+  const [, , deleteCookie] = useCookies(SITE_COOKIES);
 
   useEffect(() => {
     if (!loggedIn) return;
 
-    logout().finally(() => {
+    logout().then(() => {
+      deleteCookie("auth_token", cookieDefaults);
       setTimeout(() => router.replace("/"), 1000);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
