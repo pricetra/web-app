@@ -64,7 +64,7 @@ export default function BranchPageClient({
 
   return (
     <div className="w-full max-w-[1000px] mt-10 px-5">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-y-7 gap-x-3">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-3">
         {productsData?.allProducts?.products?.map((p, i) => (
           <ProductItem
             product={p as Product}
