@@ -18,7 +18,7 @@ export default function StoreMini({ store: { slug, name, logo } }: StoreMiniProp
     >
       <Image
         src={createCloudinaryUrl(logo, 300, 300)}
-        className="size-10 md:size-14 lg:size-16 rounded-lg md:rounded-xl border-[1px] border-gray-200"
+        className="size-10 md:size-14 lg:size-16 rounded-lg md:rounded-xl"
         alt={name}
         width={300}
         height={300}

@@ -36,7 +36,7 @@ export default function BranchItemWithLogo({
           >
             <Image
               src={createCloudinaryUrl(branch.store?.logo ?? "", 500, 500)}
-              className="size-[40px] sm:size-[50px] rounded-lg border-[1px] border-gray-200"
+              className="size-[40px] sm:size-[50px] rounded-lg"
               width={500}
               height={500}
               alt={branch.name}
