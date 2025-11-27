@@ -17,7 +17,7 @@ import {
   UpdateProductNutritionDataDocument,
 } from "@/graphql/types/graphql";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
-import { useEffect, useMemo } from "react";
+import { useEffect, useLayoutEffect, useMemo } from "react";
 import SelectedStock, {
   SelectedStockLoading,
 } from "@/components/selected-stock";
@@ -44,6 +44,9 @@ import { cn } from "@/lib/utils";
 import { NAVBAR_HEIGHT } from "@/components/ui/navbar-main";
 import LoginSignupButtons from "@/components/login-signup-buttons";
 import ScrollContainer from "@/components/scroll-container";
+import { useNavbar } from "@/context/navbar-context";
+import NavPageIndicator from "@/components/ui/nav-page-indicator";
+import { createCloudinaryUrl } from "@/lib/files";
 
 export type StockWithApproximatePrice = Stock & {
   approximatePrice?: number;
@@ -77,6 +80,7 @@ export default function ProductPageClient({
   stockId,
 }: ProductPageClientProps) {
   const { loggedIn, lists } = useAuth();
+  const { setPageIndicator, resetAll } = useNavbar();
   const locationInput = useLocationInput();
   const { data: productData, loading: productLoading } = useQuery(
     ProductDocument,
@@ -136,6 +140,23 @@ export default function ProductPageClient({
       },
     });
   }, [stockId, productData, getStock]);
+
+  useLayoutEffect(() => {
+    if (!stockData || !stockData?.stock.store) return;
+
+    setPageIndicator(
+      <NavPageIndicator
+        title={stockData.stock.store.name}
+        imgSrc={createCloudinaryUrl(stockData.stock.store.logo, 100, 100)}
+        href={`/stores/${stockData.stock.store.slug}`}
+      />
+    );
+
+    return () => {
+      resetAll();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stockData]);
 
   // All available stocks for product
   useEffect(() => {
