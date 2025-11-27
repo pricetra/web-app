@@ -1,5 +1,5 @@
 import { DEFAULT_SEARCH_RADIUS, LocationInputWithFullAddress, useCurrentLocation } from "@/context/location-context";
-import { IpToAddressDocument } from "@/graphql/types/graphql";
+import { IpToAddressDocument } from "graphql-utils/types/graphql";
 import { useLazyQuery } from "@apollo/client/react";
 import { useEffect, useState } from "react";
 

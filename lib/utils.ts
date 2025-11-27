@@ -5,7 +5,7 @@ import { twMerge } from 'tailwind-merge';
 
 import { postgresArrayToNumericArray } from './strings';
 
-import { Category, Price, Product } from '@/graphql/types/graphql';
+import { Category, Price, Product } from 'graphql-utils/types/graphql';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

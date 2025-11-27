@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
-import { PRODUCT_SUMMARY_QUERY } from "@/graphql/documents/queries";
 import {
+  ProductSummaryDocument,
   ProductSummaryQuery,
   ProductSummaryQueryVariables,
-} from "@/graphql/types/graphql";
+} from "graphql-utils/types/graphql";
 import { fetchGraphql } from "@/lib/graphql-client-ssr";
 import ProductPageClient from "./product-page-client";
 import { notFound } from "next/navigation";
@@ -23,7 +23,7 @@ const cachedFetchProductSummary = cache(async (productId: number) => {
   const { data } = await fetchGraphql<
     ProductSummaryQueryVariables,
     ProductSummaryQuery
-  >(PRODUCT_SUMMARY_QUERY, "query", { productId });
+  >(ProductSummaryDocument, "query", { productId });
   if (!data || !data.productSummary) return null;
 
   return data.productSummary;

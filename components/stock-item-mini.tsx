@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { Stock } from "@/graphql/types/graphql";
+import { Stock } from "graphql-utils/types/graphql";
 import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import { createCloudinaryUrl } from "@/lib/files";

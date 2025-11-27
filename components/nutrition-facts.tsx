@@ -1,4 +1,4 @@
-import { ProductNutrition } from "@/graphql/types/graphql";
+import { ProductNutrition } from "graphql-utils/types/graphql";
 import { formatNutrient } from "@/lib/strings";
 
 export default function NutritionFacts({
@@ -8,9 +8,7 @@ export default function NutritionFacts({
   if (!nutriments) return;
   return (
     <div className="mx-auto md:mx-0 w-full max-w-72 border border-black bg-white p-3">
-      <h3 className="text-2xl font-extrabold text-black">
-        Nutrition Facts
-      </h3>
+      <h3 className="text-2xl font-extrabold text-black">Nutrition Facts</h3>
       <div className="mb-1 mt-2 border-t-8 border-black" />
       <h5 className="text-xs text-black">Serving Size {servingSize}</h5>
       <div className="my-1 border-t-2 border-black" />

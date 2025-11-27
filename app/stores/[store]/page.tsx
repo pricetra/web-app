@@ -3,7 +3,7 @@ import {
   FindStoreQuery,
   FindStoreQueryVariables,
   Store,
-} from "@/graphql/types/graphql";
+} from "graphql-utils/types/graphql";
 import { fetchGraphql } from "@/lib/graphql-client-ssr";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";

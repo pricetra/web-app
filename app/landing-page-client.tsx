@@ -12,7 +12,7 @@ import {
   BranchesWithProductsDocument,
   PaginatorInput,
   Product,
-} from "@/graphql/types/graphql";
+} from "graphql-utils/types/graphql";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
 import StoreMini, {
   StoreMiniLoading,

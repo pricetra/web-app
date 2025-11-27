@@ -8,7 +8,7 @@ import { useMutation } from "@apollo/client/react";
 import {
   ResendVerificationDocument,
   VerifyEmailDocument,
-} from "@/graphql/types/graphql";
+} from "graphql-utils/types/graphql";
 import AuthContainer from "@/components/auth/auth-container";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";

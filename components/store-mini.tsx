@@ -1,4 +1,4 @@
-import { Store } from "@/graphql/types/graphql";
+import { Store } from "graphql-utils/types/graphql";
 import { createCloudinaryUrl } from "@/lib/files";
 import Image from "next/image";
 import Skeleton from "react-loading-skeleton";
@@ -10,7 +10,9 @@ export type StoreMiniProps = {
   store: Store;
 };
 
-export default function StoreMini({ store: { slug, name, logo } }: StoreMiniProps) {
+export default function StoreMini({
+  store: { slug, name, logo },
+}: StoreMiniProps) {
   return (
     <Link
       href={`/stores/${slug}`}

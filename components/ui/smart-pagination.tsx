@@ -7,7 +7,7 @@ import {
   PaginationNext,
   PaginationEllipsis,
 } from "@/components/ui/pagination";
-import { Paginator } from "@/graphql/types/graphql";
+import { Paginator } from "graphql-utils/types/graphql";
 
 export function SmartPagination({ paginator }: { paginator: Paginator }) {
   const { page, numPages, prev, next } = paginator;

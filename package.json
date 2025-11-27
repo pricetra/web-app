@@ -25,6 +25,7 @@
     "convert-units": "^2.3.4",
     "dayjs": "^1.11.19",
     "graphql": "^16.11.0",
+    "graphql-utils": "github:pricetra/graphql-utils",
     "lucide-react": "^0.525.0",
     "motion": "^12.23.24",
     "next": "15.3.5",
@@ -43,9 +44,6 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@graphql-codegen/cli": "6.0.0",
-    "@graphql-codegen/client-preset": "5.1.0",
-    "@graphql-codegen/introspection": "5.0.0",
     "@tailwindcss/postcss": "^4",
     "@types/aos": "^3.0.7",
     "@types/convert-units": "^2.3.12",

@@ -1,4 +1,4 @@
-import { Price, ProductWeightComponents } from '@/graphql/types/graphql';
+import { Price, ProductWeightComponents } from 'graphql-utils/types/graphql';
 import { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers';
 
 export function titleCase(str: string) {

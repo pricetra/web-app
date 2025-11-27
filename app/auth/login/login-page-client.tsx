@@ -11,7 +11,7 @@ import {
   GoogleOAuthDocument,
   LoginInternalDocument,
   ResendVerificationDocument,
-} from "@/graphql/types/graphql";
+} from "graphql-utils/types/graphql";
 import AuthContainer from "@/components/auth/auth-container";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useSearchParams } from "next/navigation";
