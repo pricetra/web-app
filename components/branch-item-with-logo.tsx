@@ -1,11 +1,11 @@
-import { Branch } from '@/graphql/types/graphql';
-import { createCloudinaryUrl } from '@/lib/files';
-import { metersToMiles } from '@/lib/utils';
-import Image from "next/image"
+import { createCloudinaryUrl } from "@/lib/files";
+import { metersToMiles } from "@/lib/utils";
+import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 import { FiChevronRight } from "react-icons/fi";
+import { Branch } from "graphql-utils/types/graphql";
 
 export type BranchItemWithLogoProps = {
   branch: Branch;

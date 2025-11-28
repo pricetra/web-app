@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
-import { LocationInput } from '@/graphql/types/graphql';
 import { useAuth } from './user-context';
+import { LocationInput } from "graphql-utils/types/graphql";
 
 export const DEFAULT_SEARCH_RADIUS = 160_934; // ~100 miles
 
