@@ -3,7 +3,7 @@ import {
   ProductSummaryDocument,
   ProductSummaryQuery,
   ProductSummaryQueryVariables,
-} from "graphql-utils/types/graphql";
+} from "graphql-utils";
 import { fetchGraphql } from "@/lib/graphql-client-ssr";
 import ProductPageClient from "./product-page-client";
 import { notFound } from "next/navigation";

@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { Stock } from "graphql-utils/types/graphql";
+import { Stock } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
 import { currencyFormat, getPriceUnitOrEach } from "@/lib/strings";
 import { metersToMiles } from "@/lib/utils";

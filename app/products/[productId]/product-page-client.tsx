@@ -15,7 +15,7 @@ import {
   Stock,
   StockDocument,
   UpdateProductNutritionDataDocument,
-} from "graphql-utils/types/graphql";
+} from "graphql-utils";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import { useEffect, useLayoutEffect, useMemo } from "react";
 import SelectedStock, {

@@ -18,7 +18,7 @@ import {
   Branch,
   BranchesWithProductsDocument,
   Product,
-} from "graphql-utils/types/graphql";
+} from "graphql-utils";
 import useLocationInput from "@/hooks/useLocationInput";
 import { useQuery } from "@apollo/client/react";
 import { useSearchParams } from "next/navigation";

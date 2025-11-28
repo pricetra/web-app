@@ -3,7 +3,7 @@ import {
   ProductDocument,
   SanitizeProductDocument,
   UserRole,
-} from "graphql-utils/types/graphql";
+} from "graphql-utils";
 import ProductMetadataBadge from "./product-metadata-badge";
 import { Fragment, useMemo, useState } from "react";
 import { categoriesFromChild } from "@/lib/utils";

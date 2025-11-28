@@ -1,4 +1,4 @@
-import { Product } from "graphql-utils/types/graphql";
+import { Product } from "graphql-utils";
 import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import useProductWeightBuilder from "@/hooks/useProductWeightBuilder";

@@ -9,7 +9,7 @@ import {
   AuthDeviceType,
   CreateAccountDocument,
   GoogleOAuthDocument,
-} from "graphql-utils/types/graphql";
+} from "graphql-utils";
 import AuthContainer from "@/components/auth/auth-container";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useRouter, useSearchParams } from "next/navigation";

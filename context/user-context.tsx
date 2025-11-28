@@ -14,7 +14,7 @@ import {
   MeDocument,
   PostAuthUserDataDocument,
   User,
-} from "graphql-utils/types/graphql";
+} from "graphql-utils";
 import { SuspenseFallbackLogo } from "@/components/suspense-fallback";
 import { useCookies } from "react-cookie";
 import { SiteCookieValues } from "@/lib/cookies";

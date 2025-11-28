@@ -6,7 +6,7 @@ import {
   BranchesWithProductsDocument,
   Product,
   Store,
-} from "graphql-utils/types/graphql";
+} from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
 import { useLayoutEffect } from "react";
 import { useQuery } from "@apollo/client/react";

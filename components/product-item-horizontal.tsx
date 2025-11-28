@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { Product, ProductSimple } from "graphql-utils/types/graphql";
+import { Product, ProductSimple } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
 import { currencyFormat, getPriceUnit } from "@/lib/strings";
 import Skeleton from "react-loading-skeleton";

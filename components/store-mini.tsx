@@ -1,4 +1,4 @@
-import { Store } from "graphql-utils/types/graphql";
+import { Store } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
 import Image from "next/image";
 import Skeleton from "react-loading-skeleton";

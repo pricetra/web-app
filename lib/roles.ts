@@ -1,4 +1,4 @@
-import { UserRole } from 'graphql-utils/types/graphql';
+import { UserRole } from 'graphql-utils';
 
 export function roleValue(role: UserRole): number {
   switch (role) {

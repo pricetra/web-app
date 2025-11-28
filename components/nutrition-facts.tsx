@@ -1,4 +1,4 @@
-import { ProductNutrition } from "graphql-utils/types/graphql";
+import { ProductNutrition } from "graphql-utils";
 import { formatNutrient } from "@/lib/strings";
 
 export default function NutritionFacts({

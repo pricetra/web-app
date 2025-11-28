@@ -1,4 +1,4 @@
-import { Product } from "graphql-utils/types/graphql";
+import { Product } from "graphql-utils";
 
 export type ProductSpecsProps = {
   product: Product;

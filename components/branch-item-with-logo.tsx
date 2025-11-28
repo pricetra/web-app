@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 import { FiChevronRight } from "react-icons/fi";
-import { Branch } from "graphql-utils/types/graphql";
+import { Branch } from "graphql-utils";
 
 export type BranchItemWithLogoProps = {
   branch: Branch;

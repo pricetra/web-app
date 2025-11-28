@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { CreatedByUser, UpdatedByUser } from "graphql-utils/types/graphql";
+import { CreatedByUser, UpdatedByUser } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
 
 import Image from 'next/image'

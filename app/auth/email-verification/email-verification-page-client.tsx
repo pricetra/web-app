@@ -5,10 +5,7 @@ import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client/react";
-import {
-  ResendVerificationDocument,
-  VerifyEmailDocument,
-} from "graphql-utils/types/graphql";
+import { ResendVerificationDocument, VerifyEmailDocument } from "graphql-utils";
 import AuthContainer from "@/components/auth/auth-container";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";

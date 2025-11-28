@@ -1,7 +1,7 @@
 "use client";
 
 import { useNavbar } from "@/context/navbar-context";
-import { AllStoresDocument } from "graphql-utils/types/graphql";
+import { AllStoresDocument } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
 import { useQuery } from "@apollo/client/react";
 import { useLayoutEffect } from "react";
