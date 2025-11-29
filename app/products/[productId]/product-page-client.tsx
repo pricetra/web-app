@@ -443,7 +443,10 @@ export default function ProductPageClient({
                     key={`branch-with-product-${branch.id}`}
                   >
                     <div className="mb-5 px-5">
-                      <BranchItemWithLogo branch={branch as Branch} />
+                      <BranchItemWithLogo
+                        branch={branch as Branch}
+                        branchTagline="Similar products in"
+                      />
                     </div>
 
                     <ScrollContainer>

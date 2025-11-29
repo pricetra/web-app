@@ -36,7 +36,7 @@ export default function StockFull({
       <div className="flex flex-1 flex-row gap-4">
         <Image
           src={createCloudinaryUrl(stock.store.logo, 500, 500)}
-          className="size-[60px] rounded-xl"
+          className="size-[50px] xl:size-[60px] rounded-xl"
           width={100}
           height={100}
           quality={100}
@@ -60,7 +60,7 @@ export default function StockFull({
           )}
 
           <div className="flex w-full flex-row items-center gap-2.5">
-            <h3 className="flex-1 text-lg font-bold line-clamp-1">
+            <h3 className="flex-1 text-base xl:text-lg font-bold line-clamp-1">
               {stock.store.name}
             </h3>
 
@@ -109,7 +109,7 @@ export default function StockFull({
 
         {stock?.latestPrice?.amount && (
           <div className="flex flex-row items-center justify-start gap-1">
-            <span className="text-xl font-black">
+            <span className="text-base md:text-lg xl:text-xl font-black">
               {currencyFormat(calculatedAmount)}
             </span>
             <span className="text-xs text-gray-500">
@@ -128,7 +128,7 @@ export default function StockFull({
 
         {approximatePrice && (
           <span className="text-xl">
-            <span className="text-xl font-black">
+            <span className="text-base md:text-lg xl:text-xl font-black">
               {currencyFormat(approximatePrice)}
             </span>
             *

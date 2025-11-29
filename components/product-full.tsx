@@ -101,11 +101,11 @@ export default function ProductFull({
 
           <div className="flex flex-row flex-wrap items-center gap-1">
             {product.brand && product.brand !== "N/A" && (
-              <h2 className="text-sm sm:text-base">{product.brand}</h2>
+              <h2 className="text-sm xl:text-base">{product.brand}</h2>
             )}
           </div>
 
-          <h1 className="text-xl sm:text-2xl font-semibold">{product.name}</h1>
+          <h1 className="text-xl xl:text-2xl font-semibold">{product.name}</h1>
 
           {categories && (
             <div className="flex flex-row flex-wrap items-center gap-1 sm:gap-2">

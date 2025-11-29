@@ -12,6 +12,7 @@ export type BranchItemWithLogoProps = {
   hideStoreLogo?: boolean;
   branchName?: boolean;
   cityName?: boolean;
+  branchTagline?: string;
 };
 
 export default function BranchItemWithLogo({
@@ -19,6 +20,7 @@ export default function BranchItemWithLogo({
   hideStoreLogo = false,
   branchName = false,
   cityName = false,
+  branchTagline,
 }: BranchItemWithLogoProps) {
   const name = useMemo(() => {
     if (branchName) return branch.name;
@@ -47,6 +49,12 @@ export default function BranchItemWithLogo({
           href={`/stores/${branch.storeSlug}/${branch.slug}`}
           className="flex flex-col flex-1"
         >
+          {branchTagline && (
+            <span className="text-xs lg:text-sm text-pricetraGreenHeavyDark mb-1">
+              {branchTagline}
+            </span>
+          )}
+
           <div className="flex w-full flex-row flex-nowrap items-center gap-x-3">
             <h5 className="text-sm xs:text-base sm:text-lg font-bold line-clamp-1 break-all">
               {name}
