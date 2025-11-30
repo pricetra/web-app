@@ -47,6 +47,8 @@ import ScrollContainer from "@/components/scroll-container";
 import { useNavbar } from "@/context/navbar-context";
 import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { createCloudinaryUrl } from "@/lib/files";
+import { FiEdit } from "react-icons/fi";
+import { IoRefresh } from "react-icons/io5";
 
 export type StockWithApproximatePrice = Stock & {
   approximatePrice?: number;
@@ -345,16 +347,17 @@ export default function ProductPageClient({
               <AccordionContent className="flex flex-col gap-4 text-balance">
                 <div className="mb-5 flex flex-row items-center justify-end gap-2">
                   <a
-                    className="bg-gray-700 px-3 py-1.5 rounded-md text-white"
+                    className="inline-flex items-center justify-center gap-2 bg-gray-700 px-4 py-1.5 rounded-full text-white"
                     href={`https://world.openfoodfacts.org/cgi/product.pl?type=edit&code=${productData.product.code}`}
                     target="_blank"
                   >
+                    <FiEdit />
                     Edit
                   </a>
 
                   <Button
                     size="sm"
-                    className="cursor-pointer"
+                    className="cursor-pointer rounded-full bg-pricetra-green-heavy-dark has-[>svg]:px-4 px-4"
                     onClick={() =>
                       updateProductNutrition({
                         variables: { productId: productId },
@@ -362,6 +365,7 @@ export default function ProductPageClient({
                     }
                     disabled={updatingProductNutrition}
                   >
+                    <IoRefresh />
                     Refetch
                   </Button>
                 </div>
