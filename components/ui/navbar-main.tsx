@@ -12,7 +12,7 @@ export const NAVBAR_HEIGHT = 60;
 
 export default function NavbarMain() {
   const { loggedIn, user } = useAuth();
-  const { pageIndicator, hideLogotype } = useNavbar();
+  const { pageIndicator, hideLogotype, navTools } = useNavbar();
   const pathname = usePathname();
 
   return (
@@ -78,6 +78,12 @@ export default function NavbarMain() {
                 </InputGroupAddon>
               </InputGroup>
             </div>
+
+            {navTools && (
+              <div className="flex flex-row gap-2 items-center justify-start">
+                {navTools}
+              </div>
+            )}
           </div>
 
           <div className="right pr-5 flex gap-2 items-center flex-nowrap">
