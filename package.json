@@ -25,6 +25,7 @@
     "clsx": "^2.1.1",
     "convert-units": "^2.3.4",
     "dayjs": "^1.11.19",
+    "formik": "^2.4.9",
     "graphql": "^16.11.0",
     "graphql-utils": "github:pricetra/graphql-utils",
     "lucide-react": "^0.525.0",
