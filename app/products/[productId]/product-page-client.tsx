@@ -12,9 +12,11 @@ import {
   Product,
   ProductDocument,
   ProductNutrition,
+  SanitizeProductDocument,
   Stock,
   StockDocument,
   UpdateProductNutritionDataDocument,
+  UserRole,
 } from "graphql-utils";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import { useEffect, useLayoutEffect, useMemo } from "react";
@@ -49,6 +51,9 @@ import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { createCloudinaryUrl } from "@/lib/files";
 import { FiEdit } from "react-icons/fi";
 import { IoRefresh } from "react-icons/io5";
+import { CgSpinner } from "react-icons/cg";
+import { FaHandSparkles } from "react-icons/fa";
+import { isRoleAuthorized } from "@/lib/roles";
 
 export type StockWithApproximatePrice = Stock & {
   approximatePrice?: number;
@@ -81,8 +86,8 @@ export default function ProductPageClient({
   productId,
   stockId,
 }: ProductPageClientProps) {
-  const { loggedIn, lists } = useAuth();
-  const { setPageIndicator, resetAll } = useNavbar();
+  const { loggedIn, lists, user } = useAuth();
+  const { setPageIndicator, resetAll, setNavTools } = useNavbar();
   const locationInput = useLocationInput();
   const { data: productData, loading: productLoading } = useQuery(
     ProductDocument,
@@ -115,6 +120,13 @@ export default function ProductPageClient({
     useMutation(UpdateProductNutritionDataDocument, {
       refetchQueries: [GetProductNutritionDataDocument],
     });
+  const [sanitizeProduct, { loading: sanitizing }] = useMutation(
+    SanitizeProductDocument,
+    {
+      variables: { id: productId },
+      refetchQueries: [ProductDocument],
+    }
+  );
 
   const favoriteBranchIds = useMemo(
     () =>
@@ -159,6 +171,47 @@ export default function ProductPageClient({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stockData]);
+
+  useLayoutEffect(() => {
+    if (!user) return;
+
+    setNavTools(
+      <>
+        {isRoleAuthorized(UserRole.Contributor, user.role) && (
+          <Button
+            onClick={() => sanitizeProduct()}
+            size="icon"
+            variant="link"
+            className="p-1 text-pricetra-green-heavy-dark"
+          >
+            {sanitizing ? (
+              <>
+                <CgSpinner className="animate-spin size-5" />
+              </>
+            ) : (
+              <>
+                <FaHandSparkles className="size-5" />
+              </>
+            )}
+          </Button>
+        )}
+
+        {/* {isRoleAuthorized(UserRole.Contributor, user.role) && (
+          <Button size="icon" variant="link" className="p-1 text">
+            <FiEdit color="#3b82f6" className="size-5" />
+          </Button>
+        )}
+
+        <Button
+          onClick={() => {}}
+          className="rounded-full bg-green-100 px-4 py-2 text-pricetra-green-heavy-dark hover:bg-green-50"
+        >
+          <FiPlus />
+          Price
+        </Button> */}
+      </>
+    );
+  }, [user, stockData, sanitizing]);
 
   // All available stocks for product
   useEffect(() => {
