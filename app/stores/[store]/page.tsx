@@ -41,10 +41,13 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!storeData) return {};
 
   const title = `${storeData.name} - Pricetra`;
+  const description = `Discover products and prices at ${storeData.name} stores near you. Browse nearby branches, discover popular products, and compare prices to get the best deals.`;
   return {
     title,
+    description,
     openGraph: {
       title,
+      description,
       url: `https://pricetra.com/stores/${storeData.slug}`,
     },
   };
