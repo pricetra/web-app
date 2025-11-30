@@ -38,6 +38,7 @@ export const NavbarProvider = ({ children }: { children: ReactNode }) => {
         resetAll: () => {
           setHideLogotype(false);
           setPageIndicator(undefined);
+          setNavTools(undefined);
           setSubHeader(undefined);
         },
       }}
