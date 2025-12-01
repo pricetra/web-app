@@ -8,7 +8,6 @@ import {
   CreateProductDocument,
   UpdateProductDocument,
   Product,
-  Category,
   ProductDocument,
 } from "graphql-utils";
 import { diffObjects } from "@/lib/utils";
@@ -25,6 +24,7 @@ import {
 } from "@/components/ui/input-group";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
+import CategoryInput from "./category-input";
 
 export type ProductFormProps = {
   upc?: string;
@@ -63,32 +63,12 @@ export default function ProductForm({
       refetchQueries: [AllProductsDocument, AllBrandsDocument],
     }
   );
-  const [selectedCategory, setSelectedCategory] = useState<Category>();
   const loading = updateLoading || createLoading;
   const isUpdateProduct =
     product !== undefined && product.id !== undefined && product.id !== 0;
 
-  // Check for PLU codes (Produce)
-  useEffect(() => {
-    if (!upc || product) return;
-    if (upc.length < 4 || upc.length > 5) return;
-
-    const myCategory: Category = {
-      id: 509,
-      name: "Produce",
-      path: "{462,509}",
-      expandedPathname: "Food, Beverages & Tobacco > Produce",
-      depth: 2,
-    };
-    setSelectedCategory(myCategory);
-  }, [upc, product]);
-
   useEffect(() => {
     if (!product) return;
-
-    if (product.category) {
-      setSelectedCategory(product.category);
-    }
 
     if (product.image && product.image !== "") {
       setImageUri(product.image);
@@ -111,18 +91,14 @@ export default function ProductForm({
   //   setImageBase64(picture.base64);
   // }
 
-  function resetImageAndCategory() {
+  function resetImage() {
     setImageUri(undefined);
     setImageBase64(undefined);
     setImageUpdated(false);
-    setSelectedCategory(undefined);
   }
 
   function submit(input: CreateProduct, formik: FormikHelpers<CreateProduct>) {
-    if (!selectedCategory) return alert("Please select a valid category");
-
     const imageAdded = imageUri && imageBase64 && imageUpdated;
-    input.categoryId = selectedCategory.id;
 
     if (input.weight === "") input.weight = undefined;
     if (!input.description) input.description = "";
@@ -143,7 +119,7 @@ export default function ProductForm({
           if (error) return onError(error, formik);
           if (!data) return;
 
-          resetImageAndCategory();
+          resetImage();
           onSuccess(data.updateProduct as Product, formik);
         })
         .catch((e) => onError(e, formik));
@@ -159,7 +135,7 @@ export default function ProductForm({
         if (error) return onError(error, formik);
         if (!data) return;
 
-        resetImageAndCategory();
+        resetImage();
         onSuccess(data.createProduct as Product, formik);
       })
       .catch((e) => onError(e, formik));
@@ -170,7 +146,7 @@ export default function ProductForm({
       return (
         <Image
           src={imageUri}
-          className="size-28 rounded-xl"
+          className="size-28 rounded-lg object-cover"
           width={500}
           height={500}
           alt="Product image"
@@ -247,6 +223,33 @@ export default function ProductForm({
           </InputGroup>
 
           <div className="my-5">{renderImageSelection()}</div>
+
+          <div className="mb-5">
+            <Label className="mb-2 block">Category</Label>
+            <CategoryInput
+              category={product?.category ?? undefined}
+              onSelectCategoryId={(categoryId) => {
+                console.log(categoryId);
+                formik.setFieldValue("categoryId", categoryId);
+              }}
+            />
+          </div>
+
+          <InputGroup>
+            <InputGroupTextarea
+              placeholder="Description with keywords"
+              value={formik.values.description}
+              onChange={(e) =>
+                formik.setFieldValue("description", e.target.value)
+              }
+              id="description"
+            />
+            <InputGroupAddon align="block-start">
+              <Label className="text-xs" htmlFor="description">
+                Product Description
+              </Label>
+            </InputGroupAddon>
+          </InputGroup>
 
           <div className="mt-5 flex flex-row items-center justify-end gap-5">
             <Button
