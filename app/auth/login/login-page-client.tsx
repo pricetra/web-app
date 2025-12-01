@@ -30,6 +30,7 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
 
   const router = useRouter();
   const searchParams = useSearchParams();
+  const returnPath = searchParams.get("return");
   const emailSearchParam = searchParams.get("email");
   const emailVerificationStatus = toBoolean(
     searchParams.get("emailVerificationStatus") ?? undefined
@@ -80,7 +81,7 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
     }
 
     setAuthCookie(auth.token);
-    router.replace(searchParams.get("return") ?? "/home");
+    router.replace(returnPath ?? "/home");
   }
 
   function onPressLoginInternal() {
@@ -107,8 +108,8 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
   useEffect(() => {
     if (!loggedIn) return;
 
-    router.replace("/");
-  }, [loggedIn, router]);
+    router.replace(returnPath ?? "/home");
+  }, [loggedIn, router, returnPath]);
 
   useEffect(() => {
     if (!emailSearchParam) return;
