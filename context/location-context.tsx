@@ -38,7 +38,6 @@ export default function LocationContextProvider({
       locationInput: {
         latitude: user.address?.latitude,
         longitude: user.address?.longitude,
-        radiusMeters: DEFAULT_SEARCH_RADIUS,
       },
       fullAddress: user.address.fullAddress,
     } as LocationInputWithFullAddress;

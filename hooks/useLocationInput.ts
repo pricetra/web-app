@@ -1,4 +1,4 @@
-import { DEFAULT_SEARCH_RADIUS, LocationInputWithFullAddress, useCurrentLocation } from "@/context/location-context";
+import { LocationInputWithFullAddress, useCurrentLocation } from "@/context/location-context";
 import { IpToAddressDocument } from "graphql-utils";
 import { useLazyQuery } from "@apollo/client/react";
 import { useEffect, useState } from "react";
@@ -7,7 +7,6 @@ const DEFAULT_LOCATION_INPUT: LocationInputWithFullAddress = {
   locationInput: {
     latitude: 41.7956366,
     longitude: -88.0206993,
-    radiusMeters: DEFAULT_SEARCH_RADIUS,
   },
   fullAddress: "Downers Grove, IL 60515, USA"
 }
@@ -42,7 +41,6 @@ export default function useLocationInput(ipAddress?: string): LocationInputWithF
         locationInput: {
           latitude,
           longitude,
-          radiusMeters: DEFAULT_SEARCH_RADIUS
         }
       })
     }).catch(() => setLocationInput(DEFAULT_LOCATION_INPUT))
