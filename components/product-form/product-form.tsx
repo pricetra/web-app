@@ -1,0 +1,315 @@
+import { Formik, FormikHelpers } from "formik";
+import { useEffect, useState } from "react";
+import {
+  AllBrandsDocument,
+  AllProductsDocument,
+  Brand,
+  CreateProduct,
+  CreateProductDocument,
+  UpdateProductDocument,
+  Product,
+  Category,
+  ProductDocument,
+} from "graphql-utils";
+import { diffObjects } from "@/lib/utils";
+import { useMutation, useQuery } from "@apollo/client/react";
+import { ErrorLike } from "@apollo/client";
+import Image from "next/image";
+import { FiCamera } from "react-icons/fi";
+import { CgSpinner } from "react-icons/cg";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+  InputGroupTextarea,
+} from "@/components/ui/input-group";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+
+export type ProductFormProps = {
+  upc?: string;
+  product?: Product;
+  onCancel: (formik: FormikHelpers<CreateProduct>) => void;
+  onSuccess: (product: Product, formik: FormikHelpers<CreateProduct>) => void;
+  onError: (e: ErrorLike, formik: FormikHelpers<CreateProduct>) => void;
+};
+
+export default function ProductForm({
+  upc,
+  product,
+  onCancel,
+  onSuccess,
+  onError,
+}: ProductFormProps) {
+  const [imageUri, setImageUri] = useState<string>();
+  const [imageBase64, setImageBase64] = useState<string>();
+  const [imageUpdated, setImageUpdated] = useState(false);
+  const [brands, setBrands] = useState<Brand[]>();
+  const { data: brandsData, loading: brandsLoading } = useQuery(
+    AllBrandsDocument,
+    {
+      fetchPolicy: "network-only",
+    }
+  );
+  const [updateProduct, { loading: updateLoading }] = useMutation(
+    UpdateProductDocument,
+    {
+      refetchQueries: [AllProductsDocument, AllBrandsDocument, ProductDocument],
+    }
+  );
+  const [createProduct, { loading: createLoading }] = useMutation(
+    CreateProductDocument,
+    {
+      refetchQueries: [AllProductsDocument, AllBrandsDocument],
+    }
+  );
+  const [selectedCategory, setSelectedCategory] = useState<Category>();
+  const loading = updateLoading || createLoading;
+  const isUpdateProduct =
+    product !== undefined && product.id !== undefined && product.id !== 0;
+
+  // Check for PLU codes (Produce)
+  useEffect(() => {
+    if (!upc || product) return;
+    if (upc.length < 4 || upc.length > 5) return;
+
+    const myCategory: Category = {
+      id: 509,
+      name: "Produce",
+      path: "{462,509}",
+      expandedPathname: "Food, Beverages & Tobacco > Produce",
+      depth: 2,
+    };
+    setSelectedCategory(myCategory);
+  }, [upc, product]);
+
+  useEffect(() => {
+    if (!product) return;
+
+    if (product.category) {
+      setSelectedCategory(product.category);
+    }
+
+    if (product.image && product.image !== "") {
+      setImageUri(product.image);
+    } else {
+      setImageUri(undefined);
+    }
+  }, [product]);
+
+  useEffect(() => {
+    if (!brandsData) return;
+    setBrands(brandsData.allBrands);
+  }, [brandsData]);
+
+  // async function selectImage() {
+  //   const picture = await selectImageForProductExtraction();
+  //   if (!picture) return;
+
+  //   setImageUpdated(true);
+  //   setImageUri(picture.imageUri);
+  //   setImageBase64(picture.base64);
+  // }
+
+  function resetImageAndCategory() {
+    setImageUri(undefined);
+    setImageBase64(undefined);
+    setImageUpdated(false);
+    setSelectedCategory(undefined);
+  }
+
+  function submit(input: CreateProduct, formik: FormikHelpers<CreateProduct>) {
+    if (!selectedCategory) return alert("Please select a valid category");
+
+    const imageAdded = imageUri && imageBase64 && imageUpdated;
+    input.categoryId = selectedCategory.id;
+
+    if (input.weight === "") input.weight = undefined;
+    if (!input.description) input.description = "";
+
+    if (imageAdded) input.imageBase64 = imageBase64;
+
+    if (isUpdateProduct) {
+      const filteredInput = diffObjects(input, product);
+      if (Object.keys(filteredInput).length === 0 && !imageAdded) return;
+
+      updateProduct({
+        variables: {
+          id: product.id,
+          input: filteredInput,
+        },
+      })
+        .then(({ data, error }) => {
+          if (error) return onError(error, formik);
+          if (!data) return;
+
+          resetImageAndCategory();
+          onSuccess(data.updateProduct as Product, formik);
+        })
+        .catch((e) => onError(e, formik));
+      return;
+    }
+
+    createProduct({
+      variables: {
+        input,
+      },
+    })
+      .then(({ data, error }) => {
+        if (error) return onError(error, formik);
+        if (!data) return;
+
+        resetImageAndCategory();
+        onSuccess(data.createProduct as Product, formik);
+      })
+      .catch((e) => onError(e, formik));
+  }
+
+  function renderImageSelection() {
+    if (imageUri) {
+      return (
+        <Image
+          src={imageUri}
+          className="size-28 rounded-xl"
+          width={500}
+          height={500}
+          alt="Product image"
+        />
+      );
+    }
+    return (
+      <div className="flex size-28 items-center justify-center rounded-xl bg-gray-400">
+        <FiCamera className="size-[35px]" />
+      </div>
+    );
+  }
+
+  if (brandsLoading || !brands)
+    return (
+      <div className="flex h-40 items-center justify-center p-10">
+        <CgSpinner className="animate-spin size-16" />
+      </div>
+    );
+
+  return (
+    <Formik
+      enableReinitialize
+      initialValues={
+        {
+          ...product,
+          code: product?.code ?? upc ?? "",
+          weight:
+            product?.weightValue && product?.weightType
+              ? `${product.weightValue} ${product.weightType}`
+              : undefined,
+          quantityValue: product?.quantityValue ?? "1",
+        } as CreateProduct
+      }
+      onSubmit={submit}
+    >
+      {(formik) => (
+        <div className="grid w-full gap-4 text-black">
+          <InputGroup>
+            <InputGroupInput
+              value={formik.values.code}
+              id="code"
+              readOnly
+              disabled
+            />
+          </InputGroup>
+
+          <InputGroup>
+            <InputGroupInput
+              placeholder="Product brand name"
+              value={formik.values.brand}
+              onChange={(e) => formik.setFieldValue("brand", e.target.value)}
+              id="brand"
+            />
+            <InputGroupAddon align="block-start">
+              <Label className="text-xs" htmlFor="brand">
+                Brand
+              </Label>
+            </InputGroupAddon>
+          </InputGroup>
+
+          <InputGroup>
+            <InputGroupTextarea
+              placeholder="Product name (Ex. Great Value Whole Milk 128 fl oz"
+              value={formik.values.name}
+              onChange={(e) => formik.setFieldValue("name", e.target.value)}
+              id="name"
+            />
+            <InputGroupAddon align="block-start">
+              <Label className="text-xs" htmlFor="name">
+                Product Name
+              </Label>
+            </InputGroupAddon>
+          </InputGroup>
+
+          <div className="my-5">{renderImageSelection()}</div>
+
+          <div className="mt-5 flex flex-row items-center justify-end gap-5">
+            <Button
+              variant="outline"
+              disabled={loading}
+              onClick={() => onCancel(formik)}
+            >
+              Cancel
+            </Button>
+
+            <Button
+              className="bg-pricetra-green-heavy-dark hover:bg-pricetra-green-heavy-dark-hover"
+              type="submit"
+              onClick={formik.submitForm}
+              disabled={loading || !formik.isValid}
+            >
+              {loading ? (
+                <>
+                  <CgSpinner className="animate-spin" />
+                  Submitting
+                </>
+              ) : (
+                <>{isUpdateProduct ? "Update" : "Create"}</>
+              )}
+            </Button>
+          </div>
+        </div>
+      )}
+    </Formik>
+  );
+}
+
+export type ExtractionImageSelectionType = {
+  imageUri: string;
+  base64: string;
+  base64EncodingOnly?: string;
+};
+
+// export async function selectImageForProductExtraction(
+//   useCamera: boolean = false,
+//   quality: number = 1
+// ): Promise<ExtractionImageSelectionType | undefined> {
+//   const options: ImagePicker.ImagePickerOptions = {
+//     mediaTypes: ['images'],
+//     allowsEditing: true,
+//     aspect: [1, 1],
+//     quality,
+//     base64: true,
+//     allowsMultipleSelection: false,
+//     cameraType: ImagePicker.CameraType.back,
+//   };
+//   const result = await (useCamera
+//     ? ImagePicker.launchCameraAsync(options)
+//     : ImagePicker.launchImageLibraryAsync(options));
+
+//   if (result.canceled || result.assets.length === 0) return undefined;
+
+//   const picture = result.assets.at(0);
+//   if (!picture || !picture.base64 || !picture.uri) return undefined;
+
+//   return {
+//     imageUri: picture.uri,
+//     base64: buildBase64ImageString(picture),
+//     base64EncodingOnly: picture.base64,
+//   };
+// }

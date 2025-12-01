@@ -54,6 +54,20 @@ import { IoRefresh } from "react-icons/io5";
 import { CgSpinner } from "react-icons/cg";
 import { FaHandSparkles } from "react-icons/fa";
 import { isRoleAuthorized } from "@/lib/roles";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import ProductForm from "@/components/product-form/product-form";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export type StockWithApproximatePrice = Stock & {
   approximatePrice?: number;
@@ -178,31 +192,66 @@ export default function ProductPageClient({
     setNavTools(
       <>
         {isRoleAuthorized(UserRole.Contributor, user.role) && (
-          <Button
-            onClick={() => sanitizeProduct()}
-            size="icon"
-            variant="link"
-            className="p-1 text-pricetra-green-heavy-dark"
-          >
-            {sanitizing ? (
-              <>
-                <CgSpinner className="animate-spin size-5" />
-              </>
-            ) : (
-              <>
-                <FaHandSparkles className="size-5" />
-              </>
-            )}
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() => sanitizeProduct()}
+                size="icon"
+                variant="link"
+                className="p-1 text-pricetra-green-heavy-dark"
+              >
+                {sanitizing ? (
+                  <>
+                    <CgSpinner className="animate-spin size-5" />
+                  </>
+                ) : (
+                  <>
+                    <FaHandSparkles className="size-5" />
+                  </>
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Sanitize product data with AI</p>
+            </TooltipContent>
+          </Tooltip>
         )}
 
-        {/* {isRoleAuthorized(UserRole.Contributor, user.role) && (
-          <Button size="icon" variant="link" className="p-1 text">
-            <FiEdit color="#3b82f6" className="size-5" />
-          </Button>
+        {productData && isRoleAuthorized(UserRole.Contributor, user.role) && (
+          <Dialog modal>
+            <DialogTrigger>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button size="icon" variant="link" className="p-1 text">
+                    <FiEdit color="#3b82f6" className="size-5" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Edit product</p>
+                </TooltipContent>
+              </Tooltip>
+            </DialogTrigger>
+
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit Product</DialogTitle>
+                <DialogDescription className="mt-5">
+                  <ProductForm
+                    upc={productData.product.code}
+                    product={productData?.product}
+                    onSuccess={() => console.log("success")}
+                    onError={(err) => {
+                      console.error(err.name, err.message);
+                    }}
+                    onCancel={() => {}}
+                  />
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
         )}
 
-        <Button
+        {/* <Button
           onClick={() => {}}
           className="rounded-full bg-green-100 px-4 py-2 text-pricetra-green-heavy-dark hover:bg-green-50"
         >
@@ -211,7 +260,7 @@ export default function ProductPageClient({
         </Button> */}
       </>
     );
-  }, [user, stockData, sanitizing]);
+  }, [productData, user, stockData, sanitizing]);
 
   // All available stocks for product
   useEffect(() => {
