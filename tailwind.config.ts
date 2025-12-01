@@ -15,6 +15,7 @@ const config: Config = {
 		extend: {
 			colors: {
 				pricetraGreenHeavyDark: '#396a12',
+				pricetraGreenHeavyDarkHover: '#396a12',
 				pricetraGreenDark: '#5fae23',
 				pricetraGreenLogo: '#9fe342',
 				background: 'hsl(var(--background))',
