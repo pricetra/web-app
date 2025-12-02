@@ -43,11 +43,11 @@ export default function NavPageIndicator({
         )}
       </Link>
 
-      <div className="flex flex-col w-full max-w-[200px] flex-1">
+      <div className="flex flex-col w-full max-w-[130px] lg:max-w-[200px] flex-1">
         <Link href={href}>
           <h2
             className={cn(
-              "font-bold break-all sm:text-sm text-xs",
+              "font-bold break-all lg:break-normal sm:text-sm text-xs",
               subTitle ? "line-clamp-1" : "line-clamp-2"
             )}
           >
