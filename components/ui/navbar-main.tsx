@@ -23,7 +23,7 @@ export default function NavbarMain() {
         style={{ minHeight: NAVBAR_HEIGHT }}
       >
         <div
-          className="container mx-auto flex items-center justify-between gap-5"
+          className="w-full lg:container mx-auto flex items-center justify-between gap-5"
           style={{ height: NAVBAR_HEIGHT }}
         >
           <div className="flex flex-row gap-6 items-center justify-start flex-1 w-full max-w-4xl pl-5 pr-0 sm:pr-5">
@@ -143,10 +143,12 @@ export default function NavbarMain() {
 
         {subHeader && (
           <div
-            className="container mx-auto flex items-center justify-end gap-2 px-5"
+            className="w-full lg:container mx-auto"
             style={{ height: SUBNAV_HEIGHT }}
           >
-            {subHeader}
+            <div className="flex items-center justify-end gap-2 sm:gap-4 px-5 w-full h-full">
+              {subHeader}
+            </div>
           </div>
         )}
       </header>

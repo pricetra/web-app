@@ -60,16 +60,16 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import ProductForm from "@/components/product-form/product-form";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { toast } from "sonner";
 import { useMediaQuery } from "react-responsive";
+import NavToolIconButton from "@/components/ui/nav-tool-icon-button";
+import { FiShare } from "react-icons/fi";
+import { AiOutlineHeart } from "react-icons/ai";
+// import { AiFillHeart } from "react-icons/ai";
+import { AiOutlineEye } from "react-icons/ai";
+// import { AiFillEye } from "react-icons/ai";
 
 export type StockWithApproximatePrice = Stock & {
   approximatePrice?: number;
@@ -166,33 +166,34 @@ export default function ProductPageClient({
   const NavTools = useMemo(
     () => (
       <>
+        {stockData && (
+          <NavToolIconButton onClick={() => {}} tooltip="Add to watchlist">
+            <AiOutlineEye className="text-watch text-lg" />
+          </NavToolIconButton>
+        )}
+
+        <NavToolIconButton onClick={() => {}} tooltip="Add to favorites">
+          <AiOutlineHeart className="text-like" />
+        </NavToolIconButton>
+
         {isRoleAuthorized(
           UserRole.Contributor,
           user?.role ?? UserRole.Consumer
         ) && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={() => sanitizeProduct()}
-                size="icon"
-                variant="link"
-                className="p-0 text-pricetra-green-heavy-dark"
-              >
-                {sanitizing ? (
-                  <>
-                    <CgSpinner className="animate-spin size-4" />
-                  </>
-                ) : (
-                  <>
-                    <FaHandSparkles className="size-4" />
-                  </>
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Sanitize product data with AI</p>
-            </TooltipContent>
-          </Tooltip>
+          <NavToolIconButton
+            onClick={() => sanitizeProduct()}
+            tooltip="Sanitize product data with AI"
+          >
+            {sanitizing ? (
+              <>
+                <CgSpinner className="animate-spin text-sanitize" />
+              </>
+            ) : (
+              <>
+                <FaHandSparkles className="text-sanitize" />
+              </>
+            )}
+          </NavToolIconButton>
         )}
 
         {isRoleAuthorized(
@@ -205,18 +206,12 @@ export default function ProductPageClient({
             defaultOpen={editProductModalOpen}
             onOpenChange={(o) => setEditProductOpenModal(o)}
           >
-            <DialogTrigger>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button size="icon" variant="link" className="p-0">
-                    <FiEdit color="#3b82f6" className="size-4" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Edit product</p>
-                </TooltipContent>
-              </Tooltip>
-            </DialogTrigger>
+            <NavToolIconButton
+              onClick={() => setEditProductOpenModal(true)}
+              tooltip="Edit product"
+            >
+              <FiEdit className="text-edit" />
+            </NavToolIconButton>
 
             <DialogContent>
               <DialogHeader>
@@ -243,12 +238,16 @@ export default function ProductPageClient({
 
         <Button
           onClick={() => {}}
-          className="rounded-full bg-green-100 text-pricetra-green-heavy-dark hover:bg-green-50 font-bold"
+          className="rounded-full bg-green-100 px-3 pl-2 text-pricetra-green-heavy-dark hover:bg-green-200 font-bold shadow-none"
           size="xs"
         >
           <FiPlus />
           Price
         </Button>
+
+        <NavToolIconButton onClick={() => {}} tooltip="Share">
+          <FiShare className="text-share" />
+        </NavToolIconButton>
       </>
     ),
     [productData, user, stockData, sanitizing, editProductModalOpen]
