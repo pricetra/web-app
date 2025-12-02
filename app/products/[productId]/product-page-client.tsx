@@ -187,7 +187,7 @@ export default function ProductPageClient({
   }, [stockData]);
 
   useLayoutEffect(() => {
-    if (!user) return;
+    if (!user || !productData) return;
 
     setNavTools(
       <>
@@ -217,7 +217,7 @@ export default function ProductPageClient({
           </Tooltip>
         )}
 
-        {productData && isRoleAuthorized(UserRole.Contributor, user.role) && (
+        {isRoleAuthorized(UserRole.Contributor, user.role) && (
           <Dialog modal>
             <DialogTrigger>
               <Tooltip>
