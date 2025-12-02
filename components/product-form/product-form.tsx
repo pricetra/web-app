@@ -25,6 +25,8 @@ import {
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import CategoryInput from "./category-input";
+import { Checkbox } from "@/components/ui/checkbox";
+import WeightSelector from "./weight-input";
 
 export type ProductFormProps = {
   upc?: string;
@@ -250,6 +252,85 @@ export default function ProductForm({
               </Label>
             </InputGroupAddon>
           </InputGroup>
+
+          <div className="flex flex-row items-center justify-center gap-2">
+            <div className="flex-1">
+              <InputGroup>
+                <InputGroupInput
+                  placeholder="Product quantity"
+                  value={formik.values.quantityValue ?? 1}
+                  onChange={(e) =>
+                    formik.setFieldValue("quantityValue", e.target.value)
+                  }
+                  id="quantityValue"
+                />
+                <InputGroupAddon align="block-start">
+                  <Label className="text-xs" htmlFor="quantityValue">
+                    Quantity
+                  </Label>
+                </InputGroupAddon>
+              </InputGroup>
+            </div>
+
+            <div>
+              <InputGroup>
+                <InputGroupInput
+                  value={formik.values.quantityType ?? "count"}
+                  onChange={(e) =>
+                    formik.setFieldValue("quantityType", e.target.value)
+                  }
+                  id="quantityType"
+                />
+                <InputGroupAddon align="block-start">
+                  <Label className="text-xs" htmlFor="quantityType">
+                    Unit
+                  </Label>
+                </InputGroupAddon>
+              </InputGroup>
+            </div>
+          </div>
+
+          <div className="mt-2 mb-4 flex flex-col gap-2">
+            <div className="flex flex-1 flex-row items-center justify-center gap-3 ">
+              <WeightSelector
+                onChangeText={(v) => {
+                  if (!v.weightType || !v.weightValue) {
+                    formik.setFieldValue("weight", "");
+                    return;
+                  }
+                  formik.setFieldValue(
+                    "weight",
+                    `${v.weightValue} ${v.weightType}`
+                  );
+                }}
+                value={formik.values.weight ?? undefined}
+              />
+            </div>
+
+            <div className="flex flex-row flex-wrap items-center gap-5">
+              <div className="flex flex-row items-center gap-1">
+                <Checkbox
+                  id="netWeight"
+                  checked={formik.values.netWeight ?? false}
+                  onCheckedChange={(c: boolean) =>
+                    formik.setFieldValue("netWeight", c)
+                  }
+                />
+                <Label htmlFor="netWeight">Net weight</Label>
+              </div>
+
+              <div className="flex flex-row items-center gap-1">
+                <Checkbox
+                  id="approximateWeight"
+                  checked={formik.values.approximateWeight ?? false}
+                  onCheckedChange={(c: boolean) =>
+                    formik.setFieldValue("approximateWeight", c)
+                  }
+                />
+                <Label htmlFor="approximateWeight">Approximate weight</Label>
+              </div>
+            </div>
+          </div>
 
           <div className="mt-5 flex flex-row items-center justify-end gap-5">
             <Button
