@@ -1,17 +1,17 @@
 'use client'
 import { SiteCookieValues } from "@/lib/cookies";
-import { HttpLink } from "@apollo/client";
 import { ApolloClient, ApolloLink, InMemoryCache } from "@apollo/client";
 import { SetContextLink } from "@apollo/client/link/context";
 import { RetryLink } from "@apollo/client/link/retry";
 import { ApolloProvider } from "@apollo/client/react";
 import { ReactNode } from "react";
 import { useCookies } from "react-cookie";
+import UploadHttpLink from "apollo-upload-client/UploadHttpLink.mjs";
 
 export const uri =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080/graphql";
 
-const uploadLink = new HttpLink({ uri }); // createUploadLink({ uri });
+const uploadLink = new UploadHttpLink({ uri });
 
 const retryLink = new RetryLink({
   delay: {
