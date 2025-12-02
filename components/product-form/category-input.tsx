@@ -80,7 +80,7 @@ export default function CategoryInput({ category, onSelectCategoryId }: Category
                 return (
                   <Button
                     key={`category-${c.id}-${i}`}
-                    size="sm"
+                    size="xs"
                     className={cn(
                       "rounded-full",
                       selected
@@ -98,7 +98,7 @@ export default function CategoryInput({ category, onSelectCategoryId }: Category
               })}
               <Button
                 onClick={() => setShowCreateCategoryView(true)}
-                size="sm"
+                size="xs"
                 className="rounded-full bg-gray-800"
               >
                 <FiPlus />
