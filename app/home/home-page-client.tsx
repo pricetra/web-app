@@ -23,11 +23,11 @@ import useLocationInput from "@/hooks/useLocationInput";
 import { useQuery } from "@apollo/client/react";
 import { useSearchParams } from "next/navigation";
 
-export default function HomePageClient() {
+export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
   const searchParams = useSearchParams();
   const pageString = searchParams.get("page");
   const { loggedIn } = useAuth();
-  const location = useLocationInput();
+  const location = useLocationInput(!loggedIn ? ipAddress : undefined);
   const { data: allStoresData } = useQuery(AllStoresDocument, {
     fetchPolicy: "cache-first",
     variables: { paginator: { page: 1, limit: 9 } },

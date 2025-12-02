@@ -9,6 +9,8 @@ import ProductPageClient from "./product-page-client";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import LayoutProvider from "@/providers/layout-provider";
+import { headers } from "next/headers";
+import { serverSideIpAddress } from "@/lib/strings";
 
 type Props = {
   params: Promise<{ productId: string }>;
@@ -73,6 +75,9 @@ export default async function LandingPageServer({
     notFound();
   }
 
+  const headerList = await headers();
+  const ipAddress = serverSideIpAddress(headerList);
+
   return (
     <LayoutProvider>
       <ProductPageClient
@@ -80,6 +85,7 @@ export default async function LandingPageServer({
         stockId={parsedStockId}
         sharedBy={parsedSharedById}
         sharedFrom={sharedFrom}
+        ipAddress={ipAddress}
       />
     </LayoutProvider>
   );

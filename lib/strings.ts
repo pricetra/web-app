@@ -66,3 +66,12 @@ export function parseWeight(rawWeight: string): ProductWeightComponents {
 export function getIpAddressFromRequestHeaders(headerList: ReadonlyHeaders) {
   return headerList.get("x-forwarded-for")?.split(",")[0] ?? headerList.get("x-real-ip");
 }
+
+export function serverSideIpAddress(headerList: ReadonlyHeaders): string {
+  let ipAddress =
+    getIpAddressFromRequestHeaders(headerList) ?? "46.110.121.165";
+  if (process.env.NODE_ENV !== "production") {
+    ipAddress = "70.91.104.137";
+  }
+  return ipAddress
+}

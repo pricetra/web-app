@@ -1,7 +1,7 @@
 import LandingPage from "@/app/landing-page-client";
 import { cookies, headers } from "next/headers";
 import type { Metadata } from "next";
-import { getIpAddressFromRequestHeaders } from "@/lib/strings";
+import { serverSideIpAddress } from "@/lib/strings";
 import { AUTH_TOKEN_KEY } from "@/lib/cookies";
 import { redirect } from "next/navigation";
 
@@ -28,10 +28,5 @@ export default async function LandingPageServer() {
     redirect("/home");
   }
   const headerList = await headers();
-  let ipAddress =
-    getIpAddressFromRequestHeaders(headerList) ?? "46.110.121.165";
-  if (process.env.NODE_ENV !== "production") {
-    ipAddress = "70.91.104.137";
-  }
-  return <LandingPage ipAddress={ipAddress} />;
+  return <LandingPage ipAddress={serverSideIpAddress(headerList)} />;
 }

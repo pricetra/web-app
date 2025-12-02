@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import LayoutProvider from "@/providers/layout-provider";
 import HomePageClient from "./home-page-client";
+import { headers } from "next/headers";
+import { serverSideIpAddress } from "@/lib/strings";
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = "Browse - Pricetra";
@@ -18,9 +20,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AllStoresPageServer() {
+  const headerList = await headers();
+  const ipAddress = serverSideIpAddress(headerList);
   return (
     <LayoutProvider>
-      <HomePageClient />
+      <HomePageClient ipAddress={ipAddress} />
     </LayoutProvider>
   );
 }
