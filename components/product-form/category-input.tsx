@@ -1,10 +1,15 @@
 import { useLazyQuery } from "@apollo/client/react";
-import { Category, CategorySearchDocument, GetCategoryDocument } from "graphql-utils";
+import { Category, CategorySearchDocument } from "graphql-utils";
 import { useCallback, useEffect, useState } from "react";
-import _ from 'lodash';
-import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from "@/components/ui/input-group";
+import _ from "lodash";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 import { IoIosSearch } from "react-icons/io";
-import { Button } from '@/components/ui/button';
+import { Button } from "@/components/ui/button";
 import { FiPlus } from "react-icons/fi";
 import { cn } from "@/lib/utils";
 import { CgSpinner } from "react-icons/cg";
@@ -14,7 +19,10 @@ export type CategoryInputProps = {
   onSelectCategoryId: (categoryId: number) => void;
 };
 
-export default function CategoryInput({ category, onSelectCategoryId }: CategoryInputProps) {
+export default function CategoryInput({
+  category,
+  onSelectCategoryId,
+}: CategoryInputProps) {
   const [search, setSearch] = useState(category?.name ?? "");
   const [selectedCategory, setSelectedCategory] = useState(category);
   const [showCreateCategoryView, setShowCreateCategoryView] = useState(false);
@@ -24,8 +32,8 @@ export default function CategoryInput({ category, onSelectCategoryId }: Category
   ] = useLazyQuery(CategorySearchDocument, {
     fetchPolicy: "no-cache",
   });
-  const [getCategory, { loading: categoryLoading }] =
-    useLazyQuery(GetCategoryDocument);
+  // const [getCategory, { loading: categoryLoading }] =
+  //   useLazyQuery(GetCategoryDocument);
 
   const debouncedCategorySearchHandler = useCallback(
     _.debounce((search: string) => {
