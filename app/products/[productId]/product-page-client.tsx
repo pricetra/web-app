@@ -91,7 +91,9 @@ export default function ProductPageClient({
     refetchQueries: [GetAllListsDocument, GetAllProductListsByListIdDocument],
   });
   const [favProductList, setFavProductList] = useState<ProductList>();
+  const [fav, setFav] = useState(false);
   const [watchProductList, setWatchProductList] = useState<ProductList>();
+  const [watch, setWatch] = useState(false);
   const [editProductModalOpen, setEditProductOpenModal] = useState(false);
   const isMediumScreen = useMediaQuery({ query: "(max-width: 800px)" });
 
@@ -146,17 +148,21 @@ export default function ProductPageClient({
           <NavToolIconButton
             onClick={() => {
               if (watchProductList) {
-                return remove(ListType.WatchList, () =>
-                  setWatchProductList(undefined)
-                );
+                setWatch(false);
+                return remove(ListType.WatchList, (pl) => {
+                  setWatchProductList(undefined);
+                  if (!pl) setWatch(true);
+                });
               }
-              add(ListType.WatchList, (p) => {
-                setWatchProductList(p);
+              setWatch(true);
+              add(ListType.WatchList, (pl) => {
+                setWatchProductList(pl);
+                if (!pl) setWatch(false);
               });
             }}
             tooltip="Add to watchlist"
           >
-            {watchProductList ? (
+            {watch ? (
               <AiFillEye className="text-watch text-lg" />
             ) : (
               <AiOutlineEye className="text-watch text-lg" />
@@ -167,17 +173,21 @@ export default function ProductPageClient({
         <NavToolIconButton
           onClick={() => {
             if (favProductList) {
-              return remove(ListType.Favorites, () =>
-                setFavProductList(undefined)
-              );
+              setFav(false);
+              return remove(ListType.Favorites, (pl) => {
+                setFavProductList(undefined);
+                if (!pl) setFav(true);
+              });
             }
-            add(ListType.Favorites, (p) => {
-              setFavProductList(p);
+            setFav(true);
+            add(ListType.Favorites, (pl) => {
+              setFavProductList(pl);
+              if (!pl) setFav(false);
             });
           }}
           tooltip="Add to favorites"
         >
-          {favProductList ? (
+          {fav ? (
             <AiFillHeart className="text-like" />
           ) : (
             <AiOutlineHeart className="text-like" />
@@ -267,6 +277,8 @@ export default function ProductPageClient({
       editProductModalOpen,
       favProductList,
       watchProductList,
+      fav,
+      watch,
     ]
   );
 
