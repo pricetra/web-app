@@ -168,6 +168,7 @@ export default function ProductPageClient({
         </NavToolIconButton>
       </>
     ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [productData, user, stockData, sanitizing, editProductModalOpen]
   );
 
