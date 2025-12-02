@@ -1,0 +1,351 @@
+import {
+  Branch,
+  BranchesWithProductsDocument,
+  BranchesWithProductsQueryVariables,
+  BranchListWithPrices,
+  FavoriteBranchesWithPricesDocument,
+  GetProductNutritionDataDocument,
+  GetProductStocksDocument,
+  Product,
+  ProductNutrition,
+  Stock,
+  UpdateProductNutritionDataDocument,
+} from "graphql-utils";
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import ProductSpecs from "@/components/product-specs";
+import BranchItemWithLogo, {
+  BranchItemWithLogoLoading,
+} from "@/components/branch-item-with-logo";
+import ProductItemHorizontal, {
+  ProductLoadingItemHorizontal,
+} from "@/components/product-item-horizontal";
+import NutritionFacts from "@/components/nutrition-facts";
+import { Button } from "@/components/ui/button";
+import StockItemMini from "@/components/stock-item-mini";
+import { cn } from "@/lib/utils";
+import LoginSignupButtons from "@/components/login-signup-buttons";
+import ScrollContainer from "@/components/scroll-container";
+import { FiEdit } from "react-icons/fi";
+import { IoRefresh } from "react-icons/io5";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
+import { useAuth } from "@/context/user-context";
+import { useEffect, useMemo } from "react";
+import { LocationInputWithFullAddress } from "@/context/location-context";
+
+export type StockWithApproximatePrice = Stock & {
+  approximatePrice?: number;
+};
+
+function stockToApproxMap(
+  data: BranchListWithPrices
+): StockWithApproximatePrice {
+  return {
+    id: data.stock?.id ?? 0,
+    productId: data.stock?.productId,
+    latestPriceId: data.stock?.latestPrice?.id ?? 0,
+    latestPrice: { ...data.stock?.latestPrice },
+    branchId: data.branchId,
+    branch: data.branch,
+    store: data.branch?.store,
+    storeId: data.branch?.storeId,
+    approximatePrice: data.approximatePrice,
+  } as StockWithApproximatePrice;
+}
+
+export type ProductDetailsProps = {
+  product: Product;
+  stockId?: number;
+  stock?: Stock;
+  locationInput: LocationInputWithFullAddress;
+};
+
+export default function ProductDetails({
+  product,
+  stockId,
+  stock,
+  locationInput,
+}: ProductDetailsProps) {
+  const { loggedIn, lists } = useAuth();
+
+  const { data: stocksData } = useQuery(GetProductStocksDocument, {
+    variables: {
+      paginator: {
+        page: 1,
+        limit: 10,
+      },
+      productId: product.id,
+      location: locationInput.locationInput,
+    },
+    fetchPolicy: "no-cache",
+  });
+  const { data: favBranchesPriceData } = useQuery(
+    FavoriteBranchesWithPricesDocument,
+    {
+      variables: { productId: product.id },
+      fetchPolicy: "no-cache",
+    }
+  );
+
+  const [getRelatedBranchProducts, { data: branchesWithProducts }] =
+    useLazyQuery(BranchesWithProductsDocument, { fetchPolicy: "no-cache" });
+
+  const { data: productNutritionData } = useQuery(
+    GetProductNutritionDataDocument,
+    {
+      variables: {
+        productId: product.id,
+      },
+      fetchPolicy: "network-only",
+    }
+  );
+  const [updateProductNutrition, { loading: updatingProductNutrition }] =
+    useMutation(UpdateProductNutritionDataDocument, {
+      refetchQueries: [GetProductNutritionDataDocument],
+    });
+
+  const mappedFavBranches = useMemo(
+    () =>
+      (
+        (favBranchesPriceData?.getFavoriteBranchesWithPrices ??
+          []) as BranchListWithPrices[]
+      ).map(stockToApproxMap),
+    [favBranchesPriceData]
+  );
+
+  useEffect(() => {
+    if (!product.category || !locationInput) return;
+
+    const favoriteBranchIds = (lists?.favorites?.branchList ?? [])
+      .map(({ branchId }) => branchId);
+    const variables = {
+      paginator: {
+        limit: favoriteBranchIds.length,
+        page: 1,
+      },
+      productLimit: 10,
+      filters: {
+        location: locationInput.locationInput,
+        category: product.category.name,
+        sortByPrice: "asc",
+        branchIds: favoriteBranchIds,
+      },
+    } as BranchesWithProductsQueryVariables;
+    if (stockId) {
+      const branchIdsWithStockBranchId = favoriteBranchIds
+        .filter((id) => id !== stock?.branchId);
+      if (stock) branchIdsWithStockBranchId.push(stock?.branchId);
+      console.log(branchIdsWithStockBranchId)
+      variables.paginator.limit = branchIdsWithStockBranchId.length;
+      variables.filters = {
+        ...variables.filters,
+        branchIds: branchIdsWithStockBranchId,
+      };
+      getRelatedBranchProducts({ variables });
+    }
+    getRelatedBranchProducts({variables})
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [lists, locationInput, product.category, stockId, stock]);
+
+  return (
+    <div>
+      <Accordion
+        type="multiple"
+        defaultChecked
+        className="w-full px-5"
+        defaultValue={[
+          "favorite-stores",
+          "available-stocks",
+          "nutrition-facts",
+          "description",
+        ]}
+      >
+        <AccordionItem value="favorite-stores">
+          <AccordionTrigger>Favorite Stores</AccordionTrigger>
+          <AccordionContent>
+            {loggedIn ? (
+              <>
+                {favBranchesPriceData && (
+                  <section className="grid grid-cols-2 gap-5 mt-5">
+                    {mappedFavBranches.map(({ approximatePrice, ...s }, i) => (
+                      <div
+                        className={cn(
+                          "mb-3",
+                          s.id === 0 && !approximatePrice
+                            ? "opacity-30"
+                            : "opacity-100"
+                        )}
+                        key={`${s.id}-${i}-fav-store-stock`}
+                      >
+                        <StockItemMini
+                          stock={s as Stock}
+                          approximatePrice={approximatePrice ?? undefined}
+                          quantityValue={product.quantityValue}
+                          quantityType={product.quantityType}
+                        />
+                      </div>
+                    ))}
+                  </section>
+                )}
+              </>
+            ) : (
+              <div className="my-10">
+                <h3 className="text-center text-lg font-bold mb-5">
+                  View prices from your Favorite Stores
+                </h3>
+
+                <LoginSignupButtons />
+              </div>
+            )}
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem value="available-stocks">
+          <AccordionTrigger>Available at</AccordionTrigger>
+          <AccordionContent>
+            {stocksData && (
+              <section className="grid grid-cols-2 gap-5 mt-5">
+                {stocksData.getProductStocks.stocks.map((s, i) => (
+                  <div className="mb-3" key={`${s.id}-${i}-available-stock`}>
+                    <StockItemMini
+                      stock={s as Stock}
+                      quantityValue={product.quantityValue}
+                      quantityType={product.quantityType}
+                    />
+                  </div>
+                ))}
+              </section>
+            )}
+          </AccordionContent>
+        </AccordionItem>
+
+        {productNutritionData && (
+          <AccordionItem value="nutrition-facts">
+            <AccordionTrigger>Nutrition Facts</AccordionTrigger>
+            <AccordionContent className="flex flex-col gap-4 text-balance">
+              <div className="mb-5 flex flex-row items-center justify-end gap-2">
+                <a
+                  className="inline-flex items-center justify-center gap-2 bg-gray-700 px-4 py-1.5 rounded-full text-white"
+                  href={`https://world.openfoodfacts.org/cgi/product.pl?type=edit&code=${product.code}`}
+                  target="_blank"
+                >
+                  <FiEdit />
+                  Edit
+                </a>
+
+                <Button
+                  size="sm"
+                  className="cursor-pointer rounded-full bg-pricetra-green-heavy-dark has-[>svg]:px-4 px-4"
+                  onClick={() =>
+                    updateProductNutrition({
+                      variables: { productId: product.id },
+                    })
+                  }
+                  disabled={updatingProductNutrition}
+                >
+                  <IoRefresh />
+                  Refetch
+                </Button>
+              </div>
+
+              {productNutritionData.getProductNutritionData.nutriments && (
+                <NutritionFacts
+                  {...(productNutritionData.getProductNutritionData as ProductNutrition)}
+                />
+              )}
+
+              {productNutritionData.getProductNutritionData.ingredientList &&
+                productNutritionData.getProductNutritionData.ingredientList
+                  .length > 0 && (
+                  <div className="mt-7">
+                    <h5 className="mb-1.5 text-base font-semibold">
+                      Ingredients
+                    </h5>
+                    <p className="text-sm">
+                      {productNutritionData.getProductNutritionData.ingredientList
+                        .map((i) => i.toUpperCase())
+                        .join(", ")}
+                    </p>
+                  </div>
+                )}
+            </AccordionContent>
+          </AccordionItem>
+        )}
+
+        {product.description.length > 0 && (
+          <AccordionItem value="description">
+            <AccordionTrigger>Description</AccordionTrigger>
+            <AccordionContent className="flex flex-col gap-4 text-balance">
+              <p>{product.description}</p>
+            </AccordionContent>
+          </AccordionItem>
+        )}
+
+        <AccordionItem value="specifications">
+          <AccordionTrigger>Specifications</AccordionTrigger>
+          <AccordionContent className="flex flex-col gap-4 text-balance">
+            <ProductSpecs product={product} />
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+
+      <section className="w-full mt-[60px]">
+        {!branchesWithProducts
+          ? Array(3)
+              .fill(0)
+              .map((_, i) => (
+                <article
+                  className="my-7"
+                  key={`branch-with-product-loading-${i}`}
+                >
+                  <div className="mb-5 px-5">
+                    <BranchItemWithLogoLoading />
+                  </div>
+
+                  <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:[mask-image:_linear-gradient(to_right,transparent_0,_black_2em,_black_calc(100%-2em),transparent_100%)]">
+                    {Array(10)
+                      .fill(0)
+                      .map((_, j) => (
+                        <div
+                          className="first:pl-5 last:pr-5"
+                          key={`branch-product-${i}-${j}`}
+                        >
+                          <ProductLoadingItemHorizontal />
+                        </div>
+                      ))}
+                  </div>
+                </article>
+              ))
+          : branchesWithProducts.branchesWithProducts.branches.map(
+              (branch, i) => (
+                <article
+                  className="my-7"
+                  key={`branch-with-product-${branch.id}`}
+                >
+                  <div className="mb-5 px-5">
+                    <BranchItemWithLogo
+                      branch={branch as Branch}
+                      branchTagline="Similar products in"
+                    />
+                  </div>
+
+                  <ScrollContainer>
+                    {(branch.products ?? []).map((product) => (
+                      <ProductItemHorizontal
+                        product={product as Product}
+                        key={`related-branch-product-${branch.id}-${product.id}-${i}`}
+                      />
+                    ))}
+                  </ScrollContainer>
+                </article>
+              )
+            )}
+      </section>
+    </div>
+  );
+}
