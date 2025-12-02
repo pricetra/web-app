@@ -271,6 +271,7 @@ export default function ProductPageClient({
         </Button> */}
       </>
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [productData, user, stockData, sanitizing, editProductModalOpen]);
 
   // All available stocks for product

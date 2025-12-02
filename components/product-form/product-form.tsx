@@ -1,5 +1,5 @@
 import { Formik, FormikHelpers } from "formik";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   AllBrandsDocument,
   AllProductsDocument,
@@ -27,6 +27,10 @@ import { Button } from "@/components/ui/button";
 import CategoryInput from "./category-input";
 import { Checkbox } from "@/components/ui/checkbox";
 import WeightSelector from "./weight-input";
+import {
+  allowedImageTypes,
+  allowedImageTypesString,
+} from "@/constants/uploads";
 
 export type ProductFormProps = {
   upc?: string;
@@ -43,9 +47,7 @@ export default function ProductForm({
   onSuccess,
   onError,
 }: ProductFormProps) {
-  const [imageUri, setImageUri] = useState<string>();
-  const [imageBase64, setImageBase64] = useState<string>();
-  const [imageUpdated, setImageUpdated] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string>();
   const [brands, setBrands] = useState<Brand[]>();
   const { data: brandsData, loading: brandsLoading } = useQuery(
     AllBrandsDocument,
@@ -65,51 +67,28 @@ export default function ProductForm({
       refetchQueries: [AllProductsDocument, AllBrandsDocument],
     }
   );
+  const productImageUploadRef = useRef<HTMLInputElement>(null);
   const loading = updateLoading || createLoading;
   const isUpdateProduct =
     product !== undefined && product.id !== undefined && product.id !== 0;
-
-  useEffect(() => {
-    if (!product) return;
-
-    if (product.image && product.image !== "") {
-      setImageUri(product.image);
-    } else {
-      setImageUri(undefined);
-    }
-  }, [product]);
 
   useEffect(() => {
     if (!brandsData) return;
     setBrands(brandsData.allBrands);
   }, [brandsData]);
 
-  // async function selectImage() {
-  //   const picture = await selectImageForProductExtraction();
-  //   if (!picture) return;
-
-  //   setImageUpdated(true);
-  //   setImageUri(picture.imageUri);
-  //   setImageBase64(picture.base64);
-  // }
-
-  function resetImage() {
-    setImageUri(undefined);
-    setImageBase64(undefined);
-    setImageUpdated(false);
-  }
+  useEffect(() => {
+    if (!product) return;
+    setSelectedImage(product.image);
+  }, [product]);
 
   function submit(input: CreateProduct, formik: FormikHelpers<CreateProduct>) {
-    const imageAdded = imageUri && imageBase64 && imageUpdated;
-
     if (input.weight === "") input.weight = undefined;
     if (!input.description) input.description = "";
 
-    if (imageAdded) input.imageBase64 = imageBase64;
-
     if (isUpdateProduct) {
       const filteredInput = diffObjects(input, product);
-      if (Object.keys(filteredInput).length === 0 && !imageAdded) return;
+      if (Object.keys(filteredInput).length === 0) return;
 
       updateProduct({
         variables: {
@@ -121,7 +100,6 @@ export default function ProductForm({
           if (error) return onError(error, formik);
           if (!data) return;
 
-          resetImage();
           onSuccess(data.updateProduct as Product, formik);
         })
         .catch((e) => onError(e, formik));
@@ -137,29 +115,9 @@ export default function ProductForm({
         if (error) return onError(error, formik);
         if (!data) return;
 
-        resetImage();
         onSuccess(data.createProduct as Product, formik);
       })
       .catch((e) => onError(e, formik));
-  }
-
-  function renderImageSelection() {
-    if (imageUri) {
-      return (
-        <Image
-          src={imageUri}
-          className="size-28 rounded-lg object-cover"
-          width={500}
-          height={500}
-          alt="Product image"
-        />
-      );
-    }
-    return (
-      <div className="flex size-28 items-center justify-center rounded-xl bg-gray-400">
-        <FiCamera className="size-[35px]" />
-      </div>
-    );
   }
 
   if (brandsLoading || !brands)
@@ -181,6 +139,7 @@ export default function ProductForm({
               ? `${product.weightValue} ${product.weightType}`
               : undefined,
           quantityValue: product?.quantityValue ?? "1",
+          imageFile: product?.image,
         } as CreateProduct
       }
       onSubmit={submit}
@@ -224,7 +183,45 @@ export default function ProductForm({
             </InputGroupAddon>
           </InputGroup>
 
-          <div className="my-5">{renderImageSelection()}</div>
+          <div className="my-5">
+            {selectedImage ? (
+              <Image
+                src={selectedImage}
+                className="size-28 rounded-lg object-cover cursor-pointer"
+                width={500}
+                height={500}
+                alt="Product image"
+                onClick={() => productImageUploadRef.current?.click()}
+                onError={() => setSelectedImage(undefined)}
+              />
+            ) : (
+              <div
+                className="flex size-28 items-center justify-center rounded-xl bg-gray-400 cursor-pointer"
+                onClick={() => productImageUploadRef.current?.click()}
+              >
+                <FiCamera className="size-[35px] text-white" />
+              </div>
+            )}
+            <div className="hidden">
+              <input
+                ref={productImageUploadRef}
+                type="file"
+                accept={allowedImageTypesString}
+                onChange={(e) => {
+                  const files = e.target.files;
+                  const file = files?.item(0);
+                  if (!file) return;
+                  if (!allowedImageTypes.includes(file.type)) {
+                    window.alert("invalid file type");
+                    return;
+                  }
+
+                  formik.setFieldValue("imageFile", file);
+                  setSelectedImage(URL.createObjectURL(file));
+                }}
+              />
+            </div>
+          </div>
 
           <div className="mb-5">
             <Label className="mb-2 block">Category</Label>
@@ -362,38 +359,3 @@ export default function ProductForm({
     </Formik>
   );
 }
-
-export type ExtractionImageSelectionType = {
-  imageUri: string;
-  base64: string;
-  base64EncodingOnly?: string;
-};
-
-// export async function selectImageForProductExtraction(
-//   useCamera: boolean = false,
-//   quality: number = 1
-// ): Promise<ExtractionImageSelectionType | undefined> {
-//   const options: ImagePicker.ImagePickerOptions = {
-//     mediaTypes: ['images'],
-//     allowsEditing: true,
-//     aspect: [1, 1],
-//     quality,
-//     base64: true,
-//     allowsMultipleSelection: false,
-//     cameraType: ImagePicker.CameraType.back,
-//   };
-//   const result = await (useCamera
-//     ? ImagePicker.launchCameraAsync(options)
-//     : ImagePicker.launchImageLibraryAsync(options));
-
-//   if (result.canceled || result.assets.length === 0) return undefined;
-
-//   const picture = result.assets.at(0);
-//   if (!picture || !picture.base64 || !picture.uri) return undefined;
-
-//   return {
-//     imageUri: picture.uri,
-//     base64: buildBase64ImageString(picture),
-//     base64EncodingOnly: picture.base64,
-//   };
-// }

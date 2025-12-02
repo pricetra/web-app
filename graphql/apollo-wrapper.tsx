@@ -11,7 +11,6 @@ import { useCookies } from "react-cookie";
 export const uri =
   process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8080/graphql";
 
-const httpLink = new HttpLink({ uri });
 const uploadLink = new HttpLink({ uri }); // createUploadLink({ uri });
 
 const retryLink = new RetryLink({
@@ -38,7 +37,7 @@ function createAuthLink(jwt: string) {
 function newClient(jwt?: string) {
   if (!jwt)
     return new ApolloClient({
-      link: httpLink,
+      link: uploadLink,
       cache: new InMemoryCache(),
     });
 

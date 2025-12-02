@@ -25,6 +25,7 @@
     "@tailwindcss/line-clamp": "^0.4.4",
     "@tailwindcss/typography": "^0.5.16",
     "aos": "^2.3.4",
+    "apollo-upload-client": "^19.0.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "convert-units": "^2.3.4",
