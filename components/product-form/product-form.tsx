@@ -254,7 +254,7 @@ export default function ProductForm({
           </InputGroup>
 
           <div className="flex flex-row items-center justify-center gap-2">
-            <div className="flex-1">
+            <div className="flex-2">
               <InputGroup>
                 <InputGroupInput
                   placeholder="Product quantity"
@@ -272,7 +272,7 @@ export default function ProductForm({
               </InputGroup>
             </div>
 
-            <div>
+            <div className="flex-1">
               <InputGroup>
                 <InputGroupInput
                   value={formik.values.quantityType ?? "count"}

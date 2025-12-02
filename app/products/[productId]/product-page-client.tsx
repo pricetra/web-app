@@ -19,7 +19,7 @@ import {
   UserRole,
 } from "graphql-utils";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
-import { useEffect, useLayoutEffect, useMemo } from "react";
+import { useEffect, useLayoutEffect, useMemo, useState } from "react";
 import SelectedStock, {
   SelectedStockLoading,
 } from "@/components/selected-stock";
@@ -68,6 +68,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { toast } from "sonner";
 
 export type StockWithApproximatePrice = Stock & {
   approximatePrice?: number;
@@ -141,6 +142,7 @@ export default function ProductPageClient({
       refetchQueries: [ProductDocument],
     }
   );
+  const [editProductModalOpen, setEditProductOpenModal] = useState(false);
 
   const favoriteBranchIds = useMemo(
     () =>
@@ -218,7 +220,12 @@ export default function ProductPageClient({
         )}
 
         {isRoleAuthorized(UserRole.Contributor, user.role) && (
-          <Dialog modal>
+          <Dialog
+            modal
+            open={editProductModalOpen}
+            defaultOpen={editProductModalOpen}
+            onOpenChange={(o) => setEditProductOpenModal(o)}
+          >
             <DialogTrigger>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -239,11 +246,15 @@ export default function ProductPageClient({
                   <ProductForm
                     upc={productData.product.code}
                     product={productData?.product}
-                    onSuccess={() => console.log("success")}
-                    onError={(err) => {
-                      console.error(err.name, err.message);
+                    onSuccess={() => {
+                      toast.success("Product updated successfully");
+                      setEditProductOpenModal(false);
                     }}
-                    onCancel={() => {}}
+                    onError={(err) => {
+                      toast.error(err.message);
+                      setEditProductOpenModal(false);
+                    }}
+                    onCancel={() => setEditProductOpenModal(false)}
                   />
                 </DialogDescription>
               </DialogHeader>
@@ -260,7 +271,7 @@ export default function ProductPageClient({
         </Button> */}
       </>
     );
-  }, [productData, user, stockData, sanitizing]);
+  }, [productData, user, stockData, sanitizing, editProductModalOpen]);
 
   // All available stocks for product
   useEffect(() => {
