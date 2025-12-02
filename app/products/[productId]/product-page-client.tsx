@@ -49,15 +49,17 @@ export type ProductPageClientProps = {
   stockId?: number;
   sharedBy?: number;
   sharedFrom?: string;
+  ipAddress: string;
 };
 
 export default function ProductPageClient({
   productId,
   stockId,
+  ipAddress,
 }: ProductPageClientProps) {
-  const { user } = useAuth();
+  const { loggedIn, user } = useAuth();
   const { setPageIndicator, resetAll, setNavTools, setSubHeader } = useNavbar();
-  const locationInput = useLocationInput();
+  const locationInput = useLocationInput(!loggedIn ? ipAddress : undefined);
   const { data: productData, loading: productLoading } = useQuery(
     ProductDocument,
     {
@@ -264,7 +266,6 @@ export default function ProductPageClient({
           <ProductDetails
             product={productData.product}
             locationInput={locationInput}
-            stockId={stockId}
             stock={stockData?.stock as Stock | undefined}
           />
         )}

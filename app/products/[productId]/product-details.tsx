@@ -60,14 +60,12 @@ function stockToApproxMap(
 
 export type ProductDetailsProps = {
   product: Product;
-  stockId?: number;
   stock?: Stock;
   locationInput: LocationInputWithFullAddress;
 };
 
 export default function ProductDetails({
   product,
-  stockId,
   stock,
   locationInput,
 }: ProductDetailsProps) {
@@ -121,8 +119,9 @@ export default function ProductDetails({
   useEffect(() => {
     if (!product.category || !locationInput) return;
 
-    const favoriteBranchIds = (lists?.favorites?.branchList ?? [])
-      .map(({ branchId }) => branchId);
+    const favoriteBranchIds = (lists?.favorites?.branchList ?? []).map(
+      ({ branchId }) => branchId
+    );
     const variables = {
       paginator: {
         limit: favoriteBranchIds.length,
@@ -136,11 +135,11 @@ export default function ProductDetails({
         branchIds: favoriteBranchIds,
       },
     } as BranchesWithProductsQueryVariables;
-    if (stockId) {
-      const branchIdsWithStockBranchId = favoriteBranchIds
-        .filter((id) => id !== stock?.branchId);
-      if (stock) branchIdsWithStockBranchId.push(stock?.branchId);
-      console.log(branchIdsWithStockBranchId)
+    if (stock) {
+      const branchIdsWithStockBranchId = favoriteBranchIds.filter(
+        (id) => id !== stock?.branchId
+      );
+      branchIdsWithStockBranchId.push(stock?.branchId);
       variables.paginator.limit = branchIdsWithStockBranchId.length;
       variables.filters = {
         ...variables.filters,
@@ -148,9 +147,9 @@ export default function ProductDetails({
       };
       getRelatedBranchProducts({ variables });
     }
-    getRelatedBranchProducts({variables})
+    getRelatedBranchProducts({ variables });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lists, locationInput, product.category, stockId, stock]);
+  }, [lists, locationInput, product.category, stock]);
 
   return (
     <div>
