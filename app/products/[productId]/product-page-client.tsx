@@ -2,8 +2,14 @@
 
 import ProductFull, { ProductFullLoading } from "@/components/product-full";
 import {
+  AddToListDocument,
+  GetAllListsDocument,
+  GetAllProductListsByListIdDocument,
+  ListType,
   Product,
   ProductDocument,
+  ProductList,
+  RemoveFromListDocument,
   SanitizeProductDocument,
   Stock,
   StockDocument,
@@ -39,10 +45,10 @@ import { useMediaQuery } from "react-responsive";
 import NavToolIconButton from "@/components/ui/nav-tool-icon-button";
 import { FiShare } from "react-icons/fi";
 import { AiOutlineHeart } from "react-icons/ai";
-// import { AiFillHeart } from "react-icons/ai";
+import { AiFillHeart } from "react-icons/ai";
 import { AiOutlineEye } from "react-icons/ai";
 import ProductDetails from "./product-details";
-// import { AiFillEye } from "react-icons/ai";
+import { AiFillEye } from "react-icons/ai";
 
 export type ProductPageClientProps = {
   productId: number;
@@ -57,7 +63,7 @@ export default function ProductPageClient({
   stockId,
   ipAddress,
 }: ProductPageClientProps) {
-  const { loggedIn, user } = useAuth();
+  const { loggedIn, user, lists } = useAuth();
   const { setPageIndicator, resetAll, setNavTools, setSubHeader } = useNavbar();
   const locationInput = useLocationInput(!loggedIn ? ipAddress : undefined);
   const { data: productData, loading: productLoading } = useQuery(
@@ -78,20 +84,104 @@ export default function ProductPageClient({
       refetchQueries: [ProductDocument],
     }
   );
+  const [addToList] = useMutation(AddToListDocument, {
+    refetchQueries: [GetAllListsDocument, GetAllProductListsByListIdDocument],
+  });
+  const [removeFromList] = useMutation(RemoveFromListDocument, {
+    refetchQueries: [GetAllListsDocument, GetAllProductListsByListIdDocument],
+  });
+  const [favProductList, setFavProductList] = useState<ProductList>();
+  const [watchProductList, setWatchProductList] = useState<ProductList>();
   const [editProductModalOpen, setEditProductOpenModal] = useState(false);
   const isMediumScreen = useMediaQuery({ query: "(max-width: 800px)" });
+
+  async function add(
+    type: ListType.WatchList | ListType.Favorites,
+    cb: (p?: ProductList) => void
+  ) {
+    if (!lists) return;
+
+    // Check notification permissions
+    if (type === ListType.WatchList) {
+      // TODO: Handle notifications
+    }
+
+    const listId =
+      type === ListType.Favorites ? lists.favorites.id : lists.watchList.id;
+    const { data } = await addToList({
+      variables: {
+        listId,
+        productId: +productId,
+        stockId: type === ListType.WatchList && stockId ? +stockId : undefined,
+      },
+    });
+    cb(data?.addToList);
+  }
+
+  async function remove(
+    type: ListType.WatchList | ListType.Favorites,
+    cb: (p?: ProductList) => void
+  ) {
+    if (!lists) return;
+
+    const listId =
+      type === ListType.Favorites ? lists.favorites.id : lists.watchList?.id;
+    const productListId =
+      type === ListType.Favorites ? favProductList?.id : watchProductList?.id;
+    if (!productListId) return;
+
+    const { data } = await removeFromList({
+      variables: {
+        listId,
+        productListId,
+      },
+    });
+    cb(data?.removeFromList);
+  }
 
   const NavTools = useMemo(
     () => (
       <>
         {stockData && (
-          <NavToolIconButton onClick={() => {}} tooltip="Add to watchlist">
-            <AiOutlineEye className="text-watch text-lg" />
+          <NavToolIconButton
+            onClick={() => {
+              if (watchProductList) {
+                return remove(ListType.WatchList, () =>
+                  setWatchProductList(undefined)
+                );
+              }
+              add(ListType.WatchList, (p) => {
+                setWatchProductList(p);
+              });
+            }}
+            tooltip="Add to watchlist"
+          >
+            {watchProductList ? (
+              <AiFillEye className="text-watch text-lg" />
+            ) : (
+              <AiOutlineEye className="text-watch text-lg" />
+            )}
           </NavToolIconButton>
         )}
 
-        <NavToolIconButton onClick={() => {}} tooltip="Add to favorites">
-          <AiOutlineHeart className="text-like" />
+        <NavToolIconButton
+          onClick={() => {
+            if (favProductList) {
+              return remove(ListType.Favorites, () =>
+                setFavProductList(undefined)
+              );
+            }
+            add(ListType.Favorites, (p) => {
+              setFavProductList(p);
+            });
+          }}
+          tooltip="Add to favorites"
+        >
+          {favProductList ? (
+            <AiFillHeart className="text-like" />
+          ) : (
+            <AiOutlineHeart className="text-like" />
+          )}
         </NavToolIconButton>
 
         {isRoleAuthorized(
@@ -169,8 +259,29 @@ export default function ProductPageClient({
       </>
     ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [productData, user, stockData, sanitizing, editProductModalOpen]
+    [
+      productData,
+      user,
+      stockData,
+      sanitizing,
+      editProductModalOpen,
+      favProductList,
+      watchProductList,
+    ]
   );
+
+  useEffect(() => {
+    if (!productData) return;
+
+    const fav = productData.product.productList.find(
+      (p) => p.type === ListType.Favorites
+    );
+    setFavProductList(fav);
+    const watch = productData.product.productList.find(
+      (p) => p.type === ListType.WatchList && p.stockId === stockId
+    );
+    setWatchProductList(watch);
+  }, [productData, stockId]);
 
   // Get stock from stockId
   useEffect(() => {
