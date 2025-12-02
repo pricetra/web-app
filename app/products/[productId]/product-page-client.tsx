@@ -49,7 +49,7 @@ import ScrollContainer from "@/components/scroll-container";
 import { useNavbar } from "@/context/navbar-context";
 import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { createCloudinaryUrl } from "@/lib/files";
-import { FiEdit } from "react-icons/fi";
+import { FiEdit, FiPlus } from "react-icons/fi";
 import { IoRefresh } from "react-icons/io5";
 import { CgSpinner } from "react-icons/cg";
 import { FaHandSparkles } from "react-icons/fa";
@@ -69,6 +69,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { toast } from "sonner";
+import { useMediaQuery } from "react-responsive";
 
 export type StockWithApproximatePrice = Stock & {
   approximatePrice?: number;
@@ -102,7 +103,7 @@ export default function ProductPageClient({
   stockId,
 }: ProductPageClientProps) {
   const { loggedIn, lists, user } = useAuth();
-  const { setPageIndicator, resetAll, setNavTools } = useNavbar();
+  const { setPageIndicator, resetAll, setNavTools, setSubHeader } = useNavbar();
   const locationInput = useLocationInput();
   const { data: productData, loading: productLoading } = useQuery(
     ProductDocument,
@@ -143,6 +144,7 @@ export default function ProductPageClient({
     }
   );
   const [editProductModalOpen, setEditProductOpenModal] = useState(false);
+  const isMediumScreen = useMediaQuery({ query: "(max-width: 800px)" });
 
   const favoriteBranchIds = useMemo(
     () =>
@@ -159,6 +161,97 @@ export default function ProductPageClient({
           []) as BranchListWithPrices[]
       ).map(stockToApproxMap),
     [favBranchesPriceData]
+  );
+
+  const NavTools = useMemo(
+    () => (
+      <>
+        {isRoleAuthorized(
+          UserRole.Contributor,
+          user?.role ?? UserRole.Consumer
+        ) && (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                onClick={() => sanitizeProduct()}
+                size="icon"
+                variant="link"
+                className="p-0 text-pricetra-green-heavy-dark"
+              >
+                {sanitizing ? (
+                  <>
+                    <CgSpinner className="animate-spin size-4" />
+                  </>
+                ) : (
+                  <>
+                    <FaHandSparkles className="size-4" />
+                  </>
+                )}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Sanitize product data with AI</p>
+            </TooltipContent>
+          </Tooltip>
+        )}
+
+        {isRoleAuthorized(
+          UserRole.Contributor,
+          user?.role ?? UserRole.Consumer
+        ) && (
+          <Dialog
+            modal
+            open={editProductModalOpen}
+            defaultOpen={editProductModalOpen}
+            onOpenChange={(o) => setEditProductOpenModal(o)}
+          >
+            <DialogTrigger>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button size="icon" variant="link" className="p-0">
+                    <FiEdit color="#3b82f6" className="size-4" />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Edit product</p>
+                </TooltipContent>
+              </Tooltip>
+            </DialogTrigger>
+
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit Product</DialogTitle>
+                <DialogDescription className="mt-5">
+                  <ProductForm
+                    upc={productData?.product?.code}
+                    product={productData?.product}
+                    onSuccess={() => {
+                      toast.success("Product updated successfully");
+                      setEditProductOpenModal(false);
+                    }}
+                    onError={(err) => {
+                      toast.error(err.message);
+                      setEditProductOpenModal(false);
+                    }}
+                    onCancel={() => setEditProductOpenModal(false)}
+                  />
+                </DialogDescription>
+              </DialogHeader>
+            </DialogContent>
+          </Dialog>
+        )}
+
+        <Button
+          onClick={() => {}}
+          className="rounded-full bg-green-100 text-pricetra-green-heavy-dark hover:bg-green-50 font-bold"
+          size="xs"
+        >
+          <FiPlus />
+          Price
+        </Button>
+      </>
+    ),
+    [productData, user, stockData, sanitizing, editProductModalOpen]
   );
 
   // Get stock from stockId
@@ -190,89 +283,24 @@ export default function ProductPageClient({
 
   useLayoutEffect(() => {
     if (!user || !productData) return;
+    if (isMediumScreen) {
+      setSubHeader(NavTools);
+      setNavTools(undefined);
+      return;
+    }
 
-    setNavTools(
-      <>
-        {isRoleAuthorized(UserRole.Contributor, user.role) && (
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                onClick={() => sanitizeProduct()}
-                size="icon"
-                variant="link"
-                className="p-1 text-pricetra-green-heavy-dark"
-              >
-                {sanitizing ? (
-                  <>
-                    <CgSpinner className="animate-spin size-5" />
-                  </>
-                ) : (
-                  <>
-                    <FaHandSparkles className="size-5" />
-                  </>
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Sanitize product data with AI</p>
-            </TooltipContent>
-          </Tooltip>
-        )}
-
-        {isRoleAuthorized(UserRole.Contributor, user.role) && (
-          <Dialog
-            modal
-            open={editProductModalOpen}
-            defaultOpen={editProductModalOpen}
-            onOpenChange={(o) => setEditProductOpenModal(o)}
-          >
-            <DialogTrigger>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button size="icon" variant="link" className="p-1 text">
-                    <FiEdit color="#3b82f6" className="size-5" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>
-                  <p>Edit product</p>
-                </TooltipContent>
-              </Tooltip>
-            </DialogTrigger>
-
-            <DialogContent>
-              <DialogHeader>
-                <DialogTitle>Edit Product</DialogTitle>
-                <DialogDescription className="mt-5">
-                  <ProductForm
-                    upc={productData.product.code}
-                    product={productData?.product}
-                    onSuccess={() => {
-                      toast.success("Product updated successfully");
-                      setEditProductOpenModal(false);
-                    }}
-                    onError={(err) => {
-                      toast.error(err.message);
-                      setEditProductOpenModal(false);
-                    }}
-                    onCancel={() => setEditProductOpenModal(false)}
-                  />
-                </DialogDescription>
-              </DialogHeader>
-            </DialogContent>
-          </Dialog>
-        )}
-
-        {/* <Button
-          onClick={() => {}}
-          className="rounded-full bg-green-100 px-4 py-2 text-pricetra-green-heavy-dark hover:bg-green-50"
-        >
-          <FiPlus />
-          Price
-        </Button> */}
-      </>
-    );
+    setSubHeader(undefined);
+    setNavTools(NavTools);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productData, user, stockData, sanitizing, editProductModalOpen]);
+  }, [
+    productData,
+    user,
+    stockData,
+    sanitizing,
+    editProductModalOpen,
+    NavTools,
+    isMediumScreen,
+  ]);
 
   // All available stocks for product
   useEffect(() => {

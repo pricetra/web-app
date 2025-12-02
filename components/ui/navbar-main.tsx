@@ -9,19 +9,23 @@ import { Button } from "./button";
 import { usePathname } from "next/navigation";
 
 export const NAVBAR_HEIGHT = 60;
+export const SUBNAV_HEIGHT = 40;
 
 export default function NavbarMain() {
   const { loggedIn, user } = useAuth();
-  const { pageIndicator, hideLogotype, navTools } = useNavbar();
+  const { pageIndicator, hideLogotype, navTools, subHeader } = useNavbar();
   const pathname = usePathname();
 
   return (
     <>
       <header
         className="w-full z-50 fixed top-0 left-0 bg-white shadow-sm"
-        style={{ height: NAVBAR_HEIGHT }}
+        style={{ minHeight: NAVBAR_HEIGHT }}
       >
-        <div className="container mx-auto flex items-center justify-between gap-5 h-full">
+        <div
+          className="container mx-auto flex items-center justify-between gap-5"
+          style={{ height: NAVBAR_HEIGHT }}
+        >
           <div className="flex flex-row gap-6 items-center justify-start flex-1 w-full max-w-4xl pl-5 pr-0 sm:pr-5">
             <div className="page-indicator flex flex-row items-center justify-start">
               <Link
@@ -80,7 +84,7 @@ export default function NavbarMain() {
             </div>
 
             {navTools && (
-              <div className="flex flex-row gap-2 items-center justify-start">
+              <div className="flex flex-row gap-1 items-center justify-start">
                 {navTools}
               </div>
             )}
@@ -136,9 +140,20 @@ export default function NavbarMain() {
             )}
           </div>
         </div>
+
+        {subHeader && (
+          <div
+            className="container mx-auto flex items-center justify-end gap-2 px-5"
+            style={{ height: SUBNAV_HEIGHT }}
+          >
+            {subHeader}
+          </div>
+        )}
       </header>
 
-      <div style={{ height: NAVBAR_HEIGHT }}></div>
+      <div
+        style={{ height: NAVBAR_HEIGHT + (subHeader ? SUBNAV_HEIGHT : 0) }}
+      ></div>
     </>
   );
 }
