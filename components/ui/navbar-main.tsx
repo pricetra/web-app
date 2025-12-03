@@ -6,15 +6,26 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "./input-group";
 import { IoIosSearch } from "react-icons/io";
 import { useNavbar } from "@/context/navbar-context";
 import { Button } from "./button";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export const NAVBAR_HEIGHT = 60;
 export const SUBNAV_HEIGHT = 40;
 
 export default function NavbarMain() {
+  const router = useRouter();
   const { loggedIn, user } = useAuth();
   const { pageIndicator, hideLogotype, navTools, subHeader } = useNavbar();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const querySearchParam = searchParams.get("query");
+  const [searchText, setSearchText] = useState("");
+
+  console.log();
+
+  useEffect(() => {
+    setSearchText(querySearchParam ?? "");
+  }, [querySearchParam]);
 
   return (
     <>
@@ -76,6 +87,15 @@ export default function NavbarMain() {
                 <InputGroupInput
                   placeholder="Search..."
                   className="text-xs sm:text-sm"
+                  value={searchText}
+                  onChange={(e) => setSearchText(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      router.push(
+                        `/search?query=${encodeURIComponent(searchText)}`
+                      );
+                    }
+                  }}
                 />
                 <InputGroupAddon className="ml-0 mr-1 sm:mr-2">
                   <IoIosSearch className="size-[17px] sm:size-5" />
