@@ -40,7 +40,7 @@ ProductItemProps) {
     >
       <div style={{ width: imgWidth, height: imgWidth, position: "relative" }}>
         {product.stock?.latestPrice?.sale && !isExpired && (
-          <div className="absolute left-1 top-1 z-[1] w-[40px]">
+          <div className="absolute left-1 top-1 z-1 w-[40px]">
             <span className="inline-block rounded-sm bg-red-700 px-1.5 py-2 text-center text-[9px] font-bold text-white leading-0">
               SALE
             </span>
@@ -100,7 +100,7 @@ ProductItemProps) {
             {product.stock.latestPrice && (
               <div
                 className={cn(
-                  "flex-[1] flex-col",
+                  "flex-1 flex-col",
                   hideStoreInfo ? "items-start" : "items-end"
                 )}
               >
