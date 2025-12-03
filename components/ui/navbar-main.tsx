@@ -21,8 +21,6 @@ export default function NavbarMain() {
   const querySearchParam = searchParams.get("query");
   const [searchText, setSearchText] = useState("");
 
-  console.log();
-
   useEffect(() => {
     setSearchText(querySearchParam ?? "");
   }, [querySearchParam]);

@@ -26,7 +26,9 @@ import useLocationInput from "@/hooks/useLocationInput";
 import { Button } from "@/components/ui/button";
 import { NAVBAR_HEIGHT } from "@/components/ui/navbar-main";
 import { useNavbar } from "@/context/navbar-context";
-import NavPageIndicator from "@/components/ui/nav-page-indicator";
+import NavPageIndicator, {
+  NavPageIndicatorLoading,
+} from "@/components/ui/nav-page-indicator";
 import { createCloudinaryUrl } from "@/lib/files";
 import { FiEdit, FiPlus } from "react-icons/fi";
 import { CgSpinner } from "react-icons/cg";
@@ -308,6 +310,12 @@ export default function ProductPageClient({
   }, [stockId, productData, getStock]);
 
   useLayoutEffect(() => {
+    if (!stockId) return;
+    setPageIndicator(<NavPageIndicatorLoading />);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stockId]);
+
+  useLayoutEffect(() => {
     if (!stockData || !stockData?.stock.store) return;
 
     setPageIndicator(
@@ -317,10 +325,6 @@ export default function ProductPageClient({
         href={`/stores/${stockData.stock.store.slug}`}
       />
     );
-
-    return () => {
-      resetAll();
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stockData]);
 
@@ -344,6 +348,13 @@ export default function ProductPageClient({
     NavTools,
     isMediumScreen,
   ]);
+
+  useLayoutEffect(() => {
+    return () => {
+      resetAll();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div className="w-full flex flex-col lg:flex-row gap-4">
