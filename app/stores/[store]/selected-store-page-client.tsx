@@ -64,63 +64,76 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
   }, []);
 
   return (
-    <div className="mt-0 sm:mt-10">
-      <section>
-        {!branchesWithProducts
-          ? Array(3)
-              .fill(0)
-              .map((_, i) => (
-                <article
-                  className="my-7"
-                  key={`branch-with-product-loading-${i}`}
-                >
-                  <div className="mb-5 px-5">
-                    <BranchItemWithLogoLoading />
-                  </div>
-
-                  <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:mask-[linear-gradient(to_right,transparent_0,black_2em,black_calc(100%-2em),transparent_100%)]">
-                    {Array(10)
-                      .fill(0)
-                      .map((_, j) => (
-                        <div
-                          className="first:pl-5 last:pr-5"
-                          key={`branch-product-${i}-${j}`}
-                        >
-                          <ProductLoadingItemHorizontal />
-                        </div>
-                      ))}
-                  </div>
-                </article>
-              ))
-          : branchesWithProducts.branchesWithProducts.branches.map((branch) => (
-              <article
-                className="my-7"
-                key={`branch-with-product-${branch.id}`}
-              >
-                <div className="mb-5 px-5">
-                  <BranchItemWithLogo branch={branch as Branch} cityName />
-                </div>
-
-                <ScrollContainer>
-                  {(branch.products ?? []).map((product) => (
-                    <ProductItemHorizontal
-                      product={product as Product}
-                      key={`branch-product-${branch.id}-${product.id}`}
-                    />
-                  ))}
-                </ScrollContainer>
-              </article>
-            ))}
-      </section>
-
-      {branchesWithProducts?.branchesWithProducts?.paginator &&
-        branchesWithProducts?.branchesWithProducts?.paginator?.numPages > 1 && (
-          <div className="mt-20">
-            <SmartPagination
-              paginator={branchesWithProducts.branchesWithProducts.paginator}
-            />
+    <>
+      <div className="w-full max-w-[1000px] mt-0 flex-1">
+        <section>
+          <div className="px-5 mt-5 mb-16">
+            <h1 className="font-bold text-xl sm:text-2xl">
+              Locations for {store.name}
+            </h1>
           </div>
-        )}
-    </div>
+
+          {!branchesWithProducts
+            ? Array(3)
+                .fill(0)
+                .map((_, i) => (
+                  <article
+                    className="my-7"
+                    key={`branch-with-product-loading-${i}`}
+                  >
+                    <div className="mb-5 px-5">
+                      <BranchItemWithLogoLoading />
+                    </div>
+
+                    <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:mask-[linear-gradient(to_right,transparent_0,black_2em,black_calc(100%-2em),transparent_100%)]">
+                      {Array(10)
+                        .fill(0)
+                        .map((_, j) => (
+                          <div
+                            className="first:pl-5 last:pr-5"
+                            key={`branch-product-${i}-${j}`}
+                          >
+                            <ProductLoadingItemHorizontal />
+                          </div>
+                        ))}
+                    </div>
+                  </article>
+                ))
+            : branchesWithProducts.branchesWithProducts.branches.map(
+                (branch) => (
+                  <article
+                    className="my-7"
+                    key={`branch-with-product-${branch.id}`}
+                  >
+                    <div className="mb-5 px-5">
+                      <BranchItemWithLogo branch={branch as Branch} cityName />
+                    </div>
+
+                    <ScrollContainer>
+                      {(branch.products ?? []).map((product) => (
+                        <ProductItemHorizontal
+                          product={product as Product}
+                          key={`branch-product-${branch.id}-${product.id}`}
+                        />
+                      ))}
+                    </ScrollContainer>
+                  </article>
+                )
+              )}
+        </section>
+
+        {branchesWithProducts?.branchesWithProducts?.paginator &&
+          branchesWithProducts?.branchesWithProducts?.paginator?.numPages >
+            1 && (
+            <div className="mt-20">
+              <SmartPagination
+                paginator={branchesWithProducts.branchesWithProducts.paginator}
+              />
+            </div>
+          )}
+      </div>
+
+      <div></div>
+    </>
   );
 }

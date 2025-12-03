@@ -59,32 +59,36 @@ export default function BranchPageClient({
   }, []);
 
   return (
-    <div className="w-full max-w-[1000px] mt-10 px-5">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-3">
-        {!productsData
-          ? Array(10)
-              .fill(0)
-              .map((_, j) => (
-                <ProductItemLoading
-                  key={`product-loading-${j}`}
+    <>
+      <div className="w-full max-w-[1000px] mt-10 px-5 flex-1">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-3">
+          {!productsData
+            ? Array(10)
+                .fill(0)
+                .map((_, j) => (
+                  <ProductItemLoading
+                    key={`product-loading-${j}`}
+                    imgWidth={isMobile ? 110 : 130}
+                  />
+                ))
+            : productsData?.allProducts?.products?.map((p, i) => (
+                <ProductItem
+                  product={p as Product}
                   imgWidth={isMobile ? 110 : 130}
+                  key={`product-${p.id}-${i}`}
                 />
-              ))
-          : productsData?.allProducts?.products?.map((p, i) => (
-              <ProductItem
-                product={p as Product}
-                imgWidth={isMobile ? 110 : 130}
-                key={`product-${p.id}-${i}`}
-              />
-            ))}
+              ))}
+        </div>
+
+        {productsData?.allProducts?.paginator &&
+          productsData.allProducts.paginator.numPages > 1 && (
+            <div className="mt-20">
+              <SmartPagination paginator={productsData.allProducts.paginator} />
+            </div>
+          )}
       </div>
 
-      {productsData?.allProducts?.paginator &&
-        productsData.allProducts.paginator.numPages > 1 && (
-          <div className="mt-20">
-            <SmartPagination paginator={productsData.allProducts.paginator} />
-          </div>
-        )}
-    </div>
+      <div />
+    </>
   );
 }
