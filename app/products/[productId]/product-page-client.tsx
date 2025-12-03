@@ -289,10 +289,12 @@ export default function ProductPageClient({
       (p) => p.type === ListType.Favorites
     );
     setFavProductList(fav);
+    setFav(!!fav);
     const watch = productData.product.productList.find(
       (p) => p.type === ListType.WatchList && p.stockId === stockId
     );
     setWatchProductList(watch);
+    setWatch(!!watch);
   }, [productData, stockId]);
 
   // Get stock from stockId

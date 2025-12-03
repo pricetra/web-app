@@ -22,8 +22,11 @@ import useLocationInput from "@/hooks/useLocationInput";
 import { useQuery } from "@apollo/client/react";
 import { useSearchParams } from "next/navigation";
 import WelcomeHeroBanner from "@/components/welcome-hero-banner";
+import { useLayoutEffect } from "react";
+import { useNavbar } from "@/context/navbar-context";
 
 export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
+  const { resetAll } = useNavbar();
   const searchParams = useSearchParams();
   const pageString = searchParams.get("page");
   const { loggedIn } = useAuth();
@@ -47,6 +50,13 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
       },
     }
   );
+
+  useLayoutEffect(() => {
+    resetAll();
+    return () => {
+      resetAll();
+    };
+  }, [resetAll]);
 
   return (
     <div className="w-full max-w-[1000px] mt-10">
