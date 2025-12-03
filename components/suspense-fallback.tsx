@@ -10,6 +10,7 @@ export function SuspenseFallbackLogo() {
         <div className="relative size-20 animate-pulse">
           <Image
             src="/logo_black_color_dark_leaf.svg"
+            priority
             alt="logo"
             width={483}
             height={344}
