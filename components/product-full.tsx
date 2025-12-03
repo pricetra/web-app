@@ -6,13 +6,17 @@ import { IoIosArrowForward } from "react-icons/io";
 import Image from "next/image";
 import useProductWeightBuilder from "@/hooks/useProductWeightBuilder";
 import Skeleton from "react-loading-skeleton";
+import Link from "next/link";
 
 export type ProductFullProps = {
   product: Product;
   hideDescription?: boolean;
 };
 
-export default function ProductFull({ product, hideDescription }: ProductFullProps) {
+export default function ProductFull({
+  product,
+  hideDescription,
+}: ProductFullProps) {
   const [imgAvailable, setImgAvailable] = useState(true);
   const weight = useProductWeightBuilder(product);
   const categories = useMemo(
@@ -60,7 +64,13 @@ export default function ProductFull({ product, hideDescription }: ProductFullPro
 
           <div className="flex flex-row flex-wrap items-center gap-1">
             {product.brand && product.brand !== "N/A" && (
-              <h2 className="text-sm xl:text-base">{product.brand}</h2>
+              <h2 className="text-sm xl:text-base">
+                <Link
+                  href={`/search?brand=${encodeURIComponent(product.brand)}`}
+                >
+                  {product.brand}
+                </Link>
+              </h2>
             )}
           </div>
 
@@ -71,9 +81,14 @@ export default function ProductFull({ product, hideDescription }: ProductFullPro
               {categories.map((c, i) => (
                 <Fragment key={c.id}>
                   {i !== 0 && <IoIosArrowForward size={10} color="#1e2939" />}
-                  <span className="text-xs sm:text-sm text-gray-800 leading-none">
+                  <Link
+                    href={`/search?categoryId=${
+                      c.id
+                    }&category=${encodeURIComponent(c.name)}`}
+                    className="text-xs sm:text-sm text-gray-800 leading-none"
+                  >
                     {c.name}
-                  </span>
+                  </Link>
                 </Fragment>
               ))}
             </div>
@@ -96,12 +111,12 @@ export function ProductFullLoading() {
       {/* Image skeleton */}
       <div className="relative mx-auto h-[30vh] mb-5">
         <div className="w-full aspect-square size-full">
-          <Skeleton className="!w-full !h-full" borderRadius={12} />
+          <Skeleton className="w-full! h-full!" borderRadius={12} />
         </div>
       </div>
 
       {/* Product metadata skeletons */}
-      <div className="pt-[4px]">
+      <div className="pt-1">
         <div className="flex flex-col gap-2">
           {/* Weight + Quantity badges */}
           <div className="mb-3 flex flex-row items-center gap-3">
