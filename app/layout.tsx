@@ -57,6 +57,15 @@ export default function RootLayout({
                 `,
               }}
             />
+            <Script
+              id="amp-ad-script"
+              async
+              strategy="beforeInteractive"
+              dangerouslySetInnerHTML={{
+                __html:
+                  '<script async custom-element="amp-ad" src="https://cdn.ampproject.org/v0/amp-ad-0.1.js"></script>',
+              }}
+            />
 
             {/* AdSense code */}
             <meta
