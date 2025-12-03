@@ -37,7 +37,7 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
           page: +(pageString ?? 1),
           limit: 10,
         },
-        productLimit: 10,
+        productLimit: 20,
         filters: {
           storeId: store.id,
           location: location
