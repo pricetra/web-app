@@ -8,9 +8,17 @@ import {
   PaginationEllipsis,
 } from "@/components/ui/pagination";
 import { Paginator } from "graphql-utils";
+import { useSearchParams } from "next/navigation";
 
 export function SmartPagination({ paginator }: { paginator: Paginator }) {
   const { page, numPages, prev, next } = paginator;
+  const searchParams = useSearchParams();
+  const searchParamsBuilder = new URLSearchParams(searchParams);
+
+  function buildHref(page: number) {
+    searchParamsBuilder.set("page", String(page));
+    return `?${searchParamsBuilder.toString()}`;
+  }
 
   // Helper to create a safe page range
   const pages: (number | "...")[] = [];
@@ -48,7 +56,7 @@ export function SmartPagination({ paginator }: { paginator: Paginator }) {
       <PaginationContent>
         <PaginationItem>
           <PaginationPrevious
-            href={prev ? `?page=${prev}` : undefined}
+            href={prev ? buildHref(prev) : undefined}
             aria-disabled={!prev}
             className={!prev ? "pointer-events-none opacity-50" : ""}
           />
@@ -62,10 +70,7 @@ export function SmartPagination({ paginator }: { paginator: Paginator }) {
             </PaginationItem>
           ) : (
             <PaginationItem key={p}>
-              <PaginationLink
-                href={`?page=${p}`}
-                isActive={p === page}
-              >
+              <PaginationLink href={buildHref(p)} isActive={p === page}>
                 {p}
               </PaginationLink>
             </PaginationItem>
@@ -74,7 +79,7 @@ export function SmartPagination({ paginator }: { paginator: Paginator }) {
 
         <PaginationItem>
           <PaginationNext
-            href={next ? `?page=${next}` : undefined}
+            href={next ? buildHref(next) : undefined}
             aria-disabled={!next}
             className={!next ? "pointer-events-none opacity-50" : ""}
           />
