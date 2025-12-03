@@ -5,7 +5,7 @@ import { AllProductsDocument, Branch, Product, Store } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
 import { useLayoutEffect } from "react";
 import { useQuery } from "@apollo/client/react";
-import ProductItem from "@/components/product-item";
+import ProductItem, { ProductItemLoading } from "@/components/product-item";
 import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { SmartPagination } from "@/components/ui/smart-pagination";
 import { useSearchParams } from "next/navigation";
@@ -60,20 +60,30 @@ export default function BranchPageClient({
   return (
     <div className="w-full max-w-[1000px] mt-10 px-5">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-3">
-        {productsData?.allProducts?.products?.map((p, i) => (
-          <ProductItem
-            product={p as Product}
-            imgWidth={isMobile ? 110 : 130}
-            key={`product-${p.id}-${i}`}
-          />
-        ))}
+        {!productsData
+          ? Array(10)
+              .fill(0)
+              .map((_, j) => (
+                <ProductItemLoading
+                  key={`product-loading-${j}`}
+                  imgWidth={isMobile ? 110 : 130}
+                />
+              ))
+          : productsData?.allProducts?.products?.map((p, i) => (
+              <ProductItem
+                product={p as Product}
+                imgWidth={isMobile ? 110 : 130}
+                key={`product-${p.id}-${i}`}
+              />
+            ))}
       </div>
 
-      {productsData?.allProducts?.paginator && (
-        <div className="mt-20">
-          <SmartPagination paginator={productsData.allProducts.paginator} />
-        </div>
-      )}
+      {productsData?.allProducts?.paginator &&
+        productsData.allProducts.paginator.numPages > 1 && (
+          <div className="mt-20">
+            <SmartPagination paginator={productsData.allProducts.paginator} />
+          </div>
+        )}
     </div>
   );
 }

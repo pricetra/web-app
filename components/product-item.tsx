@@ -143,12 +143,12 @@ export function ProductItemLoading({
   return (
     <div className="flex max-w-full flex-row gap-2">
       <div style={{ width: imgWidth, height: imgWidth }}>
-        <Skeleton className="size-full rounded-xl" />
+        <Skeleton className="size-full rounded-xl" borderRadius={15} />
       </div>
-      <div className="max-w-full flex-1 gap-2 p-2">
-        <Skeleton className="h-6 w-full" />
-        <Skeleton className="h-6 w-full" />
-        <Skeleton className="h-6 w-[100px]" />
+      <div className="max-w-full flex flex-col flex-1 gap-1 px-2 py-0">
+        <Skeleton className="h-6 w-full" borderRadius={7} />
+        <Skeleton className="h-6 w-full" borderRadius={7} />
+        <Skeleton className="h-6 w-1/2" width={"50%"} borderRadius={7} />
       </div>
     </div>
   );
