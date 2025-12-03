@@ -31,7 +31,7 @@ import LandingHeader from "@/components/ui/landing-header";
 import useLocationInput from "@/hooks/useLocationInput";
 import ScrollContainer from "@/components/scroll-container";
 
-const paginator: PaginatorInput = { page: 1, limit: 4 };
+const paginator: PaginatorInput = { page: 1, limit: 3 };
 const productLimit = 10;
 
 export default function LandingPage({ ipAddress }: { ipAddress: string }) {
@@ -66,7 +66,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
   }, [getBranchProducts, fullLocationInput]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gradient-to-b from-white via-white to-slate-50 overflow-x-hidden">
+    <div className="min-h-screen flex flex-col bg-white overflow-x-hidden">
       <LandingHeader />
 
       {/* Hero */}
@@ -146,7 +146,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
           )}
         </section>
 
-        <section className="flex flex-col my-10">
+        <section className="flex flex-col my-10 relative">
           {!branchesWithProducts
             ? Array(3)
                 .fill(0)
@@ -159,7 +159,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                       <BranchItemWithLogoLoading />
                     </div>
 
-                    <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:[mask-image:_linear-gradient(to_right,transparent_0,_black_2em,_black_calc(100%-2em),transparent_100%)]">
+                    <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:mask-[linear-gradient(to_right,transparent_0,black_2em,black_calc(100%-2em),transparent_100%)]">
                       {Array(10)
                         .fill(0)
                         .map((_, j) => (
@@ -194,6 +194,21 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                   </article>
                 )
               )}
+
+          <div>
+            <div className="absolute bottom-0 left-0 w-full z-2">
+              <div className="inset-x-0 h-[50vh] bg-gradient-to-t from-white **from-[90%]**" />
+              <div className="h-20 bg-white w-full" />
+            </div>
+            <div className="absolute bottom-20 left-0 flex flex-row items-center justify-center w-full">
+              <Link
+                href="/home"
+                className="block bg-pricetra-green-heavy-dark hover:bg-pricetra-green-heavy-dark-hover text-white font-bold py-3 px-8 md:py-4 md:px-10 rounded-full text-base md:text-lg z-3 shadow-md hover:shadow-lg"
+              >
+                Browse More
+              </Link>
+            </div>
+          </div>
         </section>
       </section>
 
@@ -212,7 +227,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
         </div>
 
         <div className="container mx-auto">
-          <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-10 [mask-image:_linear-gradient(to_right,transparent_0,_black_2em,_black_calc(100%-2em),transparent_100%)] px-24">
+          <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-10 mask-[linear-gradient(to_right,transparent_0,black_2em,black_calc(100%-2em),transparent_100%)] px-24">
             {screenshots.map((props, i) => (
               <ScreenshotShowcasePanel {...props} key={`screenshot-${i}`} />
             ))}

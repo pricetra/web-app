@@ -65,7 +65,7 @@ export default function NavbarMain() {
               </Link>
 
               {pageIndicator && (
-                <div className="flex flex-1 flex-row items-center ml-3 sm:mr-3 mr-0 pl-3 gap-2 justify-start border-l-[1px] border-gray-200 min-h-[35px]">
+                <div className="flex flex-1 flex-row items-center ml-3 sm:mr-3 mr-0 pl-3 gap-2 justify-start border-l border-gray-200 min-h-[35px]">
                   {pageIndicator}
                 </div>
               )}
@@ -78,7 +78,7 @@ export default function NavbarMain() {
                   className="text-xs sm:text-sm"
                 />
                 <InputGroupAddon className="ml-0 mr-1 sm:mr-2">
-                  <IoIosSearch className="size-[17px] sm:size-[20px]" />
+                  <IoIosSearch className="size-[17px] sm:size-5" />
                 </InputGroupAddon>
               </InputGroup>
             </div>
@@ -91,7 +91,7 @@ export default function NavbarMain() {
           </div>
 
           <div className="right pr-5 flex gap-2 items-center flex-nowrap">
-            <Button variant="ghost" className="block sm:hidden">
+            <Button variant="ghost" className="block sm:hidden p-2">
               <IoIosSearch className="size-[20px]" />
             </Button>
 
@@ -99,7 +99,7 @@ export default function NavbarMain() {
               <>
                 <Link
                   href={`/auth/login?return=${pathname}`}
-                  className="text-pricetra-green-heavy-dark hover:text-pricetra-green-heavy-dark hover:bg-pricetra-green-logo/10 md:px-4 font-bold rounded-lg py-2 px-5 text-sm"
+                  className="text-white bg-pricetra-green-heavy-dark hover:bg-pricetra-green-heavy-dark-hover sm:text-pricetra-green-heavy-dark sm:hover:text-pricetra-green-heavy-dark sm:bg-white sm:hover:bg-pricetra-green-logo/10 md:px-4 font-bold rounded-lg py-2 px-4 sm:px-5 text-sm"
                 >
                   Login
                 </Link>
