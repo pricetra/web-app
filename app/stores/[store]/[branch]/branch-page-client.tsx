@@ -40,6 +40,7 @@ export default function BranchPageClient({
   });
 
   useLayoutEffect(() => {
+    resetAll();
     setPageIndicator(
       <NavPageIndicator
         title={store.name}

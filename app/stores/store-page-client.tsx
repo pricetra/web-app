@@ -27,6 +27,7 @@ export default function StorePageClient() {
   });
 
   useLayoutEffect(() => {
+    resetAll();
     setPageIndicator(<NavPageIndicator title="Stores" icon={MdStorefront} />);
 
     return () => {

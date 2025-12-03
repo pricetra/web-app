@@ -49,6 +49,7 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
   );
 
   useLayoutEffect(() => {
+    resetAll();
     setPageIndicator(
       <NavPageIndicator
         title={store.name}
