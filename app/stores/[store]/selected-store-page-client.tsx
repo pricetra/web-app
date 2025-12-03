@@ -77,7 +77,7 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
                     <BranchItemWithLogoLoading />
                   </div>
 
-                  <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:[mask-image:_linear-gradient(to_right,transparent_0,_black_2em,_black_calc(100%-2em),transparent_100%)]">
+                  <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:mask-[linear-gradient(to_right,transparent_0,black_2em,black_calc(100%-2em),transparent_100%)]">
                     {Array(10)
                       .fill(0)
                       .map((_, j) => (
@@ -112,13 +112,14 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
             ))}
       </section>
 
-      {branchesWithProducts?.branchesWithProducts?.paginator && (
-        <div className="mt-20">
-          <SmartPagination
-            paginator={branchesWithProducts.branchesWithProducts.paginator}
-          />
-        </div>
-      )}
+      {branchesWithProducts?.branchesWithProducts?.paginator &&
+        branchesWithProducts?.branchesWithProducts?.paginator?.numPages > 1 && (
+          <div className="mt-20">
+            <SmartPagination
+              paginator={branchesWithProducts.branchesWithProducts.paginator}
+            />
+          </div>
+        )}
     </div>
   );
 }
