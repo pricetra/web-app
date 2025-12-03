@@ -1,4 +1,5 @@
-"use client"
+"use client";
+
 import BranchItemWithLogo, {
   BranchItemWithLogoLoading,
 } from "@/components/branch-item-with-logo";
@@ -6,66 +7,73 @@ import ProductItemHorizontal, {
   ProductLoadingItemHorizontal,
 } from "@/components/product-item-horizontal";
 import ScrollContainer from "@/components/scroll-container";
-import StoreMini, {
-  StoreMiniLoading,
-  StoreMiniShowMore,
-} from "@/components/store-mini";
 import { SmartPagination } from "@/components/ui/smart-pagination";
+import WelcomeHeroBanner from "@/components/welcome-hero-banner";
 import { useAuth } from "@/context/user-context";
+import useLocationInput from "@/hooks/useLocationInput";
+import { useQuery } from "@apollo/client/react";
 import {
-  AllStoresDocument,
   Branch,
   BranchesWithProductsDocument,
   Product,
+  ProductSearch,
 } from "graphql-utils";
-import useLocationInput from "@/hooks/useLocationInput";
-import { useQuery } from "@apollo/client/react";
-import { useSearchParams } from "next/navigation";
-import WelcomeHeroBanner from "@/components/welcome-hero-banner";
+import { useMemo } from "react";
 
-export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
-  const searchParams = useSearchParams();
-  const pageString = searchParams.get("page");
+export type SearchRouteParams = {
+  query?: string;
+  categoryId?: string;
+  category?: string;
+  brand?: string;
+  sale?: string;
+  sortByPrice?: string;
+  page?: string;
+};
+
+export type SearchPageClientProps = {
+  searchParams: SearchRouteParams;
+  ipAddress: string;
+};
+
+export default function SearchPageClient({
+  searchParams: params,
+  ipAddress,
+}: SearchPageClientProps) {
   const { loggedIn } = useAuth();
-  const location = useLocationInput(!loggedIn ? ipAddress : undefined);
-  const { data: allStoresData } = useQuery(AllStoresDocument, {
-    fetchPolicy: "cache-first",
-    variables: { paginator: { page: 1, limit: 9 } },
-  });
+  const locationInput = useLocationInput(ipAddress);
+  const searchVariables = useMemo(
+    () =>
+      ({
+        query: params.query,
+        location: locationInput?.locationInput,
+        categoryId: params?.categoryId ? +params.categoryId : undefined,
+        brand: params.brand,
+        sortByPrice: params.sortByPrice,
+        sale: params.sale === "true" ? true : undefined,
+      } as ProductSearch),
+    [
+      params.query,
+      params.categoryId,
+      params.brand,
+      params.sortByPrice,
+      params.sale,
+      locationInput?.locationInput,
+    ]
+  );
   const { data: branchesWithProducts } = useQuery(
     BranchesWithProductsDocument,
     {
-      fetchPolicy: "no-cache",
       variables: {
-        paginator: { page: +(pageString ?? 1), limit: 10 },
+        paginator: { page: +(params.page ?? 1), limit: 10 },
         productLimit: 10,
-        filters: {
-          location: location
-            ? { ...location.locationInput, radiusMeters: undefined }
-            : undefined,
-        },
+        filters: { ...searchVariables },
       },
+      fetchPolicy: "no-cache",
     }
   );
-
   return (
     <div className="w-full max-w-[1000px] mt-10">
       {!loggedIn && <WelcomeHeroBanner />}
-
-      <div className="grid grid-cols-5 lg:grid-cols-10 gap-x-2 gap-y-5 sm:gap-5 px-5 mb-10">
-        {!allStoresData ? (
-          Array(10)
-            .fill(0)
-            .map((_, i) => <StoreMiniLoading key={`store-loading-${i}`} />)
-        ) : (
-          <>
-            {allStoresData.allStores.stores.map((store) => (
-              <StoreMini store={store} key={`store-${store.id}`} />
-            ))}
-            <StoreMiniShowMore />
-          </>
-        )}
-      </div>
 
       <div className="flex flex-col my-10">
         {!branchesWithProducts
@@ -116,7 +124,7 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
       </div>
 
       {branchesWithProducts?.branchesWithProducts?.paginator &&
-        branchesWithProducts.branchesWithProducts.paginator.numPages && (
+        branchesWithProducts.branchesWithProducts.paginator.numPages > 1 && (
           <div className="mt-20">
             <SmartPagination
               paginator={branchesWithProducts.branchesWithProducts.paginator}
