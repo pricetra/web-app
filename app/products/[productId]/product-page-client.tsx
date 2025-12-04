@@ -9,7 +9,6 @@ import {
   Product,
   ProductDocument,
   ProductList,
-  ProductSearchDocument,
   RemoveFromListDocument,
   SanitizeProductDocument,
   Stock,
@@ -52,12 +51,7 @@ import { AiFillHeart } from "react-icons/ai";
 import { AiOutlineEye } from "react-icons/ai";
 import ProductDetails from "./product-details";
 import { AiFillEye } from "react-icons/ai";
-import ProductItemHorizontal, {
-  ProductLoadingItemHorizontal,
-} from "@/components/product-item-horizontal";
-import ScrollContainer from "@/components/scroll-container";
-import { useInView } from "react-intersection-observer";
-import Skeleton from "react-loading-skeleton";
+import MoreFromBrand from "./more-from-brand-section";
 
 export type ProductPageClientProps = {
   productId: number;
@@ -75,11 +69,6 @@ export default function ProductPageClient({
   const { loggedIn, user, lists } = useAuth();
   const { setPageIndicator, resetAll, setNavTools, setSubHeader } = useNavbar();
   const locationInput = useLocationInput(!loggedIn ? ipAddress : undefined);
-  const [bottomExtraSectionRef, bottomExtraSectionInView] = useInView({
-    triggerOnce: true,
-    threshold: 0,
-    initialInView: false,
-  });
   const { data: productData, loading: productLoading } = useQuery(
     ProductDocument,
     {
@@ -110,11 +99,6 @@ export default function ProductPageClient({
   const [watch, setWatch] = useState(false);
   const [editProductModalOpen, setEditProductOpenModal] = useState(false);
   const isMediumScreen = useMediaQuery({ query: "(max-width: 800px)" });
-
-  const [
-    getBrandProducts,
-    { data: brandProducts, loading: brandProductsLoading },
-  ] = useLazyQuery(ProductSearchDocument, { fetchPolicy: "no-cache" });
 
   async function add(
     type: ListType.WatchList | ListType.Favorites,
@@ -380,21 +364,6 @@ export default function ProductPageClient({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    if (!productData) return;
-    if (productData.product.brand === "" || productData.product.brand === "N/A")
-      return;
-    if (!bottomExtraSectionInView) return;
-
-    getBrandProducts({
-      variables: {
-        paginator: { limit: 20, page: 1 },
-        brand: productData.product.brand,
-      },
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productData, bottomExtraSectionInView]);
-
   return (
     <div className="w-full flex-1">
       <div className="w-full flex flex-col lg:flex-row gap-4 min-h-screen">
@@ -452,19 +421,12 @@ export default function ProductPageClient({
         </section>
       </div>
 
-      <div ref={bottomExtraSectionRef} className="mt-16">
-        {productData && (
-          <section>
-            <article className="my-7">
-              <div className="mb-5 px-5">
-                {!brandProducts || brandProductsLoading ? (
-                  <Skeleton width="20%" height={28} borderRadius={10} />
-                ) : (
-                  <h2 className="text-xl">
-                    More from <b>{productData.product.brand}</b>
-                  </h2>
-                )}
-              </div>
+      <div className="h-[10vh]" />
+
+      <div>
+        <div>
+          {productData && <MoreFromBrand brand={productData.product.brand} />}
+        </div>
 
               {!brandProducts || brandProductsLoading ? (
                 <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:mask-[linear-gradient(to_right,transparent_0,black_2em,black_calc(100%-2em),transparent_100%)]">
