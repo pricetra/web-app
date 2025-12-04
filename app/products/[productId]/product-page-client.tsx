@@ -52,6 +52,7 @@ import { AiOutlineEye } from "react-icons/ai";
 import ProductDetails from "./product-details";
 import { AiFillEye } from "react-icons/ai";
 import MoreFromBrand from "./more-from-brand-section";
+import MoreFromCategory from "./more-from-category-section";
 
 export type ProductPageClientProps = {
   productId: number;
@@ -428,34 +429,11 @@ export default function ProductPageClient({
           {productData && <MoreFromBrand brand={productData.product.brand} />}
         </div>
 
-              {!brandProducts || brandProductsLoading ? (
-                <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:mask-[linear-gradient(to_right,transparent_0,black_2em,black_calc(100%-2em),transparent_100%)]">
-                  {Array(10)
-                    .fill(0)
-                    .map((_, i) => (
-                      <div
-                        className="first:pl-5 last:pr-5"
-                        key={`brand-product-loading-${i}`}
-                      >
-                        <ProductLoadingItemHorizontal />
-                      </div>
-                    ))}
-                </div>
-              ) : (
-                <ScrollContainer>
-                  {(brandProducts?.productSearch?.products ?? []).map(
-                    (product, i) => (
-                      <ProductItemHorizontal
-                        product={product as Product}
-                        key={`brand-product-${product.id}-${i}`}
-                      />
-                    )
-                  )}
-                </ScrollContainer>
-              )}
-            </article>
-          </section>
-        )}
+        <div className="mt-16">
+          {productData?.product?.category && (
+            <MoreFromCategory category={productData.product.category} />
+          )}
+        </div>
       </div>
     </div>
   );
