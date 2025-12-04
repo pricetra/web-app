@@ -10,10 +10,12 @@ import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 
 export type ProductItemHorizontalProps = {
   product: ProductSimple | Product;
+  hideStoreInfo?: boolean | undefined;
 };
 
 export default function ProductItemHorizontal({
   product,
+  hideStoreInfo = true,
 }: ProductItemHorizontalProps) {
   const isExpired = useIsSaleExpired(product.stock?.latestPrice);
   const calculatedAmount = useCalculatedPrice({
@@ -28,7 +30,7 @@ export default function ProductItemHorizontal({
     >
       <div className="relative size-[130px] md:size-[180px] overflow-hidden rounded-xl bg-white">
         {product.stock?.latestPrice?.sale && !isExpired && (
-          <div className="absolute left-1 top-1 z-[1] w-[40px]">
+          <div className="absolute left-1 top-1 z-1 w-[40px]">
             <span className="inline-block rounded-md bg-red-700 px-1.5 py-1 text-center text-[9px] font-bold text-white">
               SALE
             </span>
@@ -78,7 +80,24 @@ export default function ProductItemHorizontal({
 
         {product.stock?.latestPrice && (
           <div className="flex flex-row items-center justify-between gap-2">
-            <div className="flex-[1] flex-col">
+            {!hideStoreInfo &&
+              product.__typename === "Product" &&
+              product.stock.store && (
+                <div>
+                  <Image
+                    src={createCloudinaryUrl(
+                      product.stock.store.logo ?? "",
+                      100,
+                      100
+                    )}
+                    className="size-[25px] rounded-sm"
+                    width={100}
+                    height={100}
+                    alt={product.stock.store.name}
+                  />
+                </div>
+              )}
+            <div className="flex-1 flex-col">
               {product.stock.latestPrice.sale &&
                 !isExpired &&
                 product.stock.latestPrice.originalPrice && (
