@@ -75,10 +75,10 @@ export default function ProductPageClient({
       variables: { productId, viewerTrail: { stockId } },
     }
   );
-  const [getStock, { data: stockData, loading: stockLoading }] = useLazyQuery(
-    StockDocument,
-    { fetchPolicy: "no-cache" }
-  );
+  const [
+    getStock,
+    { data: stockData, loading: stockLoading, error: stockError },
+  ] = useLazyQuery(StockDocument, { fetchPolicy: "no-cache" });
   const [sanitizeProduct, { loading: sanitizing }] = useMutation(
     SanitizeProductDocument,
     {
@@ -329,6 +329,13 @@ export default function ProductPageClient({
   }, [stockData]);
 
   useLayoutEffect(() => {
+    if (!stockError) return;
+
+    setPageIndicator(undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stockError]);
+
+  useLayoutEffect(() => {
     if (!user || !productData) return;
     if (isMediumScreen) {
       setSubHeader(NavTools);
@@ -390,11 +397,15 @@ export default function ProductPageClient({
                   </div>
                 </div>
               ) : (
-                <div className="my-5">
-                  <div className="rounded-xl bg-gray-50 p-5">
-                    <SelectedStockLoading />
-                  </div>
-                </div>
+                <>
+                  {stockLoading && (
+                    <div className="my-5">
+                      <div className="rounded-xl bg-gray-50 p-5">
+                        <SelectedStockLoading />
+                      </div>
+                    </div>
+                  )}
+                </>
               ))}
           </div>
         </section>
