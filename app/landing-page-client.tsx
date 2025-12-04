@@ -70,7 +70,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
       <LandingHeader />
 
       {/* Hero */}
-      <section className="relative container mx-auto flex flex-row gap-5 justify-between items-center py-6 md:py-10">
+      <section className="relative max-w-full sm:container mx-auto flex flex-row gap-5 justify-between items-center py-6 md:py-10">
         <div className="px-6 md:px-8 py-12 md:py-20 flex-1">
           <div className="text-center relative z-10" data-aos="fade-down">
             <div className="max-w-4xl mx-auto">

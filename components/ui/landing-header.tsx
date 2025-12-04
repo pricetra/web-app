@@ -8,7 +8,7 @@ export default function LandingHeader() {
 
   return (
     <header className="w-full z-10">
-      <div className="container mx-auto flex items-center justify-between px-6 md:px-8 py-7 md:py-10 gap-5">
+      <div className="max-w-full sm:container mx-auto flex items-center justify-between px-6 md:px-8 py-7 md:py-10 gap-5">
         <Link href="/">
           <Image
             src="/logotype_header_black.svg"

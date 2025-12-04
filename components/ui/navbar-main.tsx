@@ -57,7 +57,7 @@ export default function NavbarMain() {
                       alt="Pricetra"
                       width={210}
                       height={40}
-                      className="h-[23px] hidden md:block w-auto color-white"
+                      className="h-[23px] hidden 3xs:block w-auto color-white"
                       priority
                     />
 
@@ -66,7 +66,7 @@ export default function NavbarMain() {
                       alt="Pricetra"
                       width={210}
                       height={40}
-                      className="h-[23px] block md:hidden w-auto color-white"
+                      className="h-[23px] block 3xs:hidden w-auto color-white"
                       priority
                     />
                   </>
@@ -117,13 +117,13 @@ export default function NavbarMain() {
               <>
                 <Link
                   href={`/auth/login?return=${pathname}`}
-                  className="text-white bg-pricetra-green-heavy-dark hover:bg-pricetra-green-heavy-dark-hover sm:text-pricetra-green-heavy-dark sm:hover:text-pricetra-green-heavy-dark sm:bg-white sm:hover:bg-pricetra-green-logo/10 md:px-4 font-bold rounded-lg py-2 px-4 sm:px-5 text-sm"
+                  className="text-white bg-pricetra-green-heavy-dark hover:bg-pricetra-green-heavy-dark-hover sm:text-pricetra-green-heavy-dark sm:hover:text-pricetra-green-heavy-dark sm:bg-white sm:hover:bg-pricetra-green-logo/10 md:px-4 font-bold rounded-lg py-1.5 md:py-2 px-4 sm:px-5 text-xs md:text-sm"
                 >
                   Login
                 </Link>
                 <Link
                   href={`/auth/signup?return=${pathname}`}
-                  className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white md:px-6 rounded-lg shadow-sm hover:shadow-md transition-all font-bold hidden sm:block py-2 px-5 text-sm"
+                  className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white md:px-6 rounded-lg shadow-sm hover:shadow-md transition-all font-bold hidden sm:block py-1.5 md:py-2 px-5 text-xs md:text-sm"
                 >
                   Sign Up
                 </Link>

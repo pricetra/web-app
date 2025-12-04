@@ -8,7 +8,7 @@ export default function LayoutProvider({ children }: { children: ReactNode }) {
     <main>
       <NavbarMain />
 
-      <div className="container mx-auto mt-5 relative flex flex-col lg:flex-row gap-3">
+      <div className="max-w-full sm:container mx-auto mt-5 relative flex flex-col lg:flex-row gap-3">
         {children}
       </div>
 
