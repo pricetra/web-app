@@ -10,7 +10,7 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import LayoutProvider from "@/providers/layout-provider";
 import { headers } from "next/headers";
-import { serverSideIpAddress } from "@/lib/strings";
+import { parseIntOrUndefined, serverSideIpAddress } from "@/lib/strings";
 
 type Props = {
   params: Promise<{ productId: string }>;
@@ -67,7 +67,7 @@ export default async function LandingPageServer({
   const parsedProductId = parseInt(productId, 10);
 
   const { stockId, sharedBy, sharedFrom } = await searchParams;
-  const parsedStockId = stockId ? parseInt(stockId, 10) : undefined;
+  const parsedStockId = parseIntOrUndefined(stockId);
   const parsedSharedById = sharedBy ? parseInt(sharedBy, 10) : undefined;
 
   const productSummary = await cachedFetchProductSummary(parsedProductId);

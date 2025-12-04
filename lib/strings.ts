@@ -75,3 +75,11 @@ export function serverSideIpAddress(headerList: ReadonlyHeaders): string {
   }
   return ipAddress
 }
+
+export function parseIntOrUndefined(str?: string): number | undefined {
+  if (!str) return undefined;
+
+  const parsedVal = parseInt(str);
+  if (isNaN(parsedVal)) return undefined;
+  return parsedVal;
+}
