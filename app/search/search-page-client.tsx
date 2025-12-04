@@ -72,10 +72,10 @@ export default function SearchPageClient({
     }
   );
   return (
-    <div className="w-full max-w-[1000px] mt-10">
+    <div className="w-full max-w-[1000px]">
       {!loggedIn && <WelcomeHeroBanner />}
 
-      <div className="flex flex-col my-10">
+      <div className="flex flex-col">
         {!branchesWithProducts
           ? Array(3)
               .fill(0)
