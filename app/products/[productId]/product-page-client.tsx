@@ -357,56 +357,58 @@ export default function ProductPageClient({
   }, []);
 
   return (
-    <div className="w-full flex flex-col lg:flex-row gap-4">
-      <section className="w-full flex-1 relative">
-        <div
-          className="lg:sticky flex flex-col gap-5 left-0 p-5 bg-white"
-          style={{ top: NAVBAR_HEIGHT + 20 }}
-        >
-          <article>
-            {productData && !productLoading ? (
-              <ProductFull
-                product={productData.product as Product}
-                hideDescription
-              />
-            ) : (
-              <ProductFullLoading />
-            )}
-          </article>
+    <div className="w-full flex-1">
+      <div className="w-full flex flex-col lg:flex-row gap-4">
+        <section className="w-full flex-1 relative">
+          <div
+            className="lg:sticky flex flex-col gap-5 left-0 p-5 bg-white"
+            style={{ top: NAVBAR_HEIGHT + 20 }}
+          >
+            <article>
+              {productData && !productLoading ? (
+                <ProductFull
+                  product={productData.product as Product}
+                  hideDescription
+                />
+              ) : (
+                <ProductFullLoading />
+              )}
+            </article>
 
-          {stockId &&
-            (stockData &&
-            !stockLoading &&
-            productData &&
-            stockData.stock.productId === productData.product.id ? (
-              <div className="my-5">
-                <div className="rounded-xl bg-gray-50 p-5">
-                  <SelectedStock
-                    stock={stockData.stock as Stock}
-                    quantityType={productData.product.quantityType}
-                    quantityValue={productData.product.quantityValue}
-                  />
+            {stockId &&
+              (stockData &&
+              !stockLoading &&
+              productData &&
+              stockData.stock.productId === productData.product.id ? (
+                <div className="my-5">
+                  <div className="rounded-xl bg-gray-50 p-5">
+                    <SelectedStock
+                      stock={stockData.stock as Stock}
+                      quantityType={productData.product.quantityType}
+                      quantityValue={productData.product.quantityValue}
+                    />
+                  </div>
                 </div>
-              </div>
-            ) : (
-              <div className="my-5">
-                <div className="rounded-xl bg-gray-50 p-5">
-                  <SelectedStockLoading />
+              ) : (
+                <div className="my-5">
+                  <div className="rounded-xl bg-gray-50 p-5">
+                    <SelectedStockLoading />
+                  </div>
                 </div>
-              </div>
-            ))}
-        </div>
-      </section>
+              ))}
+          </div>
+        </section>
 
-      <section className="w-full flex-2 max-w-full lg:max-w-xl xl:max-w-3xl">
-        {productData && locationInput && (
-          <ProductDetails
-            product={productData.product}
-            locationInput={locationInput}
-            stock={stockData?.stock as Stock | undefined}
-          />
-        )}
-      </section>
+        <section className="w-full flex-2 max-w-full lg:max-w-xl xl:max-w-3xl">
+          {productData && locationInput && (
+            <ProductDetails
+              product={productData.product}
+              locationInput={locationInput}
+              stock={stockData?.stock as Stock | undefined}
+            />
+          )}
+        </section>
+      </div>
     </div>
   );
 }
