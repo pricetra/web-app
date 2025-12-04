@@ -9,6 +9,7 @@ import Image from "next/image";
 import ProductMetadataBadge from "./product-metadata-badge";
 import Skeleton from "react-loading-skeleton";
 import Link from "next/link";
+import { useMemo } from "react";
 
 export type ProductItemOptionalProps = {
   imgWidth?: number;
@@ -33,11 +34,17 @@ ProductItemProps) {
   });
   const weight = useProductWeightBuilder(product);
 
+  const href = useMemo(() => {
+    const paramBuilder = new URLSearchParams();
+    if (product.stock) {
+      paramBuilder.set("stockId", String(product.stock.id));
+    }
+    const params = paramBuilder.size > 0 ? `?${paramBuilder.toString()}` : "";
+    return `/products/${product.id}${params}`;
+  }, [product.id, product.stock]);
+
   return (
-    <Link
-      href={`/products/${product.id}?stockId=${product.stock?.id}`}
-      className="flex max-w-full flex-row gap-2"
-    >
+    <Link href={href} className="flex max-w-full flex-row gap-2">
       <div style={{ width: imgWidth, height: imgWidth, position: "relative" }}>
         {product.stock?.latestPrice?.sale && !isExpired && (
           <div className="absolute left-1 top-1 z-1 w-[40px]">

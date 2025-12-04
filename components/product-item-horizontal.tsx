@@ -7,6 +7,7 @@ import ProductMetadataBadge from "./product-metadata-badge";
 import Link from "next/link";
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import useCalculatedPrice from "@/hooks/useCalculatedPrice";
+import { useMemo } from "react";
 
 export type ProductItemHorizontalProps = {
   product: ProductSimple | Product;
@@ -22,10 +23,18 @@ export default function ProductItemHorizontal({
     isExpired,
     latestPrice: product.stock?.latestPrice,
   });
+  const href = useMemo(() => {
+    const paramBuilder = new URLSearchParams();
+    if (product.stock) {
+      paramBuilder.set("stockId", String(product.stock.id));
+    }
+    const params = paramBuilder.size > 0 ? `?${paramBuilder.toString()}` : "";
+    return `/products/${product.id}${params}`;
+  }, [product.id, product.stock]);
 
   return (
     <Link
-      href={`/products/${product.id}?stockId=${product.stock?.id}`}
+      href={href}
       className="flex flex-col gap-2 max-w-[130px] md:max-w-[180px]"
     >
       <div className="relative size-[130px] md:size-[180px] overflow-hidden rounded-xl bg-white">
