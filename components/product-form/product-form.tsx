@@ -139,7 +139,6 @@ export default function ProductForm({
               ? `${product.weightValue} ${product.weightType}`
               : undefined,
           quantityValue: product?.quantityValue ?? "1",
-          imageFile: product?.image,
         } as CreateProduct
       }
       onSubmit={submit}
