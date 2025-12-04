@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import {
+  ProductSummary,
   ProductSummaryDocument,
   ProductSummaryQuery,
   ProductSummaryQueryVariables,
@@ -11,6 +12,8 @@ import { cache } from "react";
 import LayoutProvider from "@/providers/layout-provider";
 import { headers } from "next/headers";
 import { parseIntOrUndefined, serverSideIpAddress } from "@/lib/strings";
+import dayjs from "dayjs";
+import { isDateExpired } from "@/lib/utils";
 
 type Props = {
   params: Promise<{ productId: string }>;
@@ -21,39 +24,91 @@ type Props = {
   }>;
 };
 
-const cachedFetchProductSummary = cache(async (productId: number) => {
-  const { data } = await fetchGraphql<
-    ProductSummaryQueryVariables,
-    ProductSummaryQuery
-  >(ProductSummaryDocument, "query", { productId });
-  if (!data || !data.productSummary) return null;
+const cachedFetchProductSummary = cache(
+  async (productId: number, stockId?: number) => {
+    const { data } = await fetchGraphql<
+      ProductSummaryQueryVariables,
+      ProductSummaryQuery
+    >(ProductSummaryDocument, "query", { productId, stockId });
+    if (!data || !data.productSummary) return null;
 
-  return data.productSummary;
-});
+    return data.productSummary;
+  }
+);
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+function productSeoTitleAndDescription(p: ProductSummary) {
+  const isBrandValid = p.brand.length > 0 || p.brand !== "N/A";
+  const saleExpired = p.saleExpiresAt ? isDateExpired(p.saleExpiresAt) : false;
+
+  let title = p.name;
+  if (isBrandValid) {
+    title += ` by ${p.brand}`;
+  }
+  if (p?.branch) {
+    title += ` at ${p.branch}`;
+  }
+
+  let description = "";
+  if (isBrandValid) {
+    description += `Brand: ${p.brand}`;
+  }
+  if (p.code) {
+    description += `; UPC/PLU/ID: ${p.code}`;
+  }
+  if (p.store || p.branch) {
+    description += `; Sold at: ${p.store ?? p.branch}`;
+  }
+  if (p.address) {
+    description += ` (${p.address})`;
+  }
+  if (p.price) {
+    description += `; Price: ${
+      saleExpired ? p.originalPrice ?? "N/A" : p.price
+    }`;
+    if (p.priceCurrencyCode) description += ` ${p.priceCurrencyCode}`;
+  }
+  if (p.sale && p.sale === true && p.saleExpiresAt && !saleExpired) {
+    description += ` on SALE`;
+    if (p.originalPrice) {
+      description += ` (Was ${p.originalPrice})`;
+    }
+  }
+  if (p.priceCreatedAt) {
+    description += ` - Reported on ${dayjs(p.priceCreatedAt).format()}`;
+  }
+  if (p.description && p.description.length > 0) {
+    description += `; Description: ${p.description}`;
+  }
+  return { title, description };
+}
+
+export async function generateMetadata({
+  params,
+  searchParams,
+}: Props): Promise<Metadata> {
   const { productId } = await params;
   const parsedProductId = parseInt(productId, 10);
-  const productSummary = await cachedFetchProductSummary(parsedProductId);
-  if (!productSummary) return { title: "Pricetra" };
 
-  const { name, brand, description, image } = productSummary;
+  const { stockId } = await searchParams;
+  const parsedStockId = parseIntOrUndefined(stockId);
 
-  const titleComponents = [name];
-  if (brand.length > 0 || brand !== "N/A") {
-    titleComponents.push(brand);
-  }
-  const title = titleComponents.join(" - ");
+  const productSummary = await cachedFetchProductSummary(
+    parsedProductId,
+    parsedStockId
+  );
+  if (!productSummary) return { title: "Product not found - Pricetra" };
 
+  const { title, description } = productSeoTitleAndDescription(productSummary);
   return {
-    title: `${title} - Pricetra`,
+    title: `${title} | Pricetra`,
     description,
     openGraph: {
       type: "article",
       siteName: "Pricetra",
       title: title,
-      description: description ?? undefined,
-      images: image,
+      description,
+      publishedTime: productSummary.priceCreatedAt,
+      images: productSummary.image,
       url: `https://pricetra.com/products/${parsedProductId}`,
     },
   };

@@ -67,8 +67,13 @@ export function incompleteProductFields(product: Product): string[] {
   return fields;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function isDateExpired(date: any) {
+  return dayjs(date).isBefore(new Date());
+}
+
 export function isSaleExpired(price: Price) {
-  return dayjs(price.expiresAt).isBefore(new Date());
+  return isDateExpired(price.expiresAt);
 }
 
 export function toBoolean(value?: string): boolean {
