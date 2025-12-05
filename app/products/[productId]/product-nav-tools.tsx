@@ -1,3 +1,4 @@
+import AddPriceForm from "@/components/product-form/add-price-form";
 import ProductForm from "@/components/product-form/product-form";
 import { Button } from "@/components/ui/button";
 import {
@@ -65,7 +66,9 @@ export default function ProductNavTools({
   const [fav, setFav] = useState(false);
   const [watchProductList, setWatchProductList] = useState<ProductList>();
   const [watch, setWatch] = useState(false);
+
   const [editProductModalOpen, setEditProductOpenModal] = useState(false);
+  const [priceModalOpen, setPriceModalOpen] = useState(false);
 
   useEffect(() => {
     const fav = product.productList.find((p) => p.type === ListType.Favorites);
@@ -236,14 +239,37 @@ export default function ProductNavTools({
         </Dialog>
       )}
 
-      <Button
-        onClick={() => {}}
-        className="rounded-full bg-green-100 px-3 pl-2 text-pricetra-green-heavy-dark hover:bg-green-200 font-bold shadow-none"
-        size="xs"
-      >
-        <FiPlus />
-        Price
-      </Button>
+      {user && (
+        <Dialog
+          modal
+          open={priceModalOpen}
+          defaultOpen={priceModalOpen}
+          onOpenChange={(o) => setPriceModalOpen(o)}
+        >
+          <Button
+            onClick={() => setPriceModalOpen(true)}
+            className="rounded-full bg-green-100 px-3 pl-2 text-pricetra-green-heavy-dark hover:bg-green-200 font-bold shadow-none"
+            size="xs"
+          >
+            <FiPlus />
+            Price
+          </Button>
+
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Add Price</DialogTitle>
+              <DialogDescription className="mt-5">
+                <AddPriceForm
+                  product={product}
+                  onCancel={() => {}}
+                  onSuccess={() => {}}
+                  onError={() => {}}
+                />
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        </Dialog>
+      )}
 
       <NavToolIconButton onClick={() => {}} tooltip="Share">
         <FiShare className="text-share" />
