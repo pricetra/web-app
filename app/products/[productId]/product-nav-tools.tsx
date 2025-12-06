@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -218,7 +217,7 @@ export default function ProductNavTools({
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Edit Product</DialogTitle>
-                <DialogDescription className="mt-5">
+                <div className="mt-5">
                   <ProductForm
                     upc={product?.code}
                     product={product}
@@ -232,7 +231,7 @@ export default function ProductNavTools({
                     }}
                     onCancel={() => setEditProductOpenModal(false)}
                   />
-                </DialogDescription>
+                </div>
               </DialogHeader>
             </DialogContent>
           )}
@@ -258,14 +257,14 @@ export default function ProductNavTools({
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Add Price</DialogTitle>
-              <DialogDescription className="mt-5">
+              <div className="mt-5">
                 <AddPriceForm
                   product={product}
                   onCancel={() => {}}
                   onSuccess={() => {}}
                   onError={() => {}}
                 />
-              </DialogDescription>
+              </div>
             </DialogHeader>
           </DialogContent>
         </Dialog>

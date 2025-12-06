@@ -89,11 +89,7 @@ ProductItemProps) {
             )}
           </div>
 
-          <Link href={`/products/${product.id}?stockId=${product.stock?.id}`}>
-            <h3 className="text-sm sm:text-base line-clamp-3">
-              {product.name}
-            </h3>
-          </Link>
+          <h3 className="text-sm sm:text-base line-clamp-3">{product.name}</h3>
         </div>
 
         {product.stock && (
