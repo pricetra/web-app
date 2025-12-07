@@ -24,6 +24,7 @@ import {
   Stock,
   UserRole,
 } from "graphql-utils";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import {
   AiFillEye,
@@ -48,6 +49,7 @@ export default function ProductNavTools({
   stock,
 }: ProductNavToolsProps) {
   const { user, lists } = useAuth();
+  const router = useRouter();
   const [sanitizeProduct, { loading: sanitizing }] = useMutation(
     SanitizeProductDocument,
     {
@@ -260,9 +262,15 @@ export default function ProductNavTools({
               <div className="mt-5">
                 <AddPriceForm
                   product={product}
-                  onCancel={() => {}}
-                  onSuccess={() => {}}
-                  onError={() => {}}
+                  onCancel={() => setPriceModalOpen(false)}
+                  onSuccess={(p) => {
+                    router.push(`?stockId=${p.stockId}`);
+                    toast.success("Product price submitted");
+                    setPriceModalOpen(false);
+                  }}
+                  onError={(e) => {
+                    toast.error(`Could not add price: ${e.message}`);
+                  }}
                 />
               </div>
             </DialogHeader>

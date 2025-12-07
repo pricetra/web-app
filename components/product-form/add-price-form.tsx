@@ -28,6 +28,8 @@ import { Formik, FormikErrors, useFormikContext } from "formik";
 import dayjs from "dayjs";
 import { ErrorLike } from "@apollo/client";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
 export type AddPriceFormProps = {
   product: Product;
@@ -217,6 +219,7 @@ export default function AddPriceForm({
             } as CreatePrice
           }
           onSubmit={(input) => {
+            // input.expiresAt = dayjs(input.expiresAt).toDate();
             createPrice({
               variables: {
                 input: {
@@ -283,6 +286,11 @@ export default function AddPriceForm({
   );
 }
 
+function currencyInputToNumber(value: string) {
+  const parsedValue = parseFloat(value);
+  return isNaN(parsedValue) ? undefined : parsedValue;
+}
+
 type PriceFormProps = {
   // formik: FormikProps<CreatePrice>;
   latestPrice?: Price;
@@ -290,7 +298,6 @@ type PriceFormProps = {
 
 function PriceForm({ latestPrice }: PriceFormProps) {
   const formikContext = useFormikContext<CreatePrice>();
-  const [rawAmount, setRawAmount] = useState("");
 
   useEffect(() => {
     if (!latestPrice) return;
@@ -303,31 +310,95 @@ function PriceForm({ latestPrice }: PriceFormProps) {
       condition: latestPrice.condition,
       unitType: latestPrice.unitType,
     });
-  }, [formikContext, latestPrice]);
-
-  useEffect(() => {
-    const strAmount = String(formikContext.values.amount);
-    if (rawAmount !== strAmount) return;
-    setRawAmount(strAmount);
-  }, [rawAmount, formikContext.values.amount]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [latestPrice]);
 
   return (
     <>
       <div className="flex flex-row items-center gap-5">
         <Input
           placeholder="Current product price"
-          value={rawAmount}
+          value={formikContext.values.amount}
           type="number"
           onChange={(e) => {
             const value = e.target.value;
-            setRawAmount(value);
-
-            // parse and set "amount" field
-            const parsedValue = parseFloat(value);
-            const amount = isNaN(parsedValue) ? 0 : parsedValue;
-            formikContext.setFieldValue("amount", amount);
+            formikContext.setFieldValue("amount", currencyInputToNumber(value));
           }}
         />
+
+        <div className="flex flex-row items-center gap-3">
+          <span className="text-2xl text-gray-300">/</span>
+          <NativeSelect
+            value={formikContext.values.unitType}
+            onChange={(e) =>
+              formikContext.setFieldValue("unitType", e.target.value ?? "item")
+            }
+            className="min-w-[80px] flex-1"
+          >
+            {["item", "lb"].map((unit) => (
+              <NativeSelectOption value={unit} key={`unit-type-${unit}`}>
+                {unit}
+              </NativeSelectOption>
+            ))}
+          </NativeSelect>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-5 mt-5">
+        <div className="flex flex-row gap-2 items-center justify-start">
+          <Checkbox
+            id="sale"
+            checked={formikContext.values.sale ?? false}
+            onCheckedChange={(c: boolean) =>
+              formikContext.setFieldValue("sale", c)
+            }
+          />
+          <Label htmlFor="sale">Sale</Label>
+        </div>
+
+        {formikContext.values.sale && (
+          <>
+            <div className="flex flex-row items-center gap-2">
+              <div className="flex-1">
+                <Input
+                  placeholder="Original price"
+                  value={formikContext.values.originalPrice ?? ""}
+                  type="number"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    formikContext.setFieldValue(
+                      "originalPrice",
+                      currencyInputToNumber(value)
+                    );
+                  }}
+                />
+              </div>
+              <div className="flex-2">
+                <Input
+                  placeholder="Condition"
+                  value={formikContext.values.condition ?? ""}
+                  type="text"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    formikContext.setFieldValue("condition", value);
+                  }}
+                />
+              </div>
+            </div>
+
+            <div>
+              <Input
+                placeholder="Sale expiration date"
+                type="date"
+                value={formikContext.values.expiresAt}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  formikContext.setFieldValue("expiresAt", value);
+                }}
+              />
+            </div>
+          </>
+        )}
       </div>
     </>
   );
