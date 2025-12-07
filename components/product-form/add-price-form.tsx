@@ -24,9 +24,10 @@ import ProductItem from "@/components/product-item";
 import Image from "next/image";
 import { createCloudinaryUrl } from "@/lib/files";
 import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
-import { Formik, FormikErrors } from "formik";
+import { Formik, FormikErrors, useFormikContext } from "formik";
 import dayjs from "dayjs";
 import { ErrorLike } from "@apollo/client";
+import { Input } from "@/components/ui/input";
 
 export type AddPriceFormProps = {
   product: Product;
@@ -35,7 +36,12 @@ export type AddPriceFormProps = {
   onError: (e: ErrorLike) => void;
 };
 
-export default function AddPriceForm({ product, onSuccess, onError }: AddPriceFormProps) {
+export default function AddPriceForm({
+  product,
+  onSuccess,
+  onError,
+  onCancel,
+}: AddPriceFormProps) {
   const { user } = useAuth();
   const router = useRouter();
   const { permissionGranted, location, getCurrentGeocodeAddress } =
@@ -50,7 +56,7 @@ export default function AddPriceForm({ product, onSuccess, onError }: AddPriceFo
       fetchPolicy: "no-cache",
     }
   );
-  const [createPrice, { }] = useMutation(CreatePriceDocument, {
+  const [createPrice, { loading }] = useMutation(CreatePriceDocument, {
     refetchQueries: [
       StockDocument,
       GetProductStocksDocument,
@@ -86,7 +92,7 @@ export default function AddPriceForm({ product, onSuccess, onError }: AddPriceFo
     }).then(({ data }) => {
       if (!data) return;
       if (data.findBranchesByDistance.length === 0) return;
-      setBranchId(data.findBranchesByDistance.at(0)!.id)
+      setBranchId(data.findBranchesByDistance.at(0)!.id);
     });
   }, [findBranchesByDistance, location, user]);
 
@@ -178,19 +184,25 @@ export default function AddPriceForm({ product, onSuccess, onError }: AddPriceFo
             ))}
           </NativeSelect>
         </div>
+      </div>
 
-        {branchId && selectedBranch && (
-          <Formik
+      {branchId && selectedBranch && (
+        <Formik
           validateOnBlur
           validateOnChange
           validate={(values) => {
             const errors = {} as FormikErrors<CreatePrice>;
             if (values.amount <= 0) {
-              errors.amount = 'Amount has to be higher than $0.00';
+              errors.amount = "Amount has to be higher than $0.00";
             }
 
-            if (values.sale && values.originalPrice && values.originalPrice < values.amount) {
-              errors.originalPrice = 'Original price cannot be smaller than the Sale price';
+            if (
+              values.sale &&
+              values.originalPrice &&
+              values.originalPrice < values.amount
+            ) {
+              errors.originalPrice =
+                "Original price cannot be smaller than the Sale price";
             }
             return errors;
           }}
@@ -201,7 +213,7 @@ export default function AddPriceForm({ product, onSuccess, onError }: AddPriceFo
               amount: 0.0,
               sale: false,
               expiresAt: nextWeek,
-              unitType: 'item',
+              unitType: "item",
             } as CreatePrice
           }
           onSubmit={(input) => {
@@ -218,11 +230,105 @@ export default function AddPriceForm({ product, onSuccess, onError }: AddPriceFo
                 onSuccess(data.createPrice as Price);
               })
               .catch((e) => onError(e));
-          }}>
-            
-          </Formik>
-        )}
-      </div>
+          }}
+        >
+          {(formik) => (
+            <div className="flex flex-col gap-5">
+              <div>
+                <PriceForm latestPrice={stock?.latestPrice ?? undefined} />
+              </div>
+
+              <div className="mt-7">
+                {formik.errors && (
+                  <div>
+                    {Object.values(formik.errors).map((v, i) => (
+                      <p className="text-red-700" key={i}>
+                        {v.toString()}
+                      </p>
+                    ))}
+                  </div>
+                )}
+
+                <div className="mt-5 flex flex-row items-center justify-end gap-5">
+                  <Button
+                    variant="outline"
+                    disabled={loading}
+                    onClick={onCancel}
+                  >
+                    Cancel
+                  </Button>
+
+                  <Button
+                    className="bg-pricetra-green-heavy-dark hover:bg-pricetra-green-heavy-dark-hover"
+                    type="submit"
+                    onClick={formik.submitForm}
+                    disabled={loading || !formik.isValid}
+                  >
+                    {loading ? (
+                      <>
+                        <CgSpinner className="animate-spin" />
+                        Submitting
+                      </>
+                    ) : (
+                      "Add Price"
+                    )}
+                  </Button>
+                </div>
+              </div>
+            </div>
+          )}
+        </Formik>
+      )}
     </div>
+  );
+}
+
+type PriceFormProps = {
+  // formik: FormikProps<CreatePrice>;
+  latestPrice?: Price;
+};
+
+function PriceForm({ latestPrice }: PriceFormProps) {
+  const formikContext = useFormikContext<CreatePrice>();
+  const [rawAmount, setRawAmount] = useState("");
+
+  useEffect(() => {
+    if (!latestPrice) return;
+
+    formikContext.setValues({
+      ...formikContext.values,
+      amount: latestPrice.amount,
+      sale: latestPrice.sale,
+      originalPrice: latestPrice.originalPrice,
+      condition: latestPrice.condition,
+      unitType: latestPrice.unitType,
+    });
+  }, [formikContext, latestPrice]);
+
+  useEffect(() => {
+    const strAmount = String(formikContext.values.amount);
+    if (rawAmount !== strAmount) return;
+    setRawAmount(strAmount);
+  }, [rawAmount, formikContext.values.amount]);
+
+  return (
+    <>
+      <div className="flex flex-row items-center gap-5">
+        <Input
+          placeholder="Current product price"
+          value={rawAmount}
+          type="number"
+          onChange={(e) => {
+            const value = e.target.value;
+            setRawAmount(value);
+
+            // parse and set "amount" field
+            const parsedValue = parseFloat(value);
+            const amount = isNaN(parsedValue) ? 0 : parsedValue;
+            formikContext.setFieldValue("amount", amount);
+          }}
+        />
+      </div>
+    </>
   );
 }
