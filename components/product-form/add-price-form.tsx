@@ -219,7 +219,7 @@ export default function AddPriceForm({
             } as CreatePrice
           }
           onSubmit={(input) => {
-            // input.expiresAt = dayjs(input.expiresAt).toDate();
+            input.expiresAt = dayjs(input.expiresAt).toDate();
             createPrice({
               variables: {
                 input: {
@@ -309,6 +309,7 @@ function PriceForm({ latestPrice }: PriceFormProps) {
       originalPrice: latestPrice.originalPrice,
       condition: latestPrice.condition,
       unitType: latestPrice.unitType,
+      expiresAt: dayjs(latestPrice.expiresAt).format("YYYY-MM-DD"),
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [latestPrice]);
