@@ -9,10 +9,26 @@ type Props = {
 };
 
 export async function generateMetadata({ searchParams }: Props): Promise<Metadata> {
-  const { query } = await searchParams;
+  const sp = await searchParams;
+  const parsedSearchParams = new URLSearchParams(sp);
   let title = `Search`;
-  if (query && query.length > 0) {
-    title += ` results for "${query}"`
+  if (parsedSearchParams.size > 0) {
+    title += ` results for`;
+    if (sp.query && sp.query.length > 0) {
+      title += ` "${sp.query}"`;
+    }
+    if (sp.category && sp.categoryId) {
+      title += ` category "${sp.category}"`;
+    }
+    if (sp.brand) {
+      title += ` brand "${sp.brand}"`;
+    }
+    if (sp.page) {
+      const parsedPage = parseInt(sp.page, 10);
+      if (!isNaN(parsedPage) && parsedPage > 1) {
+        title += ` page ${sp.page}`;
+      }
+    }
   }
   const description =
     "Search products, brands, categories, stores, UPCs, locations, or sale near you. Track prices, save money using Pricetra.";
