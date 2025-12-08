@@ -12,7 +12,6 @@ export async function fetchGraphql<V, R>(DOCUMENT: DocumentNode, type: 'query' |
     body['variables'] = variables
   }
 
-  console.log("Fetching: ", body[type], process.env.API_URL ?? "https://api.pricetra.com/graphql");
   try {
     const res = await fetch(process.env.API_URL ?? "https://api.pricetra.com/graphql", {
       method: "POST",
@@ -21,7 +20,7 @@ export async function fetchGraphql<V, R>(DOCUMENT: DocumentNode, type: 'query' |
     });
     return await res.json() as { data?: R, errors?: unknown };
   } catch (err) {
-    console.error("Fetch error", err);
+    console.error("Fetch error", body[type], body['variables'], err);
     throw err;
   }
 }
