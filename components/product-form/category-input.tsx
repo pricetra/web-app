@@ -35,6 +35,7 @@ export default function CategoryInput({
   // const [getCategory, { loading: categoryLoading }] =
   //   useLazyQuery(GetCategoryDocument);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedCategorySearchHandler = useCallback(
     _.debounce((search: string) => {
       if (search.length < 2) return;
