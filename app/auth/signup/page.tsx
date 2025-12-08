@@ -7,6 +7,8 @@ import SignupPage from "./signup-page-client";
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Create your account - Pricetra",
+    description:
+      "Get started using Pricetra. Sign up using Google, Apple, or using you email and password. Create an account and start saving money or groceries and other retail products.",
   };
 }
 

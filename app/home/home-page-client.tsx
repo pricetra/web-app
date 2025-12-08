@@ -60,10 +60,10 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
 
   return (
     <>
-      <div className="w-full max-w-[1000px] mt-10 flex-1">
+      <div className="w-full max-w-[1000px] flex-1">
         {!loggedIn && <WelcomeHeroBanner />}
 
-        <div className="grid grid-cols-5 lg:grid-cols-10 gap-x-2 gap-y-5 sm:gap-5 px-5 mb-10">
+        <div className="grid grid-cols-5 lg:grid-cols-10 gap-x-2 gap-y-5 sm:gap-5 px-5 my-10">
           {!allStoresData ? (
             Array(10)
               .fill(0)

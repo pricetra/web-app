@@ -14,11 +14,15 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   if (query && query.length > 0) {
     title += ` results for "${query}"`
   }
+  const description =
+    "Search products, brands, categories, stores, UPCs, locations, or sale near you. Track prices, save money using Pricetra.";
 
   return {
     title: `${title} - Pricetra`,
+    description,
     openGraph: {
-      title: title,
+      title,
+      description,
     },
   };
 }

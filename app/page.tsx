@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 export async function generateMetadata(): Promise<Metadata> {
   const title = "Pricetra - Your Price Tracking Companion";
   const description =
-    "Monitor price changes across thousands of products and never overpay again. Get alerts when prices drop and make smarter purchasing decisions.";
+    "Monitor price changes across thousands of products and never overpay again. Get alerts when prices drop and make smarter purchasing decisions. Beat Inflation. Track Prices. Save Money. Start using Pricetra today.";
   return {
     title,
     description,

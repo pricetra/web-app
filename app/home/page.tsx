@@ -5,7 +5,7 @@ import { headers } from "next/headers";
 import { serverSideIpAddress } from "@/lib/strings";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const title = "Browse - Pricetra";
+  const title = "Browse Pricetra";
   const description =
     "Explores prices across stores near you. Shop smarter and save money today.";
   return {

@@ -7,6 +7,8 @@ import { getIpAddressFromRequestHeaders } from "@/lib/strings";
 export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Login - Pricetra",
+    description:
+      "Welcome back to Pricetra. Login using Google, Apple, or using you email and password.",
   };
 }
 

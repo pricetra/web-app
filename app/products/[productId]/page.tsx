@@ -36,6 +36,8 @@ const cachedFetchProductSummary = cache(
   }
 );
 
+const DATE_FORMAT = "MMM D, YYYY";
+
 function productSeoTitleAndDescription(p: ProductSummary) {
   const isBrandValid = p.brand.length > 0 || p.brand !== "N/A";
   const saleExpired = p.saleExpiresAt ? isDateExpired(p.saleExpiresAt) : false;
@@ -48,23 +50,18 @@ function productSeoTitleAndDescription(p: ProductSummary) {
     title += ` at ${p.branch}`;
   }
 
-  let description = "";
-  if (isBrandValid) {
-    description += `Brand: ${p.brand}`;
-  }
+  let description = p.name;
   if (p.code) {
-    description += `; UPC/PLU/ID: ${p.code}`;
+    description += `. ${p.code} (UPC/PLU/ID)`;
   }
   if (p.store || p.branch) {
-    description += `; Sold at: ${p.store ?? p.branch}`;
+    description += `. Sold at ${p.store ?? p.branch}`;
   }
   if (p.address) {
     description += ` (${p.address})`;
   }
   if (p.price) {
-    description += `; Price: ${
-      saleExpired ? p.originalPrice ?? "N/A" : p.price
-    }`;
+    description += ` for ${saleExpired ? p.originalPrice ?? "N/A" : p.price}`;
     if (p.priceCurrencyCode) description += ` ${p.priceCurrencyCode}`;
   }
   if (p.sale && p.sale === true && p.saleExpiresAt && !saleExpired) {
@@ -72,12 +69,17 @@ function productSeoTitleAndDescription(p: ProductSummary) {
     if (p.originalPrice) {
       description += ` (Was ${p.originalPrice})`;
     }
+    description += `, sale expires on ${dayjs(p.saleExpiresAt).format(
+      DATE_FORMAT
+    )}`;
   }
   if (p.priceCreatedAt) {
-    description += ` - Reported on ${dayjs(p.priceCreatedAt).format()}`;
+    description += `. Price reported on ${dayjs(p.priceCreatedAt).format(
+      DATE_FORMAT
+    )}`;
   }
   if (p.description && p.description.length > 0) {
-    description += `; Description: ${p.description}`;
+    description += `. ${p.description}`;
   }
   return { title, description };
 }
