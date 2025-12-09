@@ -57,10 +57,6 @@ export default function LocationContextProvider({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.address]);
 
-  if (user && !user.address) {
-    // TODO: Add location setup screen
-  }
-
   return (
     <LocationContext.Provider
       value={{

@@ -10,6 +10,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import utc from "dayjs/plugin/utc";
 import { NavbarProvider } from "@/context/navbar-context";
 import ShadcnProvider from "./shadcn-provider";
+import SetupProvider from "./setup-provider";
 
 dayjs.extend(localizedFormat);
 dayjs.extend(relativeTime);
@@ -26,7 +27,9 @@ export default function AppProvider({ children }: AppProviderProps) {
         <UserContextProvider>
           <LocationContextProvider>
             <ShadcnProvider>
-              <NavbarProvider>{children}</NavbarProvider>
+              <SetupProvider>
+                <NavbarProvider>{children}</NavbarProvider>
+              </SetupProvider>
             </ShadcnProvider>
           </LocationContextProvider>
         </UserContextProvider>
