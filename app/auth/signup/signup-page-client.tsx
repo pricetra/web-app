@@ -68,7 +68,7 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
 
   useEffect(() => {
     if (!loggedIn) return;
-    router.replace("/");
+    router.replace("/home");
   }, [loggedIn, router]);
 
   useEffect(() => {
