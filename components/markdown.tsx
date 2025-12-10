@@ -24,13 +24,13 @@ export default async function Markdown({ filePath }: MarkdownProps) {
             alt="Pricetra"
             width={207.4}
             height={40}
-            className="sm:h-[40px] h-[30px] w-auto color-white"
+            className="h-[25px] xs:h-[30px] w-auto color-white"
             priority
           />
         </Link>
       </div>
 
-      <article className="prose prose-sm sm:prose lg:prose-lg dark:prose-invert">
+      <article className="prose">
         <div
           className="markdown"
           dangerouslySetInnerHTML={{ __html: htmlContent }}
