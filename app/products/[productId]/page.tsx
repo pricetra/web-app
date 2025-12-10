@@ -39,7 +39,7 @@ const cachedFetchProductSummary = cache(
 const DATE_FORMAT = "MMM D, YYYY";
 
 function productSeoTitleAndDescription(p: ProductSummary) {
-  // const isBrandValid = p.brand.length > 0 || p.brand !== "N/A";
+  // const isBrandValid = validBrand(p.brand);
   const saleExpired = p.saleExpiresAt ? isDateExpired(p.saleExpiresAt) : false;
 
   let title = p.name;

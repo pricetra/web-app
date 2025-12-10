@@ -83,3 +83,9 @@ export function parseIntOrUndefined(str?: string): number | undefined {
   if (isNaN(parsedVal)) return undefined;
   return parsedVal;
 }
+
+export function validBrand(brand?: string | null): boolean {
+  if (!brand) return false;
+  if (brand === 'N/A') return false;
+  return brand.length > 0;
+}

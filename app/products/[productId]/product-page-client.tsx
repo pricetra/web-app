@@ -21,6 +21,7 @@ import ProductDetails from "./product-details";
 import MoreFromBrand from "./more-from-brand-section";
 import MoreFromCategory from "./more-from-category-section";
 import ProductNavTools from "./product-nav-tools";
+import { validBrand } from "@/lib/strings";
 
 export type ProductPageClientProps = {
   productId: number;
@@ -176,7 +177,9 @@ export default function ProductPageClient({
 
       <div>
         <div>
-          {productData && <MoreFromBrand brand={productData.product.brand} />}
+          {productData && validBrand(productData.product.brand) && (
+            <MoreFromBrand brand={productData.product.brand} />
+          )}
         </div>
 
         <div className="mt-16">
