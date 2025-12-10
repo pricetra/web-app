@@ -5,14 +5,18 @@ import { ReactNode } from "react";
 
 export default function LayoutProvider({ children }: { children: ReactNode }) {
   return (
-    <main>
-      <NavbarMain />
+    <main className="min-h-screen flex flex-col">
+      <div className="grow">
+        <NavbarMain />
 
-      <div className="max-w-full sm:container mx-auto mt-5 relative flex flex-col lg:flex-row gap-3">
-        {children}
+        <div className="max-w-full sm:container mx-auto mt-5 relative flex flex-col lg:flex-row gap-3">
+          {children}
+        </div>
       </div>
 
-      <Footer />
+      <div>
+        <Footer />
+      </div>
     </main>
   );
 }
