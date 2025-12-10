@@ -7,8 +7,10 @@ import ProductItemHorizontal, {
   ProductLoadingItemHorizontal,
 } from "@/components/product-item-horizontal";
 import ScrollContainer from "@/components/scroll-container";
+import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { SmartPagination } from "@/components/ui/smart-pagination";
 import WelcomeHeroBanner from "@/components/welcome-hero-banner";
+import { useNavbar } from "@/context/navbar-context";
 import { useAuth } from "@/context/user-context";
 import useLocationInput from "@/hooks/useLocationInput";
 import { useQuery } from "@apollo/client/react";
@@ -18,7 +20,8 @@ import {
   Product,
   ProductSearch,
 } from "graphql-utils";
-import { useMemo } from "react";
+import { useLayoutEffect, useMemo } from "react";
+import { IoIosSearch } from "react-icons/io";
 
 export type SearchRouteParams = {
   query?: string;
@@ -40,6 +43,7 @@ export default function SearchPageClient({
   ipAddress,
 }: SearchPageClientProps) {
   const { loggedIn } = useAuth();
+  const { setPageIndicator } = useNavbar();
   const locationInput = useLocationInput(ipAddress);
   const searchVariables = useMemo(
     () =>
@@ -71,56 +75,78 @@ export default function SearchPageClient({
       fetchPolicy: "no-cache",
     }
   );
+
+  useLayoutEffect(() => {
+    setPageIndicator(
+      <NavPageIndicator icon={IoIosSearch} title="Search" href="/search" />
+    );
+    return () => {
+      setPageIndicator(undefined);
+    };
+  }, []);
+
   return (
     <div className="w-full max-w-[1000px]">
       {!loggedIn && <WelcomeHeroBanner />}
 
       <div className="flex flex-col">
-        {!branchesWithProducts
-          ? Array(3)
-              .fill(0)
-              .map((_, i) => (
-                <article
-                  className="my-7"
-                  key={`branch-with-product-loading-${i}`}
-                >
-                  <div className="mb-5 px-5">
-                    <BranchItemWithLogoLoading />
-                  </div>
-
-                  <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:mask-[linear-gradient(to_right,transparent_0,black_2em,black_calc(100%-2em),transparent_100%)]">
-                    {Array(10)
-                      .fill(0)
-                      .map((_, j) => (
-                        <div
-                          className="first:pl-5 last:pr-5"
-                          key={`branch-product-${i}-${j}`}
-                        >
-                          <ProductLoadingItemHorizontal />
-                        </div>
-                      ))}
-                  </div>
-                </article>
-              ))
-          : branchesWithProducts.branchesWithProducts.branches.map((branch) => (
+        {!branchesWithProducts ? (
+          Array(3)
+            .fill(0)
+            .map((_, i) => (
               <article
                 className="my-7"
-                key={`branch-with-product-${branch.id}`}
+                key={`branch-with-product-loading-${i}`}
               >
                 <div className="mb-5 px-5">
-                  <BranchItemWithLogo branch={branch as Branch} />
+                  <BranchItemWithLogoLoading />
                 </div>
 
-                <ScrollContainer>
-                  {(branch.products ?? []).map((product) => (
-                    <ProductItemHorizontal
-                      product={product as Product}
-                      key={`branch-product-${branch.id}-${product.id}`}
-                    />
-                  ))}
-                </ScrollContainer>
+                <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:mask-[linear-gradient(to_right,transparent_0,black_2em,black_calc(100%-2em),transparent_100%)]">
+                  {Array(10)
+                    .fill(0)
+                    .map((_, j) => (
+                      <div
+                        className="first:pl-5 last:pr-5"
+                        key={`branch-product-${i}-${j}`}
+                      >
+                        <ProductLoadingItemHorizontal />
+                      </div>
+                    ))}
+                </div>
               </article>
-            ))}
+            ))
+        ) : (
+          <>
+            {branchesWithProducts.branchesWithProducts.paginator.total === 0 ? (
+              <div className="py-10">
+                <h3 className="text-center">No results</h3>
+              </div>
+            ) : (
+              branchesWithProducts.branchesWithProducts.branches.map(
+                (branch) => (
+                  <article
+                    className="my-7"
+                    key={`branch-with-product-${branch.id}`}
+                  >
+                    <div className="mb-5 px-5">
+                      <BranchItemWithLogo branch={branch as Branch} />
+                    </div>
+
+                    <ScrollContainer>
+                      {(branch.products ?? []).map((product) => (
+                        <ProductItemHorizontal
+                          product={product as Product}
+                          key={`branch-product-${branch.id}-${product.id}`}
+                        />
+                      ))}
+                    </ScrollContainer>
+                  </article>
+                )
+              )
+            )}
+          </>
+        )}
       </div>
 
       {branchesWithProducts?.branchesWithProducts?.paginator &&

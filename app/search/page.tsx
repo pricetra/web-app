@@ -13,7 +13,7 @@ export async function generateMetadata({ searchParams }: Props): Promise<Metadat
   const parsedSearchParams = new URLSearchParams(sp);
   let title = `Search`;
   if (parsedSearchParams.size > 0) {
-    title += ` results for`;
+    title += ` `;
     if (sp.query && sp.query.length > 0) {
       title += ` "${sp.query}"`;
     }
