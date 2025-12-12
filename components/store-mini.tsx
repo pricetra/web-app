@@ -25,7 +25,10 @@ export default function StoreMini({
         width={300}
         height={300}
       />
-      <h3 className="text-xs md:text-sm max-w-14 sm:max-w-20 truncate">
+      <h3
+        className="text-xs md:text-sm max-w-14 sm:max-w-20 truncate"
+        title={name}
+      >
         {name}
       </h3>
     </Link>

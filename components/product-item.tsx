@@ -3,7 +3,7 @@ import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import useProductWeightBuilder from "@/hooks/useProductWeightBuilder";
 import { createCloudinaryUrl } from "@/lib/files";
-import { currencyFormat, getPriceUnit } from "@/lib/strings";
+import { currencyFormat, getPriceUnit, validBrand } from "@/lib/strings";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import ProductMetadataBadge from "./product-metadata-badge";
@@ -82,14 +82,22 @@ ProductItemProps) {
           </div>
 
           <div className="flex flex-row flex-wrap items-center gap-1">
-            {product.brand && product.brand !== "N/A" && (
-              <h4 className="text-[11px] sm:text-xs text-gray-600">
+            {validBrand(product.brand) && (
+              <h4
+                className="text-[11px] sm:text-xs text-gray-600"
+                title={`Search "${product.brand}"`}
+              >
                 {product.brand}
               </h4>
             )}
           </div>
 
-          <h3 className="text-sm sm:text-base line-clamp-3">{product.name}</h3>
+          <h3
+            className="text-sm sm:text-base line-clamp-3"
+            title={product.name}
+          >
+            {product.name}
+          </h3>
         </div>
 
         {product.stock && (
