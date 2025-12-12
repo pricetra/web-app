@@ -19,7 +19,7 @@ export default function Footer() {
           >
             <Image
               src="/logotype_light.svg"
-              className="w-[150px] max-w-full"
+              className="w-[130px] md:w-[150px] max-w-full"
               width={100}
               height={100}
               priority
@@ -31,7 +31,7 @@ export default function Footer() {
         <div className="w-full lg:container mx-auto px-5 pt-5 pb-14">
           <div className="flex flex-row"></div>
 
-          <div className="mt-5 flex flex-col 2xs:flex-row justify-between items-center gap-5 text-sm">
+          <div className="mt-5 flex flex-col 2xs:flex-row justify-between items-center gap-5 text-xs md:text-sm">
             <div className="flex items-center gap-2">
               © {new Date().getFullYear()} Pricetra
             </div>

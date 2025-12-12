@@ -2,7 +2,7 @@ import LoginSignupButtons from "@/components/login-signup-buttons";
 
 export default function WelcomeHeroBanner() {
   return (
-    <div className="px-5 lg:px-0 mb-10">
+    <div className="px-5 mb-10">
       <div className="text-center bg-gray-50 border border-gray-200 px-7 py-8 sm:py-10 rounded-xl">
         <div className="max-w-4xl mx-auto">
           <h1 className="text-2xl md:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">

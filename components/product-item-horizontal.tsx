@@ -148,8 +148,14 @@ export function ProductLoadingItemHorizontal() {
       </div>
       <div className="max-w-full gap-2">
         <Skeleton className="h-6 w-full" style={{ borderRadius: 7 }} />
-        <Skeleton className="h-6 w-full" style={{ borderRadius: 7 }} />
-        <Skeleton className="mt-5 h-6 w-[100px]" style={{ borderRadius: 7 }} />
+        <Skeleton
+          className="h-6 w-full"
+          style={{ borderRadius: 7, width: "80%" }}
+        />
+        <Skeleton
+          className="mt-5 h-6 w-[100px]"
+          style={{ borderRadius: 7, width: 80 }}
+        />
       </div>
     </div>
   );
