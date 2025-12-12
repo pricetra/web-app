@@ -203,7 +203,7 @@ export default function SearchPageClient({
                 </>
               ) : (
                 <article>
-                  <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:mask-[linear-gradient(to_right,transparent_0,black_2em,black_calc(100%-2em),transparent_100%)]">
+                  <ScrollContainer hideButtons>
                     {Array(20)
                       .fill(0)
                       .map((_, j) => (
@@ -214,7 +214,7 @@ export default function SearchPageClient({
                           <ProductLoadingItemHorizontal />
                         </div>
                       ))}
-                  </div>
+                  </ScrollContainer>
                 </article>
               )}
             </div>
@@ -235,7 +235,7 @@ export default function SearchPageClient({
                   <BranchItemWithLogoLoading />
                 </div>
 
-                <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:mask-[linear-gradient(to_right,transparent_0,black_2em,black_calc(100%-2em),transparent_100%)]">
+                <ScrollContainer hideButtons>
                   {Array(10)
                     .fill(0)
                     .map((_, j) => (
@@ -246,7 +246,7 @@ export default function SearchPageClient({
                         <ProductLoadingItemHorizontal />
                       </div>
                     ))}
-                </div>
+                </ScrollContainer>
               </article>
             ))
         ) : (

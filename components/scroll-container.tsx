@@ -4,17 +4,21 @@ import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
 import { Button } from '@/components/ui/button';
 import { cn } from "@/lib/utils";
 
-export default function ScrollContainer({
-  children,
-}: {
+export type ScrollContainerProps = {
   children: ReactElement<{
     itemId: ItemId;
   }>[];
-}) {
+  hideButtons?: boolean;
+};
+
+export default function ScrollContainer({
+  children,
+  hideButtons = false,
+}: ScrollContainerProps) {
   return (
     <ScrollMenu
-      LeftArrow={LeftArrow}
-      RightArrow={RightArrow}
+      LeftArrow={!hideButtons ? LeftArrow : <></>}
+      RightArrow={!hideButtons ? RightArrow : <></>}
       wrapperClassName="relative py-2.5"
       itemClassName="px-2.5 first:pl-5 last:pr-5 md:first:pl-7 md:last:pr-7"
     >
