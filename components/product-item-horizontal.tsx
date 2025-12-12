@@ -81,7 +81,7 @@ export default function ProductItemHorizontal({
             {validBrand(product.brand) && (
               <h5
                 className="text-xs text-gray-600"
-                title={`Search "${product.brand}"`}
+                // title={`Search "${product.brand}"`}
               >
                 {product.brand}
               </h5>
@@ -100,7 +100,9 @@ export default function ProductItemHorizontal({
             {!hideStoreInfo &&
               product.__typename === "Product" &&
               product.stock.store && (
-                <div>
+                <div
+                  title={product.stock.branch?.name ?? product.stock.store.name}
+                >
                   <Image
                     src={createCloudinaryUrl(
                       product.stock.store.logo ?? "",

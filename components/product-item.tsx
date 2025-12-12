@@ -85,7 +85,7 @@ ProductItemProps) {
             {validBrand(product.brand) && (
               <h4
                 className="text-[11px] sm:text-xs text-gray-600"
-                title={`Search "${product.brand}"`}
+                // title={`Search "${product.brand}"`}
               >
                 {product.brand}
               </h4>
