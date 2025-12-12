@@ -7,7 +7,9 @@ import { IoIosSearch } from "react-icons/io";
 import { useNavbar } from "@/context/navbar-context";
 import { Button } from "./button";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { IoArrowBack } from "react-icons/io5";
+import { useMediaQuery } from "react-responsive";
 
 export const NAVBAR_HEIGHT = 60;
 export const SUBNAV_HEIGHT = 40;
@@ -19,7 +21,14 @@ export default function NavbarMain() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const querySearchParam = searchParams.get("query");
+  const searchInputMobileRef = useRef<HTMLInputElement>(null);
   const [searchText, setSearchText] = useState("");
+  const [searchPanelOpen, setSearchPanelOpen] = useState(false);
+
+  const fullNavHeight = NAVBAR_HEIGHT + (subHeader ? SUBNAV_HEIGHT : 0);
+  const isMobile = useMediaQuery({
+    query: "(max-width: 640px)",
+  });
 
   useEffect(() => {
     setSearchText(querySearchParam ?? "");
@@ -80,26 +89,34 @@ export default function NavbarMain() {
               )}
             </div>
 
-            <div className="search-bar flex-1 hidden sm:block">
-              <InputGroup className="rounded-md bg-gray-100 px-0 sm:px-2 py-3 border-transparent text-xs sm:text-sm shadow-none">
-                <InputGroupInput
-                  placeholder="Search..."
-                  className="text-xs sm:text-sm"
-                  value={searchText}
-                  onChange={(e) => setSearchText(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      router.push(
-                        `/search?query=${encodeURIComponent(searchText)}`
-                      );
-                    }
+            {!isMobile && (
+              <div className="search-bar flex-1">
+                <InputGroup
+                  onClick={() => {
+                    setSearchPanelOpen(true);
                   }}
-                />
-                <InputGroupAddon className="ml-0 mr-1 sm:mr-2">
-                  <IoIosSearch className="size-[17px] sm:size-5" />
-                </InputGroupAddon>
-              </InputGroup>
-            </div>
+                  className="rounded-md bg-gray-100 px-0 sm:px-2 py-3 border-transparent text-xs sm:text-sm shadow-none"
+                >
+                  <InputGroupAddon>
+                    <IoIosSearch className="size-[17px] sm:size-5" />
+                  </InputGroupAddon>
+
+                  <InputGroupInput
+                    placeholder="Search..."
+                    className="text-xs sm:text-sm pl-1 sm:pl-2"
+                    value={searchText}
+                    onChange={(e) => setSearchText(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        router.push(
+                          `/search?query=${encodeURIComponent(searchText)}`
+                        );
+                      }
+                    }}
+                  />
+                </InputGroup>
+              </div>
+            )}
 
             {navTools && (
               <div className="flex flex-row gap-1 items-center justify-start">
@@ -109,9 +126,19 @@ export default function NavbarMain() {
           </div>
 
           <div className="right pr-5 flex gap-2 items-center flex-nowrap">
-            <Button variant="ghost" className="block sm:hidden p-2">
-              <IoIosSearch className="size-[20px]" />
-            </Button>
+            {isMobile && (
+              <Button
+                onClick={(e) => {
+                  e.preventDefault();
+                  setSearchPanelOpen(true);
+                  searchInputMobileRef.current?.focus();
+                }}
+                variant="ghost"
+                className="p-2"
+              >
+                <IoIosSearch className="size-[20px]" />
+              </Button>
+            )}
 
             {!loggedIn || !user ? (
               <>
@@ -159,6 +186,44 @@ export default function NavbarMain() {
           </div>
         </div>
 
+        {searchPanelOpen && isMobile && (
+          <div
+            className="absolute top-0 left-0 bg-white w-full"
+            style={{ height: NAVBAR_HEIGHT }}
+          >
+            <div
+              className="w-full lg:container mx-auto flex items-center justify-between gap-3 px-5"
+              style={{ height: NAVBAR_HEIGHT }}
+            >
+              <Button
+                onClick={() => setSearchPanelOpen(false)}
+                variant="ghost"
+                className="p-2"
+              >
+                <IoArrowBack className="size-[20px]" />
+              </Button>
+
+              <div className="flex-1">
+                <input
+                  ref={searchInputMobileRef}
+                  autoFocus
+                  placeholder="Search..."
+                  value={searchText}
+                  className="block w-full outline-none py-3"
+                  onChange={(e) => setSearchText(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      router.push(
+                        `/search?query=${encodeURIComponent(searchText)}`
+                      );
+                    }
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        )}
+
         {subHeader && (
           <div
             className="w-full lg:container mx-auto"
@@ -171,9 +236,7 @@ export default function NavbarMain() {
         )}
       </header>
 
-      <div
-        style={{ height: NAVBAR_HEIGHT + (subHeader ? SUBNAV_HEIGHT : 0) }}
-      ></div>
+      <div style={{ height: fullNavHeight }}></div>
     </>
   );
 }
