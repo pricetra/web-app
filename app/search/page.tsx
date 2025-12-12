@@ -47,6 +47,7 @@ export default async function SearchPageServer(props: Props) {
   const headerList = await headers();
   const ipAddress = serverSideIpAddress(headerList);
   const searchParams = await props.searchParams;
+  if (searchParams.query === "") searchParams.query = undefined;
   return (
     <LayoutProvider>
       <SearchPageClient ipAddress={ipAddress} searchParams={searchParams} />

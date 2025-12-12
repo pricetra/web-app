@@ -150,7 +150,7 @@ export default function SearchPageClient({
                 <>
                   {keywordsData.popularSearchKeywords.searches.map((k, i) => (
                     <Link
-                      href={`/search?q=${encodeURIComponent(k)}`}
+                      href={`?query=${encodeURIComponent(k)}`}
                       key={`search-keyword-${k}-${i}`}
                       className="px-3 py-1 bg-gray-100 border border-gray-200 rounded-full"
                     >
