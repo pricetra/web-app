@@ -22,6 +22,8 @@ import MoreFromBrand from "./more-from-brand-section";
 import MoreFromCategory from "./more-from-category-section";
 import ProductNavTools from "./product-nav-tools";
 import { validBrand } from "@/lib/strings";
+import Skeleton from "react-loading-skeleton";
+import { StockItemMiniLoading } from "@/components/stock-item-mini";
 
 export type ProductPageClientProps = {
   productId: number;
@@ -36,7 +38,7 @@ export default function ProductPageClient({
   stockId,
   ipAddress,
 }: ProductPageClientProps) {
-  const { loggedIn, user } = useAuth();
+  const { loggedIn, user, lists } = useAuth();
   const { setPageIndicator, resetAll, setNavTools, setSubHeader } = useNavbar();
   const locationInput = useLocationInput(!loggedIn ? ipAddress : undefined);
   const { data: productData, loading: productLoading } = useQuery(
@@ -163,12 +165,62 @@ export default function ProductPageClient({
         </section>
 
         <section className="w-full flex-2 max-w-full lg:max-w-xl xl:max-w-3xl">
-          {productData && locationInput && (
+          {productData && locationInput ? (
             <ProductDetails
               product={productData.product}
               locationInput={locationInput}
               stock={stockData?.stock as Stock | undefined}
             />
+          ) : (
+            <div className="flex flex-col gap-10 px-5">
+              <div>
+                <div className="py-4">
+                  <Skeleton width={130} height={21} borderRadius={10} />
+                </div>
+                <section className="grid grid-cols-2 gap-5 mt-5">
+                  {Array(lists?.favorites.branchList?.length ?? 5)
+                    .fill(0)
+                    .map((_, i) => (
+                      <div
+                        className="mb-3"
+                        key={`favorite-branch-stock-loading-${i}`}
+                      >
+                        <StockItemMiniLoading />
+                      </div>
+                    ))}
+                </section>
+              </div>
+
+              <div>
+                <div className="py-4">
+                  <Skeleton width={98} height={21} borderRadius={10} />
+                </div>
+                <section className="grid grid-cols-2 gap-5 mt-5">
+                  {Array(5)
+                    .fill(0)
+                    .map((_, i) => (
+                      <div
+                        className="mb-3"
+                        key={`favorite-branch-stock-loading-${i}`}
+                      >
+                        <StockItemMiniLoading />
+                      </div>
+                    ))}
+                </section>
+              </div>
+
+              <div>
+                <Skeleton
+                  style={{
+                    width: 100,
+                    minWidth: "100%",
+                    maxHeight: "100%",
+                    height: "30vh",
+                  }}
+                  borderRadius={10}
+                />
+              </div>
+            </div>
           )}
         </section>
       </div>
