@@ -27,7 +27,8 @@ export default function NavbarMain() {
   const [searchText, setSearchText] = useState("");
   const [searchPanelOpen, setSearchPanelOpen] = useState(false);
 
-  const fullNavHeight = NAVBAR_HEIGHT + (subHeader ? SUBNAV_HEIGHT : 0);
+  const fullNavHeight =
+    NAVBAR_HEIGHT + (subHeader && !searchPanelOpen ? SUBNAV_HEIGHT : 0);
   const isMobile = useMediaQuery({
     query: "(max-width: 640px)",
   });
@@ -147,7 +148,7 @@ export default function NavbarMain() {
               )}
             </div>
 
-            {navTools && (
+            {navTools && !searchPanelOpen && (
               <div className="flex flex-row gap-1 items-center justify-start">
                 {navTools}
               </div>
@@ -263,7 +264,7 @@ export default function NavbarMain() {
           />
         )}
 
-        {subHeader && (
+        {subHeader && !searchPanelOpen && (
           <div
             className="w-full lg:container mx-auto"
             style={{ height: SUBNAV_HEIGHT }}
