@@ -11,6 +11,7 @@ import { useEffect, useRef, useState } from "react";
 import { IoArrowBack } from "react-icons/io5";
 import { useMediaQuery } from "react-responsive";
 import SearchResultsPanel from "../search-results-panel";
+import { cn } from "@/lib/utils";
 
 export const NAVBAR_HEIGHT = 60;
 export const SUBNAV_HEIGHT = 40;
@@ -45,7 +46,12 @@ export default function NavbarMain() {
           className="w-full lg:container mx-auto flex items-center justify-between gap-5"
           style={{ height: NAVBAR_HEIGHT }}
         >
-          <div className="flex flex-row gap-6 items-center justify-start flex-1 w-full max-w-4xl pl-5 pr-0 sm:pr-5">
+          <div
+            className={cn(
+              "flex flex-row gap-6 items-center justify-start flex-1 w-full pl-5 pr-0 sm:pr-5",
+              searchPanelOpen ? "max-w-full" : "max-w-4xl"
+            )}
+          >
             <div className="page-indicator flex flex-row items-center justify-start">
               <Link
                 href="/home"

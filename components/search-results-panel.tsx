@@ -144,7 +144,7 @@ export default function SearchResultsPanel() {
         </div>
       )}
 
-      <div className="h-10" />
+      <div className="h-5" />
 
       <div className="flex flex-col gap-5 mb-10 px-5">
         <h3 className="font-bold text-lg md:text-xl">Popular searches</h3>
@@ -156,7 +156,7 @@ export default function SearchResultsPanel() {
                 <Link
                   href={`/search?query=${encodeURIComponent(k)}`}
                   key={`search-keyword-${k}-${i}`}
-                  className="px-3 py-1 bg-gray-100 border border-gray-200 rounded-full"
+                  className="px-3 py-1 bg-gray-100 border border-gray-200 rounded-full text-sm"
                 >
                   {k}
                 </Link>
