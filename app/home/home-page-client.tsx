@@ -91,18 +91,15 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
                       <BranchItemWithLogoLoading />
                     </div>
 
-                    <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:mask-[linear-gradient(to_right,transparent_0,black_2em,black_calc(100%-2em),transparent_100%)]">
+                    <ScrollContainer hideButtons>
                       {Array(10)
                         .fill(0)
                         .map((_, j) => (
-                          <div
-                            className="first:pl-5 last:pr-5"
+                          <ProductLoadingItemHorizontal
                             key={`branch-product-${i}-${j}`}
-                          >
-                            <ProductLoadingItemHorizontal />
-                          </div>
+                          />
                         ))}
-                    </div>
+                    </ScrollContainer>
                   </article>
                 ))
             : branchesWithProducts.branchesWithProducts.branches.map(

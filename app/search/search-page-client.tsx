@@ -203,12 +203,9 @@ export default function SearchPageClient({
                     {Array(20)
                       .fill(0)
                       .map((_, j) => (
-                        <div
-                          className="first:pl-5 last:pr-5"
+                        <ProductLoadingItemHorizontal
                           key={`popular-product-loading-${j}`}
-                        >
-                          <ProductLoadingItemHorizontal />
-                        </div>
+                        />
                       ))}
                   </ScrollContainer>
                 </article>
@@ -235,12 +232,9 @@ export default function SearchPageClient({
                   {Array(10)
                     .fill(0)
                     .map((_, j) => (
-                      <div
-                        className="first:pl-5 last:pr-5"
+                      <ProductLoadingItemHorizontal
                         key={`branch-product-${i}-${j}`}
-                      >
-                        <ProductLoadingItemHorizontal />
-                      </div>
+                      />
                     ))}
                 </ScrollContainer>
               </article>

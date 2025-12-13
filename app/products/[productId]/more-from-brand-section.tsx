@@ -48,18 +48,15 @@ export default function MoreFromBrand({ brand }: MoreFromBrandProps) {
         </div>
 
         {!brandProducts || brandProductsLoading ? (
-          <div className="flex flex-row gap-5 overflow-x-auto py-2.5 lg:px-2.5 lg:mask-[linear-gradient(to_right,transparent_0,black_2em,black_calc(100%-2em),transparent_100%)]">
+          <ScrollContainer hideButtons>
             {Array(10)
               .fill(0)
               .map((_, i) => (
-                <div
-                  className="first:pl-5 last:pr-5"
+                <ProductLoadingItemHorizontal
                   key={`brand-product-loading-${i}`}
-                >
-                  <ProductLoadingItemHorizontal />
-                </div>
+                />
               ))}
-          </div>
+          </ScrollContainer>
         ) : (
           <ScrollContainer>
             {(brandProducts?.productSearch?.products ?? []).map(

@@ -209,12 +209,9 @@ export default function SearchResultsPanel() {
                 {Array(20)
                   .fill(0)
                   .map((_, j) => (
-                    <div
-                      className="first:pl-5 last:pr-5"
+                    <ProductLoadingItemHorizontal
                       key={`popular-product-loading-${j}`}
-                    >
-                      <ProductLoadingItemHorizontal />
-                    </div>
+                    />
                   ))}
               </ScrollContainer>
             </article>
