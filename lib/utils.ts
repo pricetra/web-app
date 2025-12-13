@@ -5,7 +5,7 @@ import { twMerge } from 'tailwind-merge';
 
 import { postgresArrayToNumericArray } from './strings';
 
-import { Category, Price, Product } from 'graphql-utils';
+import { Category, Price, Product, TimestampRangeBetween } from 'graphql-utils';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -100,3 +100,9 @@ export function getRandomElement(arr: unknown[]) {
   return arr[randomIndex];
 }
 
+export function getNextWeekDateRange(): TimestampRangeBetween {
+  return {
+    from: dayjs().subtract(7, "day"),
+    to: dayjs().add(1, "day"),
+  };
+}

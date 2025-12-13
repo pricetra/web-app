@@ -13,8 +13,8 @@ import WelcomeHeroBanner from "@/components/welcome-hero-banner";
 import { useNavbar } from "@/context/navbar-context";
 import { useAuth } from "@/context/user-context";
 import useLocationInput from "@/hooks/useLocationInput";
+import { getNextWeekDateRange } from "@/lib/utils";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
-import dayjs from "dayjs";
 import {
   Branch,
   BranchesWithProductsDocument,
@@ -95,6 +95,8 @@ export default function SearchPageClient({
     }
   );
 
+  const nextWeekDateRange = getNextWeekDateRange();
+
   useLayoutEffect(() => {
     setPageIndicator(
       <NavPageIndicator icon={IoIosSearch} title="Search" href="/search" />
@@ -114,10 +116,7 @@ export default function SearchPageClient({
           limit: 20,
           page: 1,
         },
-        dateRange: {
-          from: dayjs().subtract(7, "day"),
-          to: dayjs().add(1, "day"),
-        },
+        dateRange: nextWeekDateRange,
       },
     });
 
@@ -127,10 +126,7 @@ export default function SearchPageClient({
           limit: 20,
           page: 1,
         },
-        dateRange: {
-          from: dayjs().subtract(7, "day"),
-          to: dayjs().add(1, "day"),
-        },
+        dateRange: nextWeekDateRange,
       },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps

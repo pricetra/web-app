@@ -10,6 +10,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { IoArrowBack } from "react-icons/io5";
 import { useMediaQuery } from "react-responsive";
+import SearchResultsPanel from "../search-results-panel";
 
 export const NAVBAR_HEIGHT = 60;
 export const SUBNAV_HEIGHT = 40;
@@ -89,8 +90,9 @@ export default function NavbarMain() {
               )}
             </div>
 
-            {!isMobile && (
-              <div className="search-bar flex-1">
+            <div className="search-bar sm:relative sm:flex-1">
+              {/* Non-mobile search input */}
+              {!isMobile && (
                 <InputGroup
                   onClick={() => {
                     setSearchPanelOpen(true);
@@ -115,8 +117,20 @@ export default function NavbarMain() {
                     }}
                   />
                 </InputGroup>
-              </div>
-            )}
+              )}
+
+              {/* Search panel results */}
+              {searchPanelOpen && (
+                <div
+                  className="z-1 absolute left-0 bg-white w-full max-w-2xl sm:rounded-lg min-h-44 sm:shadow-lg border-t border-gray-200 sm:border-none"
+                  style={{ top: fullNavHeight + (isMobile ? 0 : 5) }}
+                >
+                  <div className="py-5 overflow-y-scroll max-h-screen">
+                    <SearchResultsPanel />
+                  </div>
+                </div>
+              )}
+            </div>
 
             {navTools && (
               <div className="flex flex-row gap-1 items-center justify-start">
@@ -186,6 +200,7 @@ export default function NavbarMain() {
           </div>
         </div>
 
+        {/* Mobile search input */}
         {searchPanelOpen && isMobile && (
           <div
             className="absolute top-0 left-0 bg-white w-full"
@@ -222,6 +237,15 @@ export default function NavbarMain() {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Search overlay */}
+        {searchPanelOpen && (
+          <div
+            className="absolute left-0 w-full h-screen bg-white sm:bg-black/30"
+            style={{ top: fullNavHeight }}
+            onClick={() => setSearchPanelOpen(false)}
+          />
         )}
 
         {subHeader && (
