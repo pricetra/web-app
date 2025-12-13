@@ -8,6 +8,8 @@ import { cn, metersToMiles } from "@/lib/utils";
 import Image from 'next/image'
 import { useMemo } from "react";
 import Link from "next/link";
+import Skeleton from "react-loading-skeleton";
+import { useMediaQuery } from "react-responsive";
 
 export type StockItemMiniProps = {
   stock: Stock;
@@ -148,6 +150,27 @@ export default function StockItemMini({
           )}
         </div>
       )}
+    </div>
+  );
+}
+
+export function StockItemMiniLoading() {
+  const isMobile = useMediaQuery({
+    query: "(max-width: 640px)",
+  });
+  const size = isMobile ? 30 : 40;
+
+  return (
+    <div className="flex flex-row gap-2">
+      <Skeleton style={{ width: size, height: size }} borderRadius={10} />
+
+      <div className="flex flex-col gap-1 flex-1">
+        <div className="flex flex-col gap-1 sm:gap-2">
+          <Skeleton width={90} height={15} borderRadius={8} />
+        </div>
+
+        <Skeleton width={60} height={18} borderRadius={8} />
+      </div>
     </div>
   );
 }

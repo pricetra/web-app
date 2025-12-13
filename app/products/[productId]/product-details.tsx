@@ -27,7 +27,9 @@ import ProductItemHorizontal, {
 } from "@/components/product-item-horizontal";
 import NutritionFacts from "@/components/nutrition-facts";
 import { Button } from "@/components/ui/button";
-import StockItemMini from "@/components/stock-item-mini";
+import StockItemMini, {
+  StockItemMiniLoading,
+} from "@/components/stock-item-mini";
 import { cn } from "@/lib/utils";
 import LoginSignupButtons from "@/components/login-signup-buttons";
 import ScrollContainer from "@/components/scroll-container";
@@ -37,6 +39,7 @@ import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import { useAuth } from "@/context/user-context";
 import { useEffect, useMemo } from "react";
 import { LocationInputWithFullAddress } from "@/context/location-context";
+import { useInView } from "react-intersection-observer";
 
 export type StockWithApproximatePrice = Stock & {
   approximatePrice?: number;
@@ -90,6 +93,11 @@ export default function ProductDetails({
     }
   );
 
+  const [relatedProductsSectionRef, relatedProductsSectionInView] = useInView({
+    triggerOnce: true,
+    threshold: 0,
+    initialInView: false,
+  });
   const [getRelatedBranchProducts, { data: branchesWithProducts }] =
     useLazyQuery(BranchesWithProductsDocument, { fetchPolicy: "no-cache" });
 
@@ -117,6 +125,7 @@ export default function ProductDetails({
   );
 
   useEffect(() => {
+    if (!relatedProductsSectionInView) return;
     if (!product.category || !locationInput) return;
 
     const favoriteBranchIds = (lists?.favorites?.branchList ?? []).map(
@@ -149,7 +158,13 @@ export default function ProductDetails({
     }
     getRelatedBranchProducts({ variables });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [lists, locationInput, product.category, stock]);
+  }, [
+    relatedProductsSectionInView,
+    lists,
+    locationInput,
+    product.category,
+    stock,
+  ]);
 
   return (
     <div>
@@ -169,7 +184,7 @@ export default function ProductDetails({
           <AccordionContent>
             {loggedIn ? (
               <>
-                {favBranchesPriceData && (
+                {favBranchesPriceData ? (
                   <section className="grid grid-cols-2 gap-5 mt-5">
                     {mappedFavBranches.map(({ approximatePrice, ...s }, i) => (
                       <div
@@ -190,6 +205,19 @@ export default function ProductDetails({
                       </div>
                     ))}
                   </section>
+                ) : (
+                  <section className="grid grid-cols-2 gap-5 mt-5">
+                    {Array(lists?.favorites.branchList?.length ?? 5)
+                      .fill(0)
+                      .map((_, i) => (
+                        <div
+                          className="mb-3"
+                          key={`favorite-branch-stock-loading-${i}`}
+                        >
+                          <StockItemMiniLoading />
+                        </div>
+                      ))}
+                  </section>
                 )}
               </>
             ) : (
@@ -207,17 +235,38 @@ export default function ProductDetails({
         <AccordionItem value="available-stocks">
           <AccordionTrigger>Available at</AccordionTrigger>
           <AccordionContent>
-            {stocksData && (
+            {stocksData ? (
+              <>
+                {stocksData.getProductStocks.paginator.total !== 0 ? (
+                  <section className="grid grid-cols-2 gap-5 mt-5">
+                    {stocksData.getProductStocks.stocks.map((s, i) => (
+                      <div
+                        className="mb-3"
+                        key={`${s.id}-${i}-available-stock`}
+                      >
+                        <StockItemMini
+                          stock={s as Stock}
+                          quantityValue={product.quantityValue}
+                          quantityType={product.quantityType}
+                        />
+                      </div>
+                    ))}
+                  </section>
+                ) : (
+                  <p className="py-10 px-5 text-center">
+                    No available stocks for this product
+                  </p>
+                )}
+              </>
+            ) : (
               <section className="grid grid-cols-2 gap-5 mt-5">
-                {stocksData.getProductStocks.stocks.map((s, i) => (
-                  <div className="mb-3" key={`${s.id}-${i}-available-stock`}>
-                    <StockItemMini
-                      stock={s as Stock}
-                      quantityValue={product.quantityValue}
-                      quantityType={product.quantityType}
-                    />
-                  </div>
-                ))}
+                {Array(5)
+                  .fill(0)
+                  .map((_, i) => (
+                    <div className="mb-3" key={`available-stock-loading-${i}`}>
+                      <StockItemMiniLoading />
+                    </div>
+                  ))}
               </section>
             )}
           </AccordionContent>
@@ -293,7 +342,7 @@ export default function ProductDetails({
         </AccordionItem>
       </Accordion>
 
-      <section className="w-full mt-[60px]">
+      <section ref={relatedProductsSectionRef} className="w-full mt-[60px]">
         {!branchesWithProducts
           ? Array(3)
               .fill(0)
