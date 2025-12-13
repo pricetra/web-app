@@ -3,6 +3,7 @@ import { ItemId, publicApiType, ScrollMenu, VisibilityContext, } from "react-hor
 import { LuArrowLeft, LuArrowRight } from "react-icons/lu";
 import { Button } from '@/components/ui/button';
 import { cn } from "@/lib/utils";
+import { isMobile } from "react-device-detect";
 
 export type ScrollContainerProps = {
   children: ReactElement<{
@@ -17,8 +18,8 @@ export default function ScrollContainer({
 }: ScrollContainerProps) {
   return (
     <ScrollMenu
-      LeftArrow={!hideButtons ? LeftArrow : <></>}
-      RightArrow={!hideButtons ? RightArrow : <></>}
+      LeftArrow={!hideButtons && !isMobile ? LeftArrow : <></>}
+      RightArrow={!hideButtons && !isMobile ? RightArrow : <></>}
       wrapperClassName="relative py-2.5"
       itemClassName="px-2.5 first:pl-5 last:pr-5 md:first:pl-7 md:last:pr-7"
     >
@@ -92,7 +93,7 @@ const Arrow = ({
       onClick={() => startTransition(onClick)}
       className={cn(
         className,
-        "rounded-full bg-pricetra-green-heavy-dark color-white absolute z-2 top-1/2 translate-y-[-50%] shadow-md shadow-black/40 disabled:opacity-0 text-4xl hidden lg:flex size-[42px] hover:bg-gray-900"
+        "rounded-full bg-pricetra-green-heavy-dark color-white absolute z-2 top-1/2 translate-y-[-50%] shadow-md shadow-black/40 disabled:opacity-0 text-4xl flex size-[42px] hover:bg-gray-900"
       )}
       size="icon"
     >
