@@ -63,7 +63,7 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
       <div className="w-full max-w-[1000px] flex-1">
         {!loggedIn && <WelcomeHeroBanner />}
 
-        <div className="grid grid-cols-5 lg:grid-cols-10 gap-x-2 gap-y-5 sm:gap-5 px-5 my-10">
+        <div className="grid grid-cols-5 lg:grid-cols-10 gap-x-2 gap-y-5 sm:gap-5 px-5 mt-5 mb-10 sm:my-10">
           {!allStoresData ? (
             Array(10)
               .fill(0)
@@ -136,7 +136,7 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
       </div>
 
       <div className="w-full p-2 relative">
-        <div className="w-full h-screen">
+        <div className="w-full h-screen hidden lg:block">
           <div
             dangerouslySetInnerHTML={{
               __html: `<amp-ad
