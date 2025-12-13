@@ -84,7 +84,7 @@ export default function SearchResultsPanel() {
     <div>
       {loggedIn && (
         <div className="mb-10 border-b border-gray-200">
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col gap-5 mb-5">
             <h3 className="font-bold text-lg md:text-xl px-5">
               Recently viewed
             </h3>
