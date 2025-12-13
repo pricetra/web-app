@@ -1,13 +1,37 @@
 import { useLazyQuery } from "@apollo/client/react";
-import { PopularProductsDocument, PopularSearchKeywordsDocument, Product } from "graphql-utils";
+import {
+  MyProductViewHistoryDocument,
+  MySearchHistoryDocument,
+  PopularProductsDocument,
+  PopularSearchKeywordsDocument,
+  Product,
+} from "graphql-utils";
 import ScrollContainer from "./scroll-container";
-import ProductItemHorizontal, { ProductLoadingItemHorizontal } from "./product-item-horizontal";
+import ProductItemHorizontal, {
+  ProductLoadingItemHorizontal,
+} from "./product-item-horizontal";
 import Skeleton from "react-loading-skeleton";
 import Link from "next/link";
 import { useEffect } from "react";
 import { getNextWeekDateRange } from "@/lib/utils";
+import { useAuth } from "@/context/user-context";
+import { IoIosSearch } from "react-icons/io";
 
 export default function SearchResultsPanel() {
+  const { loggedIn } = useAuth();
+
+  const [getProductViewHistory, { data: productViewHistory }] = useLazyQuery(
+    MyProductViewHistoryDocument,
+    {
+      fetchPolicy: "no-cache",
+    }
+  );
+  const [getSearchHistory, { data: searchHistoryData }] = useLazyQuery(
+    MySearchHistoryDocument,
+    {
+      fetchPolicy: "no-cache",
+    }
+  );
   const [getPopularSearchKeywords, { data: keywordsData }] = useLazyQuery(
     PopularSearchKeywordsDocument,
     {
@@ -42,12 +66,86 @@ export default function SearchResultsPanel() {
         dateRange: nextWeekDateRange,
       },
     });
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  useEffect(() => {
+    if (!loggedIn) return;
+
+    getProductViewHistory({
+      variables: { paginator: { page: 1, limit: 10 } },
+    });
+    getSearchHistory({
+      variables: { paginator: { page: 1, limit: 10 } },
+    });
+  }, [loggedIn]);
 
   return (
     <div>
+      {loggedIn && (
+        <div className="mb-10 border-b border-gray-200">
+          <div className="flex flex-col gap-5">
+            <h3 className="font-bold text-lg md:text-xl px-5">
+              Recently viewed
+            </h3>
+
+            <div>
+              {productViewHistory && (
+                <>
+                  {productViewHistory.myProductViewHistory.paginator.total ===
+                  0 ? (
+                    <div className="py-10">
+                      <h3 className="text-center">No results</h3>
+                    </div>
+                  ) : (
+                    <article>
+                      <ScrollContainer>
+                        {productViewHistory.myProductViewHistory.products.map(
+                          (product) => (
+                            <ProductItemHorizontal
+                              product={product as Product}
+                              key={`recent-product-${product.id}-${product.id}`}
+                              hideStoreInfo={false}
+                            />
+                          )
+                        )}
+                      </ScrollContainer>
+                    </article>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-5 mb-10 px-5">
+            <h3 className="font-bold text-lg md:text-xl">Recent searches</h3>
+
+            <div className="flex flex-col gap-2">
+              {searchHistoryData && (
+                <>
+                  {searchHistoryData.mySearchHistory.searches.map(
+                    ({ id, searchTerm }, i) => (
+                      <Link
+                        href={`/search?query=${encodeURIComponent(searchTerm)}`}
+                        key={`search-keyword-${id}-${i}`}
+                        className="py-1.5"
+                      >
+                        <div className="flex flex-row items-center gap-5">
+                          <IoIosSearch className="size-4" />
+                          <span>{searchTerm}</span>
+                        </div>
+                      </Link>
+                    )
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="h-10" />
+
       <div className="flex flex-col gap-5 mb-10 px-5">
         <h3 className="font-bold text-lg md:text-xl">Popular searches</h3>
 
@@ -80,9 +178,7 @@ export default function SearchResultsPanel() {
       </div>
 
       <div className="flex flex-col gap-5">
-        <h3 className="font-bold text-lg md:text-xl px-5">
-          Trending products
-        </h3>
+        <h3 className="font-bold text-lg md:text-xl px-5">Trending products</h3>
 
         <div>
           {popularProductsData ? (
@@ -98,7 +194,7 @@ export default function SearchResultsPanel() {
                       (product) => (
                         <ProductItemHorizontal
                           product={product as Product}
-                          key={`branch-product-${product.id}-${product.id}`}
+                          key={`popular-product-${product.id}-${product.id}`}
                           hideStoreInfo={false}
                         />
                       )

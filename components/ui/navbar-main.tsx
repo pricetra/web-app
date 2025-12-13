@@ -122,10 +122,19 @@ export default function NavbarMain() {
               {/* Search panel results */}
               {searchPanelOpen && (
                 <div
-                  className="z-1 absolute left-0 bg-white w-full max-w-2xl sm:rounded-lg min-h-44 sm:shadow-lg border-t border-gray-200 sm:border-none"
-                  style={{ top: fullNavHeight + (isMobile ? 0 : 5) }}
+                  className="z-1 absolute left-0 w-full sm:py-1"
+                  style={{
+                    top: fullNavHeight,
+                  }}
                 >
-                  <div className="py-5 overflow-y-scroll max-h-screen">
+                  <div
+                    className="overflow-y-scroll w-full h-full bg-white sm:rounded-lg border-t border-gray-200 sm:border-none sm:shadow-lg py-5"
+                    style={{
+                      maxHeight: `calc(95vh - ${
+                        isMobile ? "0px" : `${fullNavHeight}px`
+                      })`,
+                    }}
+                  >
                     <SearchResultsPanel />
                   </div>
                 </div>
