@@ -11,6 +11,7 @@ import { SmartPagination } from "@/components/ui/smart-pagination";
 import { useMediaQuery } from "react-responsive";
 import { SearchRouteParams } from "@/app/search/search-page-client";
 import { toBoolean } from "@/lib/utils";
+import SearchFilters from "@/components/search-filters";
 
 export default function BranchPageClient({
   store,
@@ -30,6 +31,8 @@ export default function BranchPageClient({
   const isMobile = useMediaQuery({
     query: "(max-width: 640px)",
   });
+
+  const paramsBuilder = new URLSearchParams(searchParams);
 
   const { data: productsData } = useQuery(AllProductsDocument, {
     fetchPolicy: "no-cache",
@@ -77,6 +80,8 @@ export default function BranchPageClient({
   return (
     <>
       <div className="w-full max-w-[1000px] mt-10 px-5 flex-1">
+        {paramsBuilder.size > 0 && <SearchFilters params={searchParams} />}
+
         <div className="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-3">
           {!productsData ? (
             Array(10)

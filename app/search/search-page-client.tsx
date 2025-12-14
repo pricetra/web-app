@@ -7,7 +7,7 @@ import ProductItemHorizontal, {
   ProductLoadingItemHorizontal,
 } from "@/components/product-item-horizontal";
 import ScrollContainer from "@/components/scroll-container";
-import { Button } from "@/components/ui/button";
+import SearchFilters from "@/components/search-filters";
 import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { SmartPagination } from "@/components/ui/smart-pagination";
 import WelcomeHeroBanner from "@/components/welcome-hero-banner";
@@ -218,36 +218,7 @@ export default function SearchPageClient({
         </div>
       )}
 
-      {paramsBuilder.size > 0 && (
-        <div className="flex flex-row flex-wrap gap-2 mb-5">
-          {params.query && (
-            <Button variant="outline" rounded>
-              Search: <b>{params.query}</b>
-            </Button>
-          )}
-          {params.category && params.categoryId && (
-            <Button variant="outline" rounded>
-              Category: <b>{params.category}</b>
-            </Button>
-          )}
-          {params.brand && (
-            <Button variant="outline" rounded>
-              Brand: <b>{params.brand}</b>
-            </Button>
-          )}
-          {searchVariables.sale && (
-            <Button variant="pricetra" rounded>
-              Sale
-            </Button>
-          )}
-          {params.sortByPrice && (
-            <Button variant="outline" rounded>
-              Sort by:
-              <b>{params.sortByPrice === "asc" ? "↓ Price" : "↑ Price"}</b>
-            </Button>
-          )}
-        </div>
-      )}
+      {paramsBuilder.size > 0 && <SearchFilters params={params} />}
 
       <div className="flex flex-col">
         {!branchesWithProducts ? (
