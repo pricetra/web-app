@@ -28,7 +28,7 @@ export default function ScannerOverlay() {
 
   return (
     <div
-      style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 50 }}
+      style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 1 }}
     >
       {/* SVG overlay */}
       <svg

@@ -8,6 +8,8 @@ import { useMemo, useState } from "react";
 import { BarcodeScanner, DetectedBarcode } from "react-barcode-scanner";
 import "react-barcode-scanner/polyfill";
 import ScannerOverlay from "./scanner-overlay";
+import { Button } from "@/components/ui/button";
+import { AiOutlineClose } from "react-icons/ai";
 
 export default function MobileScanner() {
   const router = useRouter();
@@ -49,7 +51,7 @@ export default function MobileScanner() {
       <ScannerOverlay />
 
       {processingBarcode && (
-        <div className="bg-black/50 absolute top-0 left-0 z-1"></div>
+        <div className="bg-black/50 absolute top-0 left-0 z-3"></div>
       )}
 
       <BarcodeScanner
@@ -57,6 +59,43 @@ export default function MobileScanner() {
         onCapture={debouncedHandleBarcodeScan}
         paused
       />
+
+      <div className="absolute bottom-0 z-2 w-full rounded-t-3xl bg-black px-5 py-7 text-white">
+        <div className="flex flex-row items-center justify-between">
+          <h1 className="text-xl font-bold text-white">Scan Barcode</h1>
+
+          <Button
+            variant="ghost"
+            onClick={() => router.back()}
+            className="p-3 text-white"
+            size="lg"
+          >
+            <AiOutlineClose />
+          </Button>
+        </div>
+
+        <div className="my-5">
+          <p className="text-white">
+            Point your camera at the product barcode to search
+          </p>
+
+          {/* <div className="mt-5 flex flex-row">
+            <Btn
+              text="Use Keyboard"
+              size="sm"
+              color="text-white"
+              bgColor="bg-[#111]"
+              onPress={() => {
+                setTimeout(() => setRenderCameraComponent(false), 1000);
+                setOpenManualBarcodeModal(true);
+              }}
+              icon={<MaterialIcons name="keyboard" size={24} color="white" />}
+            />
+
+            <div className="flex-1" />
+          </div> */}
+        </div>
+      </div>
     </>
   );
 }
