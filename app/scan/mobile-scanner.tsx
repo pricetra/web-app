@@ -88,22 +88,6 @@ export default function MobileScanner() {
           <p className="text-white">
             Point your camera at the product barcode to search
           </p>
-
-          {/* <div className="mt-5 flex flex-row">
-            <Btn
-              text="Use Keyboard"
-              size="sm"
-              color="text-white"
-              bgColor="bg-[#111]"
-              onPress={() => {
-                setTimeout(() => setRenderCameraComponent(false), 1000);
-                setOpenManualBarcodeModal(true);
-              }}
-              icon={<MaterialIcons name="keyboard" size={24} color="white" />}
-            />
-
-            <div className="flex-1" />
-          </div> */}
         </div>
       </div>
     </>

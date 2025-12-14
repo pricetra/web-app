@@ -301,7 +301,7 @@ function DesktopSearchbar({ placeholder, value, onKeyDown }: SearchbarProps) {
   return (
     <InputGroupInput
       placeholder={placeholder}
-      className="text-xs sm:text-sm pl-1 sm:pl-2"
+      className="text-xs sm:text-sm pl-1 sm:pl-2 fade-mask-placeholder"
       value={searchText}
       onChange={(e) => setSearchText(e.target.value)}
       onKeyDown={(e) => onKeyDown(searchText, e)}
