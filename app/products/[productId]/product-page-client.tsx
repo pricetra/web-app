@@ -52,7 +52,7 @@ export default function ProductPageClient({
     StockDocument,
     { fetchPolicy: "no-cache" }
   );
-  const isMediumScreen = useMediaQuery({ query: "(max-width: 800px)" });
+  const isMediumScreen = useMediaQuery({ query: "(max-width: 640px)" });
 
   // Get stock from stockId
   useEffect(() => {
