@@ -7,7 +7,7 @@ import { IoIosSearch } from "react-icons/io";
 import { useNavbar } from "@/context/navbar-context";
 import { Button } from "./button";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState, KeyboardEvent } from "react";
+import { useState, KeyboardEvent, useCallback, useMemo } from "react";
 import { IoArrowBack } from "react-icons/io5";
 import { useMediaQuery } from "react-responsive";
 import SearchResultsPanel from "../search-results-panel";
@@ -30,26 +30,26 @@ export default function NavbarMain() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const querySearchParam = searchParams.get("query");
-  const searchInputMobileRef = useRef<HTMLInputElement>(null);
-  const [searchText, setSearchText] = useState("");
   const [searchPanelOpen, setSearchPanelOpen] = useState(false);
 
-  const fullNavHeight =
-    NAVBAR_HEIGHT + (subHeader && !searchPanelOpen ? SUBNAV_HEIGHT : 0);
+  const fullNavHeight = useMemo(
+    () => NAVBAR_HEIGHT + (subHeader && !searchPanelOpen ? SUBNAV_HEIGHT : 0),
+    [subHeader, searchPanelOpen]
+  );
   const isMobile = useMediaQuery({
     query: "(max-width: 640px)",
   });
 
-  useEffect(() => {
-    setSearchText(querySearchParam ?? "");
-  }, [querySearchParam]);
-
-  function onSubmitSearch(e: KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "Enter") {
-      router.push(`${searchQueryPath}?query=${encodeURIComponent(searchText)}`);
-      setSearchPanelOpen(false);
-    }
-  }
+  const onSubmitSearch = useCallback(
+    (value: string, e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Enter") {
+        router.push(`${searchQueryPath}?query=${encodeURIComponent(value)}`);
+        setSearchPanelOpen(false);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [searchQueryPath]
+  );
 
   return (
     <>
@@ -124,11 +124,9 @@ export default function NavbarMain() {
                     <IoIosSearch className="size-[17px] sm:size-5" />
                   </InputGroupAddon>
 
-                  <InputGroupInput
+                  <DesktopSearchbar
                     placeholder={searchPlaceholder}
-                    className="text-xs sm:text-sm pl-1 sm:pl-2"
-                    value={searchText}
-                    onChange={(e) => setSearchText(e.target.value)}
+                    value={querySearchParam ?? undefined}
                     onKeyDown={onSubmitSearch}
                   />
                 </InputGroup>
@@ -169,7 +167,6 @@ export default function NavbarMain() {
                 onClick={(e) => {
                   e.preventDefault();
                   setSearchPanelOpen(true);
-                  searchInputMobileRef.current?.focus();
                 }}
                 variant="ghost"
                 className="p-2"
@@ -243,13 +240,9 @@ export default function NavbarMain() {
               </Button>
 
               <div className="flex-1">
-                <input
-                  ref={searchInputMobileRef}
-                  autoFocus
+                <MobileSearchbar
                   placeholder={searchPlaceholder}
-                  value={searchText}
-                  className="block w-full outline-none py-3"
-                  onChange={(e) => setSearchText(e.target.value)}
+                  value={querySearchParam ?? undefined}
                   onKeyDown={onSubmitSearch}
                 />
               </div>
@@ -280,5 +273,38 @@ export default function NavbarMain() {
 
       <div style={{ height: fullNavHeight }}></div>
     </>
+  );
+}
+
+type SearchbarProps = {
+  placeholder: string;
+  value?: string;
+  onKeyDown: (value: string, e: KeyboardEvent<HTMLInputElement>) => void;
+};
+
+function DesktopSearchbar({ placeholder, value, onKeyDown }: SearchbarProps) {
+  const [searchText, setSearchText] = useState(value ?? "");
+  return (
+    <InputGroupInput
+      placeholder={placeholder}
+      className="text-xs sm:text-sm pl-1 sm:pl-2"
+      value={searchText}
+      onChange={(e) => setSearchText(e.target.value)}
+      onKeyDown={(e) => onKeyDown(searchText, e)}
+    />
+  );
+}
+
+function MobileSearchbar({ placeholder, value, onKeyDown }: SearchbarProps) {
+  const [searchText, setSearchText] = useState(value ?? "");
+  return (
+    <input
+      autoFocus
+      placeholder={placeholder}
+      className="block w-full outline-none py-3"
+      value={searchText}
+      onChange={(e) => setSearchText(e.target.value)}
+      onKeyDown={(e) => onKeyDown(searchText, e)}
+    />
   );
 }

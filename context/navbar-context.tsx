@@ -12,7 +12,7 @@ export type NavbarContextType = {
   hideLogotype: boolean;
   setHideLogotype: (v: boolean) => void;
 
-  searchPlaceholder?: string;
+  searchPlaceholder: string;
   setSearchPlaceholder: (p?: string) => void;
 
   searchQueryPath?: string;
