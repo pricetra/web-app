@@ -91,9 +91,9 @@ export function validBrand(brand?: string | null): boolean {
   return brand.length > 0;
 }
 
-export function searchParamsTitleBuilder(sp: SearchRouteParams, prefix: string = 'Search'): string {
+export function searchParamsTitleBuilder(sp: SearchRouteParams, prefix?: string): string {
   const parsedSearchParams = new URLSearchParams(sp);
-  let title = prefix;
+  let title = prefix ?? '';
   if (parsedSearchParams.size > 0) {
     title += prefix ? ` ` : '';
     if (sp.query && sp.query.length > 0) {

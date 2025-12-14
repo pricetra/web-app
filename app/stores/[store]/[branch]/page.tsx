@@ -11,6 +11,8 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import LayoutProvider from "@/providers/layout-provider";
 import BranchPageClient from "./branch-page-client";
+import { SearchRouteParams } from "@/app/search/search-page-client";
+import { searchParamsTitleBuilder } from "@/lib/strings";
 
 const cachedStoreAndBranch = cache(async (store: string, branch: string) => {
   const storeId = parseInt(store, 10);
@@ -43,14 +45,22 @@ const cachedStoreAndBranch = cache(async (store: string, branch: string) => {
 
 type Props = {
   params: Promise<{ store: string; branch: string }>;
+  searchParams: Promise<SearchRouteParams>;
 };
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: Props): Promise<Metadata> {
   const { store, branch } = await params;
   const storeData = await cachedStoreAndBranch(store, branch);
   if (!storeData) return {};
 
-  const title = `${storeData.findBranch.name} - Pricetra`;
+  const sp = await searchParams;
+  const searchTitle = searchParamsTitleBuilder(sp);
+  const title = `${searchTitle !== "" ? `Results for ${searchTitle} at ` : ""}${
+    storeData.findBranch.name
+  } - Pricetra`;
   const description = `View real-time prices and product availability at ${storeData.findBranch.name} (${storeData.findBranch.address?.fullAddress}) location. Explore deals, compare prices, and shop smarter at this exact store.`;
   return {
     title,
@@ -63,16 +73,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function StoreBranchPageServer({ params }: Props) {
+export default async function StoreBranchPageServer({
+  params,
+  searchParams,
+}: Props) {
   const { store, branch } = await params;
   const storeData = await cachedStoreAndBranch(store, branch);
   if (!storeData) notFound();
 
+  const sp = await searchParams;
   return (
     <LayoutProvider>
       <BranchPageClient
         store={storeData.findStore as Store}
         branch={storeData.findBranch as Branch}
+        searchParams={sp}
       />
     </LayoutProvider>
   );
