@@ -8,6 +8,7 @@ import Image from 'next/image'
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 import Skeleton from "react-loading-skeleton";
+import Link from "next/link";
 
 export type StockFullProps = {
   stock: Stock;
@@ -34,14 +35,16 @@ export default function StockFull({
   return (
     <div className="flex flex-row justify-between gap-5">
       <div className="flex flex-1 flex-row gap-4">
-        <Image
-          src={createCloudinaryUrl(stock.store.logo, 500, 500)}
-          className="size-[50px] xl:size-[60px] rounded-xl"
-          width={100}
-          height={100}
-          quality={100}
-          alt={stock.store.name}
-        />
+        <Link href={`/stores/${stock.store.slug}`}>
+          <Image
+            src={createCloudinaryUrl(stock.store.logo, 500, 500)}
+            className="size-[50px] xl:size-[60px] rounded-xl"
+            width={100}
+            height={100}
+            quality={100}
+            alt={stock.store.name}
+          />
+        </Link>
         <div
           style={{
             display: "flex",
@@ -60,9 +63,11 @@ export default function StockFull({
           )}
 
           <div className="flex w-full flex-row items-center gap-2.5">
-            <h3 className="flex-1 text-base xl:text-lg font-bold line-clamp-1">
-              {stock.store.name}
-            </h3>
+            <Link href={`/stores/${stock.store.slug}/${stock.branch.slug}`}>
+              <h3 className="flex-1 text-base xl:text-lg font-bold line-clamp-1">
+                {stock.store.name}
+              </h3>
+            </Link>
 
             {stock.branch.address?.distance && (
               <div className="rounded-full bg-pricetraGreenDark/10 px-2 py-0.5">
@@ -73,11 +78,15 @@ export default function StockFull({
             )}
           </div>
 
-          <div className="w-full">
-            <h4 className="text-xs">
-              {stock.branch.address?.street}, {stock.branch.address?.city}
-            </h4>
-          </div>
+          {stock.branch.address && (
+            <div className="w-full">
+              <h4 className="text-xs">
+                <a href={stock.branch.address.mapsLink} target="_blank">
+                  {stock.branch.address.street}, {stock.branch.address.city}
+                </a>
+              </h4>
+            </div>
+          )}
 
           <div className="mt-1 flex flex-col gap-1">
             {stock.latestPrice?.sale &&
