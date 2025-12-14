@@ -155,7 +155,7 @@ export default function NavbarMain() {
             </div>
 
             {navTools && !searchPanelOpen && (
-              <div className="flex flex-row gap-1 items-center justify-start">
+              <div className="flex flex-row gap-1 items-center justify-end flex-1 md:flex-0">
                 {navTools}
               </div>
             )}
@@ -264,7 +264,7 @@ export default function NavbarMain() {
             className="w-full lg:container mx-auto"
             style={{ height: SUBNAV_HEIGHT }}
           >
-            <div className="flex items-center justify-evenly xs:justify-end gap-2 sm:gap-4 px-5 w-full h-full">
+            <div className="flex items-center justify-evenly xs:justify-end gap-2 px-5 w-full h-full">
               {subHeader}
             </div>
           </div>
