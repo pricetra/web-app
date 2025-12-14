@@ -4,12 +4,13 @@ import { useLazyQuery } from "@apollo/client/react";
 import { BarcodeScanDocument } from "graphql-utils";
 import { debounce } from "lodash";
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useLayoutEffect, useMemo, useState } from "react";
 import { BarcodeScanner, DetectedBarcode } from "react-barcode-scanner";
 import "react-barcode-scanner/polyfill";
 import ScannerOverlay from "./scanner-overlay";
 import { Button } from "@/components/ui/button";
 import { AiOutlineClose } from "react-icons/ai";
+import { CgSpinner } from "react-icons/cg";
 
 export default function MobileScanner() {
   const router = useRouter();
@@ -46,18 +47,27 @@ export default function MobileScanner() {
       });
   }
 
+  useLayoutEffect(() => {
+    setScannedCode(undefined);
+  }, []);
+
   return (
     <>
-      <ScannerOverlay />
-
-      {processingBarcode && (
-        <div className="bg-black/50 absolute top-0 left-0 z-3"></div>
+      {processingBarcode ? (
+        <div className="absolute z-10 flex h-full w-full items-center justify-center">
+          <div className="flex flex-col items-center justify-center rounded-xl bg-black/50 px-10 py-7">
+            <CgSpinner className="animate-spin text-white size-16" />
+            <h3 className="mt-4 text-white">Processing Barcode</h3>
+          </div>
+        </div>
+      ) : (
+        <ScannerOverlay />
       )}
 
       <BarcodeScanner
         options={{ formats: ["upc_a", "upc_e", "ean_8", "ean_13"] }}
         onCapture={debouncedHandleBarcodeScan}
-        paused
+        paused={!!scannedCode}
       />
 
       <div className="absolute bottom-0 z-2 w-full rounded-t-3xl bg-black px-5 py-7 text-white">
