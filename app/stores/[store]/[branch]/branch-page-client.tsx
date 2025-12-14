@@ -20,7 +20,12 @@ export default function BranchPageClient({
 }) {
   const searchParams = useSearchParams();
   const pageString = searchParams.get("page");
-  const { setPageIndicator, resetAll } = useNavbar();
+  const {
+    setPageIndicator,
+    resetAll,
+    setSearchPlaceholder,
+    setSearchQueryPath,
+  } = useNavbar();
   const isMobile = useMediaQuery({
     query: "(max-width: 640px)",
   });
@@ -51,6 +56,8 @@ export default function BranchPageClient({
         subTitleHrefTargetBlank
       />
     );
+    setSearchPlaceholder(`Search ${branch.name}`);
+    setSearchQueryPath(`/stores/${store.slug}/${branch.slug}`);
 
     return () => {
       resetAll();

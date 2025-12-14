@@ -7,7 +7,7 @@ import { IoIosSearch } from "react-icons/io";
 import { useNavbar } from "@/context/navbar-context";
 import { Button } from "./button";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, KeyboardEvent } from "react";
 import { IoArrowBack } from "react-icons/io5";
 import { useMediaQuery } from "react-responsive";
 import SearchResultsPanel from "../search-results-panel";
@@ -19,7 +19,14 @@ export const SUBNAV_HEIGHT = 40;
 export default function NavbarMain() {
   const router = useRouter();
   const { loggedIn, user } = useAuth();
-  const { pageIndicator, hideLogotype, navTools, subHeader } = useNavbar();
+  const {
+    pageIndicator,
+    hideLogotype,
+    navTools,
+    subHeader,
+    searchPlaceholder,
+    searchQueryPath,
+  } = useNavbar();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const querySearchParam = searchParams.get("query");
@@ -36,6 +43,13 @@ export default function NavbarMain() {
   useEffect(() => {
     setSearchText(querySearchParam ?? "");
   }, [querySearchParam]);
+
+  function onSubmitSearch(e: KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      router.push(`${searchQueryPath}?query=${encodeURIComponent(searchText)}`);
+      setSearchPanelOpen(false);
+    }
+  }
 
   return (
     <>
@@ -111,17 +125,11 @@ export default function NavbarMain() {
                   </InputGroupAddon>
 
                   <InputGroupInput
-                    placeholder="Search..."
+                    placeholder={searchPlaceholder}
                     className="text-xs sm:text-sm pl-1 sm:pl-2"
                     value={searchText}
                     onChange={(e) => setSearchText(e.target.value)}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter") {
-                        router.push(
-                          `/search?query=${encodeURIComponent(searchText)}`
-                        );
-                      }
-                    }}
+                    onKeyDown={onSubmitSearch}
                   />
                 </InputGroup>
               )}
@@ -238,17 +246,11 @@ export default function NavbarMain() {
                 <input
                   ref={searchInputMobileRef}
                   autoFocus
-                  placeholder="Search..."
+                  placeholder={searchPlaceholder}
                   value={searchText}
                   className="block w-full outline-none py-3"
                   onChange={(e) => setSearchText(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      router.push(
-                        `/search?query=${encodeURIComponent(searchText)}`
-                      );
-                    }
-                  }}
+                  onKeyDown={onSubmitSearch}
                 />
               </div>
             </div>

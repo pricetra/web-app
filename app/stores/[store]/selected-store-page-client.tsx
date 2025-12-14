@@ -25,7 +25,13 @@ import { useSearchParams } from "next/navigation";
 export default function SelectedStorePageClient({ store }: { store: Store }) {
   const searchParams = useSearchParams();
   const pageString = searchParams.get("page");
-  const { setPageIndicator, resetAll } = useNavbar();
+  const searchQuery = searchParams.get("query");
+  const {
+    setPageIndicator,
+    resetAll,
+    setSearchPlaceholder,
+    setSearchQueryPath,
+  } = useNavbar();
   const location = useLocationInput();
 
   const { data: branchesWithProducts } = useQuery(
@@ -43,6 +49,7 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
           location: location
             ? { ...location.locationInput, radiusMeters: undefined }
             : undefined,
+          query: searchQuery ?? undefined,
         },
       },
     }
@@ -54,8 +61,11 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
       <NavPageIndicator
         title={store.name}
         imgSrc={createCloudinaryUrl(store.logo, 100, 100)}
+        href={`/stores/${store.slug}`}
       />
     );
+    setSearchPlaceholder(`Search ${store.name}`);
+    setSearchQueryPath(`/stores/${store.slug}`);
 
     return () => {
       resetAll();

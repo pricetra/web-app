@@ -16,19 +16,30 @@ import { useSearchParams } from "next/navigation";
 export default function StorePageClient() {
   const searchParams = useSearchParams();
   const pageString = searchParams.get("page");
-  const { setPageIndicator, resetAll } = useNavbar();
+  const searchQuery = searchParams.get("query");
+  const {
+    setPageIndicator,
+    resetAll,
+    setSearchPlaceholder,
+    setSearchQueryPath,
+  } = useNavbar();
   const { data } = useQuery(AllStoresDocument, {
     variables: {
       paginator: {
         page: +(pageString ?? 1),
         limit: 30,
       },
+      search: searchQuery ?? undefined,
     },
   });
 
   useLayoutEffect(() => {
     resetAll();
-    setPageIndicator(<NavPageIndicator title="Stores" icon={MdStorefront} />);
+    setPageIndicator(
+      <NavPageIndicator title="Stores" icon={MdStorefront} href="/stores" />
+    );
+    setSearchPlaceholder("Search stores");
+    setSearchQueryPath("/stores");
 
     return () => {
       resetAll();

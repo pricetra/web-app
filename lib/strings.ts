@@ -1,3 +1,4 @@
+import { SearchRouteParams } from '@/app/search/search-page-client';
 import { Price, ProductWeightComponents } from 'graphql-utils';
 import { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers';
 
@@ -88,4 +89,28 @@ export function validBrand(brand?: string | null): boolean {
   if (!brand) return false;
   if (brand === 'N/A') return false;
   return brand.length > 0;
+}
+
+export function searchParamsTitleBuilder(sp: SearchRouteParams, prefix: string = 'Search'): string {
+  const parsedSearchParams = new URLSearchParams(sp);
+  let title = prefix;
+  if (parsedSearchParams.size > 0) {
+    title += prefix ? ` ` : '';
+    if (sp.query && sp.query.length > 0) {
+      title += ` "${sp.query}"`;
+    }
+    if (sp.category && sp.categoryId) {
+      title += ` category "${sp.category}"`;
+    }
+    if (sp.brand) {
+      title += ` brand "${sp.brand}"`;
+    }
+    if (sp.page) {
+      const parsedPage = parseInt(sp.page, 10);
+      if (!isNaN(parsedPage) && parsedPage > 1) {
+        title += ` page ${sp.page}`;
+      }
+    }
+  }
+  return title
 }
