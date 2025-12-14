@@ -41,6 +41,7 @@ const buttonVariants = cva(
 type ButtonProps = React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean;
+    rounded?: boolean;
   };
 
 function Button({
@@ -48,6 +49,7 @@ function Button({
   variant,
   size,
   asChild = false,
+  rounded = false,
   ...props
 }: ButtonProps) {
   const Comp = asChild ? Slot : "button";
@@ -55,7 +57,10 @@ function Button({
   return (
     <Comp
       data-slot="button"
-      className={cn(buttonVariants({ variant, size, className }))}
+      className={cn(
+        buttonVariants({ variant, size, className }),
+        rounded ? "rounded-full" : ""
+      )}
       {...props}
     />
   );
