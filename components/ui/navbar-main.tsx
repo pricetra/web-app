@@ -111,7 +111,7 @@ export default function NavbarMain() {
               )}
             </div>
 
-            <div className="search-bar sm:relative sm:flex-1">
+            <div className="search-bar md:relative md:flex-1">
               {/* Non-mobile search input */}
               {!isMobile && (
                 <InputGroup
@@ -135,13 +135,13 @@ export default function NavbarMain() {
               {/* Search panel results */}
               {searchPanelOpen && (
                 <div
-                  className="z-1 absolute left-0 w-full sm:py-1"
+                  className="z-1 absolute left-0 w-full md:py-1"
                   style={{
                     top: fullNavHeight,
                   }}
                 >
                   <div
-                    className="overflow-y-scroll w-full h-full bg-white sm:rounded-lg border-t border-gray-200 sm:border-none sm:shadow-lg py-5"
+                    className="overflow-y-scroll w-full h-full bg-white md:rounded-lg border-t border-gray-200 md:border-none md:shadow-lg py-5"
                     style={{
                       maxHeight: `calc(95vh - ${
                         isMobile ? "0px" : `${fullNavHeight}px`
@@ -253,7 +253,7 @@ export default function NavbarMain() {
         {/* Search overlay */}
         {searchPanelOpen && (
           <div
-            className="absolute left-0 w-full h-screen bg-white sm:bg-black/30"
+            className="absolute left-0 w-full h-screen bg-white md:bg-black/30"
             style={{ top: fullNavHeight }}
             onClick={() => setSearchPanelOpen(false)}
           />
