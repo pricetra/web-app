@@ -102,12 +102,6 @@ ProductItemProps) {
 
         {product.stock && (
           <div className="flex flex-row items-center justify-between gap-2">
-            {/* {!hideStoreInfo && product.stock.store && product.stock.branch && (
-              <div className="flex-[2] gap-1">
-                <ProductStockMini stock={product.stock} />
-              </div>
-            )} */}
-
             {product.stock.latestPrice && (
               <div
                 className={cn(

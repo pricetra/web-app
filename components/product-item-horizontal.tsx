@@ -120,12 +120,12 @@ export default function ProductItemHorizontal({
               {product.stock.latestPrice.sale &&
                 !isExpired &&
                 product.stock.latestPrice.originalPrice && (
-                  <small className="text-xs line-through text-red-700 block">
+                  <small className="text-[10px] line-through text-red-700 block">
                     {currencyFormat(product.stock.latestPrice.originalPrice)}
                   </small>
                 )}
               <div className="flex flex-row items-center justify-start gap-1">
-                <h5 className="text-lg font-black">
+                <h5 className="text-sm md:text-lg font-black">
                   {currencyFormat(calculatedAmount)}
                 </h5>
                 <small className="text-xs text-gray-500">
