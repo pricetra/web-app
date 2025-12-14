@@ -4,8 +4,8 @@ import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import { createCloudinaryUrl } from "@/lib/files";
 import { currencyFormat, getPriceUnitOrEach } from "@/lib/strings";
-import { cn, metersToMiles } from "@/lib/utils";
-import Image from 'next/image'
+import { metersToMiles } from "@/lib/utils";
+import Image from "next/image";
 import { useMemo } from "react";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
@@ -16,7 +16,6 @@ export type StockItemMiniProps = {
   approximatePrice?: number;
   quantityValue?: number;
   quantityType?: string;
-  stackLogo?: boolean;
 };
 
 export default function StockItemMini({
@@ -24,7 +23,6 @@ export default function StockItemMini({
   approximatePrice,
   quantityValue,
   quantityType,
-  stackLogo = false,
 }: StockItemMiniProps) {
   if (!stock.store || !stock.branch)
     throw new Error("stock has no store or branch objects");
@@ -40,10 +38,10 @@ export default function StockItemMini({
   );
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-row gap-2">
       <Link
         href={stock.id !== 0 ? `?stockId=${stock.id}` : "#"}
-        className={cn("flex gap-2", stackLogo ? "flex-col" : "flex-row")}
+        className="flex gap-2 flex-row"
       >
         <Image
           src={createCloudinaryUrl(stock.store.logo, 100, 100)}
@@ -53,7 +51,7 @@ export default function StockItemMini({
           alt={`${stock.store.name} store logo`}
         />
 
-        <div className={cn("flex flex-col gap-1", stackLogo ? "" : "flex-1")}>
+        <div className="flex flex-col gap-1 flex-1">
           {(stock.branch.address?.distance || sale) && (
             <div className="flex flex-row items-center gap-1 sm:gap-2">
               {sale && (
@@ -78,7 +76,7 @@ export default function StockItemMini({
             {stock.store.name}
           </h5>
 
-          <p className="text-[9px] sm:text-[12px] line-clamp-2">
+          <p className="text-[9px] sm:text-[12px] line-clamp-2 break-all">
             {stock.branch.address?.street}, {stock.branch.address?.city}
           </p>
 
