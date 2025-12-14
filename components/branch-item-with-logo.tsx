@@ -45,36 +45,38 @@ export default function BranchItemWithLogo({
             />
           </Link>
         )}
-        <Link
-          href={`/stores/${branch.storeSlug}/${branch.slug}`}
-          className="flex flex-col flex-1"
-        >
-          {branchTagline && (
-            <span className="text-xs lg:text-sm text-pricetraGreenHeavyDark mb-1">
-              {branchTagline}
-            </span>
-          )}
-
-          <div className="flex w-full flex-row flex-nowrap items-center gap-x-3">
-            <h5 className="text-sm xs:text-base sm:text-lg font-bold line-clamp-1 break-all">
-              {name}
-            </h5>
-
-            {branch.address?.distance && (
-              <div className="rounded-full bg-pricetraGreenDark/10 px-2 py-0.5">
-                <div className="text-[10px] color-pricetraGreenHeavyDark text-nowrap">
-                  {metersToMiles(branch.address.distance)} mi
-                </div>
-              </div>
+        <div className="flex-1 flex flex-row">
+          <Link
+            href={`/stores/${branch.storeSlug}/${branch.slug}`}
+            className="flex flex-col"
+          >
+            {branchTagline && (
+              <span className="text-xs lg:text-sm text-pricetraGreenHeavyDark mb-1">
+                {branchTagline}
+              </span>
             )}
-          </div>
 
-          {branch.address && (
-            <span className="text-[10px] sm:text-xs w-full line-clamp-1 break-all">
-              {branch.address.fullAddress}
-            </span>
-          )}
-        </Link>
+            <div className="flex w-full flex-row flex-nowrap items-center gap-x-3">
+              <h5 className="text-sm xs:text-base sm:text-lg font-bold line-clamp-1 break-all">
+                {name}
+              </h5>
+
+              {branch.address?.distance && (
+                <div className="rounded-full bg-pricetraGreenDark/10 px-2 py-0.5">
+                  <div className="text-[10px] color-pricetraGreenHeavyDark text-nowrap">
+                    {metersToMiles(branch.address.distance)} mi
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {branch.address && (
+              <span className="text-[10px] sm:text-xs w-full line-clamp-1 break-all">
+                {branch.address.fullAddress}
+              </span>
+            )}
+          </Link>
+        </div>
       </div>
 
       <Link href={`/stores/${branch.storeSlug}/${branch.slug}`} className="p-2">
