@@ -192,3 +192,12 @@
     mask-image: none;
   }
 }
+
+.fade-mask-placeholder::placeholder {
+  /* Standard CSS property */
+  mask-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0) 95%);
+  /* Vendor prefixes for cross-browser compatibility */
+  -webkit-mask-image: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0) 95%);
+  mask-mode: alpha; /* Ensures the mask works correctly */
+}
+

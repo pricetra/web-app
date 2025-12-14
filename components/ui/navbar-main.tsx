@@ -12,6 +12,8 @@ import { IoArrowBack } from "react-icons/io5";
 import { useMediaQuery } from "react-responsive";
 import SearchResultsPanel from "../search-results-panel";
 import { cn } from "@/lib/utils";
+import { BsUpcScan } from "react-icons/bs";
+import { MobileView } from "react-device-detect";
 
 export const NAVBAR_HEIGHT = 60;
 export const SUBNAV_HEIGHT = 40;
@@ -154,6 +156,7 @@ export default function NavbarMain() {
               )}
             </div>
 
+            {/* Navbar tools */}
             {navTools && !searchPanelOpen && (
               <div className="flex flex-row gap-1 items-center justify-end flex-1 md:flex-0">
                 {navTools}
@@ -246,6 +249,17 @@ export default function NavbarMain() {
                   onKeyDown={onSubmitSearch}
                 />
               </div>
+
+              <MobileView>
+                <Button
+                  onClick={() => router.push("/scan")}
+                  variant="secondary"
+                  size="icon"
+                  rounded
+                >
+                  <BsUpcScan />
+                </Button>
+              </MobileView>
             </div>
           </div>
         )}
@@ -301,7 +315,7 @@ function MobileSearchbar({ placeholder, value, onKeyDown }: SearchbarProps) {
     <input
       autoFocus
       placeholder={placeholder}
-      className="block w-full outline-none py-3"
+      className="block w-full outline-none py-3 fade-mask-placeholder"
       value={searchText}
       onChange={(e) => setSearchText(e.target.value)}
       onKeyDown={(e) => onKeyDown(searchText, e)}
