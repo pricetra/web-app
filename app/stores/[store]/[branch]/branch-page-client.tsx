@@ -79,8 +79,12 @@ export default function BranchPageClient({
 
   return (
     <>
-      <div className="w-full max-w-[1000px] mt-10 px-5 flex-1">
-        {paramsBuilder.size > 0 && <SearchFilters params={searchParams} />}
+      <div className="w-full max-w-[1000px] mt-5 lg:mt-10 px-5 flex-1">
+        {paramsBuilder.size > 0 && (
+          <div className="mb-10">
+            <SearchFilters params={searchParams} />
+          </div>
+        )}
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-3">
           {!productsData ? (

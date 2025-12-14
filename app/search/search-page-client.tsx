@@ -133,8 +133,6 @@ export default function SearchPageClient({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paramsBuilder.size]);
 
-  console.log(searchVariables);
-
   return (
     <div className="w-full max-w-[1000px] mt-5">
       {!loggedIn && <WelcomeHeroBanner />}
@@ -218,7 +216,11 @@ export default function SearchPageClient({
         </div>
       )}
 
-      {paramsBuilder.size > 0 && <SearchFilters params={params} />}
+      {paramsBuilder.size > 0 && (
+        <div className="px-5">
+          <SearchFilters params={params} />
+        </div>
+      )}
 
       <div className="flex flex-col">
         {!branchesWithProducts ? (
