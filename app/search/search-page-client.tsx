@@ -133,7 +133,7 @@ export default function SearchPageClient({
   }, [paramsBuilder.size]);
 
   return (
-    <div className="w-full max-w-[1000px]">
+    <div className="w-full max-w-[1000px] mt-5">
       {!loggedIn && <WelcomeHeroBanner />}
 
       {paramsBuilder.size === 0 && (

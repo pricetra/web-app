@@ -101,10 +101,10 @@ export default function SearchResultsPanel() {
                     <article>
                       <ScrollContainer>
                         {productViewHistory.myProductViewHistory.products.map(
-                          (product) => (
+                          (product, i) => (
                             <ProductItemHorizontal
                               product={product as Product}
-                              key={`recent-product-${product.id}-${product.id}`}
+                              key={`recent-product-${product.id}-${i}`}
                               hideStoreInfo={false}
                             />
                           )
