@@ -44,9 +44,9 @@ export default function SearchResultsPanel() {
       fetchPolicy: "no-cache",
     }
   );
-  const nextWeekDateRange = getNextWeekDateRange();
 
   useEffect(() => {
+    const nextWeekDateRange = getNextWeekDateRange();
     getPopularSearchKeywords({
       variables: {
         paginator: {
@@ -56,7 +56,6 @@ export default function SearchResultsPanel() {
         dateRange: nextWeekDateRange,
       },
     });
-
     getPopularProducts({
       variables: {
         paginator: {
