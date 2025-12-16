@@ -7,13 +7,20 @@ import { IoIosSearch } from "react-icons/io";
 import { useNavbar } from "@/context/navbar-context";
 import { Button } from "./button";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useState, KeyboardEvent, useCallback, useMemo } from "react";
+import {
+  useState,
+  KeyboardEvent,
+  useCallback,
+  useMemo,
+  useEffect,
+} from "react";
 import { IoArrowBack } from "react-icons/io5";
 import { useMediaQuery } from "react-responsive";
 import SearchResultsPanel from "../search-results-panel";
 import { cn } from "@/lib/utils";
 import { BsUpcScan } from "react-icons/bs";
 import { MobileView } from "react-device-detect";
+import { useSearchContext } from "@/context/search-context";
 
 export const NAVBAR_HEIGHT = 60;
 export const SUBNAV_HEIGHT = 40;
@@ -297,20 +304,31 @@ type SearchbarProps = {
 };
 
 function DesktopSearchbar({ placeholder, value, onKeyDown }: SearchbarProps) {
-  const [searchText, setSearchText] = useState(value ?? "");
+  const { searchText, setSearchText } = useSearchContext();
+
+  useEffect(() => {
+    console.log("main value changed");
+    setSearchText(value);
+  }, [setSearchText, value]);
+
   return (
     <InputGroupInput
       placeholder={placeholder}
       className="text-xs sm:text-sm pl-1 sm:pl-2 fade-mask-placeholder"
       value={searchText}
       onChange={(e) => setSearchText(e.target.value)}
-      onKeyDown={(e) => onKeyDown(searchText, e)}
+      onKeyDown={(e) => onKeyDown(searchText ?? "", e)}
     />
   );
 }
 
 function MobileSearchbar({ placeholder, value, onKeyDown }: SearchbarProps) {
-  const [searchText, setSearchText] = useState(value ?? "");
+  const { searchText, setSearchText } = useSearchContext();
+
+  useEffect(() => {
+    setSearchText(value);
+  }, [setSearchText, value]);
+
   return (
     <input
       autoFocus
@@ -318,7 +336,7 @@ function MobileSearchbar({ placeholder, value, onKeyDown }: SearchbarProps) {
       className="block w-full outline-none py-3 fade-mask-placeholder"
       value={searchText}
       onChange={(e) => setSearchText(e.target.value)}
-      onKeyDown={(e) => onKeyDown(searchText, e)}
+      onKeyDown={(e) => onKeyDown(searchText ?? "", e)}
     />
   );
 }

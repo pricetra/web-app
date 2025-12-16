@@ -11,6 +11,7 @@ import utc from "dayjs/plugin/utc";
 import { NavbarProvider } from "@/context/navbar-context";
 import ShadcnProvider from "./shadcn-provider";
 import SetupProvider from "./setup-provider";
+import SearchContextProvider from "@/context/search-context";
 
 dayjs.extend(localizedFormat);
 dayjs.extend(relativeTime);
@@ -28,7 +29,9 @@ export default function AppProvider({ children }: AppProviderProps) {
           <LocationContextProvider>
             <ShadcnProvider>
               <SetupProvider>
-                <NavbarProvider>{children}</NavbarProvider>
+                <SearchContextProvider>
+                  <NavbarProvider>{children}</NavbarProvider>
+                </SearchContextProvider>
               </SetupProvider>
             </ShadcnProvider>
           </LocationContextProvider>
