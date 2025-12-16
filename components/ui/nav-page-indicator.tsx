@@ -33,7 +33,7 @@ export default function NavPageIndicator({
             width={200}
             height={200}
             quality={100}
-            className="flex size-[35px] items-center justify-center rounded-md bg-white"
+            className="flex size-[35px] items-center justify-center rounded-md bg-gray-200"
           />
         )}
 

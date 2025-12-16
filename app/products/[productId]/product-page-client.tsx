@@ -1,7 +1,13 @@
 "use client";
 
 import ProductFull, { ProductFullLoading } from "@/components/product-full";
-import { Product, ProductDocument, Stock, StockDocument } from "graphql-utils";
+import {
+  Product,
+  ProductDocument,
+  ProductSummary,
+  Stock,
+  StockDocument,
+} from "graphql-utils";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
 import { useEffect, useLayoutEffect } from "react";
 import SelectedStock, {
@@ -12,9 +18,7 @@ import { useAuth } from "@/context/user-context";
 import useLocationInput from "@/hooks/useLocationInput";
 import { NAVBAR_HEIGHT } from "@/components/ui/navbar-main";
 import { useNavbar } from "@/context/navbar-context";
-import NavPageIndicator, {
-  NavPageIndicatorLoading,
-} from "@/components/ui/nav-page-indicator";
+import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { createCloudinaryUrl } from "@/lib/files";
 import { useMediaQuery } from "react-responsive";
 import ProductDetails from "./product-details";
@@ -31,12 +35,14 @@ export type ProductPageClientProps = {
   sharedBy?: number;
   sharedFrom?: string;
   ipAddress: string;
+  productSummary: ProductSummary;
 };
 
 export default function ProductPageClient({
   productId,
   stockId,
   ipAddress,
+  productSummary,
 }: ProductPageClientProps) {
   const { loggedIn, user, lists } = useAuth();
   const { setPageIndicator, resetAll, setNavTools, setSubHeader } = useNavbar();
@@ -66,22 +72,22 @@ export default function ProductPageClient({
 
   useLayoutEffect(() => {
     if (!stockId) return;
-    setPageIndicator(<NavPageIndicatorLoading />);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stockId]);
-
-  useLayoutEffect(() => {
-    if (!stockData || !stockData?.stock.store) return;
+    if (
+      !productSummary.store ||
+      !productSummary.storeLogo ||
+      !productSummary.storeSlug
+    )
+      return;
 
     setPageIndicator(
       <NavPageIndicator
-        title={stockData.stock.store.name}
-        imgSrc={createCloudinaryUrl(stockData.stock.store.logo, 100, 100)}
-        href={`/stores/${stockData.stock.store.slug}`}
+        title={productSummary.store}
+        imgSrc={createCloudinaryUrl(productSummary.storeLogo, 100, 100)}
+        href={`/stores/${productSummary.storeSlug}`}
       />
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stockData]);
+  }, [stockId, productSummary]);
 
   useLayoutEffect(() => {
     if (!stockError) return;

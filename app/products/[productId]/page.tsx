@@ -124,7 +124,10 @@ export default async function LandingPageServer({
   const parsedStockId = parseIntOrUndefined(stockId);
   const parsedSharedById = sharedBy ? parseInt(sharedBy, 10) : undefined;
 
-  const productSummary = await cachedFetchProductSummary(parsedProductId);
+  const productSummary = await cachedFetchProductSummary(
+    parsedProductId,
+    parsedStockId
+  );
   if (!productSummary) {
     notFound();
   }
@@ -140,6 +143,7 @@ export default async function LandingPageServer({
         sharedBy={parsedSharedById}
         sharedFrom={sharedFrom}
         ipAddress={ipAddress}
+        productSummary={productSummary}
       />
     </LayoutProvider>
   );
