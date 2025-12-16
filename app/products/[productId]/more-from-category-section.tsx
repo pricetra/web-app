@@ -27,7 +27,7 @@ export default function MoreFromCategory({ category }: MoreFromBrandProps) {
     getBrandProducts({
       variables: {
         paginator: { limit: 20, page: 1 },
-        search: category.name,
+        filters: { category: category.name },
       },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -40,7 +40,7 @@ export default function MoreFromCategory({ category }: MoreFromBrandProps) {
           {!brandProducts || brandProductsLoading ? (
             <Skeleton width="20%" height={28} borderRadius={10} />
           ) : (
-            <h2 className="text-lg sm:text-xl">
+            <h2 className="text-base xs:text-lg sm:text-xl">
               Similar in category <b>{category.name}</b>
             </h2>
           )}

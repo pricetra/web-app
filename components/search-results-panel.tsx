@@ -77,6 +77,7 @@ export default function SearchResultsPanel() {
     getSearchHistory({
       variables: { paginator: { page: 1, limit: 10 } },
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [loggedIn]);
 
   return (

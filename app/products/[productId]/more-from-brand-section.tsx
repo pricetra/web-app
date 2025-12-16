@@ -28,7 +28,7 @@ export default function MoreFromBrand({ brand }: MoreFromBrandProps) {
     getBrandProducts({
       variables: {
         paginator: { limit: 20, page: 1 },
-        brand,
+        filters: { brand },
       },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -41,7 +41,7 @@ export default function MoreFromBrand({ brand }: MoreFromBrandProps) {
           {!brandProducts || brandProductsLoading ? (
             <Skeleton width="20%" height={28} borderRadius={10} />
           ) : (
-            <h2 className="text-lg sm:text-xl">
+            <h2 className="text-base xs:text-lg sm:text-xl">
               More from <b>{brand}</b>
             </h2>
           )}
