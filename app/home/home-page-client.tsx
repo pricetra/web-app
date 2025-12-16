@@ -63,22 +63,24 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
       <div className="w-full max-w-[1000px] flex-1">
         {!loggedIn && <WelcomeHeroBanner />}
 
-        <div className="grid grid-cols-5 lg:grid-cols-10 gap-x-2 gap-y-5 sm:gap-5 px-5 mt-5 mb-10 sm:my-10">
-          {!allStoresData ? (
-            Array(10)
-              .fill(0)
-              .map((_, i) => <StoreMiniLoading key={`store-loading-${i}`} />)
-          ) : (
-            <>
-              {allStoresData.allStores.stores.map((store) => (
-                <StoreMini store={store} key={`store-${store.id}`} />
-              ))}
-              <StoreMiniShowMore />
-            </>
-          )}
-        </div>
+        {(!pageString || pageString === "1") && (
+          <div className="grid grid-cols-5 lg:grid-cols-10 gap-x-2 gap-y-5 sm:gap-5 px-5 mt-5 mb-16 sm:my-10">
+            {!allStoresData ? (
+              Array(10)
+                .fill(0)
+                .map((_, i) => <StoreMiniLoading key={`store-loading-${i}`} />)
+            ) : (
+              <>
+                {allStoresData.allStores.stores.map((store) => (
+                  <StoreMini store={store} key={`store-${store.id}`} />
+                ))}
+                <StoreMiniShowMore />
+              </>
+            )}
+          </div>
+        )}
 
-        <div className="flex flex-col my-10">
+        <div className="flex flex-col">
           {!branchesWithProducts
             ? Array(3)
                 .fill(0)
