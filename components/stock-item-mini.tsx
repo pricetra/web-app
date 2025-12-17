@@ -38,14 +38,14 @@ export default function StockItemMini({
   );
 
   return (
-    <div className="flex flex-row gap-2">
+    <div className="flex flex-col gap-2">
       <Link
         href={stock.id !== 0 ? `?stockId=${stock.id}` : "#"}
         className="flex gap-2 flex-row"
       >
         <Image
           src={createCloudinaryUrl(stock.store.logo, 100, 100)}
-          className="size-[30px] sm:size-[40px] rounded-lg border-[1px] border-gray-100"
+          className="size-[30px] sm:size-[40px] rounded-lg border border-gray-100"
           width={100}
           height={100}
           alt={`${stock.store.name} store logo`}
