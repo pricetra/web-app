@@ -9,3 +9,14 @@ export function createCloudinaryUrl(public_id: string, width?: number, height?: 
   url += `/${public_id}`;
   return url;
 }
+
+export async function convertFileToBase64(file: File): Promise<string | ArrayBuffer | null> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => {
+      resolve(reader.result)
+    }
+    reader.onerror = reject
+  })
+};

@@ -1,4 +1,4 @@
-import { Formik, FormikHelpers } from "formik";
+import { Formik, FormikHelpers, FormikProps } from "formik";
 import { useEffect, useRef, useState } from "react";
 import {
   AllBrandsDocument,
@@ -9,9 +9,10 @@ import {
   UpdateProductDocument,
   Product,
   ProductDocument,
+  ExtractProductFieldsDocument,
 } from "graphql-utils";
 import { diffObjects } from "@/lib/utils";
-import { useMutation, useQuery } from "@apollo/client/react";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import { ErrorLike } from "@apollo/client";
 import Image from "next/image";
 import { FiCamera } from "react-icons/fi";
@@ -31,6 +32,9 @@ import {
   allowedImageTypes,
   allowedImageTypesString,
 } from "@/constants/uploads";
+import { MdCameraEnhance, MdFormatSize } from "react-icons/md";
+import { titleCase } from "@/lib/strings";
+import { convertFileToBase64 } from "@/lib/files";
 
 export type ProductFormProps = {
   upc?: string;
@@ -72,6 +76,14 @@ export default function ProductForm({
   const isUpdateProduct =
     product !== undefined && product.id !== undefined && product.id !== 0;
 
+  const [extractProductFields, { loading: analyzingImage }] = useLazyQuery(
+    ExtractProductFieldsDocument,
+    {
+      fetchPolicy: "no-cache",
+    }
+  );
+  const autofillWithImageRef = useRef<HTMLInputElement>(null);
+
   useEffect(() => {
     if (!brandsData) return;
     setBrands(brandsData.allBrands);
@@ -81,6 +93,42 @@ export default function ProductForm({
     if (!product) return;
     setSelectedImage(product.image);
   }, [product]);
+
+  async function onPressAutofill(
+    formik: FormikProps<CreateProduct>,
+    base64Image: string
+  ) {
+    const { data, error } = await extractProductFields({
+      variables: {
+        base64Image: base64Image,
+      },
+    });
+    if (error || !data) {
+      window.alert(
+        `Could not auto-fill using the provided image. ${
+          error?.message ?? "No data found"
+        }`
+      );
+      return;
+    }
+
+    const extractedFields = data.extractProductFields;
+    formik.setFieldValue("brand", extractedFields.brand);
+    formik.setFieldValue("name", extractedFields.name);
+    formik.setFieldValue("description", extractedFields.description);
+    if (extractedFields.weight) {
+      formik.setFieldValue("weight", extractedFields.weight);
+    }
+    if (extractedFields.quantity) {
+      formik.setFieldValue("quantityValue", extractedFields.quantity);
+    }
+    if (extractedFields.netWeight) {
+      formik.setFieldValue("netWeight", extractedFields.netWeight);
+    }
+    if (extractedFields.categoryId && extractedFields.category) {
+      formik.setFieldValue("categoryId", extractedFields.categoryId);
+    }
+  }
 
   function submit(input: CreateProduct, formik: FormikHelpers<CreateProduct>) {
     if (input.weight === "") input.weight = undefined;
@@ -181,6 +229,84 @@ export default function ProductForm({
               </Label>
             </InputGroupAddon>
           </InputGroup>
+
+          <div className="flex flex-row flex-wrap gap-3 py-3">
+            <Button
+              onClick={() => {
+                autofillWithImageRef.current?.click();
+              }}
+              disabled={analyzingImage}
+              className="border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-600"
+            >
+              {analyzingImage ? (
+                <CgSpinner className="animate-spin" />
+              ) : (
+                <MdCameraEnhance />
+              )}
+              Autofill with Image
+            </Button>
+
+            <div className="hidden">
+              <input
+                ref={autofillWithImageRef}
+                type="file"
+                accept={allowedImageTypesString}
+                onChange={async (e) => {
+                  const files = e.target.files;
+                  const file = files?.item(0);
+                  if (!file) return;
+                  if (!allowedImageTypes.includes(file.type)) {
+                    window.alert("invalid file type");
+                    return;
+                  }
+
+                  const base64Image = await convertFileToBase64(file);
+                  if (!base64Image) {
+                    window.alert("Could not handle file to base64 conversion");
+                    return;
+                  }
+                  onPressAutofill(formik, base64Image.toString());
+                }}
+              />
+            </div>
+
+            {/* {product && (
+              <Btn
+                onPress={() =>
+                  sanitizeProduct({ variables: { id: product.id } }).then(
+                    ({ data }) => {
+                      if (!data) return;
+                      onSuccess(data.sanitizeProduct as Product, formik);
+                    }
+                  )
+                }
+                loading={sanitizing}
+                className="flex flex-row items-center gap-3 rounded-xl border-[1px] border-blue-300 bg-blue-50 px-5 py-3"
+                icon={
+                  <FontAwesome5
+                    name="hand-sparkles"
+                    size={17}
+                    color="#2563eb"
+                  />
+                }
+                iconColor="#2563eb"
+                color="color-blue-600"
+                text="Sanitize with AI"
+                textWeight="normal"
+                textSize="text-sm"
+              />
+            )} */}
+
+            <Button
+              onClick={() => {
+                formik.setFieldValue("name", titleCase(formik.values.name));
+              }}
+              className="border border-purple-300 text-purple-600 bg-purple-50 hover:bg-purple-100"
+            >
+              <MdFormatSize />
+              Title Case
+            </Button>
+          </div>
 
           <div className="my-5">
             {selectedImage ? (
