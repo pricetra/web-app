@@ -212,7 +212,7 @@ export default function ProductNavTools({
           </NavToolIconButton>
 
           {product && (
-            <DialogContent>
+            <DialogContent size="xl">
               <DialogHeader>
                 <DialogTitle>Edit Product</DialogTitle>
                 <div className="mt-5">
