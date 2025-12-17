@@ -315,7 +315,7 @@ export default function ProductNavTools({
                 <ProductItem product={{ ...product, stock }} />
               </div>
 
-              <div className="flex flex-row items-center justify-evenly gap-5">
+              <div className="flex flex-row flex-wrap items-center justify-evenly gap-5">
                 <a
                   href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
                     fullUrl
