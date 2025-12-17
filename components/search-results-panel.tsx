@@ -98,7 +98,7 @@ export default function SearchResultsPanel({
   return (
     <div>
       {searchText && searchText.length > 0 ? (
-        <div className="flex flex-col gap-2 px-5">
+        <div className="flex flex-col gap-2 px-0 xs:px-5">
           {suggestedKeywords.map((searchTerm, i) => (
             <SearchResultItem
               searchTerm={searchTerm}
@@ -150,12 +150,12 @@ export default function SearchResultsPanel({
                 </div>
               </div>
 
-              <div className="flex flex-col gap-5 mb-10 px-5">
-                <h3 className="font-bold text-lg md:text-xl">
+              <div className="flex flex-col gap-5 mb-10">
+                <h3 className="font-bold text-lg md:text-xl px-5">
                   Recent searches
                 </h3>
 
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2 px-0 xs:px-5">
                   {searchHistoryData && (
                     <>
                       {searchHistoryData.mySearchHistory.searches.map(
