@@ -12,11 +12,13 @@ import { useMemo } from "react";
 export type ProductItemHorizontalProps = {
   product: ProductSimple | Product;
   hideStoreInfo?: boolean | undefined;
+  handleOnClick?: () => void;
 };
 
 export default function ProductItemHorizontal({
   product,
   hideStoreInfo = true,
+  handleOnClick,
 }: ProductItemHorizontalProps) {
   const isExpired = useIsSaleExpired(product.stock?.latestPrice);
   const calculatedAmount = useCalculatedPrice({
@@ -36,6 +38,7 @@ export default function ProductItemHorizontal({
     <Link
       href={href}
       className="flex flex-col gap-2 max-w-[130px] md:max-w-[180px]"
+      onClick={handleOnClick}
     >
       <div className="relative size-[130px] md:size-[180px] overflow-hidden rounded-xl bg-white">
         {product.stock?.latestPrice?.sale && !isExpired && (

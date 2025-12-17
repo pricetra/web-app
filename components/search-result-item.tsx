@@ -4,13 +4,21 @@ import { IoIosSearch } from "react-icons/io";
 export type SearchResultItemProps = {
   searchTerm: string;
   customSearchQuery?: string;
-}
+  handleOnClick: () => void;
+};
 
-export default function SearchResultItem({ searchTerm, customSearchQuery }: SearchResultItemProps) {
+export default function SearchResultItem({
+  searchTerm,
+  customSearchQuery,
+  handleOnClick,
+}: SearchResultItemProps) {
   return (
     <Link
-      href={`/search?query=${encodeURIComponent(customSearchQuery ?? searchTerm)}`}
+      href={`/search?query=${encodeURIComponent(
+        customSearchQuery ?? searchTerm
+      )}`}
       className="py-1.5"
+      onClick={handleOnClick}
     >
       <div className="flex flex-row items-center gap-5">
         <IoIosSearch className="size-4" />

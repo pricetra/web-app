@@ -52,8 +52,8 @@ export default function NavbarMain() {
   const onSubmitSearch = useCallback(
     (value: string, e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Enter") {
-        router.push(`${searchQueryPath}?query=${encodeURIComponent(value)}`);
         setSearchPanelOpen(false);
+        router.push(`${searchQueryPath}?query=${encodeURIComponent(value)}`);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -157,7 +157,11 @@ export default function NavbarMain() {
                       })`,
                     }}
                   >
-                    <SearchResultsPanel />
+                    <SearchResultsPanel
+                      onClickResult={() => {
+                        setSearchPanelOpen(false);
+                      }}
+                    />
                   </div>
                 </div>
               )}

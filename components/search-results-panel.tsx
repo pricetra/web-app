@@ -19,7 +19,13 @@ import { useAuth } from "@/context/user-context";
 import { useSearchContext } from "@/context/search-context";
 import SearchResultItem from "./search-result-item";
 
-export default function SearchResultsPanel() {
+export type SearchResultsPanelProps = {
+  onClickResult: () => void;
+};
+
+export default function SearchResultsPanel({
+  onClickResult,
+}: SearchResultsPanelProps) {
   const { loggedIn } = useAuth();
 
   const { searchText } = useSearchContext();
@@ -97,11 +103,13 @@ export default function SearchResultsPanel() {
             <SearchResultItem
               searchTerm={searchTerm}
               key={`search-suggestion-${i}-${searchTerm}`}
+              handleOnClick={onClickResult}
             />
           ))}
           <SearchResultItem
             searchTerm={`search "${searchText}"`}
             customSearchQuery={searchText}
+            handleOnClick={onClickResult}
           />
         </div>
       ) : (
@@ -130,6 +138,7 @@ export default function SearchResultsPanel() {
                                   product={product as Product}
                                   key={`recent-product-${product.id}-${i}`}
                                   hideStoreInfo={false}
+                                  handleOnClick={onClickResult}
                                 />
                               )
                             )}
@@ -154,6 +163,7 @@ export default function SearchResultsPanel() {
                           <SearchResultItem
                             searchTerm={searchTerm}
                             key={`search-keyword-${id}-${i}`}
+                            handleOnClick={onClickResult}
                           />
                         )
                       )}
@@ -177,6 +187,7 @@ export default function SearchResultsPanel() {
                       href={`/search?query=${encodeURIComponent(k)}`}
                       key={`search-keyword-${k}-${i}`}
                       className="px-3 py-1 bg-gray-100 border border-gray-200 rounded-full text-sm"
+                      onClick={onClickResult}
                     >
                       {k}
                     </Link>
@@ -218,6 +229,7 @@ export default function SearchResultsPanel() {
                               product={product as Product}
                               key={`popular-product-${product.id}-${product.id}`}
                               hideStoreInfo={false}
+                              handleOnClick={onClickResult}
                             />
                           )
                         )}
