@@ -10,6 +10,7 @@ import {
   Product,
   ProductDocument,
   ExtractProductFieldsDocument,
+  SanitizeProductDocument,
 } from "graphql-utils";
 import { diffObjects } from "@/lib/utils";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
@@ -35,6 +36,7 @@ import {
 import { MdCameraEnhance, MdFormatSize } from "react-icons/md";
 import { titleCase } from "@/lib/strings";
 import { convertFileToBase64 } from "@/lib/files";
+import { FaHandSparkles } from "react-icons/fa";
 
 export type ProductFormProps = {
   upc?: string;
@@ -83,6 +85,13 @@ export default function ProductForm({
     }
   );
   const autofillWithImageRef = useRef<HTMLInputElement>(null);
+
+  const [sanitizeProduct, { loading: sanitizing }] = useMutation(
+    SanitizeProductDocument,
+    {
+      refetchQueries: [ProductDocument],
+    }
+  );
 
   useEffect(() => {
     if (!brandsData) return;
@@ -230,7 +239,7 @@ export default function ProductForm({
             </InputGroupAddon>
           </InputGroup>
 
-          <div className="flex flex-row flex-wrap gap-3 py-3">
+          <div className="flex flex-row flex-wrap gap-3 mb-5">
             <Button
               onClick={() => {
                 autofillWithImageRef.current?.click();
@@ -270,9 +279,9 @@ export default function ProductForm({
               />
             </div>
 
-            {/* {product && (
-              <Btn
-                onPress={() =>
+            {product && (
+              <Button
+                onClick={() =>
                   sanitizeProduct({ variables: { id: product.id } }).then(
                     ({ data }) => {
                       if (!data) return;
@@ -280,22 +289,17 @@ export default function ProductForm({
                     }
                   )
                 }
-                loading={sanitizing}
-                className="flex flex-row items-center gap-3 rounded-xl border-[1px] border-blue-300 bg-blue-50 px-5 py-3"
-                icon={
-                  <FontAwesome5
-                    name="hand-sparkles"
-                    size={17}
-                    color="#2563eb"
-                  />
-                }
-                iconColor="#2563eb"
-                color="color-blue-600"
-                text="Sanitize with AI"
-                textWeight="normal"
-                textSize="text-sm"
-              />
-            )} */}
+                disabled={sanitizing}
+                className="border border-blue-300 bg-blue-50 hover:bg-blue-100 text-blue-600"
+              >
+                {sanitizing ? (
+                  <CgSpinner className="animate-spin" />
+                ) : (
+                  <FaHandSparkles />
+                )}
+                Sanitize with AI
+              </Button>
+            )}
 
             <Button
               onClick={() => {

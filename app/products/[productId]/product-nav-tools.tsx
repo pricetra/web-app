@@ -187,13 +187,9 @@ export default function ProductNavTools({
           tooltip="Sanitize product data with AI"
         >
           {sanitizing ? (
-            <>
-              <CgSpinner className="animate-spin text-sanitize" />
-            </>
+            <CgSpinner className="animate-spin text-sanitize" />
           ) : (
-            <>
-              <FaHandSparkles className="text-sanitize" />
-            </>
+            <FaHandSparkles className="text-sanitize" />
           )}
         </NavToolIconButton>
       )}
