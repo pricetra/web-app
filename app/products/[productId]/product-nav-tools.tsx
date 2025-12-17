@@ -1,5 +1,6 @@
 import AddPriceForm from "@/components/product-form/add-price-form";
 import ProductForm from "@/components/product-form/product-form";
+import ProductItem from "@/components/product-item";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -25,7 +26,7 @@ import {
   UserRole,
 } from "graphql-utils";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   AiFillEye,
   AiFillHeart,
@@ -33,7 +34,13 @@ import {
   AiOutlineHeart,
 } from "react-icons/ai";
 import { CgSpinner } from "react-icons/cg";
-import { FaHandSparkles } from "react-icons/fa";
+import {
+  FaFacebook,
+  FaHandSparkles,
+  FaLink,
+  FaWhatsapp,
+  FaXTwitter,
+} from "react-icons/fa6";
 import { FiEdit, FiPlus, FiShare } from "react-icons/fi";
 import { toast } from "sonner";
 
@@ -70,6 +77,21 @@ export default function ProductNavTools({
 
   const [editProductModalOpen, setEditProductOpenModal] = useState(false);
   const [priceModalOpen, setPriceModalOpen] = useState(false);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
+
+  const fullUrl = useMemo(() => {
+    const paramBuilder = new URLSearchParams();
+    if (stockId) {
+      paramBuilder.set("stockId", stockId.toString());
+    }
+    if (user) {
+      paramBuilder.set("sharedBy", user.id.toString());
+    }
+    paramBuilder.set("sharedFrom", "web");
+    return `https://pricetra.com/products/${
+      product.id
+    }?${paramBuilder.toString()}`;
+  }, [product.id, stockId, user]);
 
   useEffect(() => {
     const fav = product.productList.find((p) => p.type === ListType.Favorites);
@@ -211,28 +233,26 @@ export default function ProductNavTools({
             <FiEdit className="text-edit" />
           </NavToolIconButton>
 
-          {product && (
-            <DialogContent size="xl">
-              <DialogHeader>
-                <DialogTitle>Edit Product</DialogTitle>
-                <div className="mt-5">
-                  <ProductForm
-                    upc={product?.code}
-                    product={product}
-                    onSuccess={() => {
-                      toast.success("Product updated successfully");
-                      setEditProductOpenModal(false);
-                    }}
-                    onError={(err) => {
-                      toast.error(err.message);
-                      setEditProductOpenModal(false);
-                    }}
-                    onCancel={() => setEditProductOpenModal(false)}
-                  />
-                </div>
-              </DialogHeader>
-            </DialogContent>
-          )}
+          <DialogContent size="xl">
+            <DialogHeader>
+              <DialogTitle>Edit Product</DialogTitle>
+              <div className="mt-5">
+                <ProductForm
+                  upc={product?.code}
+                  product={product}
+                  onSuccess={() => {
+                    toast.success("Product updated successfully");
+                    setEditProductOpenModal(false);
+                  }}
+                  onError={(err) => {
+                    toast.error(err.message);
+                    setEditProductOpenModal(false);
+                  }}
+                  onCancel={() => setEditProductOpenModal(false)}
+                />
+              </div>
+            </DialogHeader>
+          </DialogContent>
         </Dialog>
       )}
 
@@ -274,9 +294,112 @@ export default function ProductNavTools({
         </Dialog>
       )}
 
-      <NavToolIconButton onClick={() => {}} tooltip="Share">
-        <FiShare className="text-share" />
-      </NavToolIconButton>
+      <Dialog
+        modal
+        open={shareModalOpen}
+        defaultOpen={shareModalOpen}
+        onOpenChange={(o) => setShareModalOpen(o)}
+      >
+        <NavToolIconButton
+          onClick={() => setShareModalOpen(true)}
+          tooltip="Share"
+        >
+          <FiShare className="text-share" />
+        </NavToolIconButton>
+
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Share</DialogTitle>
+            <div className="my-5">
+              <div className="rounded-xl border border-gray-200 bg-gray-50 p-3 mb-5">
+                <ProductItem product={{ ...product, stock }} />
+              </div>
+
+              <div className="flex flex-row items-center justify-evenly gap-5">
+                <a
+                  href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+                    fullUrl
+                  )}`}
+                  target="_blank"
+                  className="flex flex-col gap-2 p-1 justify-center items-center"
+                >
+                  <div className="p-3 rounded-full bg-facebook">
+                    <FaFacebook color="white" size={20} />
+                  </div>
+                  <span className="text-xs">Facebook</span>
+                </a>
+
+                <a
+                  href={`https://wa.me/?text=${encodeURIComponent(fullUrl)}`}
+                  target="_blank"
+                  className="flex flex-col gap-2 p-1 justify-center items-center"
+                >
+                  <div className="p-3 rounded-full bg-whatsapp">
+                    <FaWhatsapp color="white" size={20} />
+                  </div>
+                  <span className="text-xs">WhatsApp</span>
+                </a>
+
+                <a
+                  href={`https://x.com/intent/tweet?url=${encodeURIComponent(
+                    fullUrl
+                  )}`}
+                  target="_blank"
+                  className="flex flex-col gap-2 p-1 justify-center items-center"
+                >
+                  <div className="p-3 rounded-full bg-twitter">
+                    <FaXTwitter color="white" size={20} />
+                  </div>
+                  <span className="text-xs">X</span>
+                </a>
+
+                <a
+                  href={`https://nextdoor.com/news_feed/?open_composer=true&body=${encodeURIComponent(
+                    fullUrl
+                  )}`}
+                  target="_blank"
+                  className="flex flex-col gap-2 p-1 justify-center items-center"
+                >
+                  <div className="p-3 rounded-full bg-nextdoor">
+                    <svg
+                      fill="#ffffff"
+                      width="20px"
+                      height="20px"
+                      viewBox="0 0 32 32"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                      <g
+                        id="SVGRepo_tracerCarrier"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      ></g>
+                      <g id="SVGRepo_iconCarrier">
+                        {" "}
+                        <path d="M31.99 13.089l-15.99-9.792-5.495 3.365v-3.365h-5.005v6.427l-5.495 3.365 2.615 4.271 2.88-1.755v13.099h21v-13.099l2.875 1.755 2.615-4.271z"></path>{" "}
+                      </g>
+                    </svg>
+                  </div>
+                  <span className="text-xs">Nextdoor</span>
+                </a>
+
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(fullUrl);
+                    toast.success("Copied URL to clipboard!");
+                  }}
+                  className="flex flex-col gap-2 p-1 justify-center items-center cursor-pointer"
+                >
+                  <div className="p-3 rounded-full bg-white border border-gray-300">
+                    <FaLink color="black" size={20} />
+                  </div>
+                  <span className="text-xs">Copy Link</span>
+                </button>
+              </div>
+            </div>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
