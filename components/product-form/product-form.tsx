@@ -227,7 +227,6 @@ export default function ProductForm({
             <CategoryInput
               category={product?.category ?? undefined}
               onSelectCategoryId={(categoryId) => {
-                console.log(categoryId);
                 formik.setFieldValue("categoryId", categoryId);
               }}
             />

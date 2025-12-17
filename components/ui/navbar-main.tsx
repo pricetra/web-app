@@ -311,7 +311,6 @@ function DesktopSearchbar({ placeholder, value, onKeyDown }: SearchbarProps) {
   const { searchText, setSearchText } = useSearchContext();
 
   useEffect(() => {
-    console.log("main value changed");
     setSearchText(value);
   }, [setSearchText, value]);
 
