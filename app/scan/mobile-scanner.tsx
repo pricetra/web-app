@@ -1,16 +1,34 @@
 "use client";
 
-import { useLazyQuery } from "@apollo/client/react";
-import { BarcodeScanDocument } from "graphql-utils";
+import { useLazyQuery, useMutation } from "@apollo/client/react";
+import {
+  BarcodeScanDocument,
+  ExtractAndCreateProductDocument,
+} from "graphql-utils";
 import { debounce } from "lodash";
 import { useRouter } from "next/navigation";
-import { useLayoutEffect, useMemo, useState } from "react";
+import { useLayoutEffect, useMemo, useRef, useState } from "react";
 import { BarcodeScanner, DetectedBarcode } from "react-barcode-scanner";
 import "react-barcode-scanner/polyfill";
 import ScannerOverlay from "./scanner-overlay";
 import { Button } from "@/components/ui/button";
 import { AiOutlineClose } from "react-icons/ai";
 import { CgSpinner } from "react-icons/cg";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { DialogDescription } from "@radix-ui/react-dialog";
+import { FiCamera } from "react-icons/fi";
+import {
+  allowedImageTypes,
+  allowedImageTypesString,
+} from "@/constants/uploads";
+import { convertFileToBase64 } from "@/lib/files";
 
 export default function MobileScanner() {
   const router = useRouter();
@@ -22,6 +40,11 @@ export default function MobileScanner() {
       debounce(_handleBarcodeScan, 1000, { leading: true, trailing: false }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
+  );
+  const [openAddUpcModal, setOpenAddUpcModal] = useState(false);
+  const imageUploadRef = useRef<HTMLInputElement>(null);
+  const [extractProductFields, { loading: extractingProduct }] = useMutation(
+    ExtractAndCreateProductDocument
   );
 
   async function _handleBarcodeScan(barcodes: DetectedBarcode[]) {
@@ -53,8 +76,98 @@ export default function MobileScanner() {
 
   return (
     <>
+      {scannedCode && (
+        <Dialog
+          modal
+          open={openAddUpcModal}
+          defaultOpen={openAddUpcModal}
+          onOpenChange={(o) => setOpenAddUpcModal(o)}
+        >
+          <DialogContent clickableOverlay={false}>
+            <DialogHeader>
+              <DialogTitle className="mb-5">Add UPC</DialogTitle>
+              <DialogDescription>
+                The barcode you scanned does not exist in our database.
+              </DialogDescription>
+              <DialogDescription>
+                You can help us record and track prices for this product by
+                taking a picture.
+              </DialogDescription>
+            </DialogHeader>
+
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline" disabled={extractingProduct}>
+                  Cancel
+                </Button>
+              </DialogClose>
+
+              <div className="hidden">
+                <input
+                  ref={imageUploadRef}
+                  type="file"
+                  accept={allowedImageTypesString}
+                  onChange={async (e) => {
+                    const files = e.target.files;
+                    const file = files?.item(0);
+                    if (!file) return;
+                    if (!allowedImageTypes.includes(file.type)) {
+                      window.alert("invalid file type");
+                      return;
+                    }
+
+                    const base64Image = await convertFileToBase64(file);
+                    if (!base64Image) {
+                      window.alert(
+                        "Could not handle file to base64 conversion"
+                      );
+                      return;
+                    }
+
+                    extractProductFields({
+                      variables: {
+                        barcode: scannedCode,
+                        base64Image: base64Image.toString(),
+                      },
+                    })
+                      .then(async ({ data }) => {
+                        if (!data) throw new Error("could not extract data");
+
+                        router.push(
+                          `/products/${data.extractAndCreateProduct.id}`
+                        );
+                      })
+                      .catch((err) => {
+                        window.alert(`Error extracting product data. ${err}`);
+                      })
+                      .finally(() => {
+                        setScannedCode(undefined);
+                        setOpenAddUpcModal(false);
+                      });
+                  }}
+                />
+              </div>
+
+              <Button type="submit" disabled={extractingProduct}>
+                {extractingProduct ? (
+                  <>
+                    <CgSpinner className="animate-spi" />
+                    Extracting Image Data
+                  </>
+                ) : (
+                  <>
+                    <FiCamera />
+                    Take Picture
+                  </>
+                )}
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+
       {processingBarcode ? (
-        <div className="absolute z-10 flex h-full w-full items-center justify-center">
+        <div className="fixed z-10 flex h-full w-full items-center justify-center">
           <div className="flex flex-col items-center justify-center rounded-xl bg-black/50 px-10 py-7">
             <CgSpinner className="animate-spin text-white size-16" />
             <h3 className="mt-4 text-white">Processing Barcode</h3>
@@ -67,10 +180,10 @@ export default function MobileScanner() {
       <BarcodeScanner
         options={{ formats: ["upc_a", "upc_e", "ean_8", "ean_13"] }}
         onCapture={debouncedHandleBarcodeScan}
-        paused={!!scannedCode}
+        paused={scannedCode !== undefined || openAddUpcModal}
       />
 
-      <div className="absolute bottom-0 z-2 w-full rounded-t-3xl bg-black px-5 py-7 text-white">
+      <div className="fixed bottom-0 z-2 w-full rounded-t-3xl bg-black px-5 py-7 text-white">
         <div className="flex flex-row items-center justify-between">
           <h1 className="text-xl font-bold text-white">Scan Barcode</h1>
 
