@@ -63,10 +63,36 @@ export default function MobileScanner() {
     })
       .then(({ data }) => {
         if (!data) return;
+        setScannedCode(undefined);
         router.push(`/products/${data.barcodeScan.id}`);
+      })
+      .catch(() => setOpenAddUpcModal(true));
+  }
+
+  async function handleExtractionImage(file: File, barcode: string) {
+    const base64Image = await convertFileToBase64(file);
+    if (!base64Image) {
+      window.alert("Could not handle file to base64 conversion");
+      return;
+    }
+
+    extractProductFields({
+      variables: {
+        barcode,
+        base64Image: base64Image.toString(),
+      },
+    })
+      .then(async ({ data }) => {
+        if (!data) throw new Error("could not extract data");
+
+        router.push(`/products/${data.extractAndCreateProduct.id}`);
+      })
+      .catch((err) => {
+        window.alert(`Error extracting product data. ${err}`);
       })
       .finally(() => {
         setScannedCode(undefined);
+        setOpenAddUpcModal(false);
       });
   }
 
@@ -116,34 +142,7 @@ export default function MobileScanner() {
                       return;
                     }
 
-                    const base64Image = await convertFileToBase64(file);
-                    if (!base64Image) {
-                      window.alert(
-                        "Could not handle file to base64 conversion"
-                      );
-                      return;
-                    }
-
-                    extractProductFields({
-                      variables: {
-                        barcode: scannedCode,
-                        base64Image: base64Image.toString(),
-                      },
-                    })
-                      .then(async ({ data }) => {
-                        if (!data) throw new Error("could not extract data");
-
-                        router.push(
-                          `/products/${data.extractAndCreateProduct.id}`
-                        );
-                      })
-                      .catch((err) => {
-                        window.alert(`Error extracting product data. ${err}`);
-                      })
-                      .finally(() => {
-                        setScannedCode(undefined);
-                        setOpenAddUpcModal(false);
-                      });
+                    handleExtractionImage(file, scannedCode);
                   }}
                 />
               </div>
