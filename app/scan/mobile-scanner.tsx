@@ -123,10 +123,36 @@ export default function MobileScanner() {
 
             <DialogFooter>
               <DialogClose asChild>
-                <Button variant="outline" disabled={extractingProduct}>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setScannedCode(undefined);
+                    setOpenAddUpcModal(false);
+                  }}
+                  disabled={extractingProduct}
+                >
                   Cancel
                 </Button>
               </DialogClose>
+
+              <Button
+                disabled={extractingProduct}
+                onClick={() => {
+                  imageUploadRef.current?.click();
+                }}
+              >
+                {extractingProduct ? (
+                  <>
+                    <CgSpinner className="animate-spi" />
+                    Extracting Image Data
+                  </>
+                ) : (
+                  <>
+                    <FiCamera />
+                    Take Picture
+                  </>
+                )}
+              </Button>
 
               <div className="hidden">
                 <input
@@ -146,20 +172,6 @@ export default function MobileScanner() {
                   }}
                 />
               </div>
-
-              <Button type="submit" disabled={extractingProduct}>
-                {extractingProduct ? (
-                  <>
-                    <CgSpinner className="animate-spi" />
-                    Extracting Image Data
-                  </>
-                ) : (
-                  <>
-                    <FiCamera />
-                    Take Picture
-                  </>
-                )}
-              </Button>
             </DialogFooter>
           </DialogContent>
         </Dialog>
