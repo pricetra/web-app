@@ -124,6 +124,14 @@ export default function ProductDetails({
     [favBranchesPriceData]
   );
 
+  const availableFavoriteBranches = useMemo(
+    () =>
+      favBranchesPriceData?.getFavoriteBranchesWithPrices?.filter(
+        (d) => d.approximatePrice || d.stock?.latestPriceId
+      ) as BranchListWithPrices[] | undefined,
+    [favBranchesPriceData]
+  );
+
   useEffect(() => {
     if (!relatedProductsSectionInView) return;
     if (!product.category || !locationInput) return;
@@ -180,7 +188,9 @@ export default function ProductDetails({
         ]}
       >
         <AccordionItem value="favorite-stores">
-          <AccordionTrigger>Favorite Stores</AccordionTrigger>
+          <AccordionTrigger badge={availableFavoriteBranches?.length}>
+            Favorite Stores
+          </AccordionTrigger>
           <AccordionContent>
             {loggedIn ? (
               <>
@@ -233,7 +243,11 @@ export default function ProductDetails({
         </AccordionItem>
 
         <AccordionItem value="available-stocks">
-          <AccordionTrigger>Available at</AccordionTrigger>
+          <AccordionTrigger
+            badge={stocksData?.getProductStocks?.paginator?.total}
+          >
+            Available at
+          </AccordionTrigger>
           <AccordionContent>
             {stocksData ? (
               <>
