@@ -37,8 +37,6 @@ export async function generateMetadata({
   if (!productSummary) return { title: "Product not found - Pricetra" };
 
   const { title, description } = productSeoTitleAndDescription(productSummary);
-  const urlParamBuilder = new URLSearchParams(sp);
-  const urlParamString = urlParamBuilder.size > 0 ? `?${urlParamBuilder.toString()}` : '';
   return {
     title: `${title} | Pricetra`,
     description,
@@ -49,7 +47,7 @@ export async function generateMetadata({
       description,
       publishedTime: productSummary.priceCreatedAt,
       images: productSummary.image,
-      url: `https://pricetra.com/products/${parsedProductId}${urlParamString}`,
+      url: `https://pricetra.com/products/${parsedProductId}`,
     },
   };
 }
