@@ -130,7 +130,7 @@ export default function ProductNavTools({
 
   return (
     <>
-      {stock && (
+      {user && stock && (
         <NavToolIconButton
           onClick={() => {
             if (watchProductList) {
@@ -156,7 +156,7 @@ export default function ProductNavTools({
         </NavToolIconButton>
       )}
 
-      <NavToolIconButton
+      {user && <NavToolIconButton
         onClick={() => {
           if (favProductList) {
             setFav(false);
@@ -178,9 +178,9 @@ export default function ProductNavTools({
         ) : (
           <AiOutlineHeart className="text-like" />
         )}
-      </NavToolIconButton>
+      </NavToolIconButton>}
 
-      {isRoleAuthorized(
+      {user && isRoleAuthorized(
         UserRole.Contributor,
         user?.role ?? UserRole.Consumer
       ) && (
@@ -196,7 +196,7 @@ export default function ProductNavTools({
         </NavToolIconButton>
       )}
 
-      {isRoleAuthorized(
+      {user && isRoleAuthorized(
         UserRole.Contributor,
         user?.role ?? UserRole.Consumer
       ) && (

@@ -45,7 +45,7 @@ export default function ProductPageClient({
   referrer,
   productSummary,
 }: ProductPageClientProps) {
-  const { loggedIn, user, lists } = useAuth();
+  const { loggedIn, lists } = useAuth();
   const { setPageIndicator, resetAll, setNavTools, setSubHeader } = useNavbar();
   const locationInput = useLocationInput(!loggedIn ? ipAddress : undefined);
   const { data: productData, loading: productLoading } = useQuery(
@@ -98,7 +98,7 @@ export default function ProductPageClient({
   }, [stockError]);
 
   useLayoutEffect(() => {
-    if (!user || !productData) return;
+    if (!productData) return;
 
     const NavTools = (
       <ProductNavTools
@@ -116,7 +116,7 @@ export default function ProductPageClient({
     setSubHeader(undefined);
     setNavTools(NavTools);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, productId, productData, stockId, stockData, isMediumScreen]);
+  }, [productData, stockId, stockData, isMediumScreen]);
 
   useLayoutEffect(() => {
     return () => {
