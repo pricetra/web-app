@@ -199,7 +199,7 @@ export default function ProductDetails({
                     {mappedFavBranches.map(({ approximatePrice, ...s }, i) => (
                       <div
                         className={cn(
-                          "mb-3",
+                          "mb-3 flex flex-row",
                           s.id === 0 && !approximatePrice
                             ? "opacity-30"
                             : "opacity-100"
@@ -255,7 +255,7 @@ export default function ProductDetails({
                   <section className="grid grid-cols-2 gap-5 mt-5">
                     {stocksData.getProductStocks.stocks.map((s, i) => (
                       <div
-                        className="mb-3"
+                        className="mb-3 flex flex-row"
                         key={`${s.id}-${i}-available-stock`}
                       >
                         <StockItemMini
