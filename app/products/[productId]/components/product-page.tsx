@@ -30,7 +30,7 @@ import { validBrand } from "@/lib/strings";
 import Skeleton from "react-loading-skeleton";
 import { StockItemMiniLoading } from "@/components/stock-item-mini";
 
-export type ProductPageClientProps = {
+export type ProductPageProps = {
   productId: number;
   stockId?: number;
   referrer?: ProductReferrer;
@@ -38,13 +38,13 @@ export type ProductPageClientProps = {
   productSummary: ProductSummary;
 };
 
-export default function ProductPageClient({
+export default function ProductPage({
   productId,
   stockId,
   ipAddress,
   referrer,
   productSummary,
-}: ProductPageClientProps) {
+}: ProductPageProps) {
   const { loggedIn, lists } = useAuth();
   const { setPageIndicator, resetAll, setNavTools, setSubHeader } = useNavbar();
   const locationInput = useLocationInput(!loggedIn ? ipAddress : undefined);
@@ -250,3 +250,4 @@ export default function ProductPageClient({
     </div>
   );
 }
+

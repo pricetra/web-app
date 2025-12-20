@@ -7,7 +7,7 @@ import {
   ProductSummaryQueryVariables,
 } from "graphql-utils";
 import { fetchGraphql } from "@/lib/graphql-client-ssr";
-import ProductPageClient from "./product-page-client";
+import ProductPageClient from "./client";
 import { notFound } from "next/navigation";
 import { cache } from "react";
 import LayoutProvider from "@/providers/layout-provider";
