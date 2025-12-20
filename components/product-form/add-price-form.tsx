@@ -143,6 +143,7 @@ export default function AddPriceForm({
             ...product,
             stock,
           }}
+          branchSlug={stock?.branch?.slug}
           hideAddButton
           hideStoreInfo
           imgWidth={100}

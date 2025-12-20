@@ -102,6 +102,7 @@ export default function BranchPageClient({
                 productsData?.allProducts?.products?.map((p, i) => (
                   <ProductItem
                     product={p as Product}
+                    branchSlug={branch.slug}
                     imgWidth={isMobile ? 110 : 130}
                     key={`product-${p.id}-${i}`}
                   />

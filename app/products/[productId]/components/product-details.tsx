@@ -207,6 +207,7 @@ export default function ProductDetails({
                         key={`${s.id}-${i}-fav-store-stock`}
                       >
                         <StockItemMini
+                          productId={product.id}
                           stock={s as Stock}
                           approximatePrice={approximatePrice ?? undefined}
                           quantityValue={product.quantityValue}
@@ -259,6 +260,7 @@ export default function ProductDetails({
                         key={`${s.id}-${i}-available-stock`}
                       >
                         <StockItemMini
+                          productId={product.id}
                           stock={s as Stock}
                           quantityValue={product.quantityValue}
                           quantityType={product.quantityType}
@@ -397,6 +399,7 @@ export default function ProductDetails({
                     {(branch.products ?? []).map((product) => (
                       <ProductItemHorizontal
                         product={product as Product}
+                        branchSlug={branch.slug}
                         key={`related-branch-product-${branch.id}-${product.id}-${i}`}
                       />
                     ))}

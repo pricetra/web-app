@@ -19,10 +19,12 @@ export type ProductItemOptionalProps = {
 
 export type ProductItemProps = ProductItemOptionalProps & {
   product: Product;
+  branchSlug?: string;
 };
 
 export default function ProductItem({
   product,
+  branchSlug,
   hideStoreInfo = false,
   imgWidth = 130,
 }: // hideAddButton = false,
@@ -35,13 +37,8 @@ ProductItemProps) {
   const weight = useProductWeightBuilder(product);
 
   const href = useMemo(() => {
-    const paramBuilder = new URLSearchParams();
-    if (product.stock) {
-      paramBuilder.set("stockId", String(product.stock.id));
-    }
-    const params = paramBuilder.size > 0 ? `?${paramBuilder.toString()}` : "";
-    return `/products/${product.id}${params}`;
-  }, [product.id, product.stock]);
+    return `/products/${product.id}${branchSlug ? `/${branchSlug}` : ''}`;
+  }, [product.id, branchSlug]);
 
   return (
     <Link href={href} className="flex max-w-full flex-row gap-2">

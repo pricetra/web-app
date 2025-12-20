@@ -12,6 +12,7 @@ import Skeleton from "react-loading-skeleton";
 import { useMediaQuery } from "react-responsive";
 
 export type StockItemMiniProps = {
+  productId: number;
   stock: Stock;
   approximatePrice?: number;
   quantityValue?: number;
@@ -19,6 +20,7 @@ export type StockItemMiniProps = {
 };
 
 export default function StockItemMini({
+  productId,
   stock,
   approximatePrice,
   quantityValue,
@@ -40,7 +42,7 @@ export default function StockItemMini({
   return (
     <div className="flex flex-col gap-2">
       <Link
-        href={stock.id !== 0 ? `?stockId=${stock.id}` : "#"}
+        href={stock.branch ? `/products/${productId}/${stock.branch.slug}` : "#"}
         className="flex gap-2 flex-row"
       >
         <Image

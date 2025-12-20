@@ -11,12 +11,14 @@ import { useMemo } from "react";
 
 export type ProductItemHorizontalProps = {
   product: ProductSimple | Product;
+  branchSlug?: string;
   hideStoreInfo?: boolean | undefined;
   handleOnClick?: () => void;
 };
 
 export default function ProductItemHorizontal({
   product,
+  branchSlug,
   hideStoreInfo = true,
   handleOnClick,
 }: ProductItemHorizontalProps) {
@@ -26,13 +28,8 @@ export default function ProductItemHorizontal({
     latestPrice: product.stock?.latestPrice,
   });
   const href = useMemo(() => {
-    const paramBuilder = new URLSearchParams();
-    if (product.stock) {
-      paramBuilder.set("stockId", String(product.stock.id));
-    }
-    const params = paramBuilder.size > 0 ? `?${paramBuilder.toString()}` : "";
-    return `/products/${product.id}${params}`;
-  }, [product.id, product.stock]);
+    return `/products/${product.id}${branchSlug ? `/${branchSlug}` : ''}`;
+  }, [product.id, branchSlug]);
 
   return (
     <Link
