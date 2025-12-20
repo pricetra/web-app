@@ -1,22 +1,34 @@
 import ProductItem from "@/components/product-item";
-import { useAuth } from "@/context/user-context";
-import { generateProductShareLink } from "@/lib/strings";
-import { Product, Stock } from "graphql-utils";
+import { Button } from "@/components/ui/button";
 import {
-  FaFacebook,
-  FaLink,
-  FaWhatsapp,
-  FaXTwitter,
-} from "react-icons/fa6";
+  InputGroup,
+  InputGroupAddon,
+  InputGroupTextarea,
+} from "@/components/ui/input-group";
+import { useAuth } from "@/context/user-context";
+import {
+  generateProductShareDescription,
+  generateProductShareLink,
+} from "@/lib/strings";
+import { Product, Stock } from "graphql-utils";
+import { useMemo, useState } from "react";
+import { FaFacebook, FaLink, FaWhatsapp, FaXTwitter } from "react-icons/fa6";
+import { MdContentCopy } from "react-icons/md";
 import { toast } from "sonner";
 
 export type ShareDialogProps = {
   product: Product;
   stock?: Stock;
-}
+};
 
-export default function ShareDialog({product, stock}: ShareDialogProps) {
+export default function ShareDialog({ product, stock }: ShareDialogProps) {
   const { user } = useAuth();
+  const shareDescription = useMemo(
+    () => generateProductShareDescription(product, stock),
+    [product, stock]
+  );
+  const [shareDescriptionText, setShareDescriptionText] =
+    useState(shareDescription);
 
   return (
     <div className="my-5">
@@ -27,7 +39,7 @@ export default function ShareDialog({product, stock}: ShareDialogProps) {
       <div className="flex flex-row flex-wrap items-center justify-evenly gap-5">
         <a
           href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-            generateProductShareLink('facebook', product, stock, user)
+            generateProductShareLink("facebook", product, stock, user)
           )}`}
           target="_blank"
           className="flex flex-col gap-2 p-1 justify-center items-center"
@@ -40,7 +52,7 @@ export default function ShareDialog({product, stock}: ShareDialogProps) {
 
         <a
           href={`https://wa.me/?text=${encodeURIComponent(
-            generateProductShareLink('facebook', product, stock, user)
+            generateProductShareLink("facebook", product, stock, user)
           )}`}
           target="_blank"
           className="flex flex-col gap-2 p-1 justify-center items-center"
@@ -53,7 +65,7 @@ export default function ShareDialog({product, stock}: ShareDialogProps) {
 
         <a
           href={`https://x.com/intent/tweet?url=${encodeURIComponent(
-            generateProductShareLink('facebook', product, stock, user)
+            generateProductShareLink("facebook", product, stock, user)
           )}`}
           target="_blank"
           className="flex flex-col gap-2 p-1 justify-center items-center"
@@ -66,7 +78,7 @@ export default function ShareDialog({product, stock}: ShareDialogProps) {
 
         <a
           href={`https://nextdoor.com/news_feed/?open_composer=true&body=${encodeURIComponent(
-            generateProductShareLink('facebook', product, stock, user)
+            generateProductShareLink("facebook", product, stock, user)
           )}`}
           target="_blank"
           className="flex flex-col gap-2 p-1 justify-center items-center"
@@ -96,7 +108,9 @@ export default function ShareDialog({product, stock}: ShareDialogProps) {
 
         <button
           onClick={() => {
-            navigator.clipboard.writeText(generateProductShareLink('other', product, stock, user));
+            navigator.clipboard.writeText(
+              generateProductShareLink("other", product, stock, user)
+            );
             toast.success("Copied URL to clipboard!");
           }}
           className="flex flex-col gap-2 p-1 justify-center items-center cursor-pointer"
@@ -106,6 +120,28 @@ export default function ShareDialog({product, stock}: ShareDialogProps) {
           </div>
           <span className="text-xs">Copy Link</span>
         </button>
+      </div>
+
+      <div className="mt-5">
+        <InputGroup>
+          <InputGroupTextarea
+            placeholder="Enter your message"
+            value={shareDescriptionText}
+            onChange={(e) => setShareDescriptionText(e.target.value)}
+            className="min-h-24"
+          />
+          <InputGroupAddon align="block-end">
+            <Button
+              variant="default"
+              size="xs"
+              onClick={() =>
+                navigator.clipboard.writeText(shareDescriptionText)
+              }
+            >
+              <MdContentCopy className="size-3" /> Copy
+            </Button>
+          </InputGroupAddon>
+        </InputGroup>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import { SearchRouteParams } from '@/app/search/search-page-client';
 import { Price, Product, ProductWeightComponents, Stock, User } from 'graphql-utils';
 import { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers';
 import { ProductReferrer } from '../../graphql-utils/src/types/graphql';
+import { isDateExpired } from './utils';
 
 export function titleCase(str: string) {
   return str
@@ -142,4 +143,29 @@ export function generateProductShareLink(socialMedia: SocialMediaType, product: 
   return `https://pricetra.com/products/${
     product.id
   }?${paramBuilder.toString()}`;
+}
+
+export function generateProductShareDescription(product: Product, stock?: Stock): string {
+  let description = '';
+  if (!stock) description = 'Check out ';
+  description += product.name;
+  if (stock?.latestPrice) {
+    const price = stock.latestPrice;
+    const saleExpired = price.sale ? isDateExpired(price.expiresAt) : false;
+    if (price.expiresAt && !saleExpired) {
+      description += " on sale"
+    }
+    description += ` for ${currencyFormat(saleExpired ? price.originalPrice ?? price.amount : price.amount)}`
+
+    if (price.originalPrice && price.expiresAt && !saleExpired) {
+      description += ` (was ${currencyFormat(price.originalPrice)})`
+    }
+  }
+  if (stock?.branch) {
+    description += ` at ${stock.branch.name}`
+    if (stock.branch.address) {
+      description += ` (${stock.branch.address.fullAddress})`
+    }
+  }
+  return description;
 }
