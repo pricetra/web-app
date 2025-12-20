@@ -1,7 +1,7 @@
 import ProductItem from "@/components/product-item";
 import { useAuth } from "@/context/user-context";
+import { generateProductShareLink } from "@/lib/strings";
 import { Product, Stock } from "graphql-utils";
-import { useMemo } from "react";
 import {
   FaFacebook,
   FaLink,
@@ -17,19 +17,6 @@ export type ShareDialogProps = {
 
 export default function ShareDialog({product, stock}: ShareDialogProps) {
   const { user } = useAuth();
-  const fullUrl = useMemo(() => {
-      const paramBuilder = new URLSearchParams();
-      if (stock) {
-        paramBuilder.set("stockId", stock.id.toString());
-      }
-      if (user) {
-        paramBuilder.set("sharedBy", user.id.toString());
-      }
-      paramBuilder.set("sharedFrom", "web");
-      return `https://pricetra.com/products/${
-        product.id
-      }?${paramBuilder.toString()}`;
-    }, [product.id, stock, user]);
 
   return (
     <div className="my-5">
@@ -40,7 +27,7 @@ export default function ShareDialog({product, stock}: ShareDialogProps) {
       <div className="flex flex-row flex-wrap items-center justify-evenly gap-5">
         <a
           href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
-            fullUrl
+            generateProductShareLink('facebook', product, stock, user)
           )}`}
           target="_blank"
           className="flex flex-col gap-2 p-1 justify-center items-center"
@@ -52,7 +39,9 @@ export default function ShareDialog({product, stock}: ShareDialogProps) {
         </a>
 
         <a
-          href={`https://wa.me/?text=${encodeURIComponent(fullUrl)}`}
+          href={`https://wa.me/?text=${encodeURIComponent(
+            generateProductShareLink('facebook', product, stock, user)
+          )}`}
           target="_blank"
           className="flex flex-col gap-2 p-1 justify-center items-center"
         >
@@ -63,7 +52,9 @@ export default function ShareDialog({product, stock}: ShareDialogProps) {
         </a>
 
         <a
-          href={`https://x.com/intent/tweet?url=${encodeURIComponent(fullUrl)}`}
+          href={`https://x.com/intent/tweet?url=${encodeURIComponent(
+            generateProductShareLink('facebook', product, stock, user)
+          )}`}
           target="_blank"
           className="flex flex-col gap-2 p-1 justify-center items-center"
         >
@@ -75,7 +66,7 @@ export default function ShareDialog({product, stock}: ShareDialogProps) {
 
         <a
           href={`https://nextdoor.com/news_feed/?open_composer=true&body=${encodeURIComponent(
-            fullUrl
+            generateProductShareLink('facebook', product, stock, user)
           )}`}
           target="_blank"
           className="flex flex-col gap-2 p-1 justify-center items-center"
@@ -105,7 +96,7 @@ export default function ShareDialog({product, stock}: ShareDialogProps) {
 
         <button
           onClick={() => {
-            navigator.clipboard.writeText(fullUrl);
+            navigator.clipboard.writeText(generateProductShareLink('other', product, stock, user));
             toast.success("Copied URL to clipboard!");
           }}
           className="flex flex-col gap-2 p-1 justify-center items-center cursor-pointer"

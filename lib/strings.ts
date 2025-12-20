@@ -1,6 +1,7 @@
 import { SearchRouteParams } from '@/app/search/search-page-client';
-import { Price, ProductWeightComponents } from 'graphql-utils';
+import { Price, Product, ProductWeightComponents, Stock, User } from 'graphql-utils';
 import { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers';
+import { ProductReferrer } from '../../graphql-utils/src/types/graphql';
 
 export function titleCase(str: string) {
   return str
@@ -113,4 +114,32 @@ export function searchParamsTitleBuilder(sp: SearchRouteParams, prefix?: string)
     }
   }
   return title
+}
+
+export function objectToBase64<T>(ob: T): string {
+  const ob_str = JSON.stringify(ob);
+  return btoa(ob_str)
+}
+
+export type SocialMediaType = 'facebook' | 'whatsapp' | 'x' | 'nextdoor' | 'other';
+
+export function generateProductShareLink(socialMedia: SocialMediaType, product: Product, stock?: Stock, user?: User) {
+  const paramBuilder = new URLSearchParams();
+  if (stock) {
+    paramBuilder.set("stockId", stock.id.toString());
+  }
+
+  const referrer: ProductReferrer = {
+    sharedOn: socialMedia,
+    sharedFromPlatform: 'web',
+  }
+  if (user) {
+    referrer.sharedByUser = user.id.toString();
+  }
+  const ref = objectToBase64(referrer);
+  paramBuilder.set('ref', ref);
+
+  return `https://pricetra.com/products/${
+    product.id
+  }?${paramBuilder.toString()}`;
 }
