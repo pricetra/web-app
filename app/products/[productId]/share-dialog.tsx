@@ -52,7 +52,7 @@ export default function ShareDialog({ product, stock }: ShareDialogProps) {
 
         <a
           href={`https://wa.me/?text=${encodeURIComponent(
-            generateProductShareLink("facebook", product, stock, user)
+            generateProductShareLink("whatsapp", product, stock, user)
           )}`}
           target="_blank"
           className="flex flex-col gap-2 p-1 justify-center items-center"
@@ -65,7 +65,7 @@ export default function ShareDialog({ product, stock }: ShareDialogProps) {
 
         <a
           href={`https://x.com/intent/tweet?url=${encodeURIComponent(
-            generateProductShareLink("facebook", product, stock, user)
+            generateProductShareLink("x", product, stock, user)
           )}`}
           target="_blank"
           className="flex flex-col gap-2 p-1 justify-center items-center"
@@ -78,7 +78,7 @@ export default function ShareDialog({ product, stock }: ShareDialogProps) {
 
         <a
           href={`https://nextdoor.com/news_feed/?open_composer=true&body=${encodeURIComponent(
-            generateProductShareLink("facebook", product, stock, user)
+            generateProductShareLink("nextdoor", product, stock, user)
           )}`}
           target="_blank"
           className="flex flex-col gap-2 p-1 justify-center items-center"
