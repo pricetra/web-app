@@ -4,6 +4,7 @@ import ProductFull, { ProductFullLoading } from "@/components/product-full";
 import {
   Product,
   ProductDocument,
+  ProductReferrer,
   ProductSummary,
   Stock,
   StockDocument,
@@ -32,8 +33,7 @@ import { StockItemMiniLoading } from "@/components/stock-item-mini";
 export type ProductPageClientProps = {
   productId: number;
   stockId?: number;
-  sharedBy?: number;
-  sharedFrom?: string;
+  referrer?: ProductReferrer;
   ipAddress: string;
   productSummary: ProductSummary;
 };
@@ -42,6 +42,7 @@ export default function ProductPageClient({
   productId,
   stockId,
   ipAddress,
+  referrer,
   productSummary,
 }: ProductPageClientProps) {
   const { loggedIn, user, lists } = useAuth();
@@ -51,7 +52,7 @@ export default function ProductPageClient({
     ProductDocument,
     {
       fetchPolicy: "network-only",
-      variables: { productId, viewerTrail: { stockId } },
+      variables: { productId, viewerTrail: { stockId, referrer } },
     }
   );
   const [getStock, { data: stockData, error: stockError }] = useLazyQuery(

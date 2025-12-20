@@ -14,6 +14,7 @@ import { headers } from "next/headers";
 import { parseIntOrUndefined, serverSideIpAddress } from "@/lib/strings";
 import dayjs from "dayjs";
 import { isDateExpired } from "@/lib/utils";
+import { ProductReferrer } from '../../../../graphql-utils/src/types/graphql';
 
 type Props = {
   params: Promise<{ productId: string }>;
@@ -21,6 +22,7 @@ type Props = {
     stockId?: string;
     sharedBy?: string;
     sharedFrom?: string;
+    ref?: string;
   }>;
 };
 
@@ -88,7 +90,8 @@ export async function generateMetadata({
   const { productId } = await params;
   const parsedProductId = parseInt(productId, 10);
 
-  const { stockId } = await searchParams;
+  const sp = await searchParams
+  const { stockId } = sp;
   const parsedStockId = parseIntOrUndefined(stockId);
 
   const productSummary = await cachedFetchProductSummary(
@@ -98,6 +101,8 @@ export async function generateMetadata({
   if (!productSummary) return { title: "Product not found - Pricetra" };
 
   const { title, description } = productSeoTitleAndDescription(productSummary);
+  const urlParamBuilder = new URLSearchParams(sp);
+  const urlParamString = urlParamBuilder.size > 0 ? `?${urlParamBuilder.toString()}` : '';
   return {
     title: `${title} | Pricetra`,
     description,
@@ -108,7 +113,7 @@ export async function generateMetadata({
       description,
       publishedTime: productSummary.priceCreatedAt,
       images: productSummary.image,
-      url: `https://pricetra.com/products/${parsedProductId}`,
+      url: `https://pricetra.com/products/${parsedProductId}${urlParamString}`,
     },
   };
 }
@@ -120,9 +125,8 @@ export default async function LandingPageServer({
   const { productId } = await params;
   const parsedProductId = parseInt(productId, 10);
 
-  const { stockId, sharedBy, sharedFrom } = await searchParams;
+  const { stockId, sharedBy, sharedFrom, ref } = await searchParams;
   const parsedStockId = parseIntOrUndefined(stockId);
-  const parsedSharedById = sharedBy ? parseInt(sharedBy, 10) : undefined;
 
   const productSummary = await cachedFetchProductSummary(
     parsedProductId,
@@ -135,13 +139,28 @@ export default async function LandingPageServer({
   const headerList = await headers();
   const ipAddress = serverSideIpAddress(headerList);
 
+  let referrer: ProductReferrer | undefined;
+  if (sharedBy) {
+    if (!referrer) referrer = {};
+    referrer.sharedByUser = sharedBy;
+  }
+  if (sharedFrom) {
+    if (!referrer) referrer = {};
+    referrer.sharedFromPlatform = sharedFrom;
+  }
+  if (ref) {
+    try {
+      const raw_ref = atob(ref);
+      referrer = JSON.parse(raw_ref) as ProductReferrer;
+    } catch {}
+  }
+
   return (
     <LayoutProvider>
       <ProductPageClient
         productId={parsedProductId}
         stockId={parsedStockId}
-        sharedBy={parsedSharedById}
-        sharedFrom={sharedFrom}
+        referrer={referrer}
         ipAddress={ipAddress}
         productSummary={productSummary}
       />
