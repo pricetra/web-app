@@ -5,12 +5,12 @@ import {
 import { notFound, redirect, RedirectType } from "next/navigation";
 import LayoutProvider from "@/providers/layout-provider";
 import { headers } from "next/headers";
-import { parseIntOrUndefined, serverSideIpAddress } from "@/lib/strings";
-import { cachedFetchProductSummary, productSeoTitleAndDescription } from "./utils";
-import ProductPage from "./components/product-page";
+import { serverSideIpAddress } from "@/lib/strings";
+import { cachedFetchProductSummary, productSeoTitleAndDescription } from "../utils";
+import ProductPage from "../components/product-page";
 
 type Props = {
-  params: Promise<{ productId: string }>;
+  params: Promise<{ productId: string, branch: string }>;
   searchParams: Promise<{
     stockId?: string;
     sharedBy?: string;
@@ -19,26 +19,20 @@ type Props = {
   }>;
 };
 
-export async function generateMetadata({
-  params,
-  searchParams,
-}: Props): Promise<Metadata> {
-  const { productId } = await params;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { productId, branch } = await params;
   const parsedProductId = parseInt(productId, 10);
-
-  const sp = await searchParams
-  const { stockId } = sp;
-  const parsedStockId = parseIntOrUndefined(stockId);
 
   const productSummary = await cachedFetchProductSummary(
     parsedProductId,
-    parsedStockId
+    undefined,
+    {
+        branchSlug: branch,
+    }
   );
   if (!productSummary) return { title: "Product not found - Pricetra" };
 
   const { title, description } = productSeoTitleAndDescription(productSummary);
-  const urlParamBuilder = new URLSearchParams(sp);
-  const urlParamString = urlParamBuilder.size > 0 ? `?${urlParamBuilder.toString()}` : '';
   return {
     title: `${title} | Pricetra`,
     description,
@@ -49,33 +43,32 @@ export async function generateMetadata({
       description,
       publishedTime: productSummary.priceCreatedAt,
       images: productSummary.image,
-      url: `https://pricetra.com/products/${parsedProductId}${urlParamString}`,
+      url: `https://pricetra.com/products/${parsedProductId}/${branch}`,
     },
   };
 }
 
-export default async function ProductPageServer({
+export default async function ProductBranchPageServer({
   params,
   searchParams,
 }: Props) {
-  const { productId } = await params;
+  const { productId, branch } = await params;
   const parsedProductId = parseInt(productId, 10);
 
-  const { stockId, ...sp } = await searchParams;
-  const parsedStockId = parseIntOrUndefined(stockId);
+  const sp = await searchParams;
 
   const productSummary = await cachedFetchProductSummary(
     parsedProductId,
-    parsedStockId
+    undefined,
+    {
+        branchSlug: branch,
+    },
   );
   if (!productSummary) {
     notFound();
   }
-
-  if (stockId && productSummary.branchSlug) {
-    const paramBuilder = new URLSearchParams(sp);
-    const paramStr = paramBuilder.size > 0 ? `?${paramBuilder.toString()}` : ''
-    redirect(`/products/${productId}/${productSummary.branchSlug}${paramStr}`, RedirectType.replace);
+  if (productSummary.branchSlug !== branch) {
+    redirect(`/products/${productId}`, RedirectType.replace);
   }
 
   const headerList = await headers();
@@ -101,7 +94,7 @@ export default async function ProductPageServer({
     <LayoutProvider>
       <ProductPage
         productId={parsedProductId}
-        stockId={parsedStockId}
+        stockId={productSummary.stockId ?? undefined}
         referrer={referrer}
         ipAddress={ipAddress}
         productSummary={productSummary}
