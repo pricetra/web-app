@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import {
+  ProductReferrer,
   ProductSummary,
   ProductSummaryDocument,
   ProductSummaryQuery,
@@ -14,7 +15,6 @@ import { headers } from "next/headers";
 import { parseIntOrUndefined, serverSideIpAddress } from "@/lib/strings";
 import dayjs from "dayjs";
 import { isDateExpired } from "@/lib/utils";
-import { ProductReferrer } from '../../../../graphql-utils/src/types/graphql';
 
 type Props = {
   params: Promise<{ productId: string }>;
