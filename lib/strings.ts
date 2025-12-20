@@ -1,7 +1,6 @@
 import { SearchRouteParams } from '@/app/search/search-page-client';
-import { Price, Product, ProductWeightComponents, Stock, User } from 'graphql-utils';
+import { Price, Product, ProductReferrer, ProductWeightComponents, Stock, User } from 'graphql-utils';
 import { ReadonlyHeaders } from 'next/dist/server/web/spec-extension/adapters/headers';
-import { ProductReferrer } from '../../graphql-utils/src/types/graphql';
 import { isDateExpired } from './utils';
 
 export function titleCase(str: string) {
