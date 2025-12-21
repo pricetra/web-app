@@ -125,10 +125,6 @@ export type SocialMediaType = 'facebook' | 'whatsapp' | 'x' | 'nextdoor' | 'othe
 
 export function generateProductShareLink(socialMedia: SocialMediaType, product: Product, stock?: Stock, user?: User) {
   const paramBuilder = new URLSearchParams();
-  if (stock) {
-    paramBuilder.set("stockId", stock.id.toString());
-  }
-
   const referrer: ProductReferrer = {
     sharedOn: socialMedia,
     sharedFromPlatform: 'web',
@@ -141,7 +137,7 @@ export function generateProductShareLink(socialMedia: SocialMediaType, product: 
 
   return `https://pricetra.com/products/${
     product.id
-  }?${paramBuilder.toString()}`;
+}${stock?.branch ? `/${stock.branch.slug}` : ''}?${paramBuilder.toString()}`;
 }
 
 export function generateProductShareDescription(product: Product, stock?: Stock): string {
