@@ -108,7 +108,7 @@ export default function ProductPage({
       />
     );
     if (isMediumScreen) {
-      setSubHeader(NavTools);
+      if (loggedIn) setSubHeader(NavTools);
       setNavTools(undefined);
       return;
     }
@@ -116,7 +116,7 @@ export default function ProductPage({
     setSubHeader(undefined);
     setNavTools(NavTools);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productData, stockId, stockData, isMediumScreen]);
+  }, [productData, stockId, stockData, isMediumScreen, loggedIn]);
 
   useLayoutEffect(() => {
     return () => {
