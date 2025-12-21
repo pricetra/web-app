@@ -189,9 +189,9 @@ export default function ProductNavTools({
           tooltip="Sanitize product data with AI"
         >
           {sanitizing ? (
-            <CgSpinner className="animate-spin text-sanitize" />
+            <CgSpinner className="animate-spin text-gray-800" />
           ) : (
-            <FaHandSparkles className="text-sanitize" />
+            <FaHandSparkles className="text-[#2563eb]" />
           )}
         </NavToolIconButton>
       )}
@@ -260,7 +260,7 @@ export default function ProductNavTools({
                   product={product}
                   onCancel={() => setPriceModalOpen(false)}
                   onSuccess={(p) => {
-                    router.push(`?stockId=${p.stockId}`);
+                    router.push(`/products/${product.id}?stockId=${p.stockId}`);
                     toast.success("Product price submitted");
                     setPriceModalOpen(false);
                   }}

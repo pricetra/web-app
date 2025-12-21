@@ -184,6 +184,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                       {(branch.products ?? []).map((product) => (
                         <ProductItemHorizontal
                           product={product as Product}
+                          branchSlug={branch.slug}
                           key={`branch-product-${branch.id}-${product.id}`}
                         />
                       ))}

@@ -23,13 +23,21 @@ import { useRouter } from "next/navigation";
 import ProductItem from "@/components/product-item";
 import Image from "next/image";
 import { createCloudinaryUrl } from "@/lib/files";
-import { NativeSelect, NativeSelectOption } from '@/components/ui/native-select';
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
 import { Formik, FormikErrors, useFormikContext } from "formik";
 import dayjs from "dayjs";
 import { ErrorLike } from "@apollo/client";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 
 export type AddPriceFormProps = {
   product: Product;
@@ -143,6 +151,7 @@ export default function AddPriceForm({
             ...product,
             stock,
           }}
+          branchSlug={stock?.branch?.slug}
           hideAddButton
           hideStoreInfo
           imgWidth={100}
@@ -192,8 +201,12 @@ export default function AddPriceForm({
         <Formik
           validateOnBlur
           validateOnChange
+          validateOnMount
           validate={(values) => {
             const errors = {} as FormikErrors<CreatePrice>;
+            if (!values.amount) {
+              errors.amount = "";
+            }
             if (values.amount <= 0) {
               errors.amount = "Amount has to be higher than $0.00";
             }
@@ -212,7 +225,6 @@ export default function AddPriceForm({
             {
               productId: product.id,
               branchId: +branchId,
-              amount: 0.0,
               sale: false,
               expiresAt: nextWeek,
               unitType: "item",
@@ -317,15 +329,24 @@ function PriceForm({ latestPrice }: PriceFormProps) {
   return (
     <>
       <div className="flex flex-row items-center gap-5">
-        <Input
-          placeholder="Current product price"
-          value={formikContext.values.amount}
-          type="number"
-          onChange={(e) => {
-            const value = e.target.value;
-            formikContext.setFieldValue("amount", currencyInputToNumber(value));
-          }}
-        />
+        <InputGroup>
+          <InputGroupInput
+            id="amount"
+            placeholder="Current product price"
+            value={formikContext.values.amount}
+            type="number"
+            onChange={(e) => {
+              const value = e.target.value;
+              formikContext.setFieldValue(
+                "amount",
+                currencyInputToNumber(value)
+              );
+            }}
+          />
+          <InputGroupAddon>
+            <Label htmlFor="amount">$</Label>
+          </InputGroupAddon>
+        </InputGroup>
 
         <div className="flex flex-row items-center gap-3">
           <span className="text-2xl text-gray-300">/</span>
@@ -361,18 +382,24 @@ function PriceForm({ latestPrice }: PriceFormProps) {
           <>
             <div className="flex flex-row items-center gap-2">
               <div className="flex-1">
-                <Input
-                  placeholder="Original price"
-                  value={formikContext.values.originalPrice ?? ""}
-                  type="number"
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    formikContext.setFieldValue(
-                      "originalPrice",
-                      currencyInputToNumber(value)
-                    );
-                  }}
-                />
+                <InputGroup>
+                  <InputGroupInput
+                    id="originalPrice"
+                    placeholder="Original price"
+                    value={formikContext.values.originalPrice ?? ""}
+                    type="number"
+                    onChange={(e) => {
+                      const value = e.target.value;
+                      formikContext.setFieldValue(
+                        "originalPrice",
+                        currencyInputToNumber(value)
+                      );
+                    }}
+                  />
+                  <InputGroupAddon>
+                    <Label htmlFor="originalPrice">$</Label>
+                  </InputGroupAddon>
+                </InputGroup>
               </div>
               <div className="flex-2">
                 <Input

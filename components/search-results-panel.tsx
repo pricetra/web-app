@@ -136,6 +136,7 @@ export default function SearchResultsPanel({
                               (product, i) => (
                                 <ProductItemHorizontal
                                   product={product as Product}
+                                  branchSlug={product.stock?.branch?.slug}
                                   key={`recent-product-${product.id}-${i}`}
                                   hideStoreInfo={false}
                                   handleOnClick={onClickResult}
@@ -227,6 +228,7 @@ export default function SearchResultsPanel({
                           (product) => (
                             <ProductItemHorizontal
                               product={product as Product}
+                              branchSlug={product.stock?.branch?.slug}
                               key={`popular-product-${product.id}-${product.id}`}
                               hideStoreInfo={false}
                               handleOnClick={onClickResult}
