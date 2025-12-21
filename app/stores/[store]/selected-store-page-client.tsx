@@ -120,6 +120,7 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
                       {(branch.products ?? []).map((product) => (
                         <ProductItemHorizontal
                           product={product as Product}
+                          branchSlug={branch.slug}
                           key={`branch-product-${branch.id}-${product.id}`}
                         />
                       ))}
