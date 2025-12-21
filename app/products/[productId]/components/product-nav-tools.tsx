@@ -189,9 +189,9 @@ export default function ProductNavTools({
           tooltip="Sanitize product data with AI"
         >
           {sanitizing ? (
-            <CgSpinner className="animate-spin text-sanitize" />
+            <CgSpinner className="animate-spin text-gray-800" />
           ) : (
-            <FaHandSparkles className="text-sanitize" />
+            <FaHandSparkles className="text-[#2563eb]" />
           )}
         </NavToolIconButton>
       )}
