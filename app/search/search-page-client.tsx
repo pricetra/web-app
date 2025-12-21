@@ -189,6 +189,7 @@ export default function SearchPageClient({
                           (product) => (
                             <ProductItemHorizontal
                               product={product as Product}
+                              branchSlug={product.stock?.branch?.slug}
                               key={`branch-product-${product.id}-${product.id}`}
                               hideStoreInfo={false}
                             />
@@ -267,6 +268,7 @@ export default function SearchPageClient({
                       {(branch.products ?? []).map((product) => (
                         <ProductItemHorizontal
                           product={product as Product}
+                          branchSlug={branch.slug}
                           key={`branch-product-${branch.id}-${product.id}`}
                         />
                       ))}
