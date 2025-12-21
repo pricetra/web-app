@@ -137,6 +137,12 @@ export function objectToBase64<T>(ob: T): string {
   return btoa(ob_str);
 }
 
+export function buildProductBaseUrl(product: Product, stock?: Stock): string {
+  return `https://pricetra.com/products/${product.id}${
+    stock?.branch ? `/${stock.branch.slug}` : ""
+  }`
+}
+
 export type SocialMediaType =
   | "facebook"
   | "whatsapp"
@@ -161,14 +167,14 @@ export function generateProductShareLink(
   const ref = objectToBase64(referrer);
   paramBuilder.set("ref", ref);
 
-  return `https://pricetra.com/products/${product.id}${
-    stock?.branch ? `/${stock.branch.slug}` : ""
-  }?${paramBuilder.toString()}`;
+  return `${buildProductBaseUrl(product, stock)}?${paramBuilder.toString()}`;
 }
 
 export function generateProductShareDescription(
   product: Product,
-  stock?: Stock
+  stock?: Stock,
+  user?: User,
+  showUrl: boolean = false,
 ): string {
   let description = "";
   if (!stock) description = "Check out ";
@@ -192,6 +198,11 @@ export function generateProductShareDescription(
     if (stock.branch.address) {
       description += ` (${stock.branch.address.fullAddress})`;
     }
+  }
+  description += ". #BeatInflation";
+  if (showUrl) {
+    description += "\n";
+    description += generateProductShareLink('other', product, stock, user);
   }
   return description;
 }

@@ -24,8 +24,8 @@ export type ShareDialogProps = {
 export default function ShareDialog({ product, stock }: ShareDialogProps) {
   const { user } = useAuth();
   const shareDescription = useMemo(
-    () => generateProductShareDescription(product, stock),
-    [product, stock]
+    () => generateProductShareDescription(product, stock, user, true),
+    [product, stock, user]
   );
   const [shareDescriptionText, setShareDescriptionText] =
     useState(shareDescription);
