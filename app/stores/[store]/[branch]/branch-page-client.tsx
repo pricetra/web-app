@@ -3,7 +3,7 @@
 import { useNavbar } from "@/context/navbar-context";
 import { AllProductsDocument, Branch, Product, Store } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useMemo } from "react";
 import { useQuery } from "@apollo/client/react";
 import ProductItem, { ProductItemLoading } from "@/components/product-item";
 import NavPageIndicator from "@/components/ui/nav-page-indicator";
@@ -32,7 +32,11 @@ export default function BranchPageClient({
     query: "(max-width: 640px)",
   });
 
-  const paramsBuilder = new URLSearchParams(searchParams);
+  const paramsBuilder = useMemo(() => {
+    const sp = { ...searchParams };
+    delete sp.page;
+    return new URLSearchParams(sp);
+  }, [searchParams]);
 
   const { data: productsData } = useQuery(AllProductsDocument, {
     fetchPolicy: "no-cache",
@@ -79,7 +83,7 @@ export default function BranchPageClient({
 
   return (
     <>
-      <div className="w-full max-w-[1000px] mt-5 lg:mt-10 px-5 flex-1">
+      <div className="w-full max-w-[1000px] mt-5 px-5 flex-1">
         {paramsBuilder.size > 0 && (
           <div className="mb-10">
             <SearchFilters params={searchParams} />
