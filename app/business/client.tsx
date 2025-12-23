@@ -6,6 +6,8 @@ import Step from "./components/step";
 import GoogleSearchMock from "./components/google-search-mock";
 import LandingFooter from "@/components/ui/landing-footer";
 
+export const G_FORM_LINK = "https://forms.gle/WTjYKPQQioGsQbWR8";
+
 export default function BusinessPageClient() {
   return (
     <main className="bg-white">
@@ -26,7 +28,8 @@ export default function BusinessPageClient() {
 
           <div className="mt-8 flex flex-col xs:flex-row justify-center gap-4">
             <a
-              href="/business/signup"
+              href={G_FORM_LINK}
+              target="_blank"
               className="rounded-full bg-pricetra-green-dark px-8 py-3 font-semibold text-white transition hover:bg-pricetra-green-heavy-dark"
             >
               List your store for free
@@ -175,7 +178,8 @@ export default function BusinessPageClient() {
 
         <div className="mt-8">
           <a
-            href="/business/signup"
+            href={G_FORM_LINK}
+            target="_blank"
             className="inline-flex rounded-full bg-pricetra-green-logo/20 px-8 py-3 font-semibold text-pricetra-green-heavy-dark transition hover:bg-pricetra-green-logo/30"
           >
             List your store for free
