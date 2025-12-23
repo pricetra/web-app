@@ -51,22 +51,22 @@ export default function BusinessPageClient() {
       </section>
 
       {/* PROBLEM */}
-      <section className="bg-gray-50 py-20">
-        <div className="mx-auto max-w-5xl px-6">
+      <section className="bg-gray-50 md:border md:border-gray-200 rounded-none md:rounded-2xl mx-auto max-w-4xl flex min-h-[30vh] flex-col items-center justify-center">
+        <div className="max-w-3xl mx-auto py-20 px-5">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900">
+            <h2 className="text-3xl sm:text-4xl font-bold text-pricetra-green-dark">
               Customers can&apos;t buy what they can&apos;t find
             </h2>
           </div>
 
           <div>
-            <p className="mt-6 text-gray-600 text-lg">
+            <p className="mt-6 text-gray-600 text-base sm:text-lg">
               Many shoppers default to big chains because they can see products,
               prices, and availability online — even when better local options
               exist nearby.
             </p>
 
-            <p className="mt-4 text-gray-600 text-lg">
+            <p className="mt-2 text-gray-600 text-base sm:text-lg">
               If customers don&apos;t know what your store carries, they may
               never walk through your doors.
             </p>
@@ -76,8 +76,10 @@ export default function BusinessPageClient() {
 
       {/* SOLUTION */}
       <section className="mx-auto max-w-7xl px-6 py-20">
+        <div className="h-[10vh]" />
+
         <h2 className="text-center text-3xl font-bold text-gray-900">
-          Pricetra puts your store on the map
+          Pricetra puts <i className="underline">your store</i> on the map
         </h2>
 
         <p className="mt-4 text-center text-gray-600 max-w-3xl mx-auto">
@@ -99,13 +101,15 @@ export default function BusinessPageClient() {
             description="When users search for a product, Pricetra shows every place they can buy it — including you."
           />
         </div>
+
+        <div className="h-[10vh]" />
       </section>
 
       {/* SEO SECTION */}
       <section className="bg-gray-50 py-20">
         <div className="mx-auto max-w-6xl px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div>
-            <h2 className="text-3xl font-bold text-gray-900">
+            <h2 className="text-3xl font-bold text-pricetra-green-heavy-dark">
               Built for search. Built for visibility.
             </h2>
 
@@ -115,7 +119,7 @@ export default function BusinessPageClient() {
               surface:
             </p>
 
-            <div className="mt-6 space-y-3 text-gray-600 pl-5">
+            <div className="mt-3 space-y-3 text-gray-600 pl-10">
               <ul className="list-disc">
                 <li>Your store&apos;s location</li>
                 <li>Exact product prices</li>
