@@ -111,7 +111,7 @@ export default function StockFull({
         {stock?.latestPrice?.sale &&
           !isExpired &&
           stock.latestPrice.originalPrice && (
-            <h6 className="text text-right line-through text-red-700">
+            <h6 className="text text-right line-through text-red-700 leading-none">
               {currencyFormat(stock.latestPrice.originalPrice)}
             </h6>
           )}
@@ -128,7 +128,7 @@ export default function StockFull({
         )}
 
         {stock.latestPrice?.amount && quantityValue && quantityValue > 1 && (
-          <span className="text-right text-[10px] text-gray-500">
+          <span className="text-right text-[10px] text-gray-500 leading-none">
             {`${currencyFormat(
               calculatedAmount / quantityValue
             )}/${quantityType}`}

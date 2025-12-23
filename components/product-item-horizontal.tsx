@@ -120,11 +120,11 @@ export default function ProductItemHorizontal({
               {product.stock.latestPrice.sale &&
                 !isExpired &&
                 product.stock.latestPrice.originalPrice && (
-                  <small className="text-[10px] line-through text-red-700 block">
+                  <small className="text-[10px] line-through text-red-700 block leading-none">
                     {currencyFormat(product.stock.latestPrice.originalPrice)}
                   </small>
                 )}
-              <div className="flex flex-row items-center justify-start gap-1">
+              <div className="flex flex-row items-center justify-start gap-1 leading-none">
                 <h5 className="text-sm md:text-lg font-black">
                   {currencyFormat(calculatedAmount)}
                 </h5>
@@ -133,7 +133,7 @@ export default function ProductItemHorizontal({
                 </small>
               </div>
               {product.quantityValue > 1 && (
-                <small className="text-[10px] text-gray-500 block">
+                <small className="text-[10px] text-gray-500 block leading-none">
                   {`${currencyFormat(
                     calculatedAmount / product.quantityValue
                   )}/${product.quantityType}`}

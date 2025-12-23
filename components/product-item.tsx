@@ -109,11 +109,11 @@ ProductItemProps) {
                 {product.stock.latestPrice.sale &&
                   !isExpired &&
                   product.stock.latestPrice.originalPrice && (
-                    <span className="text-right text-xs line-through text-red-700">
+                    <span className="text-right text-xs line-through text-red-700 leading-none">
                       {currencyFormat(product.stock.latestPrice.originalPrice)}
                     </span>
                   )}
-                <div className="flex flex-row items-center justify-start gap-1">
+                <div className="flex flex-row items-center justify-start gap-1 leading-none">
                   <span className="font-black">
                     {currencyFormat(calculatedAmount)}
                   </span>
@@ -124,7 +124,7 @@ ProductItemProps) {
                   )}
                 </div>
                 {product.quantityValue > 1 && (
-                  <span className="text-right text-[10px] text-gray-500">
+                  <span className="text-right text-[10px] text-gray-500 leading-none">
                     {`${currencyFormat(
                       calculatedAmount / product.quantityValue
                     )}/${product.quantityType}`}

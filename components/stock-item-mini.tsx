@@ -105,7 +105,7 @@ export default function StockItemMini({
             {stock.latestPrice?.amount &&
               quantityValue &&
               quantityValue > 1 && (
-                <span className="text-[10px] text-gray-500">
+                <span className="text-[10px] text-gray-500 leading-none">
                   {`${currencyFormat(
                     calculatedAmount / quantityValue
                   )}/${quantityType}`}
