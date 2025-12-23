@@ -181,6 +181,8 @@ export default function BusinessPageClient() {
           </a>
         </div>
       </section>
+
+      <LandingFooter />
     </main>
   );
 }
