@@ -60,6 +60,14 @@ export default function NavbarMain() {
     [searchQueryPath]
   );
 
+  useEffect(() => {
+    if (searchPanelOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "auto";
+    }
+  }, [searchPanelOpen]);
+
   return (
     <>
       <header
@@ -248,7 +256,7 @@ export default function NavbarMain() {
               <Button
                 onClick={() => setSearchPanelOpen(false)}
                 variant="ghost"
-                className="p-2"
+                className="p-2 -ml-2"
               >
                 <IoArrowBack className="size-[20px]" />
               </Button>
