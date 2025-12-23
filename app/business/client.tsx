@@ -4,6 +4,7 @@ import LandingHeader from "@/components/ui/landing-header";
 import Feature from "./components/feature";
 import Step from "./components/step";
 import GoogleSearchMock from "./components/google-search-mock";
+import LandingFooter from "@/components/ui/landing-footer";
 
 export default function BusinessPageClient() {
   return (
@@ -11,7 +12,7 @@ export default function BusinessPageClient() {
       <LandingHeader />
 
       {/* HERO */}
-      <section className="mx-auto max-w-7xl px-6 py-20 flex flex-row min-h-[50vh] items-center">
+      <section className="mx-auto max-w-7xl px-6 py-20 flex flex-row min-h-[60vh] items-center">
         <div className="text-center flex-1">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900">
             Help customers find <span className="text-pricetra-green-dark">Your Store.</span> Online.
@@ -23,7 +24,7 @@ export default function BusinessPageClient() {
             website or app.
           </p>
 
-          <div className="mt-8 flex justify-center gap-4">
+          <div className="mt-8 flex flex-col xs:flex-row justify-center gap-4">
             <a
               href="/business/signup"
               className="rounded-full bg-pricetra-green-dark px-8 py-3 font-semibold text-white transition hover:bg-pricetra-green-heavy-dark"
@@ -126,7 +127,7 @@ export default function BusinessPageClient() {
           </div>
 
           <div>
-            <GoogleSearchMock storeName="Walmart" city="near you" />
+            <GoogleSearchMock storeName="Local Grocers" city="near you" />
           </div>
         </div>
       </section>
@@ -162,12 +163,12 @@ export default function BusinessPageClient() {
       </section>
 
       {/* CTA */}
-      <section className="bg-gray-50 border-t border-gray-200 py-20 text-center">
-        <h2 className="text-3xl font-bold">
+      <section className="bg-gray-50 border-t border-gray-200 py-20 text-center px-5">
+        <h2 className="text-2xl sm:text-3xl font-bold">
           Join Pricetra and grow your visibility
         </h2>
 
-        <p className="mt-4 text-lg max-w-2xl mx-auto text-gray-700">
+        <p className="mt-4 text-base sm:text-lg max-w-2xl mx-auto text-gray-700">
           Help shoppers discover your store, compare prices, and choose local —
           all at no upfront cost.
         </p>
