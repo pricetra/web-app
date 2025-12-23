@@ -51,6 +51,10 @@ export default function NavbarMain() {
 
   const onSubmitSearch = useCallback(
     (value: string, e: KeyboardEvent<HTMLInputElement>) => {
+      if (e.key === "Escape") {
+        setSearchPanelOpen(false);
+        return;
+      }
       if (e.key === "Enter") {
         setSearchPanelOpen(false);
         router.push(`${searchQueryPath}?query=${encodeURIComponent(value)}`);
