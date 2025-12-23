@@ -6,7 +6,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { CgSpinner } from "react-icons/cg";
 import { ReactNode } from "react";
-import { FcGoogle } from "react-icons/fc";
 import { FaApple } from "react-icons/fa";
 
 export type AuthContainerProps = {
@@ -109,7 +108,14 @@ export default function AuthContainer({
                           className="w-full cursor-pointer"
                           onClick={onPressGoogle}
                         >
-                          <FcGoogle />
+                          <Image
+                            src="/icons/google-color-icon.svg"
+                            alt="Google"
+                            width={210}
+                            height={40}
+                            className="size-4 block w-auto color-white"
+                            priority
+                          />
                           <span className="sr-only">Google</span>
                         </Button>
                       </div>

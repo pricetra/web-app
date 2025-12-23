@@ -17,7 +17,7 @@ export default function GoogleSearchMock({
         <span className="size-6">
           <Image
             src="/icons/google-color-icon.svg"
-            alt="Pricetra"
+            alt="Google"
             width={210}
             height={40}
             className="size-6 block w-auto color-white"
