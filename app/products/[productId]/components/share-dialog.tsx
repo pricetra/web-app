@@ -33,7 +33,7 @@ export default function ShareDialog({ product, stock }: ShareDialogProps) {
   return (
     <div className="my-5">
       <div className="rounded-xl border border-gray-200 bg-gray-50 p-3 mb-10">
-        <ProductItem product={{ ...product, stock }} branchSlug={stock?.branch?.slug} />
+        <ProductItem product={{ ...product, stock }} branchSlug={stock?.branch?.slug} hideStoreInfo={false} />
       </div>
 
       <div className="flex flex-row flex-wrap items-center justify-evenly gap-5">
