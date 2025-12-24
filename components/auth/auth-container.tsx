@@ -37,19 +37,18 @@ export default function AuthContainer({
     <div className="flex min-h-svh flex-col items-center justify-center bg-white sm:bg-muted p-5 md:p-10">
       <div className="w-full max-w-sm">
         <div className="flex flex-col gap-6 my-10">
-          <Link
-            href="/"
-            className="mb-0 sm:mb-2 flex flex-row justify-center items-center"
-          >
-            <Image
-              src="/logotype_header_black.svg"
-              alt="Pricetra"
-              width={210}
-              height={40}
-              className="h-[30px] block w-auto"
-              priority
-            />
-          </Link>
+          <div className="mb-0 sm:mb-2 flex flex-row justify-center items-center">
+            <Link href="/">
+              <Image
+                src="/logotype_header_black.svg"
+                alt="Pricetra"
+                width={210}
+                height={40}
+                className="h-[30px] block w-auto"
+                priority
+              />
+            </Link>
+          </div>
 
           <Card className="border-0 shadow-none sm:border sm:shadow">
             <CardContent className="px-2 py-6 sm:p-6">

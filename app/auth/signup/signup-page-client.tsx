@@ -79,6 +79,7 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
   return (
     <AuthContainer
       title="Create your account"
+      description="Sign up and start saving today"
       buttonLabel="Sign Up"
       onPressSubmit={onPressSignup}
       error={error?.message}
