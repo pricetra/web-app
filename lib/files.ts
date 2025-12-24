@@ -10,6 +10,18 @@ export function createCloudinaryUrl(public_id: string, width?: number, height?: 
   return url;
 }
 
+export function productImageUrlWithTimestamp(
+  product: { code: string; updatedAt?: object | null },
+  width?: number,
+  height?: number,
+) {
+  let updatedAt = ''
+  if (product.updatedAt) {
+    updatedAt = '?updatedAt=' + encodeURIComponent(product.updatedAt.toString())
+  }
+  return `${createCloudinaryUrl(product.code, width, height)}${updatedAt}`;
+}
+
 export async function convertFileToBase64(file: File): Promise<string | ArrayBuffer | null> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()

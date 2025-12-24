@@ -2,7 +2,7 @@ import { Product } from "graphql-utils";
 import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import useProductWeightBuilder from "@/hooks/useProductWeightBuilder";
-import { createCloudinaryUrl } from "@/lib/files";
+import { createCloudinaryUrl, productImageUrlWithTimestamp } from "@/lib/files";
 import { currencyFormat, getPriceUnit, validBrand } from "@/lib/strings";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
@@ -52,7 +52,7 @@ ProductItemProps) {
         )}
 
         <Image
-          src={createCloudinaryUrl(product.code, 500)}
+          src={productImageUrlWithTimestamp(product, 500)}
           alt={product.code}
           className="h-full w-full object-cover rounded-xl"
           width={500}
@@ -97,41 +97,57 @@ ProductItemProps) {
           </h3>
         </div>
 
-        {product.stock && (
+        {product.stock?.latestPrice && (
           <div className="flex flex-row items-center justify-between gap-2">
-            {product.stock.latestPrice && (
+            {!hideStoreInfo && product.__typename === "Product" && product.stock.store && (
               <div
-                className={cn(
-                  "flex-1 flex-col",
-                  hideStoreInfo ? "items-start" : "items-end"
-                )}
+                title={product.stock.branch?.name ?? product.stock.store.name}
               >
-                {product.stock.latestPrice.sale &&
-                  !isExpired &&
-                  product.stock.latestPrice.originalPrice && (
-                    <span className="text-right text-xs line-through text-red-700 leading-none">
-                      {currencyFormat(product.stock.latestPrice.originalPrice)}
-                    </span>
+                <Image
+                  src={createCloudinaryUrl(
+                    product.stock.store.logo ?? "",
+                    100,
+                    100
                   )}
-                <div className="flex flex-row items-center justify-start gap-1 leading-none">
-                  <span className="font-black">
-                    {currencyFormat(calculatedAmount)}
+                  className="size-[25px] rounded-sm"
+                  width={100}
+                  height={100}
+                  alt={product.stock.store.name}
+                />
+              </div>
+            )}
+            
+            <div
+              className={cn(
+                "flex-1 flex-col",
+                hideStoreInfo ? "items-start" : "items-end"
+              )}
+            >
+              {product.stock.latestPrice.sale &&
+                !isExpired &&
+                product.stock.latestPrice.originalPrice && (
+                  <span className="text-right text-xs line-through text-red-700 leading-none">
+                    {currencyFormat(product.stock.latestPrice.originalPrice)}
                   </span>
-                  {product.stock.latestPrice.unitType !== "item" && (
-                    <span className="text-xs text-gray-500">
-                      {getPriceUnit(product.stock.latestPrice)}
-                    </span>
-                  )}
-                </div>
-                {product.quantityValue > 1 && (
-                  <span className="text-right text-[10px] text-gray-500 leading-none">
-                    {`${currencyFormat(
-                      calculatedAmount / product.quantityValue
-                    )}/${product.quantityType}`}
+                )}
+              <div className="flex flex-row items-center justify-start gap-1 leading-none">
+                <span className="font-black">
+                  {currencyFormat(calculatedAmount)}
+                </span>
+                {product.stock.latestPrice.unitType !== "item" && (
+                  <span className="text-xs text-gray-500">
+                    {getPriceUnit(product.stock.latestPrice)}
                   </span>
                 )}
               </div>
-            )}
+              {product.quantityValue > 1 && (
+                <span className="text-right text-[10px] text-gray-500 leading-none">
+                  {`${currencyFormat(
+                    calculatedAmount / product.quantityValue
+                  )}/${product.quantityType}`}
+                </span>
+              )}
+            </div>
           </div>
         )}
       </div>

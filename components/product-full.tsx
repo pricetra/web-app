@@ -7,6 +7,7 @@ import Image from "next/image";
 import useProductWeightBuilder from "@/hooks/useProductWeightBuilder";
 import Skeleton from "react-loading-skeleton";
 import Link from "next/link";
+import { productImageUrlWithTimestamp } from "@/lib/files";
 
 export type ProductFullProps = {
   product: Product;
@@ -31,7 +32,7 @@ export default function ProductFull({
         <div className="relative mx-auto h-[30vh] mb-5">
           <div className="w-full aspect-square size-full overflow-hidden">
             <Image
-              src={product.image}
+              src={productImageUrlWithTimestamp(product)}
               className="h-full w-full object-cover rounded-xl bg-white"
               onError={() => setImgAvailable(false)}
               alt="Product image"

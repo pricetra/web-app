@@ -1,6 +1,6 @@
 import Image from "next/image";
 import { Product, ProductSimple } from "graphql-utils";
-import { createCloudinaryUrl } from "@/lib/files";
+import { createCloudinaryUrl, productImageUrlWithTimestamp } from "@/lib/files";
 import { currencyFormat, getPriceUnit, validBrand } from "@/lib/strings";
 import Skeleton from "react-loading-skeleton";
 import ProductMetadataBadge from "./product-metadata-badge";
@@ -47,7 +47,7 @@ export default function ProductItemHorizontal({
         )}
 
         <Image
-          src={createCloudinaryUrl(product.code, 500)}
+          src={productImageUrlWithTimestamp(product, 500)}
           className="h-full w-full object-cover"
           width={500}
           height={500}
