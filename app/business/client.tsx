@@ -22,8 +22,8 @@ export default function BusinessPageClient() {
 
           <p className="mt-6 text-lg text-gray-600 max-w-3xl mx-auto">
             Pricetra helps local and chain grocery stores showcase their
-            products, prices, and availability online — without building a
-            website or app.
+            products, prices, and availability online. All without building a
+            website or an app.
           </p>
 
           <div className="mt-8 flex flex-col xs:flex-row justify-center gap-4">
@@ -36,13 +36,13 @@ export default function BusinessPageClient() {
             </a>
             <a
               href="#how-it-works"
-              className="rounded-full px-8 py-3 font-semibold text-pricetra-green-dark hover:text-pricetra-green-heavy-dark"
+              className="rounded-full px-8 py-3 font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100"
             >
               Learn how it works
             </a>
           </div>
 
-          <p className="mt-3 text-xs text-gray-500">
+          <p className="mt-5 text-xs text-gray-600">
             No upfront cost • No contracts • No risk
           </p>
         </div>
@@ -51,10 +51,10 @@ export default function BusinessPageClient() {
       </section>
 
       {/* PROBLEM */}
-      <section className="bg-gray-50 md:border md:border-gray-200 rounded-none md:rounded-2xl mx-auto max-w-4xl flex min-h-[30vh] flex-col items-center justify-center">
+      <section className="bg-gray-50 md:border md:border-gray-200 rounded-none md:rounded-2xl mx-auto max-w-4xl flex min-h-[30vh] flex-col items-center justify-center shadow-lg">
         <div className="max-w-3xl mx-auto py-20 px-5">
           <div>
-            <h2 className="text-3xl sm:text-4xl font-bold text-pricetra-green-dark">
+            <h2 className="text-3xl sm:text-4xl font-bold text-pricetra-green-heavy-dark">
               Customers can&apos;t buy what they can&apos;t find
             </h2>
           </div>
@@ -79,7 +79,7 @@ export default function BusinessPageClient() {
         <div className="h-[10vh]" />
 
         <h2 className="text-center text-3xl font-bold text-gray-900">
-          Pricetra puts <i className="underline">your store</i> on the map
+          Pricetra puts <i className="underline text-pricetra-green-dark">your store</i> on the map
         </h2>
 
         <p className="mt-4 text-center text-gray-600 max-w-3xl mx-auto">
@@ -87,7 +87,7 @@ export default function BusinessPageClient() {
           browse your products, and see exact prices — all before leaving home.
         </p>
 
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-3">
           <Feature
             title="Show your full catalog"
             description="Display your products, prices, and availability without building or maintaining a website."
@@ -98,7 +98,7 @@ export default function BusinessPageClient() {
           />
           <Feature
             title="Compete with big chains"
-            description="When users search for a product, Pricetra shows every place they can buy it — including you."
+            description="When users search for a product, Pricetra shows every place they can buy it... Including yours. All sorted by distance."
           />
         </div>
 
@@ -145,7 +145,7 @@ export default function BusinessPageClient() {
           Getting started is easy
         </h2>
 
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-8">
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-4 gap-8">
           <Step
             number="1"
             title="Create a store"
@@ -154,7 +154,7 @@ export default function BusinessPageClient() {
           <Step
             number="2"
             title="Add products"
-            description="Use our app to add products, prices, and stock."
+            description="Use our platform to add products, prices, and stock."
           />
           <Step
             number="3"
