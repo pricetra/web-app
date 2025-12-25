@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { ReactNode } from "react";
 import {
   FaFacebook,
   FaXTwitter,
@@ -24,10 +25,14 @@ const categories: PartialCategory[] = [
 
 export const FOOTER_MIN_HEIGHT = 100;
 
-export default function Footer() {
+export type FooterProps = {
+  disableExtraSpacing?: boolean;
+};
+
+export default function Footer({ disableExtraSpacing = false }: FooterProps) {
   return (
     <>
-      <div className="h-[10vh]" />
+      {!disableExtraSpacing && <div className="h-[10vh]" />}
 
       <footer className="bg-gray-50 border-t">
         <div className="max-w-7xl mx-auto px-6 py-12">
@@ -93,21 +98,24 @@ export default function Footer() {
               <div>
                 <h4 className="text-sm font-semibold mb-4">Navigation</h4>
                 <ul className="space-y-2 text-sm text-gray-600">
-                  <li className="hover:text-gray-900 cursor-pointer">
+                  <ListItemWithHover>
                     <Link href="/home">Browse</Link>
-                  </li>
-                  <li className="hover:text-gray-900 cursor-pointer">
+                  </ListItemWithHover>
+                  <ListItemWithHover>
                     <Link href="/search">Search</Link>
-                  </li>
-                  <li className="hover:text-gray-900 cursor-pointer">
+                  </ListItemWithHover>
+                  <ListItemWithHover>
                     <Link href="/stores">Stores</Link>
-                  </li>
-                  <li className="hover:text-gray-900 cursor-pointer">
+                  </ListItemWithHover>
+                  <ListItemWithHover>
+                    <Link href="/scan">Scan</Link>
+                  </ListItemWithHover>
+                  <ListItemWithHover>
                     <Link href="/business">Business</Link>
-                  </li>
-                  <li className="hover:text-gray-900 cursor-pointer">
+                  </ListItemWithHover>
+                  <ListItemWithHover>
                     <Link href="mailto:hello@pricetra.com">Contact Us</Link>
-                  </li>
+                  </ListItemWithHover>
                 </ul>
               </div>
 
@@ -116,11 +124,11 @@ export default function Footer() {
                 <h4 className="text-sm font-semibold mb-4">Categories</h4>
                 <ul className="space-y-2 text-sm text-gray-600">
                   {categories.map(({id, name}) => (
-                    <li className="hover:text-gray-900 cursor-pointer" key={id}>
+                    <ListItemWithHover key={id}>
                       <Link href={`/search?categoryId=${id}&category=${encodeURIComponent(name)}`}>
                         {name}
                       </Link>
-                    </li>
+                    </ListItemWithHover>
                   ))}
                 </ul>
               </div>
@@ -128,9 +136,9 @@ export default function Footer() {
             </div>
 
           {/* Bottom Bar */}
-          <div className="mt-12 pt-6 border-t flex flex-col 2xs:flex-row items-center justify-between text-sm text-gray-600 gap-5">
+          <div className="mt-12 pt-6 border-t flex flex-col 3xs:flex-row items-center justify-between text-xs sm:text-sm text-gray-600 gap-5">
             <div>
-              <span>© {new Date().getFullYear()} Pricetra.</span>
+              <span>© {new Date().getFullYear()} Pricetra</span>
             </div>
             <div className="flex gap-4">
               <Link href="/privacy" className="hover:text-slate-900">
@@ -145,4 +153,12 @@ export default function Footer() {
       </footer>
     </>
   );
+}
+
+function ListItemWithHover({ children }: { children: ReactNode }) {
+  return (
+    <li className="hover:text-gray-900 cursor-pointer">
+      {children}
+    </li>
+  )
 }
