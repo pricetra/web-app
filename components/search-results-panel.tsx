@@ -18,6 +18,7 @@ import { getNextWeekDateRange } from "@/lib/utils";
 import { useAuth } from "@/context/user-context";
 import { useSearchContext } from "@/context/search-context";
 import SearchResultItem from "./search-result-item";
+import { MobileView } from "react-device-detect";
 
 export type SearchResultsPanelProps = {
   onClickResult: () => void;
@@ -116,49 +117,37 @@ export default function SearchResultsPanel({
         <>
           {loggedIn && (
             <div className="mb-10 border-b border-gray-200">
-              <div className="flex flex-col gap-5 mb-5">
-                <h3 className="font-bold text-lg md:text-xl px-5">
-                  Recently viewed
-                </h3>
+              {productViewHistory &&
+                productViewHistory.myProductViewHistory.paginator.total > 0 && (
+                  <div className="flex flex-col gap-5 mb-5">
+                    <h3 className="font-bold text-lg md:text-xl px-5">
+                      Recently viewed
+                    </h3>
 
-                <div>
-                  {productViewHistory && (
-                    <>
-                      {productViewHistory.myProductViewHistory.paginator
-                        .total === 0 ? (
-                        <div className="py-10">
-                          <h3 className="text-center">No results</h3>
-                        </div>
-                      ) : (
-                        <article>
-                          <ScrollContainer>
-                            {productViewHistory.myProductViewHistory.products.map(
-                              (product, i) => (
-                                <ProductItemHorizontal
-                                  product={product as Product}
-                                  branchSlug={product.stock?.branch?.slug}
-                                  key={`recent-product-${product.id}-${i}`}
-                                  hideStoreInfo={false}
-                                  handleOnClick={onClickResult}
-                                />
-                              )
-                            )}
-                          </ScrollContainer>
-                        </article>
+                    <ScrollContainer>
+                      {productViewHistory.myProductViewHistory.products.map(
+                        (product, i) => (
+                          <ProductItemHorizontal
+                            product={product as Product}
+                            branchSlug={product.stock?.branch?.slug}
+                            key={`recent-product-${product.id}-${i}`}
+                            hideStoreInfo={false}
+                            handleOnClick={onClickResult}
+                          />
+                        )
                       )}
-                    </>
-                  )}
-                </div>
-              </div>
+                    </ScrollContainer>
+                  </div>
+                )}
 
-              <div className="flex flex-col gap-5 mb-10">
-                <h3 className="font-bold text-lg md:text-xl px-5">
-                  Recent searches
-                </h3>
+              {searchHistoryData &&
+                searchHistoryData.mySearchHistory.paginator.total > 0 && (
+                  <div className="flex flex-col gap-5 mb-10">
+                    <h3 className="font-bold text-lg md:text-xl px-5">
+                      Recent searches
+                    </h3>
 
-                <div className="flex flex-col gap-2 px-0 xs:px-5">
-                  {searchHistoryData && (
-                    <>
+                    <div className="flex flex-col gap-2 px-0 xs:px-5">
                       {searchHistoryData.mySearchHistory.searches.map(
                         ({ id, searchTerm }, i) => (
                           <SearchResultItem
@@ -168,10 +157,9 @@ export default function SearchResultsPanel({
                           />
                         )
                       )}
-                    </>
-                  )}
-                </div>
-              </div>
+                    </div>
+                  </div>
+                )}
             </div>
           )}
 
@@ -256,6 +244,10 @@ export default function SearchResultsPanel({
           </div>
         </>
       )}
+
+      <MobileView>
+        <div style={{ height: "20vh" }} />
+      </MobileView>
     </div>
   );
 }
