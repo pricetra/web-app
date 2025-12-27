@@ -41,11 +41,11 @@ export default function SearchResultsPanel({
   );
   const [getSearchHistory, { data: searchHistoryData }] = useLazyQuery(
     MySearchHistoryDocument,
-    { fetchPolicy: "no-cache" }
+    { fetchPolicy: "cache-and-network" }
   );
   const [getPopularSearchKeywords, { data: keywordsData }] = useLazyQuery(
     PopularSearchKeywordsDocument,
-    { fetchPolicy: "no-cache" }
+    { fetchPolicy: "cache-and-network" }
   );
   const [getPopularProducts, { data: popularProductsData }] = useLazyQuery(
     PopularProductsDocument,
