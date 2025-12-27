@@ -52,6 +52,9 @@ export default function NavbarMain() {
   const onSubmitSearch = useCallback(
     (value: string, e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Escape") {
+        if (document.activeElement instanceof HTMLElement) {
+          document.activeElement.blur();
+        }
         setSearchPanelOpen(false);
         return;
       }
