@@ -1,27 +1,27 @@
 import { useEffect, useState } from "react";
 
+export type AppleOAuthSuccessData = {
+  code: string;
+  id_token: string;
+  user?: string;
+}
+
 export default function useAppleLogin() {
-  const [popupRef, setPopupRef] = useState<WindowProxy | null>(null);
+  const [data, setData] = useState<AppleOAuthSuccessData>();
 
   useEffect(() => {
-    if (!popupRef) return;
-
-    popupRef.addEventListener("message", (event: MessageEvent) => {
+    const handleMessage = (event: MessageEvent) => {
       if (event.origin !== window.location.origin) return;
       const { data } = event;
-      if (data.type === "apple-oauth-success") {
-        // Handle successful Apple OAuth here
-        const { code, id_token } = data.payload;
-        console.log("Apple OAuth Success:", code, id_token);
-        // You can close the popup after successful login
-        popupRef.close();
-      } else if (data.type === "apple-oauth-error") {
-        // Handle Apple OAuth error here
-        console.error("Apple OAuth Error:", data.payload);
-        popupRef.close();
+      const {type, ...res} = data;
+      if (type === "APPLE_AUTH_SUCCESS") {
+        setData(res);
       }
-    });
-  }, [popupRef]);
+    };
+    window.addEventListener("message", handleMessage);
+
+    return () => window.removeEventListener("message", handleMessage);
+  }, []);
 
   return {
     launchAppleOAuth: () => {
@@ -46,8 +46,12 @@ export default function useAppleLogin() {
         "_blank",
         "width=500,height=600"
       );
-      setPopupRef(popup);
+
+      if (!popup) {
+        window.alert("Popup blocked! Please allow popups for this website.");
+        return;
+      }
     },
-    popupRef,
+    data,
   };
 }

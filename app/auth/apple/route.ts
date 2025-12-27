@@ -15,6 +15,13 @@ export async function POST(req: Request) {
     );
   }
 
+  const params = new URLSearchParams();
+  params.append("code", code.toString());
+  params.append("id_token", idToken.toString());
+  if (user) {
+    params.append("user", user.toString());
+  }
+
   if (state) {
     const parsedState: {returnTo?: string | null} = JSON.parse(state.toString());
     if (parsedState.returnTo) {
@@ -25,22 +32,12 @@ export async function POST(req: Request) {
         );
       }
 
-      const params = new URLSearchParams();
-      params.append("code", code.toString());
-      params.append("id_token", idToken.toString());
-      if (user) {
-        params.append("user", user.toString());
-      }
       const url = `${parsedState.returnTo}?${params.toString()}`;
       return NextResponse.redirect(url, 303);
     }
   }
 
-  return NextResponse.json({
-    code: code.toString(),
-    idToken: idToken.toString(),
-    user: user ? user.toString() : null,
-  });
+  return NextResponse.redirect(`https://pricetra.com/auth/apple/success?${params.toString()}`, 303);
 }
 
 export async function GET(req: Request) {
@@ -59,9 +56,5 @@ export async function GET(req: Request) {
     );
   }
 
-  return NextResponse.json({
-    code: params.get('code'),
-    idToken: params.get('id_token'),
-    user: params.get('user'),
-  });
+  return NextResponse.redirect(`http://localhost:3000/auth/apple/success?${params.toString()}`, 303);
 }
