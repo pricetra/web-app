@@ -7,6 +7,7 @@ import Image from "next/image";
 import { CgSpinner } from "react-icons/cg";
 import { ReactNode } from "react";
 import { FaApple } from "react-icons/fa";
+// import { IOSView } from "react-device-detect";
 
 export type AuthContainerProps = {
   title: string;
@@ -97,7 +98,6 @@ export default function AuthContainer({
                           variant="outline"
                           className="w-full cursor-pointer"
                           onClick={onPressApple}
-                          disabled
                         >
                           <FaApple />
                           <span className="sr-only">Apple</span>

@@ -16,6 +16,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useCookies } from "react-cookie";
 import { AUTH_TOKEN_KEY, cookieDefaults, SITE_COOKIES } from "@/lib/cookies";
 import { useAuth } from "@/context/user-context";
+import useAppleLogin from "@/hooks/useAppleLogin";
 
 export default function SignupPage({ ipAddress }: { ipAddress: string }) {
   const { loggedIn } = useAuth();
@@ -23,6 +24,8 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const emailSearchParam = searchParams.get("email");
+
+  const { launchAppleOAuth } = useAppleLogin();
 
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -83,7 +86,7 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
       buttonLabel="Sign Up"
       onPressSubmit={onPressSignup}
       error={error?.message}
-      onPressApple={() => {}}
+      onPressApple={launchAppleOAuth}
       onPressGoogle={googleOAuthCallback}
       loading={loading}
       extras={
