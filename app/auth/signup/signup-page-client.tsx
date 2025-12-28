@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
 import {
+  AppleOAuthDocument,
   AuthDeviceType,
   CreateAccountDocument,
   GoogleOAuthDocument,
@@ -25,7 +26,7 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
   const searchParams = useSearchParams();
   const emailSearchParam = searchParams.get("email");
 
-  const { launchAppleOAuth } = useAppleLogin();
+  const { launchAppleOAuth, data: appleOAuthSuccessData } = useAppleLogin();
 
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -42,8 +43,12 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
   ] = useLazyQuery(GoogleOAuthDocument, {
     fetchPolicy: "no-cache",
   });
-  const loading = signupLoading || loginGoogleLoading;
-  const error = signupError || loginGoogleError;
+  const [loginApple, { error: loginAppleError, loading: loginAppleLoading }] =
+    useLazyQuery(AppleOAuthDocument, {
+      fetchPolicy: "no-cache",
+    });
+  const loading = signupLoading || loginGoogleLoading || loginAppleLoading;
+  const error = signupError || loginGoogleError || loginAppleError;
 
   function onPressSignup() {
     signup({
@@ -65,9 +70,29 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
       }).then(({ data }) => {
         if (!data) return;
         setCookie(AUTH_TOKEN_KEY, data.googleOAuth.token, cookieDefaults);
+        router.replace("/home");
       });
     },
   });
+
+  useEffect(() => {
+    if (!appleOAuthSuccessData) return;
+
+    const { code, user: appleRawUser } = appleOAuthSuccessData;
+    loginApple({
+      variables: {
+        code,
+        appleRawUser,
+        device: AuthDeviceType.Web,
+        ipAddress,
+      },
+    }).then(({ data }) => {
+      if (!data) return;
+      setCookie(AUTH_TOKEN_KEY, data.appleOAuth.token, cookieDefaults);
+      router.replace("/home");
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appleOAuthSuccessData]);
 
   useEffect(() => {
     if (!loggedIn) return;
@@ -114,7 +139,7 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
         />
       </div>
       <div className="grid gap-2">
-        <Label htmlFor="email">Full name</Label>
+        <Label htmlFor="fullname">Full name</Label>
         <Input
           id="fullname"
           type="text"

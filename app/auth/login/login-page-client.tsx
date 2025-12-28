@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
 import {
+  AppleOAuthDocument,
   Auth,
   AuthDeviceType,
   GoogleOAuthDocument,
@@ -23,10 +24,13 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { BsEnvelopeCheck } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/user-context";
+import useAppleLogin from "@/hooks/useAppleLogin";
 
 export default function LoginPage({ ipAddress }: { ipAddress: string }) {
   const { loggedIn } = useAuth();
   const [, setCookie] = useCookies(SITE_COOKIES);
+
+  const { launchAppleOAuth, data: appleOAuthSuccessData } = useAppleLogin();
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -48,14 +52,18 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
   ] = useLazyQuery(GoogleOAuthDocument, {
     fetchPolicy: "no-cache",
   });
+  const [loginApple, { error: loginAppleError, loading: loginAppleLoading }] =
+    useLazyQuery(AppleOAuthDocument, {
+      fetchPolicy: "no-cache",
+    });
   const [resend, { error: resendError, loading: resendLoading }] = useMutation(
     ResendVerificationDocument,
     {
       fetchPolicy: "no-cache",
     }
   );
-  const loading = loginInternalLoading || loginGoogleLoading || resendLoading;
-  const error = loginInternalError || loginGoogleError || resendError;
+  const loading = loginInternalLoading || loginGoogleLoading || loginAppleLoading || resendLoading;
+  const error = loginInternalError || loginGoogleError || loginAppleError || resendError;
 
   function setAuthCookie(token: string) {
     setCookie("auth_token", token, {
@@ -106,6 +114,21 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
   });
 
   useEffect(() => {
+      if (!appleOAuthSuccessData) return;
+  
+      const { code, user: appleRawUser } = appleOAuthSuccessData;
+      loginApple({
+        variables: {
+          code,
+          appleRawUser,
+          device: AuthDeviceType.Web,
+          ipAddress,
+        },
+      }).then(({ data }) => handleAuthSuccess(data?.appleOAuth as Auth));
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [appleOAuthSuccessData]);
+
+  useEffect(() => {
     if (!loggedIn) return;
 
     router.replace(returnPath ?? "/home");
@@ -123,7 +146,7 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
       description="Login to your Pricetra account"
       onPressSubmit={onPressLoginInternal}
       error={error?.message}
-      onPressApple={() => {}}
+      onPressApple={launchAppleOAuth}
       onPressGoogle={googleOAuthCallback}
       loading={loading}
       extras={
