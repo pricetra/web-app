@@ -37,7 +37,7 @@ export default function MobileScanner() {
     useLazyQuery(BarcodeScanDocument);
   const debouncedHandleBarcodeScan = useMemo(
     () =>
-      debounce(_handleBarcodeScan, 1000, { leading: true, trailing: false }),
+      debounce(_handleBarcodeScan, 500, { leading: true, trailing: false }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []
   );
@@ -143,7 +143,7 @@ export default function MobileScanner() {
               >
                 {extractingProduct ? (
                   <>
-                    <CgSpinner className="animate-spi" />
+                    <CgSpinner className="animate-spin" />
                     Extracting Image Data
                   </>
                 ) : (
