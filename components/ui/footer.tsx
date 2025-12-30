@@ -29,13 +29,16 @@ export type FooterProps = {
   disableExtraSpacing?: boolean;
 };
 
+const APP_STORE = "https://itunes.apple.com/us/app/pricetra/id6746687630"
+const PLAY_STORE = "https://play.google.com/store/apps/details?id=com.pricetra.mobileApp"
+
 export default function Footer({ disableExtraSpacing = false }: FooterProps) {
   return (
     <>
       {!disableExtraSpacing && <div className="h-[10vh]" />}
 
       <footer className="bg-gray-50 border-t">
-        <div className="max-w-7xl mx-auto px-6 py-12">
+        <div className="w-full lg:container mx-auto px-5 py-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             {/* Section 1: Logo & Social */}
             <div className="space-y-4">
@@ -76,14 +79,14 @@ export default function Footer({ disableExtraSpacing = false }: FooterProps) {
 
                 <div className="flex flex-row flex-wrap gap-2">
                   <Link
-                    href="https://itunes.apple.com/us/app/cooklist/id6746687630"
+                    href={APP_STORE}
                     className="rounded-lg px-4 py-2 text-sm bg-gray-800 hover:bg-black text-white flex flex-row items-center justify-center gap-2"
                   >
                     <FaApple />
                     iOS
                   </Link>
                   <Link
-                    href="https://play.google.com/store/apps/details?id=com.pricetra.mobileApp"
+                    href={PLAY_STORE}
                     className="rounded-lg px-4 py-2 text-sm bg-gray-800 hover:bg-black text-white flex flex-row items-center justify-center gap-2"
                   >
                     <FaGooglePlay />
