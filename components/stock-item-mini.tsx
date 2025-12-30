@@ -4,9 +4,9 @@ import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import { createCloudinaryUrl } from "@/lib/files";
 import { currencyFormat, getPriceUnitOrEach } from "@/lib/strings";
-import { metersToMiles } from "@/lib/utils";
+import { cn, metersToMiles } from "@/lib/utils";
 import Image from "next/image";
-import { useMemo } from "react";
+import { DetailedHTMLProps, HTMLAttributes, useMemo } from "react";
 import Link from "next/link";
 import Skeleton from "react-loading-skeleton";
 import { useMediaQuery } from "react-responsive";
@@ -17,6 +17,7 @@ export type StockItemMiniProps = {
   approximatePrice?: number;
   quantityValue?: number;
   quantityType?: string;
+  disabled?: boolean;
 };
 
 export default function StockItemMini({
@@ -25,6 +26,7 @@ export default function StockItemMini({
   approximatePrice,
   quantityValue,
   quantityType,
+  disabled = false,
 }: StockItemMiniProps) {
   if (!stock.store || !stock.branch)
     throw new Error("stock has no store or branch objects");
@@ -40,9 +42,18 @@ export default function StockItemMini({
   );
 
   return (
-    <div className="flex flex-col gap-2">
-      <Link
-        href={stock.branch ? `/products/${productId}/${stock.branch.slug}` : "#"}
+    <div
+      className={cn(
+        "flex flex-col gap-2",
+        disabled ? "opacity-30 select-none" : "opacity-100"
+      )}
+    >
+      <LinkOrDiv
+        href={
+          stock.branch && !disabled
+            ? `/products/${productId}/${stock.branch.slug}`
+            : undefined
+        }
         className="flex gap-2 flex-row"
       >
         <Image
@@ -126,7 +137,7 @@ export default function StockItemMini({
             )}
           </div>
         </div>
-      </Link>
+      </LinkOrDiv>
 
       {stock.latestPrice?.sale && !isExpired && (
         <div className="flex flex-col gap-1">
@@ -151,6 +162,26 @@ export default function StockItemMini({
         </div>
       )}
     </div>
+  );
+}
+
+function LinkOrDiv({
+  href,
+  children,
+  ...props
+}: DetailedHTMLProps<HTMLAttributes<HTMLAnchorElement>, HTMLAnchorElement> & {
+  href?: string;
+}) {
+  if (!href)
+    return (
+      <a {...props} style={{ cursor: "not-allowed" }}>
+        {children}
+      </a>
+    );
+  return (
+    <Link href={href} {...props}>
+      {children}
+    </Link>
   );
 }
 

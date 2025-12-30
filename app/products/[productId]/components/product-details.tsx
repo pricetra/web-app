@@ -30,7 +30,6 @@ import { Button } from "@/components/ui/button";
 import StockItemMini, {
   StockItemMiniLoading,
 } from "@/components/stock-item-mini";
-import { cn } from "@/lib/utils";
 import LoginSignupButtons from "@/components/login-signup-buttons";
 import ScrollContainer from "@/components/scroll-container";
 import { FiEdit } from "react-icons/fi";
@@ -198,12 +197,7 @@ export default function ProductDetails({
                   <section className="grid grid-cols-2 gap-5 mt-5">
                     {mappedFavBranches.map(({ approximatePrice, ...s }, i) => (
                       <div
-                        className={cn(
-                          "mb-3 flex flex-row",
-                          s.id === 0 && !approximatePrice
-                            ? "opacity-30"
-                            : "opacity-100"
-                        )}
+                        className="mb-3 flex flex-row"
                         key={`${s.id}-${i}-fav-store-stock`}
                       >
                         <StockItemMini
@@ -212,6 +206,7 @@ export default function ProductDetails({
                           approximatePrice={approximatePrice ?? undefined}
                           quantityValue={product.quantityValue}
                           quantityType={product.quantityType}
+                          disabled={s.id === 0 && !approximatePrice}
                         />
                       </div>
                     ))}
