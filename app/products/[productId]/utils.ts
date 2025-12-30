@@ -2,6 +2,9 @@ import { fetchGraphql } from "@/lib/graphql-client-ssr";
 import { isDateExpired } from "@/lib/utils";
 import dayjs from "dayjs";
 import {
+  ProductDocument,
+  ProductQuery,
+  ProductQueryVariables,
   ProductSummary,
   ProductSummaryBranchInput,
   ProductSummaryDocument,
@@ -9,6 +12,18 @@ import {
   ProductSummaryQueryVariables,
 } from "graphql-utils";
 import { cache } from "react";
+
+export const cachedFetchProductDetails = cache(
+  async (productId: number, jwt?: string) => {
+    const { data } = await fetchGraphql<
+      ProductQueryVariables,
+      ProductQuery
+    >(ProductDocument, "query", { productId }, jwt);
+    if (!data || !data.product) return null;
+
+    return data.product;
+  }
+);
 
 export const cachedFetchProductSummary = cache(
   async (

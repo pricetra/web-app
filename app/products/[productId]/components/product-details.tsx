@@ -39,6 +39,7 @@ import { useAuth } from "@/context/user-context";
 import { useEffect, useMemo } from "react";
 import { LocationInputWithFullAddress } from "@/context/location-context";
 import { useInView } from "react-intersection-observer";
+import Link from "next/link";
 
 export type StockWithApproximatePrice = Stock & {
   approximatePrice?: number;
@@ -247,22 +248,28 @@ export default function ProductDetails({
           <AccordionContent>
             {stocksData ? (
               <>
-                {stocksData.getProductStocks.paginator.total !== 0 ? (
-                  <section className="grid grid-cols-2 gap-5 mt-5">
-                    {stocksData.getProductStocks.stocks.map((s, i) => (
-                      <div
-                        className="mb-3 flex flex-row"
-                        key={`${s.id}-${i}-available-stock`}
-                      >
-                        <StockItemMini
-                          productId={product.id}
-                          stock={s as Stock}
-                          quantityValue={product.quantityValue}
-                          quantityType={product.quantityType}
-                        />
-                      </div>
-                    ))}
-                  </section>
+                {stocksData.getProductStocks.paginator.total > 0 ? (
+                  <>
+                    <section className="grid grid-cols-2 gap-5 mt-5">
+                      {stocksData.getProductStocks.stocks.map((s, i) => (
+                        <div
+                          className="mb-3 flex flex-row"
+                          key={`${s.id}-${i}-available-stock`}
+                        >
+                          <StockItemMini
+                            productId={product.id}
+                            stock={s as Stock}
+                            quantityValue={product.quantityValue}
+                            quantityType={product.quantityType}
+                          />
+                        </div>
+                      ))}
+                    </section>
+
+                    <div className="flex flex-row items-center justify-center mt-7 mb-10">
+                      <Link href={`/products/${product.id}/stocks`} className="bg-gray-200 hover:bg-gray-300 text-gray-800 hover:text-black flex flex-row items-center justify-center gap-2 px-5 py-2 rounded-full font-bold">Show All</Link>
+                    </div>
+                  </>
                 ) : (
                   <p className="py-10 px-5 text-center">
                     No available stocks for this product

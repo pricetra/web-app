@@ -106,3 +106,15 @@ export function getNextWeekDateRange(): TimestampRangeBetween {
     to: dayjs().add(1, "day"),
   };
 }
+
+export function parsePage(page?: string | null): number {
+  let parsedPage = 1;
+  if (page) {
+    try {
+      parsedPage = Math.abs(parseInt(page));
+    } catch {
+      parsedPage = 1;
+    }
+  }
+  return parsedPage;
+}
