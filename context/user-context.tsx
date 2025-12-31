@@ -33,6 +33,7 @@ export type GroceryListsType = {
 
 export type UserContextType = {
   loggedIn: boolean;
+  loading: boolean;
   user?: User;
   lists?: UserListsType;
   allGroceryLists?: GroceryListsType;
@@ -133,6 +134,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
     <UserAuthContext.Provider
       value={{
         loggedIn: jwt !== undefined && user !== undefined,
+        loading,
         token: jwt,
         user,
         lists: userLists ?? {

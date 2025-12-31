@@ -4,11 +4,11 @@ import { ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export default function SetupProvider({ children }: { children: ReactNode }) {
-  const { user, lists } = useAuth();
+  const { loading, user, lists } = useAuth();
   const noFavoriteBranches = (lists?.favorites?.branchList ?? []).length === 0;
   const showWelcomeScreen = user && (!user?.address || noFavoriteBranches);
 
-  if (showWelcomeScreen) {
+  if (!loading && showWelcomeScreen) {
     return (
       <AnimatePresence>
         <motion.div
