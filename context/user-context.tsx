@@ -37,6 +37,7 @@ export type UserContextType = {
   user?: User;
   lists?: UserListsType;
   allGroceryLists?: GroceryListsType;
+  showWelcomeScreen: boolean;
   token?: string;
   updateUser: (updatedUser: User) => void;
   logout: () => Promise<void>;
@@ -67,8 +68,28 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
       fetchPolicy: "no-cache",
     }
   );
+  const [showWelcomeScreen, setShowWelcomeScreen] = useState(false);
   const [logout] = useMutation(LogoutDocument);
   const [loading, setLoading] = useState(true);
+
+  function handleLists(allLists: List[]) {
+    const favorites = allLists.find(({ type }) => type === ListType.Favorites)!;
+    if (!favorites.branchList || favorites.branchList.length === 0) {
+      setShowWelcomeScreen(true);
+    }
+    setUserLists({
+      allLists,
+      favorites,
+      watchList: allLists.find(({ type }) => type === ListType.WatchList)!,
+    });
+  }
+
+  function handleGroceryLists(groceryLists: GroceryList[]) {
+    setAllGroceryLists({
+      defaultGroceryList: groceryLists.find((l) => l.default)!,
+      groceryLists: groceryLists,
+    });
+  }
 
   // set loading to false is jwt isn't set
   useEffect(() => {
@@ -86,27 +107,19 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   useEffect(() => {
     if (!meData) return;
     setUser(meData.me as User);
+    if (!meData.me.address) {
+      setShowWelcomeScreen(true);
+    }
   }, [meData]);
 
   useEffect(() => {
     if (!postAuthUserData?.getAllLists) return;
-
-    const allLists = postAuthUserData.getAllLists as List[];
-    setUserLists({
-      allLists,
-      favorites: allLists.find(({ type }) => type === ListType.Favorites)!,
-      watchList: allLists.find(({ type }) => type === ListType.WatchList)!,
-    });
-  }, [postAuthUserData?.getAllLists]);
+    handleLists(postAuthUserData.getAllLists as List[]);
+  }, [loading, postAuthUserData?.getAllLists]);
 
   useEffect(() => {
     if (!postAuthUserData?.groceryLists) return;
-
-    const allLists = postAuthUserData.groceryLists as GroceryList[];
-    setAllGroceryLists({
-      defaultGroceryList: allLists.find((l) => l.default)!,
-      groceryLists: allLists,
-    });
+    handleGroceryLists(postAuthUserData.groceryLists as GroceryList[]);
   }, [postAuthUserData?.groceryLists]);
 
   // call me query
@@ -143,6 +156,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
           watchList: {} as List,
         },
         allGroceryLists,
+        showWelcomeScreen,
         updateUser: (updatedUser) => setUser(updatedUser),
         logout: () =>
           logout()
