@@ -110,8 +110,9 @@ export default function ShareDialog({ product, stock }: ShareDialogProps) {
           onClick={() => {
             navigator.clipboard.writeText(
               generateProductShareLink("other", product, stock, user)
-            );
-            toast.success("Copied URL to clipboard!");
+            ).then(() => {
+              toast.success("Copied URL to clipboard!");
+            });
           }}
           className="flex flex-col gap-2 p-1 justify-center items-center cursor-pointer"
         >
@@ -134,9 +135,11 @@ export default function ShareDialog({ product, stock }: ShareDialogProps) {
             <Button
               variant="default"
               size="xs"
-              onClick={() =>
-                navigator.clipboard.writeText(shareDescriptionText)
-              }
+              onClick={() =>{
+                navigator.clipboard.writeText(shareDescriptionText).then(() => {
+                  toast.success("Text copied to clipboard!")
+                })
+              }}
             >
               <MdContentCopy className="size-3" /> Copy
             </Button>
