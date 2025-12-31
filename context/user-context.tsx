@@ -40,6 +40,7 @@ export type UserContextType = {
   showWelcomeScreen: boolean;
   token?: string;
   updateUser: (updatedUser: User) => void;
+  setShowWelcomeScreen: (val: boolean) => void;
   logout: () => Promise<void>;
 };
 
@@ -73,15 +74,16 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   const [loading, setLoading] = useState(true);
 
   function handleLists(allLists: List[]) {
-    const favorites = allLists.find(({ type }) => type === ListType.Favorites)!;
-    if (!favorites.branchList || favorites.branchList.length === 0) {
-      setShowWelcomeScreen(true);
-    }
+    const favorites = allLists.find(({ type }) => type === ListType.Favorites)!
     setUserLists({
       allLists,
       favorites,
       watchList: allLists.find(({ type }) => type === ListType.WatchList)!,
     });
+
+    if ((favorites.branchList ?? []).length === 0) {
+      setShowWelcomeScreen(true);
+    }
   }
 
   function handleGroceryLists(groceryLists: GroceryList[]) {
@@ -107,6 +109,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   useEffect(() => {
     if (!meData) return;
     setUser(meData.me as User);
+
     if (!meData.me.address) {
       setShowWelcomeScreen(true);
     }
@@ -115,7 +118,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   useEffect(() => {
     if (!postAuthUserData?.getAllLists) return;
     handleLists(postAuthUserData.getAllLists as List[]);
-  }, [loading, postAuthUserData?.getAllLists]);
+  }, [postAuthUserData?.getAllLists]);
 
   useEffect(() => {
     if (!postAuthUserData?.groceryLists) return;
@@ -158,6 +161,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
         allGroceryLists,
         showWelcomeScreen,
         updateUser: (updatedUser) => setUser(updatedUser),
+        setShowWelcomeScreen,
         logout: () =>
           logout()
             .then(({ data, error }) => {

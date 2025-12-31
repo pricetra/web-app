@@ -2,7 +2,7 @@ import { Address, Branch, BulkAddBranchesToListDocument, FindBranchesByDistanceD
 import { Button } from "@/components/ui/button";
 import { GoLocation } from "react-icons/go";
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
 import { Input } from "@/components/ui/input";
 import { FiArrowRight } from "react-icons/fi";
@@ -24,7 +24,7 @@ export type WelcomeScreenProps = {
 };
 
 export default function WelcomeScreen({user}: WelcomeScreenProps) {
-  const { lists } = useAuth();
+  const { lists, setShowWelcomeScreen } = useAuth();
   const [page, setPage] = useState<WelcomePageType>(WelcomePageType.WELCOME);
   const [addressInput, setAddressInput] = useState<string>(
     user.address?.fullAddress ?? ""
@@ -44,6 +44,13 @@ export default function WelcomeScreen({user}: WelcomeScreenProps) {
     refetchQueries: [GetAllListsDocument, PostAuthUserDataDocument],
   });
   const [addingBranches, setAddingBranches] = useState(false);
+
+  useEffect(() => {
+    if (user.address && (lists?.favorites.branchList ?? []).length > 0) {
+      setShowWelcomeScreen(false);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user.address, lists?.favorites?.branchList]);
 
   return (
     <div className="flex p-5 flex-col justify-center gap-5 w-full max-w-xl mx-auto min-h-screen">
