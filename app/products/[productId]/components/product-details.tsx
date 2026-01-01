@@ -266,9 +266,16 @@ export default function ProductDetails({
                       ))}
                     </section>
 
-                    <div className="flex flex-row items-center justify-center mt-7 mb-10">
-                      <Link href={`/products/${product.id}/stocks`} className="bg-gray-200 hover:bg-gray-300 text-gray-800 hover:text-black flex flex-row items-center justify-center gap-2 px-5 py-2 rounded-full font-bold">Show All</Link>
-                    </div>
+                    {stocksData.getProductStocks.paginator.numPages > 1 && (
+                      <div className="flex flex-row items-center justify-center mt-7 mb-10">
+                        <Link
+                          href={`/products/${product.id}/stocks`}
+                          className="bg-gray-200 hover:bg-gray-300 text-gray-800 hover:text-black flex flex-row items-center justify-center gap-2 px-5 py-2 rounded-full font-bold"
+                        >
+                          Show All
+                        </Link>
+                      </div>
+                    )}
                   </>
                 ) : (
                   <p className="py-10 px-5 text-center">
