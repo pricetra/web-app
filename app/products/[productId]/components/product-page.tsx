@@ -29,6 +29,9 @@ import ProductNavTools from "./product-nav-tools";
 import { validBrand } from "@/lib/strings";
 import Skeleton from "react-loading-skeleton";
 import { StockItemMiniLoading } from "@/components/stock-item-mini";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { IoArrowBackOutline } from "react-icons/io5";
 
 export type ProductPageProps = {
   productId: number;
@@ -45,6 +48,7 @@ export default function ProductPage({
   referrer,
   productSummary,
 }: ProductPageProps) {
+  const router = useRouter();
   const { loggedIn, lists } = useAuth();
   const { setPageIndicator, resetAll, setNavTools, setSubHeader } = useNavbar();
   const locationInput = useLocationInput(!loggedIn ? ipAddress : undefined);
@@ -108,7 +112,23 @@ export default function ProductPage({
       />
     );
     if (isMediumScreen) {
-      if (loggedIn) setSubHeader(NavTools);
+      if (loggedIn) {
+        setSubHeader(
+          <div className="flex-1 flex flex-row items-center justify-between gap-2">
+            <Button
+              variant="link"
+              size="icon"
+              onClick={() => router.back()}
+            >
+              <IoArrowBackOutline className="size-[18px]" />
+            </Button>
+
+            <div className="flex flex-row gap-2 items-center justify-end">
+              {NavTools}
+            </div>
+          </div>
+        );
+      }
       setNavTools(undefined);
       return;
     }
@@ -250,4 +270,3 @@ export default function ProductPage({
     </div>
   );
 }
-
