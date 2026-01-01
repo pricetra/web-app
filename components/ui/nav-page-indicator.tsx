@@ -48,8 +48,8 @@ export default function NavPageIndicator({
         <Link href={href}>
           <h2
             className={cn(
-              "font-bold break-all xxs:break-normal sm:text-sm text-xs",
-              subTitle ? "line-clamp-1" : "line-clamp-2"
+              "font-bold text-xs lg:text-sm",
+              subTitle ? "line-clamp-1 break-all" : "line-clamp-2 break-normal leading-[1.2]"
             )}
           >
             {title}
