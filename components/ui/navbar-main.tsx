@@ -22,17 +22,16 @@ import { BsUpcScan } from "react-icons/bs";
 import { MobileView } from "react-device-detect";
 import { useSearchContext } from "@/context/search-context";
 
-export const NAVBAR_HEIGHT = 60;
-export const SUBNAV_HEIGHT = 40;
-
 export default function NavbarMain() {
   const router = useRouter();
   const { loggedIn, user } = useAuth();
   const {
+    navbarHeight,
     pageIndicator,
     hideLogotype,
     navTools,
     subHeader,
+    subHeaderHeight,
     searchPlaceholder,
     searchQueryPath,
   } = useNavbar();
@@ -42,7 +41,7 @@ export default function NavbarMain() {
   const [searchPanelOpen, setSearchPanelOpen] = useState(false);
 
   const fullNavHeight = useMemo(
-    () => NAVBAR_HEIGHT + (subHeader && !searchPanelOpen ? SUBNAV_HEIGHT : 0),
+    () => navbarHeight + (subHeader && !searchPanelOpen ? subHeaderHeight : 0),
     [subHeader, searchPanelOpen]
   );
   const isMobile = useMediaQuery({
@@ -79,11 +78,11 @@ export default function NavbarMain() {
     <>
       <header
         className="w-full z-50 fixed top-0 left-0 bg-white shadow-sm"
-        style={{ minHeight: NAVBAR_HEIGHT }}
+        style={{ minHeight: navbarHeight }}
       >
         <div
           className="w-full lg:container mx-auto flex items-center justify-between gap-2 md:gap-5"
-          style={{ height: NAVBAR_HEIGHT }}
+          style={{ height: navbarHeight }}
         >
           <div
             className={cn(
@@ -254,11 +253,11 @@ export default function NavbarMain() {
         {searchPanelOpen && isMobile && (
           <div
             className="absolute top-0 left-0 bg-white w-full"
-            style={{ height: NAVBAR_HEIGHT }}
+            style={{ height: navbarHeight }}
           >
             <div
               className="w-full lg:container mx-auto flex items-center justify-between gap-3 px-5"
-              style={{ height: NAVBAR_HEIGHT }}
+              style={{ height: navbarHeight }}
             >
               <Button
                 onClick={() => setSearchPanelOpen(false)}
@@ -302,9 +301,9 @@ export default function NavbarMain() {
         {subHeader && !searchPanelOpen && (
           <div
             className="w-full lg:container mx-auto"
-            style={{ height: SUBNAV_HEIGHT }}
+            style={{ height: subHeaderHeight }}
           >
-            <div className="flex items-center justify-evenly xs:justify-end gap-2 px-5 w-full h-full">
+            <div className="flex items-center justify-evenly xs:justify-end gap-2 w-full h-full">
               {subHeader}
             </div>
           </div>

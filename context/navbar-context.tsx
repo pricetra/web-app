@@ -1,5 +1,8 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 
+export const NAVBAR_HEIGHT = 60;
+export const SUBNAV_HEIGHT = 40;
+
 const searchTaglines = [
   "Search for milk, eggs, cereal...",
   "Find prices for groceries near you",
@@ -9,6 +12,9 @@ const searchTaglines = [
 ];
 
 export type NavbarContextType = {
+  navbarHeight: number;
+  setNavbarHeight: (height: number) => void;
+
   hideLogotype: boolean;
   setHideLogotype: (v: boolean) => void;
 
@@ -27,6 +33,9 @@ export type NavbarContextType = {
   subHeader?: ReactNode;
   setSubHeader: (elem?: ReactNode) => void;
 
+  subHeaderHeight: number;
+  setSubHeaderHeight: (height: number) => void;
+
   resetAll: () => void;
 };
 
@@ -36,6 +45,7 @@ const DEFAULT_SEARCH_PLACEHOLDER = searchTaglines[3];
 const DEFAULT_SEARCH_QUERY_PATH = "/search";
 
 export const NavbarProvider = ({ children }: { children: ReactNode }) => {
+  const [navbarHeight, setNavbarHeight] = useState(NAVBAR_HEIGHT);
   const [hideLogotype, setHideLogotype] = useState(false);
   const [searchPlaceholder, setSearchPlaceholder] = useState(
     DEFAULT_SEARCH_PLACEHOLDER
@@ -46,12 +56,17 @@ export const NavbarProvider = ({ children }: { children: ReactNode }) => {
   const [pageIndicator, setPageIndicator] = useState<ReactNode>();
   const [navTools, setNavTools] = useState<ReactNode>();
   const [subHeader, setSubHeader] = useState<ReactNode>();
+  const [subHeaderHeight, setSubHeaderHeight] = useState(SUBNAV_HEIGHT);
 
   return (
     <NavbarContext.Provider
       value={{
+        navbarHeight,
+        setNavbarHeight,
+
         hideLogotype,
         setHideLogotype,
+
         searchPlaceholder,
         setSearchPlaceholder: (p) => {
           setSearchPlaceholder(p ?? searchTaglines[3]);
@@ -60,21 +75,29 @@ export const NavbarProvider = ({ children }: { children: ReactNode }) => {
         setSearchQueryPath: (p) => {
           setSearchQueryPath(p ?? "/search");
         },
+
         pageIndicator,
         setPageIndicator,
+
         navTools,
         setNavTools,
+
         subHeader,
         setSubHeader: (elem) => {
           setSubHeader(elem);
         },
+        subHeaderHeight,
+        setSubHeaderHeight,
+
         resetAll: () => {
+          setNavbarHeight(NAVBAR_HEIGHT);
           setHideLogotype(false);
           setSearchPlaceholder(DEFAULT_SEARCH_PLACEHOLDER);
           setSearchQueryPath(DEFAULT_SEARCH_QUERY_PATH);
           setPageIndicator(undefined);
           setNavTools(undefined);
           setSubHeader(undefined);
+          setSubHeaderHeight(SUBNAV_HEIGHT);
         },
       }}
     >

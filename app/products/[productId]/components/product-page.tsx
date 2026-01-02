@@ -17,7 +17,6 @@ import SelectedStock, {
 
 import { useAuth } from "@/context/user-context";
 import useLocationInput from "@/hooks/useLocationInput";
-import { NAVBAR_HEIGHT } from "@/components/ui/navbar-main";
 import { useNavbar } from "@/context/navbar-context";
 import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { createCloudinaryUrl } from "@/lib/files";
@@ -49,6 +48,7 @@ export default function ProductPage({
   productSummary,
 }: ProductPageProps) {
   const router = useRouter();
+  const { navbarHeight } = useNavbar();
   const { loggedIn, lists } = useAuth();
   const { setPageIndicator, resetAll, setNavTools, setSubHeader } = useNavbar();
   const locationInput = useLocationInput(!loggedIn ? ipAddress : undefined);
@@ -114,7 +114,7 @@ export default function ProductPage({
     if (isMediumScreen) {
       if (loggedIn) {
         setSubHeader(
-          <div className="flex-1 flex flex-row items-center justify-between gap-2">
+          <div className="flex-1 flex flex-row items-center justify-between gap-2 px-5">
             <Button
               variant="link"
               size="icon"
@@ -151,7 +151,7 @@ export default function ProductPage({
         <section className="w-full flex-1 relative">
           <div
             className="lg:sticky flex flex-col gap-5 left-0 p-5 bg-white"
-            style={{ top: NAVBAR_HEIGHT + 20 }}
+            style={{ top: navbarHeight + 20 }}
           >
             <article>
               {productData && !productLoading ? (
