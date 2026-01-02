@@ -1,3 +1,4 @@
+import { COMMON_CATEGORIES } from "@/lib/categories";
 import Image from "next/image";
 import Link from "next/link";
 import { ReactNode } from "react";
@@ -9,19 +10,6 @@ import {
   FaLinkedin,
   FaApple,
 } from "react-icons/fa6";
-
-
-export type PartialCategory = { id?: string; name: string };
-
-const categories: PartialCategory[] = [
-  { id: '464', name: 'Milk' },
-  { id: '478', name: 'Eggs' },
-  { id: '509', name: 'Produce' },
-  { id: '490', name: 'Bread' },
-  { id: '635', name: 'Pasta' },
-  { id: '965', name: 'Rice' },
-  { id: '474', name: 'Butter' },
-];
 
 export const FOOTER_MIN_HEIGHT = 100;
 
@@ -126,7 +114,7 @@ export default function Footer({ disableExtraSpacing = false }: FooterProps) {
               <div>
                 <h4 className="text-sm font-semibold mb-4">Categories</h4>
                 <ul className="space-y-2 text-sm text-gray-600">
-                  {categories.map(({id, name}) => (
+                  {COMMON_CATEGORIES.map(({id, name}) => (
                     <ListItemWithHover key={id}>
                       <Link href={`/search?categoryId=${id}&category=${encodeURIComponent(name)}`}>
                         {name}
