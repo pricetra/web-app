@@ -17,8 +17,9 @@ export type FooterProps = {
   disableExtraSpacing?: boolean;
 };
 
-const APP_STORE = "https://itunes.apple.com/us/app/pricetra/id6746687630"
-const PLAY_STORE = "https://play.google.com/store/apps/details?id=com.pricetra.mobileApp"
+const APP_STORE = "https://itunes.apple.com/us/app/pricetra/id6746687630";
+const PLAY_STORE =
+  "https://play.google.com/store/apps/details?id=com.pricetra.mobileApp";
 
 export default function Footer({ disableExtraSpacing = false }: FooterProps) {
   return (
@@ -52,7 +53,11 @@ export default function Footer({ disableExtraSpacing = false }: FooterProps) {
               </div>
 
               <div className="flex space-x-4">
-                <a href="https://www.facebook.com/pricetra" target="_blank" title="Facebook">
+                <a
+                  href="https://www.facebook.com/pricetra"
+                  target="_blank"
+                  title="Facebook"
+                >
                   <FaFacebook className="h-5 w-5 text-gray-600 hover:text-gray-900 cursor-pointer" />
                 </a>
                 <a href="https://x.com/pricetra_hq" target="_blank" title="X">
@@ -79,7 +84,7 @@ export default function Footer({ disableExtraSpacing = false }: FooterProps) {
                   >
                     <FaGooglePlay />
                     Android
-                </Link>
+                  </Link>
                 </div>
               </div>
             </div>
@@ -89,23 +94,13 @@ export default function Footer({ disableExtraSpacing = false }: FooterProps) {
               <div>
                 <h4 className="text-sm font-semibold mb-4">Navigation</h4>
                 <ul className="space-y-2 text-sm text-gray-600">
-                  <ListItemWithHover>
-                    <Link href="/home">Browse</Link>
-                  </ListItemWithHover>
-                  <ListItemWithHover>
-                    <Link href="/search">Search</Link>
-                  </ListItemWithHover>
-                  <ListItemWithHover>
-                    <Link href="/stores">Stores</Link>
-                  </ListItemWithHover>
-                  <ListItemWithHover>
-                    <Link href="/scan">Scan</Link>
-                  </ListItemWithHover>
-                  <ListItemWithHover>
-                    <Link href="/business">Business</Link>
-                  </ListItemWithHover>
-                  <ListItemWithHover>
-                    <Link href="mailto:hello@pricetra.com">Contact Us</Link>
+                  <ListItemWithHover href="/home">Browse</ListItemWithHover>
+                  <ListItemWithHover href="/search">Search</ListItemWithHover>
+                  <ListItemWithHover href="/stores">Stores</ListItemWithHover>
+                  <ListItemWithHover href="/scan">Scan</ListItemWithHover>
+                  <ListItemWithHover href="/business">Business</ListItemWithHover>
+                  <ListItemWithHover href="mailto:hello@pricetra.com">
+                    Contact Us
                   </ListItemWithHover>
                 </ul>
               </div>
@@ -114,17 +109,20 @@ export default function Footer({ disableExtraSpacing = false }: FooterProps) {
               <div>
                 <h4 className="text-sm font-semibold mb-4">Categories</h4>
                 <ul className="space-y-2 text-sm text-gray-600">
-                  {COMMON_CATEGORIES.map(({id, name}) => (
-                    <ListItemWithHover key={id}>
-                      <Link href={`/search?categoryId=${id}&category=${encodeURIComponent(name)}`}>
-                        {name}
-                      </Link>
+                  {COMMON_CATEGORIES.map(({ id, name }) => (
+                    <ListItemWithHover
+                      href={`/search?categoryId=${id}&category=${encodeURIComponent(
+                        name
+                      )}`}
+                      key={id}
+                    >
+                      {name}
                     </ListItemWithHover>
                   ))}
                 </ul>
               </div>
             </div>
-            </div>
+          </div>
 
           {/* Bottom Bar */}
           <div className="mt-12 pt-6 border-t flex flex-col 3xs:flex-row items-center justify-between text-xs sm:text-sm text-gray-600 gap-5">
@@ -146,10 +144,16 @@ export default function Footer({ disableExtraSpacing = false }: FooterProps) {
   );
 }
 
-function ListItemWithHover({ children }: { children: ReactNode }) {
+function ListItemWithHover({
+  href,
+  children,
+}: {
+  href: string;
+  children: ReactNode;
+}) {
   return (
-    <li className="hover:text-gray-900 cursor-pointer">
-      {children}
+    <li>
+      <Link href={href} className="hover:text-gray-900 cursor-pointer">{children}</Link>
     </li>
-  )
+  );
 }
