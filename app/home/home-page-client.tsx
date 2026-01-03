@@ -24,11 +24,7 @@ import { useSearchParams } from "next/navigation";
 import WelcomeHeroBanner from "@/components/welcome-hero-banner";
 import { useLayoutEffect } from "react";
 import { useNavbar } from "@/context/navbar-context";
-import { COMMON_CATEGORIES } from "@/lib/categories";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { MdLocationPin } from "react-icons/md";
-import { Separator } from "@/components/ui/separator";
+import ProductFilterNavToolbar from "@/components/product-filters-nav-toolbar";
 
 export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
   const { setSubHeader, resetAll } = useNavbar();
@@ -59,37 +55,13 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
   useLayoutEffect(() => {
     resetAll();
 
-    setSubHeader(
-      <div className="flex-1 flex flex-row items-center gap-4 px-5 overflow-x-auto h-full">
-        <div>
-          <Button size="xs" rounded variant="secondary"><MdLocationPin /> {location?.fullAddress.split(",")[0]}</Button>
-        </div>
-
-        <div className="h-full py-2">
-          <Separator orientation="vertical" />
-        </div>
-
-        <div className="flex flex-row items-center gap-2">
-          {COMMON_CATEGORIES.map(({ id, name }) => (
-            <Link
-              href={`/search?categoryId=${id}&category=${encodeURIComponent(
-                name
-              )}`}
-              className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full flex flex-row items-center justify-center text-xs"
-              key={`common-category-${id}`}
-            >
-              {name}
-            </Link>
-          ))}
-        </div>
-      </div>
-    );
+    setSubHeader(<ProductFilterNavToolbar baseUrl="/search" />);
 
     return () => {
       resetAll();
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [location]);
+  }, []);
 
   return (
     <>

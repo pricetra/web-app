@@ -3,6 +3,7 @@
 import BranchItemWithLogo, {
   BranchItemWithLogoLoading,
 } from "@/components/branch-item-with-logo";
+import ProductFilterNavToolbar from "@/components/product-filters-nav-toolbar";
 import ProductItemHorizontal, {
   ProductLoadingItemHorizontal,
 } from "@/components/product-item-horizontal";
@@ -49,7 +50,7 @@ export default function SearchPageClient({
   ipAddress,
 }: SearchPageClientProps) {
   const { loggedIn } = useAuth();
-  const { setPageIndicator } = useNavbar();
+  const { setPageIndicator, setSubHeader, resetAll } = useNavbar();
   const locationInput = useLocationInput(ipAddress);
   const paramsBuilder = new URLSearchParams(params);
   const searchVariables = useMemo(
@@ -99,11 +100,15 @@ export default function SearchPageClient({
   const nextWeekDateRange = getNextWeekDateRange();
 
   useLayoutEffect(() => {
+    resetAll();
+
     setPageIndicator(
       <NavPageIndicator icon={IoIosSearch} title="Search" href="/search" />
     );
+    setSubHeader(<ProductFilterNavToolbar baseUrl="" />)
+
     return () => {
-      setPageIndicator(undefined);
+      resetAll();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
