@@ -10,14 +10,19 @@ import {
 import { Paginator } from "graphql-utils";
 import { useSearchParams } from "next/navigation";
 
-export function SmartPagination({ paginator }: { paginator: Paginator }) {
+export type SmartPaginationProps = {
+  paginator: Paginator;
+  urlBase?: string;
+};
+
+export function SmartPagination({ paginator, urlBase = '' }: SmartPaginationProps) {
   const { page, numPages, prev, next } = paginator;
   const searchParams = useSearchParams();
   const searchParamsBuilder = new URLSearchParams(searchParams);
 
   function buildHref(page: number) {
     searchParamsBuilder.set("page", String(page));
-    return `?${searchParamsBuilder.toString()}`;
+    return `${urlBase}?${searchParamsBuilder.toString()}`;
   }
 
   // Helper to create a safe page range

@@ -166,6 +166,7 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
             <div className="mt-20">
               <SmartPagination
                 paginator={branchesWithProducts.branchesWithProducts.paginator}
+                urlBase="/search"
               />
             </div>
           )}
