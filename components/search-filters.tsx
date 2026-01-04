@@ -8,7 +8,7 @@ export type SearchFiltersProps = {
 
 export default function SearchFilters({ params }: SearchFiltersProps) {
   return (
-    <div className="flex flex-row flex-wrap gap-2 mb-5">
+    <>
       {params.query && (
         <Button variant="outline" rounded>
           Search: <b>{params.query}</b>
@@ -35,6 +35,6 @@ export default function SearchFilters({ params }: SearchFiltersProps) {
           <b>{params.sortByPrice === "asc" ? "↓ Price" : "↑ Price"}</b>
         </Button>
       )}
-    </div>
+    </>
   );
 }

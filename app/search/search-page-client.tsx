@@ -9,6 +9,7 @@ import ProductItemHorizontal, {
 } from "@/components/product-item-horizontal";
 import ScrollContainer from "@/components/scroll-container";
 import SearchFilters from "@/components/search-filters";
+import { Button } from "@/components/ui/button";
 import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { SmartPagination } from "@/components/ui/smart-pagination";
 import WelcomeHeroBanner from "@/components/welcome-hero-banner";
@@ -52,7 +53,11 @@ export default function SearchPageClient({
   const { loggedIn } = useAuth();
   const { setPageIndicator, setSubHeader, resetAll } = useNavbar();
   const locationInput = useLocationInput(ipAddress);
-  const paramsBuilder = new URLSearchParams(params);
+  const paramsBuilder = useMemo(() => {
+    const paramsBuilder = new URLSearchParams(params);
+    paramsBuilder.delete("page");
+    return paramsBuilder;
+  }, [params]);
   const searchVariables = useMemo(
     () =>
       ({
@@ -105,7 +110,7 @@ export default function SearchPageClient({
     setPageIndicator(
       <NavPageIndicator icon={IoIosSearch} title="Search" href="/search" />
     );
-    setSubHeader(<ProductFilterNavToolbar baseUrl="" />)
+    setSubHeader(<ProductFilterNavToolbar baseUrl="" />);
 
     return () => {
       resetAll();
@@ -142,7 +147,7 @@ export default function SearchPageClient({
     <div className="w-full max-w-[1000px] mt-5">
       {!loggedIn && <WelcomeHeroBanner />}
 
-      {paramsBuilder.size === 0 && (
+      {!params.page && paramsBuilder.size === 0 && (
         <div className="mb-10">
           <div className="flex flex-col gap-5 mb-10 px-5">
             <h3 className="font-bold text-xl md:text-2xl">Popular searches</h3>
@@ -223,8 +228,14 @@ export default function SearchPageClient({
       )}
 
       {paramsBuilder.size > 0 && (
-        <div className="px-5">
+        <div className="flex flex-row flex-wrap gap-2 mb-5">
           <SearchFilters params={params} />
+
+          {
+            params.page && +params.page > 1 && (
+              <Button variant="link">Page {params.page}</Button>
+            )
+          }
         </div>
       )}
 
