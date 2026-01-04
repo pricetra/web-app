@@ -42,7 +42,7 @@ export default function NavbarMain() {
 
   const fullNavHeight = useMemo(
     () => navbarHeight + (subHeader && !searchPanelOpen ? subHeaderHeight : 0),
-    [subHeader, searchPanelOpen]
+    [navbarHeight, subHeader, searchPanelOpen, subHeaderHeight]
   );
   const isMobile = useMediaQuery({
     query: "(max-width: 767px)",
@@ -199,7 +199,7 @@ export default function NavbarMain() {
                 variant="ghost"
                 className="p-2"
               >
-                <IoIosSearch className="size-[20px]" />
+                <IoIosSearch className="size-5" />
               </Button>
             )}
 
@@ -264,7 +264,7 @@ export default function NavbarMain() {
                 variant="ghost"
                 className="p-2 -ml-2"
               >
-                <IoArrowBack className="size-[20px]" />
+                <IoArrowBack className="size-5" />
               </Button>
 
               <div className="flex-1">
