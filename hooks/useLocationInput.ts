@@ -5,14 +5,14 @@ import { useEffect, useState } from "react";
 
 const DEFAULT_LOCATION_INPUT: LocationInputWithFullAddress = {
   locationInput: {
-    latitude: 41.7956366,
-    longitude: -88.0206993,
+    latitude: 41.8105301,
+    longitude: -88.0414555,
   },
   fullAddress: "Downers Grove, IL 60515, USA"
 }
 
 export default function useLocationInput(ipAddress?: string): LocationInputWithFullAddress | undefined {
-  const { currentLocation, locationSetInProgress } = useCurrentLocation();
+  const { currentLocation, locationSetInProgress, setCurrentLocation } = useCurrentLocation();
   const [locationInput, setLocationInput] = useState<LocationInputWithFullAddress>();
   const [getIpToAddress] = useLazyQuery(IpToAddressDocument, { fetchPolicy: "cache-first" });
 
@@ -36,13 +36,15 @@ export default function useLocationInput(ipAddress?: string): LocationInputWithF
       }
 
       const { fullAddress, latitude, longitude } = data.ipToAddress;
-      setLocationInput({
+      const newLocationInput: LocationInputWithFullAddress = {
         fullAddress,
         locationInput: {
           latitude,
           longitude,
         }
-      })
+      };
+      setLocationInput({...newLocationInput});
+      setCurrentLocation({...newLocationInput});
     }).catch(() => setLocationInput(DEFAULT_LOCATION_INPUT))
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentLocation, ipAddress, locationSetInProgress]);
