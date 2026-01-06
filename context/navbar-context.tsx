@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 
-export const NAVBAR_HEIGHT = 60;
-export const SUBNAV_HEIGHT = 40;
+export const NAVBAR_HEIGHT = 55;
+export const SUBNAV_HEIGHT = 45;
 
 const searchTaglines = [
   "Search for milk, eggs, cereal...",
