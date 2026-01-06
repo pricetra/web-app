@@ -16,7 +16,7 @@ import WelcomeHeroBanner from "@/components/welcome-hero-banner";
 import { useNavbar } from "@/context/navbar-context";
 import { useAuth } from "@/context/user-context";
 import useLocationInput from "@/hooks/useLocationInput";
-import { getNextWeekDateRange } from "@/lib/utils";
+import { getNextWeekDateRange, getRandomElement, getRandomIntInclusive } from "@/lib/utils";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
 import {
   Branch,
@@ -159,7 +159,7 @@ export default function SearchPageClient({
                     <Link
                       href={`?query=${encodeURIComponent(k)}`}
                       key={`search-keyword-${k}-${i}`}
-                      className="px-3 py-1 bg-gray-100 border border-gray-200 rounded-full"
+                      className="px-4 py-1 bg-gray-100 border border-gray-200 rounded-full"
                     >
                       {k}
                     </Link>
@@ -171,7 +171,7 @@ export default function SearchPageClient({
                     .fill(0)
                     .map((_, i) => (
                       <Skeleton
-                        style={{ borderRadius: 20, height: 34, width: 80 }}
+                        style={{ borderRadius: 20, height: 34, width: getRandomIntInclusive(70, 120) }}
                         key={`keyword-loading-${i}`}
                       />
                     ))}
