@@ -16,7 +16,7 @@ import WelcomeHeroBanner from "@/components/welcome-hero-banner";
 import { useNavbar } from "@/context/navbar-context";
 import { useAuth } from "@/context/user-context";
 import useLocationInput from "@/hooks/useLocationInput";
-import { getNextWeekDateRange, getRandomElement, getRandomIntInclusive } from "@/lib/utils";
+import { getNextWeekDateRange, getRandomIntInclusive } from "@/lib/utils";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
 import {
   Branch,
