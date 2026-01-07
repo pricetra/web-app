@@ -108,7 +108,20 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   // set user anytime me query is updated
   useEffect(() => {
     if (!meData) return;
-    setUser(meData.me as User);
+
+    const me = meData.me as User;
+    setUser(me);
+
+    if (process.env.NODE_ENV === 'production') {
+      window.gtag("set", {
+        user_id: me.id.toString(),
+        user_properties: {
+          auth_platform: me.authPlatform,
+          auth_device: me.authDevice,
+          auth_state_id: me.authStateId,
+        },
+      });
+    }
 
     if (!meData.me.address) {
       setShowWelcomeScreen(true);
