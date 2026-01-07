@@ -7,6 +7,7 @@ import "aos/dist/aos.css";
 import "react-horizontal-scrolling-menu/dist/styles.css";
 import "@/public/globals.css";
 import AppProvider from "@/providers/app-provider";
+import { GA_TRACKING_ID, GADS_PUB_ID } from "@/constants/google";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -17,8 +18,6 @@ const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
 });
-
-const GA_TRACKING_ID = "G-6HHHS9PFVQ";
 
 export default function RootLayout({
   children,
@@ -70,11 +69,11 @@ export default function RootLayout({
             {/* AdSense code */}
             <meta
               name="google-adsense-account"
-              content="ca-pub-9688831646501290"
+              content={`ca-${GADS_PUB_ID}`}
             />
             <Script
               async
-              src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9688831646501290"
+              src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-${GADS_PUB_ID}`}
               crossOrigin="anonymous"
             />
           </>

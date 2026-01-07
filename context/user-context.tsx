@@ -19,6 +19,7 @@ import { SuspenseFallbackLogo } from "@/components/suspense-fallback";
 import { useCookies } from "react-cookie";
 import { SiteCookieValues } from "@/lib/cookies";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
+import { GA_TRACKING_ID } from "@/constants/google";
 
 export type UserListsType = {
   allLists: List[];
@@ -113,7 +114,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
     setUser(me);
 
     if (process.env.NODE_ENV === 'production') {
-      window.gtag("set", {
+      window.gtag("config", GA_TRACKING_ID, {
         user_id: me.id.toString(),
         user_properties: {
           auth_platform: me.authPlatform,
