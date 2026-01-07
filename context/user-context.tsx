@@ -19,7 +19,7 @@ import { SuspenseFallbackLogo } from "@/components/suspense-fallback";
 import { useCookies } from "react-cookie";
 import { SiteCookieValues } from "@/lib/cookies";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
-import { GA_TRACKING_ID } from "@/constants/google";
+import { setGoogleAnalyticsUserId } from "@/lib/google";
 
 export type UserListsType = {
   allLists: List[];
@@ -75,7 +75,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   const [loading, setLoading] = useState(true);
 
   function handleLists(allLists: List[]) {
-    const favorites = allLists.find(({ type }) => type === ListType.Favorites)!
+    const favorites = allLists.find(({ type }) => type === ListType.Favorites)!;
     setUserLists({
       allLists,
       favorites,
@@ -112,17 +112,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
 
     const me = meData.me as User;
     setUser(me);
-
-    if (process.env.NODE_ENV === 'production') {
-      window.gtag("config", GA_TRACKING_ID, {
-        user_id: me.id.toString(),
-        user_properties: {
-          auth_platform: me.authPlatform,
-          auth_device: me.authDevice,
-          auth_state_id: me.authStateId,
-        },
-      });
-    }
+    setGoogleAnalyticsUserId(me.id.toString());
 
     if (!meData.me.address) {
       setShowWelcomeScreen(true);
@@ -186,6 +176,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
             .finally(() => {
               setUser(undefined);
               setUserLists(undefined);
+              setGoogleAnalyticsUserId(null);
             }),
       }}
     >
