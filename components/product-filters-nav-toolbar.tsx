@@ -2,7 +2,6 @@ import { Button } from "@/components/ui/button";
 import { MdLocationPin } from "react-icons/md";
 import { Separator } from "@/components/ui/separator";
 import { COMMON_CATEGORIES } from "@/lib/categories";
-import Link from "next/link";
 import useLocationInput from "@/hooks/useLocationInput";
 import { useSearchParams } from "next/navigation";
 import { toBoolean } from "@/lib/utils";
@@ -19,7 +18,7 @@ export default function ProductFilterNavToolbar({
   const searchParams = useSearchParams();
   const searchParamsBuilder = useMemo(() => {
     const paramsBuilder = new URLSearchParams(searchParams);
-    paramsBuilder.delete('page');
+    paramsBuilder.delete("page");
     return paramsBuilder;
   }, [searchParams]);
 
@@ -31,39 +30,41 @@ export default function ProductFilterNavToolbar({
         </Button>
       </div>
 
-      {searchParamsBuilder.size > 0 && (<div className="flex flex-row items-center gap-2">
-        {searchParams.get("query") && (
-          <Button variant="outline" size="xs" rounded>
-            Search: <b>{searchParams.get("query")}</b>
-          </Button>
-        )}
-        {searchParams.get("category") && searchParams.get("categoryId") && (
-          <Button variant="outline" size="xs" rounded>
-            Category: <b>{searchParams.get("category")}</b>
-          </Button>
-        )}
-        {searchParams.get("brand") && (
-          <Button variant="outline" size="xs" rounded>
-            Brand: <b>{searchParams.get("brand")}</b>
-          </Button>
-        )}
-        {searchParams.get("sale") &&
-          toBoolean(searchParams.get("sale") ?? undefined) && (
-            <Button variant="pricetra" size="xs" rounded>
-              Sale
+      {searchParamsBuilder.size > 0 && (
+        <div className="flex flex-row items-center gap-2">
+          {searchParams.get("query") && (
+            <Button variant="outline" size="xs" rounded>
+              Search: <b>{searchParams.get("query")}</b>
             </Button>
           )}
-        {searchParams.get("sortByPrice") && (
-          <Button variant="outline" size="xs" rounded>
-            Sort by:
-            <b>
-              {searchParams.get("sortByPrice") === "asc"
-                ? "↓ Price"
-                : "↑ Price"}
-            </b>
-          </Button>
-        )}
-      </div>)}
+          {searchParams.get("category") && searchParams.get("categoryId") && (
+            <Button variant="outline" size="xs" rounded>
+              Category: <b>{searchParams.get("category")}</b>
+            </Button>
+          )}
+          {searchParams.get("brand") && (
+            <Button variant="outline" size="xs" rounded>
+              Brand: <b>{searchParams.get("brand")}</b>
+            </Button>
+          )}
+          {searchParams.get("sale") &&
+            toBoolean(searchParams.get("sale") ?? undefined) && (
+              <Button variant="pricetra" size="xs" rounded>
+                Sale
+              </Button>
+            )}
+          {searchParams.get("sortByPrice") && (
+            <Button variant="outline" size="xs" rounded>
+              Sort by:
+              <b>
+                {searchParams.get("sortByPrice") === "asc"
+                  ? "↓ Price"
+                  : "↑ Price"}
+              </b>
+            </Button>
+          )}
+        </div>
+      )}
 
       <div className="h-full py-2 px-2">
         <Separator orientation="vertical" />
@@ -71,15 +72,17 @@ export default function ProductFilterNavToolbar({
 
       <div className="flex flex-row items-center gap-2">
         {COMMON_CATEGORIES.map(({ id, name }) => (
-          <Link
+          <Button
             href={`${baseUrl}?categoryId=${id}&category=${encodeURIComponent(
               name
             )}`}
-            className="px-3 py-1 bg-gray-100 hover:bg-gray-200 rounded-full flex flex-row items-center justify-center text-xs"
+            variant="secondary"
+            size="xs"
+            rounded
             key={`common-category-${id}`}
           >
             {name}
-          </Link>
+          </Button>
         ))}
       </div>
     </div>
