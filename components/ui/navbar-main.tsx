@@ -49,7 +49,7 @@ export default function NavbarMain() {
   });
 
   const onSubmitSearch = useCallback(
-    (value: string, e: KeyboardEvent<HTMLInputElement>) => {
+    (e: KeyboardEvent<HTMLInputElement>) => {
       if (e.key === "Escape") {
         if (document.activeElement instanceof HTMLElement) {
           document.activeElement.blur();
@@ -59,7 +59,8 @@ export default function NavbarMain() {
       }
       if (e.key === "Enter") {
         setSearchPanelOpen(false);
-        router.push(`${searchQueryPath}?query=${encodeURIComponent(value)}`);
+        const eventInputValue = e.currentTarget.value.trim();
+        router.push(`${searchQueryPath}?query=${encodeURIComponent(eventInputValue)}`);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -318,7 +319,7 @@ export default function NavbarMain() {
 type SearchbarProps = {
   placeholder: string;
   value?: string;
-  onKeyDown: (value: string, e: KeyboardEvent<HTMLInputElement>) => void;
+  onKeyDown: (e: KeyboardEvent<HTMLInputElement>) => void;
 };
 
 function DesktopSearchbar({ placeholder, value, onKeyDown }: SearchbarProps) {
@@ -334,7 +335,7 @@ function DesktopSearchbar({ placeholder, value, onKeyDown }: SearchbarProps) {
       className="text-xs sm:text-sm pl-1 sm:pl-2 fade-mask-placeholder"
       value={searchText}
       onChange={(e) => setSearchText(e.target.value)}
-      onKeyDown={(e) => onKeyDown(searchText ?? "", e)}
+      onKeyDown={(e) => onKeyDown(e)}
     />
   );
 }
@@ -353,7 +354,7 @@ function MobileSearchbar({ placeholder, value, onKeyDown }: SearchbarProps) {
       className="block w-full outline-none py-3 fade-mask-placeholder"
       value={searchText}
       onChange={(e) => setSearchText(e.target.value)}
-      onKeyDown={(e) => onKeyDown(searchText ?? "", e)}
+      onKeyDown={(e) => onKeyDown(e)}
     />
   );
 }
