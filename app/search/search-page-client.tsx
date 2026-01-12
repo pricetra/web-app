@@ -228,7 +228,7 @@ export default function SearchPageClient({
       )}
 
       {paramsBuilder.size > 0 && (
-        <div className="flex flex-row flex-wrap gap-2 mb-5">
+        <div className="flex flex-row flex-wrap gap-2 mb-5 px-5">
           <SearchFilters params={params} />
 
           {

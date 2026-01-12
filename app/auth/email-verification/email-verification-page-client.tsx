@@ -14,6 +14,7 @@ import { BsEnvelopeCheck } from "react-icons/bs";
 export default function EmailVerificationPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const returnPath = searchParams.get("return");
   const emailSearchParam = searchParams.get("email");
 
   const [verificationCode, setVerificationCode] = useState("");
@@ -38,16 +39,23 @@ export default function EmailVerificationPage() {
       variables: { verificationCode },
     }).then(({ data }) => {
       if (!data) return;
-      router.push(
-        `/auth/login?email=${data.verifyEmail.email}&emailVerificationStatus=${data.verifyEmail.active}`
+      const paramsBuilder = new URLSearchParams();
+      paramsBuilder.set("email", data.verifyEmail.email);
+      paramsBuilder.set(
+        "emailVerificationStatus",
+        String(data.verifyEmail.active)
       );
+      if (returnPath) {
+        paramsBuilder.set("return", returnPath);
+      }
+      router.push(`/auth/login?${paramsBuilder.toString()}`);
     });
   }
 
   useEffect(() => {
     if (emailSearchParam && emailSearchParam.length > 1) return;
-    router.push('/auth/signup');
-  }, [emailSearchParam, router])
+    router.push("/auth/signup");
+  }, [emailSearchParam, router]);
 
   return (
     <AuthContainer
@@ -60,7 +68,13 @@ export default function EmailVerificationPage() {
       extras={
         <div className="text-center text-sm">
           Didn&apos;t get an email?{" "}
-          <Link href="#" className="underline underline-offset-4" onClick={() => resend({ variables: {email: emailSearchParam ?? ''} })}>
+          <Link
+            href="#"
+            className="underline underline-offset-4"
+            onClick={() =>
+              resend({ variables: { email: emailSearchParam ?? "" } })
+            }
+          >
             Resend verification code
           </Link>
         </div>
@@ -71,7 +85,8 @@ export default function EmailVerificationPage() {
           <BsEnvelopeCheck />
           <AlertTitle>Verification email sent!</AlertTitle>
           <AlertDescription>
-            An email with the verification code was sent to <i>{emailSearchParam}</i>
+            An email with the verification code was sent to{" "}
+            <i>{emailSearchParam}</i>
           </AlertDescription>
         </Alert>
       )}

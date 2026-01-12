@@ -62,8 +62,13 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
       fetchPolicy: "no-cache",
     }
   );
-  const loading = loginInternalLoading || loginGoogleLoading || loginAppleLoading || resendLoading;
-  const error = loginInternalError || loginGoogleError || loginAppleError || resendError;
+  const loading =
+    loginInternalLoading ||
+    loginGoogleLoading ||
+    loginAppleLoading ||
+    resendLoading;
+  const error =
+    loginInternalError || loginGoogleError || loginAppleError || resendError;
 
   function setAuthCookie(token: string) {
     setCookie("auth_token", token, {
@@ -79,10 +84,14 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
         variables: { email: auth.user.email },
       }).then(({ data }) => {
         if (!data) return;
+
+        const paramsBuilder = new URLSearchParams();
+        paramsBuilder.set('email', auth.user.email);
+        if (returnPath) {
+          paramsBuilder.set('return', returnPath)
+        }
         router.push(
-          `/auth/email-verification?email=${encodeURIComponent(
-            auth.user.email
-          )}`
+          `/auth/email-verification?${paramsBuilder.toString()}`
         );
       });
       return;
@@ -114,19 +123,19 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
   });
 
   useEffect(() => {
-      if (!appleOAuthSuccessData) return;
-  
-      const { code, user: appleRawUser } = appleOAuthSuccessData;
-      loginApple({
-        variables: {
-          code,
-          appleRawUser,
-          device: AuthDeviceType.Web,
-          ipAddress,
-        },
-      }).then(({ data }) => handleAuthSuccess(data?.appleOAuth as Auth));
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [appleOAuthSuccessData]);
+    if (!appleOAuthSuccessData) return;
+
+    const { code, user: appleRawUser } = appleOAuthSuccessData;
+    loginApple({
+      variables: {
+        code,
+        appleRawUser,
+        device: AuthDeviceType.Web,
+        ipAddress,
+      },
+    }).then(({ data }) => handleAuthSuccess(data?.appleOAuth as Auth));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [appleOAuthSuccessData]);
 
   useEffect(() => {
     if (!loggedIn) return;
@@ -153,7 +162,9 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
         <div className="text-center text-sm">
           Don&apos;t have an account?{" "}
           <Link
-            href={`/auth/signup?email=${email}`}
+            href={`/auth/signup?email=${encodeURIComponent(email)}${
+              returnPath ? `&return=${encodeURIComponent(returnPath)}` : ""
+            }`}
             className="underline underline-offset-4"
           >
             Sign up

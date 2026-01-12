@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
 import {
   AppleOAuthDocument,
+  Auth,
   AuthDeviceType,
   CreateAccountDocument,
   GoogleOAuthDocument,
@@ -15,16 +16,21 @@ import AuthContainer from "@/components/auth/auth-container";
 import { useGoogleLogin } from "@react-oauth/google";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useCookies } from "react-cookie";
-import { AUTH_TOKEN_KEY, cookieDefaults, SITE_COOKIES } from "@/lib/cookies";
+import { cookieDefaults, SITE_COOKIES } from "@/lib/cookies";
 import { useAuth } from "@/context/user-context";
 import useAppleLogin from "@/hooks/useAppleLogin";
+import { STORE_INVITE } from "../store-invite/accept/client";
+import { MdError } from "react-icons/md";
+import dayjs from "dayjs";
 
 export default function SignupPage({ ipAddress }: { ipAddress: string }) {
   const { loggedIn } = useAuth();
   const [, setCookie] = useCookies(SITE_COOKIES);
   const router = useRouter();
   const searchParams = useSearchParams();
+  const returnPath = searchParams.get("return");
   const emailSearchParam = searchParams.get("email");
+  const reasonSearchParam = searchParams.get("reason");
 
   const { launchAppleOAuth, data: appleOAuthSuccessData } = useAppleLogin();
 
@@ -55,8 +61,29 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
       variables: { email, password, name },
     }).then(({ data }) => {
       if (!data) return;
-      router.push(`/auth/email-verification?email=${data.createAccount.email}`);
+
+      const paramsBuilder = new URLSearchParams();
+      paramsBuilder.set("email", data.createAccount.email);
+      if (returnPath) {
+        paramsBuilder.set("return", returnPath);
+      }
+      router.push(`/auth/email-verification?${paramsBuilder.toString()}`);
     });
+  }
+
+  function setAuthCookie(token: string) {
+    setCookie("auth_token", token, {
+      ...cookieDefaults,
+      expires: dayjs().add(30, "days").toDate(),
+    });
+  }
+
+  function handleAuth(auth?: Auth) {
+    if (!auth) return;
+    if (!auth.user.active) return;
+
+    setAuthCookie(auth.token);
+    router.replace(returnPath ?? "/home");
   }
 
   const googleOAuthCallback = useGoogleLogin({
@@ -67,11 +94,7 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
           device: AuthDeviceType.Web,
           ipAddress,
         },
-      }).then(({ data }) => {
-        if (!data) return;
-        setCookie(AUTH_TOKEN_KEY, data.googleOAuth.token, cookieDefaults);
-        router.replace("/home");
-      });
+      }).then(({ data }) => handleAuth(data?.googleOAuth as Auth));
     },
   });
 
@@ -86,13 +109,9 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
         device: AuthDeviceType.Web,
         ipAddress,
       },
-    }).then(({ data }) => {
-      if (!data) return;
-      setCookie(AUTH_TOKEN_KEY, data.appleOAuth.token, cookieDefaults);
-      router.replace("/home");
-    });
+    }).then(({ data }) => handleAuth(data?.appleOAuth as Auth));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [appleOAuthSuccessData]);
+  }, [appleOAuthSuccessData, returnPath]);
 
   useEffect(() => {
     if (!loggedIn) return;
@@ -118,7 +137,9 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
         <div className="text-center text-sm">
           Already have an account?{" "}
           <Link
-            href={`/auth/login?email=${email}`}
+            href={`/auth/login?email=${encodeURIComponent(email)}${
+              returnPath ? `&return=${encodeURIComponent(returnPath)}` : ""
+            }`}
             className="underline underline-offset-4"
           >
             Login
@@ -126,6 +147,13 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
         </div>
       }
     >
+      {reasonSearchParam && reasonSearchParam === STORE_INVITE && (
+        <div className="bg-orange-700 text-white p-3 flex flex-row items-center gap-2 rounded-md">
+          <MdError className="size-5" />
+          <span className="text-sm">Login or Signup to accept this invite</span>
+        </div>
+      )}
+
       <div className="grid gap-2">
         <Label htmlFor="email">Email</Label>
         <Input
