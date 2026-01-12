@@ -26,6 +26,7 @@ import {
   NativeSelectOption,
 } from "@/components/ui/native-select";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 export default function AddStoreUserClient() {
   const [searchStoreValue, setSearchStoreValue] = useState("");
@@ -35,14 +36,16 @@ export default function AddStoreUserClient() {
     getAllStoreBranches,
     { data: storeBranchesData, loading: storeBranchesLoading },
   ] = useLazyQuery(AllBranchesDocument);
-  const [createStoreUser, { loading: creatingStoreUser }] = useMutation(CreateStoreUserAdminDocument);
+  const [createStoreUser, { loading: creatingStoreUser }] = useMutation(
+    CreateStoreUserAdminDocument
+  );
 
   useEffect(() => {
     getAllStores({
       variables: {
         search: searchStoreValue,
         paginator: {
-          limit: 10,
+          limit: 11,
           page: 1,
         },
       },
@@ -58,19 +61,23 @@ export default function AddStoreUserClient() {
         <div className="mt-5">
           <Formik
             initialValues={{} as CreateStoreUserAdmin}
-            onSubmit={async (input: CreateStoreUserAdmin, formikHelpers: FormikHelpers<CreateStoreUserAdmin>) => {
+            onSubmit={async (
+              input: CreateStoreUserAdmin,
+              formikHelpers: FormikHelpers<CreateStoreUserAdmin>
+            ) => {
               const { data, error } = await createStoreUser({
                 variables: {
                   input,
                 },
               });
               if (error || !data) {
-                window.alert(error?.message ?? 'Could not create store user');
+                window.alert(error?.message ?? "Could not create store user");
                 return;
               }
 
               formikHelpers.resetForm();
-              setSearchStoreValue('');
+              setSearchStoreValue("");
+              toast.success("Store user was created successfully!");
             }}
           >
             {(formik) => (
@@ -94,7 +101,7 @@ export default function AddStoreUserClient() {
                     </InputGroupAddon>
                   </InputGroup>
 
-                  <div className="mt-3 flex flex-row gap-3 items-center">
+                  <div className="mt-3 flex flex-row flex-wrap gap-3 items-center">
                     {storesData &&
                       storesData.allStores.stores.map((store) => (
                         <div
@@ -140,25 +147,32 @@ export default function AddStoreUserClient() {
                   </div>
                 </div>
 
-                {formik.values.storeId && storeBranchesData && !storeBranchesLoading && (
-                  <div>
-                    <NativeSelect
-                      value={formik.values.branchId?.toString()}
-                      onChange={(e) => {
-                        formik.setFieldValue(
-                          "branchId",
-                          parseInt(e.target.value)
-                        );
-                      }}
-                    >
-                      {storeBranchesData.allBranches.branches.map((branch) => (
-                        <NativeSelectOption key={branch.id} value={branch.id}>
-                          {branch.name}
-                        </NativeSelectOption>
-                      ))}
-                    </NativeSelect>
-                  </div>
-                )}
+                {formik.values.storeId &&
+                  storeBranchesData &&
+                  !storeBranchesLoading && (
+                    <div>
+                      <NativeSelect
+                        value={formik.values.branchId?.toString()}
+                        onChange={(e) => {
+                          formik.setFieldValue(
+                            "branchId",
+                            parseInt(e.target.value)
+                          );
+                        }}
+                      >
+                        {storeBranchesData.allBranches.branches.map(
+                          (branch) => (
+                            <NativeSelectOption
+                              key={branch.id}
+                              value={branch.id}
+                            >
+                              {branch.name}
+                            </NativeSelectOption>
+                          )
+                        )}
+                      </NativeSelect>
+                    </div>
+                  )}
 
                 <div className="flex flex-row gap-3">
                   <InputGroup className="flex-2">
@@ -180,7 +194,7 @@ export default function AddStoreUserClient() {
                       value={formik.values.role}
                       onChange={(e) => {
                         formik.setFieldValue("role", e.target.value.toString());
-                        console.log(e.target.value)
+                        console.log(e.target.value);
                       }}
                     >
                       {Object.values(StoreUserRole).map((role) => (
@@ -230,7 +244,9 @@ export default function AddStoreUserClient() {
                     variant="pricetra"
                     disabled={creatingStoreUser}
                   >
-                    {creatingStoreUser && <CgSpinner className="animate-spin" />}
+                    {creatingStoreUser && (
+                      <CgSpinner className="animate-spin" />
+                    )}
                     Create Store User
                   </Button>
                 </div>
