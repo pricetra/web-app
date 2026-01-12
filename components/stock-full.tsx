@@ -4,7 +4,7 @@ import { Stock } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
 import { currencyFormat, getPriceUnitOrEach } from "@/lib/strings";
 import { metersToMiles } from "@/lib/utils";
-import Image from 'next/image'
+import Image from "next/image";
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 import Skeleton from "react-loading-skeleton";
@@ -35,10 +35,10 @@ export default function StockFull({
   return (
     <div className="flex flex-row justify-between gap-5">
       <div className="flex flex-1 flex-row gap-4">
-        <Link href={`/stores/${stock.store.slug}`}>
+        <Link href={`/stores/${stock.store.slug}`} className="size-[50px] xl:size-[60px]">
           <Image
             src={createCloudinaryUrl(stock.store.logo, 500, 500)}
-            className="size-[50px] xl:size-[60px] rounded-xl"
+            className="rounded-xl"
             width={100}
             height={100}
             quality={100}
@@ -92,15 +92,19 @@ export default function StockFull({
             {stock.latestPrice?.sale &&
               !isExpired &&
               stock.latestPrice?.expiresAt && (
-                <p className="bg-yellow-200 text-xs italic">
-                  Valid until{" "}
-                  <b>{dayjs(stock.latestPrice.expiresAt).format("LL")}</b>
+                <p className="leading-0">
+                  <span className="bg-blue-200/50 text-xs italic">
+                    Valid until{" "}
+                    <b>{dayjs(stock.latestPrice.expiresAt).format("LL")}</b>
+                  </span>
                 </p>
               )}
 
             {!isExpired && stock.latestPrice?.condition && (
-              <p className="bg-yellow-200 text-xs italic">
-                *{stock.latestPrice.condition}
+              <p className="leading-0">
+                <span className="bg-yellow-200/50 text-xs italic">
+                  *{stock.latestPrice.condition}
+                </span>
               </p>
             )}
           </div>
@@ -156,7 +160,7 @@ export function StockFullLoading() {
   return (
     <div className="flex flex-row justify-between gap-5">
       <div className="flex flex-1 flex-row gap-4">
-        <Skeleton style={{width: 60, height: 60, borderRadius: 10}} />
+        <Skeleton style={{ width: 60, height: 60, borderRadius: 10 }} />
         <div
           style={{
             display: "flex",
@@ -167,18 +171,27 @@ export function StockFullLoading() {
           }}
         >
           <div className="flex w-full flex-row items-center gap-2.5">
-            <Skeleton className="h-[18px] w-[80%]" style={{width: 100, height: 18, borderRadius: 7}} />
+            <Skeleton
+              className="h-[18px] w-[80%]"
+              style={{ width: 100, height: 18, borderRadius: 7 }}
+            />
           </div>
 
           <div className="w-full">
-            <Skeleton className="h-[12px] w-[80%] rounded-lg" style={{width: '80%', height: 12, borderRadius: 5}} />
+            <Skeleton
+              className="h-[12px] w-[80%] rounded-lg"
+              style={{ width: "80%", height: 12, borderRadius: 5 }}
+            />
           </div>
         </div>
       </div>
 
       <div className="flex w-fit flex-col items-end gap-0.5 py-3">
         <div className="flex flex-row items-center justify-start gap-1">
-          <Skeleton className="h-[20px] w-[40px] rounded-lg" style={{width: 40, height: 20, borderRadius: 10 }} />
+          <Skeleton
+            className="h-[20px] w-[40px] rounded-lg"
+            style={{ width: 40, height: 20, borderRadius: 10 }}
+          />
         </div>
       </div>
     </div>

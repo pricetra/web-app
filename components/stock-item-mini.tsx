@@ -140,10 +140,10 @@ export default function StockItemMini({
       </LinkOrDiv>
 
       {stock.latestPrice?.sale && !isExpired && (
-        <div className="flex flex-col gap-1">
+        <div className="flex flex-col">
           {stock.latestPrice?.expiresAt && (
-            <span>
-              <span className="bg-yellow-200 text-[9px] italic">
+            <span className="leading-none block">
+              <span className="bg-blue-200/50 text-[9px] italic">
                 Valid until{" "}
                 <span className="font-bold">
                   {dayjs(stock.latestPrice.expiresAt).format("LL")}
@@ -153,8 +153,8 @@ export default function StockItemMini({
           )}
 
           {stock.latestPrice?.condition && (
-            <span>
-              <span className="bg-yellow-200 text-[9px] italic">
+            <span className="leading-none block">
+              <span className="bg-yellow-200/50 text-[9px] italic">
                 *{stock.latestPrice.condition}
               </span>
             </span>
