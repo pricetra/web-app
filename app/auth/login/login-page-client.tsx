@@ -27,7 +27,7 @@ import { useAuth } from "@/context/user-context";
 import useAppleLogin from "@/hooks/useAppleLogin";
 
 export default function LoginPage({ ipAddress }: { ipAddress: string }) {
-  const { loggedIn } = useAuth();
+  const { loggedIn, loading: authLoading } = useAuth();
   const [, setCookie] = useCookies(SITE_COOKIES);
 
   const { launchAppleOAuth, data: appleOAuthSuccessData } = useAppleLogin();
@@ -66,7 +66,8 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
     loginInternalLoading ||
     loginGoogleLoading ||
     loginAppleLoading ||
-    resendLoading;
+    resendLoading ||
+    authLoading;
   const error =
     loginInternalError || loginGoogleError || loginAppleError || resendError;
 
@@ -86,19 +87,16 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
         if (!data) return;
 
         const paramsBuilder = new URLSearchParams();
-        paramsBuilder.set('email', auth.user.email);
+        paramsBuilder.set("email", auth.user.email);
         if (returnPath) {
-          paramsBuilder.set('return', returnPath)
+          paramsBuilder.set("return", returnPath);
         }
-        router.push(
-          `/auth/email-verification?${paramsBuilder.toString()}`
-        );
+        router.push(`/auth/email-verification?${paramsBuilder.toString()}`);
       });
       return;
     }
 
     setAuthCookie(auth.token);
-    router.replace(returnPath ?? "/home");
   }
 
   function onPressLoginInternal() {

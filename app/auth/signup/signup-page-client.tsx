@@ -24,7 +24,7 @@ import { MdError } from "react-icons/md";
 import dayjs from "dayjs";
 
 export default function SignupPage({ ipAddress }: { ipAddress: string }) {
-  const { loggedIn } = useAuth();
+  const { loggedIn, loading: authLoading } = useAuth();
   const [, setCookie] = useCookies(SITE_COOKIES);
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -53,7 +53,7 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
     useLazyQuery(AppleOAuthDocument, {
       fetchPolicy: "no-cache",
     });
-  const loading = signupLoading || loginGoogleLoading || loginAppleLoading;
+  const loading = signupLoading || loginGoogleLoading || loginAppleLoading || authLoading;
   const error = signupError || loginGoogleError || loginAppleError;
 
   function onPressSignup() {
@@ -83,7 +83,6 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
     if (!auth.user.active) return;
 
     setAuthCookie(auth.token);
-    router.replace(returnPath ?? "/home");
   }
 
   const googleOAuthCallback = useGoogleLogin({
@@ -115,8 +114,9 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
 
   useEffect(() => {
     if (!loggedIn) return;
-    router.replace("/home");
-  }, [loggedIn, router]);
+
+    router.replace(returnPath ?? "/home");
+  }, [loggedIn, router, returnPath]);
 
   useEffect(() => {
     if (!emailSearchParam) return;
