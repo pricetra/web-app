@@ -3,6 +3,7 @@ import {
   MeDocument,
   MeQuery,
   MeQueryVariables,
+  StoreUserRole,
   User,
   UserRole,
 } from "graphql-utils";
@@ -20,8 +21,32 @@ export function roleValue(role: UserRole): number {
   }
 }
 
-export function isRoleAuthorized(minimum_required_role: UserRole, user_role: UserRole): boolean {
+export function isRoleAuthorized(
+  minimum_required_role: UserRole,
+  user_role: UserRole
+): boolean {
   return roleValue(user_role) >= roleValue(minimum_required_role);
+}
+
+export function storeUserRoleValue(role: StoreUserRole): number {
+  switch (role) {
+    case (StoreUserRole.Owner, StoreUserRole.Admin):
+      return roleValue(UserRole.SuperAdmin);
+    case (StoreUserRole.Manager, StoreUserRole.Supervisor):
+      return roleValue(UserRole.Admin);
+    default:
+      return roleValue(UserRole.Contributor);
+  }
+}
+
+export function isStoreUserAuthorized(
+  minimum_required_role: StoreUserRole,
+  store_user_role: StoreUserRole
+): boolean {
+  return (
+    storeUserRoleValue(store_user_role) >=
+    storeUserRoleValue(minimum_required_role)
+  );
 }
 
 export async function adminAuthorize(

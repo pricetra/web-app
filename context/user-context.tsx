@@ -12,7 +12,9 @@ import {
   ListType,
   LogoutDocument,
   MeDocument,
+  MyStoreUserDocument,
   PostAuthUserDataDocument,
+  StoreUser,
   User,
 } from "graphql-utils";
 import { SuspenseFallbackLogo } from "@/components/suspense-fallback";
@@ -38,6 +40,7 @@ export type UserContextType = {
   user?: User;
   lists?: UserListsType;
   allGroceryLists?: GroceryListsType;
+  myStoreUsers?: StoreUser[];
   showWelcomeScreen: boolean;
   token?: string;
   updateUser: (updatedUser: User) => void;
@@ -73,6 +76,14 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
   const [showWelcomeScreen, setShowWelcomeScreen] = useState(false);
   const [logout] = useMutation(LogoutDocument);
   const [loading, setLoading] = useState(true);
+
+  const [getMyStoreUsers, { data: myStoreUsersData }] = useLazyQuery(
+    MyStoreUserDocument,
+    {
+      fetchPolicy: "no-cache",
+    }
+  );
+  const [myStoreUsers, setMyStoreUsers] = useState<StoreUser[]>();
 
   function handleLists(allLists: List[]) {
     const favorites = allLists.find(({ type }) => type === ListType.Favorites)!;
@@ -129,6 +140,13 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
     handleGroceryLists(postAuthUserData.groceryLists as GroceryList[]);
   }, [postAuthUserData?.groceryLists]);
 
+  useEffect(() => {
+    if (!myStoreUsersData) return;
+    if (myStoreUsersData.myStoreUsers.length === 0) return;
+
+    setMyStoreUsers(myStoreUsersData.myStoreUsers as StoreUser[]);
+  }, [myStoreUsersData]);
+
   // call me query
   useEffect(() => {
     if (!jwt) return;
@@ -143,10 +161,12 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
         if (!userData) return;
 
         await getPostAuthUserData();
+        getMyStoreUsers();
       })
       .catch(() => removeCookie("auth_token"))
       .finally(() => setLoading(false));
-  }, [getPostAuthUserData, jwt, me, removeCookie]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [jwt]);
 
   if (loading) return <SuspenseFallbackLogo />;
 
@@ -163,6 +183,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
           watchList: {} as List,
         },
         allGroceryLists,
+        myStoreUsers,
         showWelcomeScreen,
         updateUser: (updatedUser) => setUser(updatedUser),
         setShowWelcomeScreen,
@@ -177,6 +198,7 @@ export function UserContextProvider({ children }: UserContextProviderProps) {
               setUser(undefined);
               setUserLists(undefined);
               setGoogleAnalyticsUserId(null);
+              setMyStoreUsers(undefined);
             }),
       }}
     >
