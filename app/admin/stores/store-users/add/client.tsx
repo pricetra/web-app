@@ -6,7 +6,7 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
-import { Formik, FormikHelpers } from "formik";
+import { Formik, FormikHelpers, FormikErrors } from "formik";
 import {
   AllBranchesDocument,
   AllStoresDocument,
@@ -36,9 +36,10 @@ export default function AddStoreUserClient() {
     getAllStoreBranches,
     { data: storeBranchesData, loading: storeBranchesLoading },
   ] = useLazyQuery(AllBranchesDocument);
-  const [createStoreUser, { loading: creatingStoreUser }] = useMutation(
-    CreateStoreUserAdminDocument
-  );
+  const [
+    createStoreUser,
+    { loading: creatingStoreUser, error: createStoreError },
+  ] = useMutation(CreateStoreUserAdminDocument);
 
   useEffect(() => {
     getAllStores({
@@ -56,11 +57,27 @@ export default function AddStoreUserClient() {
   return (
     <>
       <div className="px-5 w-full max-w-[1000px]">
-        <h1 className="text-lg font-bold">Create Store User</h1>
+        <h1 className="text-xl font-bold">Create Store User</h1>
 
-        <div className="mt-5">
+        <div className="mt-10">
           <Formik
             initialValues={{} as CreateStoreUserAdmin}
+            validateOnMount
+            validateOnChange
+            validate={(v) => {
+              const errors: FormikErrors<CreateStoreUserAdmin> = {};
+              if (v.storeId === undefined)
+                errors.storeId = "store must be selected";
+              if (v.email === undefined || v.email.length === 0)
+                errors.email = "email is invalid";
+              if (v.role === undefined)
+                errors.role = "role needs to be selected";
+              if (v.firstName === undefined)
+                errors.firstName = "First name must be defined";
+              if (v.lastName === undefined)
+                errors.lastName = "Last name must be defined";
+              return errors;
+            }}
             onSubmit={async (
               input: CreateStoreUserAdmin,
               formikHelpers: FormikHelpers<CreateStoreUserAdmin>
@@ -70,10 +87,7 @@ export default function AddStoreUserClient() {
                   input,
                 },
               });
-              if (error || !data) {
-                window.alert(error?.message ?? "Could not create store user");
-                return;
-              }
+              if (error || !data) return;
 
               formikHelpers.resetForm();
               setSearchStoreValue("");
@@ -101,6 +115,7 @@ export default function AddStoreUserClient() {
                     </InputGroupAddon>
                   </InputGroup>
 
+                  <h4 className="mt-3 font-bold">Select store</h4>
                   <div className="mt-3 flex flex-row flex-wrap gap-3 items-center">
                     {storesData &&
                       storesData.allStores.stores.map((store) => (
@@ -152,7 +167,7 @@ export default function AddStoreUserClient() {
                   !storeBranchesLoading && (
                     <div>
                       <NativeSelect
-                        value={formik.values.branchId?.toString()}
+                        value={formik.values.branchId?.toString() ?? undefined}
                         onChange={(e) => {
                           formik.setFieldValue(
                             "branchId",
@@ -160,6 +175,7 @@ export default function AddStoreUserClient() {
                           );
                         }}
                       >
+                        <NativeSelectOption value={undefined}>All Branches (Super user)</NativeSelectOption>
                         {storeBranchesData.allBranches.branches.map(
                           (branch) => (
                             <NativeSelectOption
@@ -191,12 +207,14 @@ export default function AddStoreUserClient() {
 
                   <div className="flex-1">
                     <NativeSelect
-                      value={formik.values.role}
+                      value={formik.values.role ?? ""}
                       onChange={(e) => {
                         formik.setFieldValue("role", e.target.value.toString());
-                        console.log(e.target.value);
                       }}
                     >
+                      <NativeSelectOption value="">
+                        Select Role
+                      </NativeSelectOption>
                       {Object.values(StoreUserRole).map((role) => (
                         <NativeSelectOption key={role} value={role.toString()}>
                           {role.toString()}
@@ -238,11 +256,27 @@ export default function AddStoreUserClient() {
                   />
                 </InputGroup>
 
+                {createStoreError && (
+                  <p className="text-red-700">
+                    {createStoreError.name}: {createStoreError.message}
+                  </p>
+                )}
+
+                {formik.errors && (
+                  <ul>
+                    {Object.entries(formik.errors).map(([key, val], i) => (
+                      <li className="text-red-700" key={`error-${key}-${i}`}>
+                        {key}: {val}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+
                 <div className="flex flex-row-reverse">
                   <Button
-                    onClick={() => formik.submitForm()}
+                    onClick={() => formik.handleSubmit()}
                     variant="pricetra"
-                    disabled={creatingStoreUser}
+                    disabled={creatingStoreUser || !formik.isValid}
                   >
                     {creatingStoreUser && (
                       <CgSpinner className="animate-spin" />
