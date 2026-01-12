@@ -30,9 +30,7 @@ export default function DeclineInviteClient({
 
   useEffect(() => {
     if (!loggedIn) {
-      const returnTo = encodeURIComponent(
-        `/auth/store-invite/decline?data=${data}`
-      );
+      const returnTo = `/auth/store-invite/decline?data=${data}`;
       router.push(
         `/auth/signup?email=${encodeURIComponent(parsedData.email)}&reason=${STORE_INVITE_DECLINE}&return=${returnTo}`
       );

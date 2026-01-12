@@ -30,9 +30,7 @@ export default function AcceptInviteClient({
 
   useEffect(() => {
     if (!loggedIn) {
-      const returnTo = encodeURIComponent(
-        `/auth/store-invite/accept?data=${data}`
-      );
+      const returnTo = `/auth/store-invite/accept?data=${data}`;
       router.push(
         `/auth/signup?email=${encodeURIComponent(parsedData.email)}&reason=${STORE_INVITE}&return=${returnTo}`
       );

@@ -163,7 +163,7 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
           Don&apos;t have an account?{" "}
           <Link
             href={`/auth/signup?email=${encodeURIComponent(email)}${
-              returnPath ? `&return=${encodeURIComponent(returnPath)}` : ""
+              returnPath ? `&return=${returnPath}` : ""
             }`}
             className="underline underline-offset-4"
           >

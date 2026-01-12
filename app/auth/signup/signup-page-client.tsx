@@ -138,7 +138,7 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
           Already have an account?{" "}
           <Link
             href={`/auth/login?email=${encodeURIComponent(email)}${
-              returnPath ? `&return=${encodeURIComponent(returnPath)}` : ""
+              returnPath ? `&return=${returnPath}` : ""
             }`}
             className="underline underline-offset-4"
           >
