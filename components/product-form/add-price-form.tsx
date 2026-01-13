@@ -38,6 +38,7 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
+import useStoreUser from "@/hooks/useStoreUser";
 
 export type AddPriceFormProps = {
   product: Product;
@@ -74,19 +75,20 @@ export default function AddPriceForm({
       BranchesWithProductsDocument,
     ],
   });
+  const myBranches = useStoreUser();
+  const branches = useMemo(
+    () => [
+      ...(myBranches ?? []),
+      ...(branchesData?.findBranchesByDistance ?? []),
+    ],
+    [branchesData, myBranches]
+  );
   const stock = stockData?.getStockFromProductAndBranchId as Stock | undefined;
   const [branchId, setBranchId] = useState<number>();
   const selectedBranch = useMemo(
-    () =>
-      branchId
-        ? branchesData?.findBranchesByDistance?.find(
-            ({ id }) => branchId === id
-          )
-        : undefined,
-    [branchId, branchesData]
+    () => (branchId ? branches.find(({ id }) => branchId === id) : undefined),
+    [branchId, branches]
   );
-
-  const nextWeek = dayjs(new Date()).add(7, "day").toDate();
 
   useEffect(() => {
     if (!location || !user) return;
@@ -134,7 +136,7 @@ export default function AddPriceForm({
     );
   }
 
-  if (!branchesData || branchesData.findBranchesByDistance.length === 0) {
+  if (!branches || branches.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-5 py-10">
         <h3 className="text-lg">No branches found near you</h3>
@@ -179,16 +181,20 @@ export default function AddPriceForm({
             value={branchId}
             onChange={(e) => {
               const val = parseInt(e.target.value);
-              if (isNaN(val)) return;
+              if (isNaN(val)) {
+                setBranchId(undefined)
+                return;
+              }
 
               setBranchId(val);
             }}
             className="w-full"
           >
-            {branchesData.findBranchesByDistance.map((branch) => (
+            <NativeSelectOption value={undefined}>Select branch</NativeSelectOption>
+            {branches.map((branch, i) => (
               <NativeSelectOption
                 value={branch.id}
-                key={`branch-option-${branch.id}`}
+                key={`branch-option-${branch.id}-${i}`}
               >
                 {branch.name}
               </NativeSelectOption>
