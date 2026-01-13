@@ -226,7 +226,6 @@ export default function AddPriceForm({
               productId: product.id,
               branchId: +branchId,
               sale: false,
-              expiresAt: nextWeek,
               unitType: "item",
             } as CreatePrice
           }
@@ -310,6 +309,7 @@ type PriceFormProps = {
 
 function PriceForm({ latestPrice }: PriceFormProps) {
   const formikContext = useFormikContext<CreatePrice>();
+  const nextWeek = dayjs(new Date()).add(7, "day").toDate();
 
   useEffect(() => {
     if (!latestPrice) return;
@@ -321,7 +321,7 @@ function PriceForm({ latestPrice }: PriceFormProps) {
       originalPrice: latestPrice.originalPrice,
       condition: latestPrice.condition,
       unitType: latestPrice.unitType,
-      expiresAt: dayjs(latestPrice.expiresAt).format("YYYY-MM-DD"),
+      expiresAt: latestPrice.expiresAt,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [latestPrice]);
@@ -418,7 +418,7 @@ function PriceForm({ latestPrice }: PriceFormProps) {
               <Input
                 placeholder="Sale expiration date"
                 type="date"
-                value={formikContext.values.expiresAt}
+                value={dayjs(formikContext.values.expiresAt ?? nextWeek).format("YYYY-MM-DD")}
                 onChange={(e) => {
                   const value = e.target.value;
                   formikContext.setFieldValue("expiresAt", value);
