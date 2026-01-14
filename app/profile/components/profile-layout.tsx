@@ -20,7 +20,7 @@ export default function ProfileLayout({ children }: ProfileLayoutProps) {
   const { setPageIndicator, resetAll } = useNavbar();
 
   useLayoutEffect(() => {
-    setPageIndicator(<NavPageIndicator icon={FiUser} title="My Profile" />);
+    setPageIndicator(<NavPageIndicator icon={FiUser} title="My Profile" href="/profile" />);
 
     return () => {
       resetAll();
