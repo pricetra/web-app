@@ -21,6 +21,16 @@ import { cn } from "@/lib/utils";
 import { BsUpcScan } from "react-icons/bs";
 import { MobileView } from "react-device-detect";
 import { useSearchContext } from "@/context/search-context";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "./dropdown-menu";
+import { BiCaretDown } from "react-icons/bi";
+import { FiPower } from "react-icons/fi";
 
 export default function NavbarMain() {
   const router = useRouter();
@@ -60,7 +70,9 @@ export default function NavbarMain() {
       if (e.key === "Enter") {
         setSearchPanelOpen(false);
         const eventInputValue = e.currentTarget.value.trim();
-        router.push(`${searchQueryPath}?query=${encodeURIComponent(eventInputValue)}`);
+        router.push(
+          `${searchQueryPath}?query=${encodeURIComponent(eventInputValue)}`
+        );
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -88,7 +100,7 @@ export default function NavbarMain() {
           <div
             className={cn(
               "flex flex-row gap-6 items-center justify-start flex-1 w-full pl-5 pr-0 sm:pr-5",
-              (searchPanelOpen || navTools) ? "max-w-full" : "max-w-4xl"
+              searchPanelOpen || navTools ? "max-w-full" : "max-w-4xl"
             )}
           >
             <div className="page-indicator flex flex-row items-center justify-start">
@@ -220,32 +232,59 @@ export default function NavbarMain() {
                 </Link>
               </>
             ) : (
-              <Link
-                href="/auth/logout"
-                className="flex flex-row items-center gap-2"
-              >
-                <Image
-                  src={createCloudinaryUrl(
-                    user.avatar ?? "f89a1553-b74e-426c-a82a-359787168a53",
-                    100,
-                    100
-                  )}
-                  alt="Avatar"
-                  className="rounded-full size-7"
-                  width={50}
-                  height={50}
-                  quality={100}
-                />
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <div className="flex flex-row items-center gap-2 py-3 cursor-pointer">
+                    <Image
+                      src={createCloudinaryUrl(
+                        user.avatar ?? "f89a1553-b74e-426c-a82a-359787168a53",
+                        100,
+                        100
+                      )}
+                      alt="Avatar"
+                      className="rounded-full size-7"
+                      width={50}
+                      height={50}
+                      quality={100}
+                    />
 
-                <div className="flex-1 flex-col hidden max-w-[130px] lg:flex">
-                  <h4 className="font-semibold text-xs line-clamp-1">
-                    {user.name}
-                  </h4>
-                  <h5 className="text-[11px] text-gray-700 line-clamp-1 break-all">
-                    {user.email}
-                  </h5>
-                </div>
-              </Link>
+                    <div className="flex-1 flex-col hidden max-w-[130px] lg:flex">
+                      <h4 className="font-semibold text-xs line-clamp-1">
+                        {user.name}
+                      </h4>
+                      <h5 className="text-[11px] text-gray-700 line-clamp-1 break-all">
+                        {user.email}
+                      </h5>
+                    </div>
+
+                    <BiCaretDown className="size-4 -ml-1 hidden lg:block" />
+                  </div>
+                </DropdownMenuTrigger>
+
+                <DropdownMenuContent className="min-w-48" align="end">
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem>
+                      <Link href="/profile">My Profile</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link href="/profile/edit">Edit Profile</Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Link href="/profile/#my-lists">My Lists</Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={() => router.push("/auth/logout")}
+                    className="focus:bg-red-100/30"
+                  >
+                    <div className="flex flex-row items-center gap-2 font-medium text-red-700">
+                      <FiPower />
+                      <span>Logout</span>
+                    </div>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
           </div>
         </div>
