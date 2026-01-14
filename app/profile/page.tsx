@@ -1,6 +1,7 @@
 import LayoutProvider from "@/providers/layout-provider";
 import { Metadata } from "next";
 import ProfileClient from "./client";
+import ProfileLayout from "./components/profile-layout";
 
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -12,7 +13,9 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function SearchPageServer() {
   return (
     <LayoutProvider>
-      <ProfileClient />
+      <ProfileLayout>
+        <ProfileClient />
+      </ProfileLayout>
     </LayoutProvider>
   );
 }
