@@ -33,8 +33,8 @@ export default function ProfileLayout({ children }: ProfileLayoutProps) {
   }
 
   return (
-    <div className="relative w-full flex flex-col lg:flex-row gap-5 px-5 md:mt-5">
-      <div className="flex-1 w-full flex flex-col gap-10">
+    <div className="relative w-full flex flex-col lg:flex-row gap-10 lg:gap-5 md:mt-5">
+      <div className="flex-1 w-full flex flex-col gap-10 px-5">
         <ProfileFull user={user} />
 
         <div>
@@ -43,7 +43,7 @@ export default function ProfileLayout({ children }: ProfileLayoutProps) {
           <div className="mt-5 flex flex-col">
             <NavigationItem
               text="Edit Profile"
-              href="/profile/edit"
+              href="/profile/edit/#edit"
               icon={<FaUserEdit />}
             />
             <NavigationItem

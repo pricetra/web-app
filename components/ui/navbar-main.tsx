@@ -267,7 +267,7 @@ export default function NavbarMain() {
                       <Link href="/profile">My Profile</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
-                      <Link href="/profile/edit">Edit Profile</Link>
+                      <Link href="/profile/edit/#edit">Edit Profile</Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem>
                       <Link href="/profile/#my-lists">My Lists</Link>
