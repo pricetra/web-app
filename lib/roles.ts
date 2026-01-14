@@ -28,6 +28,22 @@ export function isRoleAuthorized(
   return roleValue(user_role) >= roleValue(minimum_required_role);
 }
 
+export async function authorize(
+  auth_token?: string | null
+): Promise<User | undefined> {
+  if (!auth_token) return undefined;
+
+  const { data, errors } = await fetchGraphql<MeQueryVariables, MeQuery>(
+    MeDocument,
+    "query",
+    undefined,
+    auth_token
+  );
+  if (errors || !data) return undefined;
+
+  return data.me as User;
+}
+
 export function storeUserRoleValue(role: StoreUserRole): number {
   switch (role) {
     case (StoreUserRole.Owner, StoreUserRole.Admin):
@@ -49,21 +65,15 @@ export function isStoreUserAuthorized(
   );
 }
 
+// Admin user authorization check
 export async function adminAuthorize(
   auth_token?: string | null
 ): Promise<User | undefined> {
-  if (!auth_token) return undefined;
+  const user = await authorize(auth_token);
+  if (!user) return undefined;
 
-  const { data, errors } = await fetchGraphql<MeQueryVariables, MeQuery>(
-    MeDocument,
-    "query",
-    undefined,
-    auth_token
-  );
-  if (errors || !data) return undefined;
-
-  if (!isRoleAuthorized(UserRole.Admin, data.me.role)) {
+  if (!isRoleAuthorized(UserRole.Admin, user.role)) {
     return undefined;
   }
-  return data.me as User;
+  return user;
 }
