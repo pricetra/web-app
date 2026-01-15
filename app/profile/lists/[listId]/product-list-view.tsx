@@ -64,7 +64,6 @@ export default function ProductListView({ list }: ProductListViewProps) {
               if (pList.stockId !== null && pList.stock) {
                 product.stock = { ...(pList.stock as Stock) };
               }
-
               return (
                 <ProductItem
                   product={product}
