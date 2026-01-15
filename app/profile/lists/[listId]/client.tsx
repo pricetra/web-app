@@ -38,6 +38,10 @@ export default function MyListsClient({ listId, tab }: MyListsClientProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listId, tab, lists?.allLists]);
 
+  function toTab(tab: ListScreenTabType) {
+    router.push(`?tab=${tab}`);
+  }
+
   if (!list) return <></>;
 
   return (
@@ -55,17 +59,18 @@ export default function MyListsClient({ listId, tab }: MyListsClientProps) {
         <TabsList className="mb-10">
           <TabsTrigger
             value={ListScreenTabType.Products}
-            onClick={() => router.push(`?tab=${ListScreenTabType.Products}`)}
+            onClick={() => toTab(ListScreenTabType.Products)}
           >
             Products
           </TabsTrigger>
           <TabsTrigger
             value={ListScreenTabType.Branches}
-            onClick={() => router.push(`?tab=${ListScreenTabType.Branches}`)}
+            onClick={() => toTab(ListScreenTabType.Branches)}
           >
             Branches
           </TabsTrigger>
         </TabsList>
+
         <TabsContent value={ListScreenTabType.Products}>
           <ProductListView list={list} />
         </TabsContent>
