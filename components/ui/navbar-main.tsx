@@ -263,14 +263,14 @@ export default function NavbarMain() {
 
                 <DropdownMenuContent className="min-w-48" align="end">
                   <DropdownMenuGroup>
-                    <DropdownMenuItem>
-                      <Link href="/profile">My Profile</Link>
+                    <DropdownMenuItem href="/profile">
+                      My Profile
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Link href="/profile/edit/#edit">Edit Profile</Link>
+                    <DropdownMenuItem href="/profile/edit/#edit">
+                      Edit Profile
                     </DropdownMenuItem>
-                    <DropdownMenuItem>
-                      <Link href="/profile/#my-lists">My Lists</Link>
+                    <DropdownMenuItem href="/profile/#my-lists">
+                      My Lists
                     </DropdownMenuItem>
                   </DropdownMenuGroup>
                   <DropdownMenuSeparator />
