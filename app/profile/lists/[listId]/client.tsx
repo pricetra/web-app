@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import ProductListView from "./product-list-view";
 import BranchListView from "./branch-list-view";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ListIconRenderer } from "../../components/list-item";
 
 export enum ListScreenTabType {
   Products = "products",
@@ -34,23 +35,44 @@ export default function MyListsClient({ listId, tab }: MyListsClientProps) {
     }
     setList(list);
     document.title = `${list.name} - ${capitalize(tab)} - Pricetra`;
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listId, tab, lists?.allLists]);
 
   if (!list) return <></>;
 
-  return <div>
-    <div className="mb-5">
-      <h2 className="font-bold text-xl">{list.name}</h2>
-    </div>
+  return (
+    <div>
+      <div className="mb-5">
+        <h2 className="font-bold text-xl flex flex-row items-center gap-3">
+          <div className="flex size-9 items-center justify-center rounded-full bg-gray-100">
+            {ListIconRenderer(list.type)}
+          </div>{" "}
+          {list.name}
+        </h2>
+      </div>
 
-    <Tabs defaultValue={ListScreenTabType.Products} value={tab}>
-      <TabsList className="mb-10">
-        <TabsTrigger value={ListScreenTabType.Products} onClick={() => router.push(`?tab=${ListScreenTabType.Products}`)}>Products</TabsTrigger>
-        <TabsTrigger value={ListScreenTabType.Branches} onClick={() => router.push(`?tab=${ListScreenTabType.Branches}`)}>Branches</TabsTrigger>
-      </TabsList>
-      <TabsContent value={ListScreenTabType.Products}><ProductListView list={list} /></TabsContent>
-      <TabsContent value={ListScreenTabType.Branches}><BranchListView list={list} /></TabsContent>
-    </Tabs>
-  </div>;
+      <Tabs defaultValue={ListScreenTabType.Products} value={tab}>
+        <TabsList className="mb-10">
+          <TabsTrigger
+            value={ListScreenTabType.Products}
+            onClick={() => router.push(`?tab=${ListScreenTabType.Products}`)}
+          >
+            Products
+          </TabsTrigger>
+          <TabsTrigger
+            value={ListScreenTabType.Branches}
+            onClick={() => router.push(`?tab=${ListScreenTabType.Branches}`)}
+          >
+            Branches
+          </TabsTrigger>
+        </TabsList>
+        <TabsContent value={ListScreenTabType.Products}>
+          <ProductListView list={list} />
+        </TabsContent>
+        <TabsContent value={ListScreenTabType.Branches}>
+          <BranchListView list={list} />
+        </TabsContent>
+      </Tabs>
+    </div>
+  );
 }

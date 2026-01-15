@@ -4,7 +4,7 @@ import { List, ListType } from "graphql-utils";
 import { AiFillEye, AiFillHeart } from "react-icons/ai";
 import { MdBookmark } from "react-icons/md";
 
-function ListIconRenderer(type: ListType) {
+export function ListIconRenderer(type: ListType) {
   switch (type) {
     case ListType.WatchList:
       return <AiFillEye className="text-watch text-lg" />;
