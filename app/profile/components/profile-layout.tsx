@@ -10,7 +10,7 @@ import { FiPower } from "react-icons/fi";
 import { FaUserEdit } from "react-icons/fa";
 import NavigationItem from "./navigation-item";
 import ListItem from "./list-item";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { isMobileOnly } from "react-device-detect";
 
 export type ProfileLayoutProps = {
