@@ -19,7 +19,7 @@ import { useMediaQuery } from "react-responsive";
 import SearchResultsPanel from "../search-results-panel";
 import { cn } from "@/lib/utils";
 import { BsUpcScan } from "react-icons/bs";
-import { MobileView } from "react-device-detect";
+import { isMobileOnly, MobileView } from "react-device-detect";
 import { useSearchContext } from "@/context/search-context";
 import {
   DropdownMenu,
@@ -233,8 +233,11 @@ export default function NavbarMain() {
               </>
             ) : (
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <div className="flex flex-row items-center gap-2 py-3 cursor-pointer">
+                <DropdownMenuTrigger asChild disabled={isMobileOnly}>
+                  <div className="flex flex-row items-center gap-2 py-3 cursor-pointer" onClick={() => {
+                    if (!isMobileOnly) return;
+                    router.push('/profile')
+                  }}>
                     <Image
                       src={createCloudinaryUrl(
                         user.avatar ?? "f89a1553-b74e-426c-a82a-359787168a53",
