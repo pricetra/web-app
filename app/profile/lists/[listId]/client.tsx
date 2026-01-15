@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import ProductListView from "./product-list-view";
 import BranchListView from "./branch-list-view";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export enum ListScreenTabType {
   Products = "products",
@@ -39,13 +40,17 @@ export default function MyListsClient({ listId, tab }: MyListsClientProps) {
   if (!list) return <></>;
 
   return <div>
-    <div className="mb-10">
+    <div className="mb-5">
       <h2 className="font-bold text-xl">{list.name}</h2>
     </div>
 
-    <div>
-      {tab === ListScreenTabType.Products && (<ProductListView list={list} />)}
-      {tab === ListScreenTabType.Branches && (<BranchListView list={list} />)}
-    </div>
+    <Tabs defaultValue={ListScreenTabType.Products} value={tab}>
+      <TabsList className="mb-10">
+        <TabsTrigger value={ListScreenTabType.Products} onClick={() => router.push(`?tab=${ListScreenTabType.Products}`)}>Products</TabsTrigger>
+        <TabsTrigger value={ListScreenTabType.Branches} onClick={() => router.push(`?tab=${ListScreenTabType.Branches}`)}>Branches</TabsTrigger>
+      </TabsList>
+      <TabsContent value={ListScreenTabType.Products}><ProductListView list={list} /></TabsContent>
+      <TabsContent value={ListScreenTabType.Branches}><BranchListView list={list} /></TabsContent>
+    </Tabs>
   </div>;
 }
