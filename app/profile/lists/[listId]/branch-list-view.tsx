@@ -1,6 +1,15 @@
-import BranchItemWithLogo, { BranchItemWithLogoLoading } from "@/components/branch-item-with-logo";
+import BranchItemWithLogo, {
+  BranchItemWithLogoLoading,
+} from "@/components/branch-item-with-logo";
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { useQuery } from "@apollo/client/react";
 import { Branch, GetAllBranchListsByListIdDocument, List } from "graphql-utils";
+import { HiInboxStack } from "react-icons/hi2";
 
 export type BranchListViewProps = {
   list: List;
@@ -14,6 +23,19 @@ export default function BranchListView({ list }: BranchListViewProps) {
     },
   });
 
+  if (data && data.getAllBranchListsByListId.length === 0) {
+    return (
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <HiInboxStack />
+          </EmptyMedia>
+          <EmptyTitle>Your Branch List is Empty</EmptyTitle>
+        </EmptyHeader>
+      </Empty>
+    );
+  }
+
   return (
     <div>
       <div className="grid grid-cols-1 gap-y-10 gap-x-3">
@@ -25,21 +47,17 @@ export default function BranchListView({ list }: BranchListViewProps) {
             ))
         ) : (
           <>
-            {data.getAllBranchListsByListId.length > 0 ? (
-              data.getAllBranchListsByListId.map((bList, i) => {
-                if (!bList.branch) return <></>;
+            {data.getAllBranchListsByListId.map((bList, i) => {
+              if (!bList.branch) return <></>;
 
-                const branch = { ...(bList.branch as Branch) };
-                return (
-                  <BranchItemWithLogo
-                    branch={branch}
-                    key={`product-${bList.id}-${branch.id}-${i}`}
-                  />
-                );
-              })
-            ) : (
-              <p className="py-10 px-5 text-center">List is empty</p>
-            )}
+              const branch = { ...(bList.branch as Branch) };
+              return (
+                <BranchItemWithLogo
+                  branch={branch}
+                  key={`product-${bList.id}-${branch.id}-${i}`}
+                />
+              );
+            })}
           </>
         )}
       </div>

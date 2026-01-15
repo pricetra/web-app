@@ -1,4 +1,10 @@
 import ProductItem, { ProductItemLoading } from "@/components/product-item";
+import {
+  Empty,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
 import { useQuery } from "@apollo/client/react";
 import {
   GetAllProductListsByListIdDocument,
@@ -7,6 +13,7 @@ import {
   Stock,
 } from "graphql-utils";
 import { useMediaQuery } from "react-responsive";
+import { HiInboxStack } from "react-icons/hi2";
 
 export type ProductListViewProps = {
   list: List;
@@ -23,6 +30,19 @@ export default function ProductListView({ list }: ProductListViewProps) {
     query: "(max-width: 640px)",
   });
 
+  if (data && data.getAllProductListsByListId.length === 0) {
+    return (
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <HiInboxStack />
+          </EmptyMedia>
+          <EmptyTitle>Your Product List is Empty</EmptyTitle>
+        </EmptyHeader>
+      </Empty>
+    );
+  }
+
   return (
     <div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-3">
@@ -37,28 +57,24 @@ export default function ProductListView({ list }: ProductListViewProps) {
             ))
         ) : (
           <>
-            {data.getAllProductListsByListId.length > 0 ? (
-              data.getAllProductListsByListId.map((pList, i) => {
-                if (!pList.product) return <></>;
+            {data.getAllProductListsByListId.map((pList, i) => {
+              if (!pList.product) return <></>;
 
-                const product = { ...(pList.product as Product) };
-                if (pList.stockId !== null && pList.stock) {
-                  product.stock = { ...(pList.stock as Stock) };
-                }
+              const product = { ...(pList.product as Product) };
+              if (pList.stockId !== null && pList.stock) {
+                product.stock = { ...(pList.stock as Stock) };
+              }
 
-                return (
-                  <ProductItem
-                    product={product}
-                    branchSlug={pList.stock?.branch?.slug}
-                    imgWidth={isMobile ? 110 : 130}
-                    key={`product-${pList.id}-${pList.productId}-${i}`}
-                    hideStoreInfo={false}
-                  />
-                );
-              })
-            ) : (
-              <p className="py-10 px-5 text-center">List is empty</p>
-            )}
+              return (
+                <ProductItem
+                  product={product}
+                  branchSlug={pList.stock?.branch?.slug}
+                  imgWidth={isMobile ? 110 : 130}
+                  key={`product-${pList.id}-${pList.productId}-${i}`}
+                  hideStoreInfo={false}
+                />
+              );
+            })}
           </>
         )}
       </div>
