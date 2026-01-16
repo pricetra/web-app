@@ -191,7 +191,7 @@ export default function ProductPage({
           </div>
         </section>
 
-        <section className="w-full flex-2 max-w-full lg:max-w-xl xl:max-w-3xl">
+        <section className="w-full flex-2 max-w-full lg:max-w-xl xl:max-w-3xl 2xl:max-w-4xl">
           {productData && locationInput ? (
             <ProductDetails
               product={productData.product}
