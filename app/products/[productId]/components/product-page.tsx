@@ -6,6 +6,7 @@ import {
   ProductDocument,
   ProductReferrer,
   ProductSummary,
+  ProductViewerMetadata,
   Stock,
   StockDocument,
 } from "graphql-utils";
@@ -35,6 +36,7 @@ import { IoArrowBackOutline } from "react-icons/io5";
 export type ProductPageProps = {
   productId: number;
   stockId?: number;
+  metadata?: ProductViewerMetadata;
   referrer?: ProductReferrer;
   ipAddress: string;
   productSummary: ProductSummary;
@@ -44,6 +46,7 @@ export default function ProductPage({
   productId,
   stockId,
   ipAddress,
+  metadata,
   referrer,
   productSummary,
 }: ProductPageProps) {
@@ -56,7 +59,7 @@ export default function ProductPage({
     ProductDocument,
     {
       fetchPolicy: "network-only",
-      variables: { productId, viewerTrail: { stockId, referrer } },
+      variables: { productId, viewerTrail: { stockId, referrer, metadata } },
     }
   );
   const [getStock, { data: stockData, error: stockError }] = useLazyQuery(

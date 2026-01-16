@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import {
   ProductReferrer,
+  ProductViewerMetadata,
 } from "graphql-utils";
 import { notFound, redirect, RedirectType } from "next/navigation";
 import LayoutProvider from "@/providers/layout-provider";
@@ -8,6 +9,7 @@ import { headers } from "next/headers";
 import { serverSideIpAddress } from "@/lib/strings";
 import { cachedFetchProductSummary, productSeoTitleAndDescription } from "../utils";
 import ProductPage from "../components/product-page";
+import { userAgentFromString } from "next/server";
 
 type Props = {
   params: Promise<{ productId: string, branch: string }>;
@@ -90,11 +92,29 @@ export default async function ProductBranchPageServer({
     } catch {}
   }
 
+  const userAgent = headerList.get('user-agent');
+  const { device: deviceOb } = userAgentFromString(userAgent ?? '');
+  const deviceComponents: string[] = [];
+  if (deviceOb) {
+    if (deviceOb.vendor) {
+      deviceComponents.push(deviceOb.vendor);
+    }
+    if (deviceOb.model) {
+      deviceComponents.push(deviceOb.model);
+    }
+  }
+  const device = deviceComponents.length > 0 ? deviceComponents.join(" ") : undefined;
+  const metadata: ProductViewerMetadata = {
+    ipAddress,
+    userAgent,
+    device,
+  }
   return (
     <LayoutProvider>
       <ProductPage
         productId={parsedProductId}
         stockId={productSummary.stockId ?? undefined}
+        metadata={metadata}
         referrer={referrer}
         ipAddress={ipAddress}
         productSummary={productSummary}
