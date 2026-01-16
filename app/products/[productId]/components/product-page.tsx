@@ -11,7 +11,7 @@ import {
   StockDocument,
 } from "graphql-utils";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect, useMemo } from "react";
 import SelectedStock, {
   SelectedStockLoading,
 } from "@/components/selected-stock";
@@ -68,6 +68,11 @@ export default function ProductPage({
   );
   const isMediumScreen = useMediaQuery({ query: "(max-width: 640px)" });
 
+  const productPanelTopHeight = useMemo(
+    () => navbarHeight + 20,
+    [navbarHeight]
+  );
+
   // Get stock from stockId
   useEffect(() => {
     if (!stockId || !productData) return;
@@ -118,11 +123,7 @@ export default function ProductPage({
       if (loggedIn) {
         setSubHeader(
           <div className="flex-1 flex flex-row items-center justify-between gap-2 px-5">
-            <Button
-              variant="link"
-              size="icon"
-              onClick={() => router.back()}
-            >
+            <Button variant="link" size="icon" onClick={() => router.back()}>
               <IoArrowBackOutline className="size-[18px]" />
             </Button>
 
@@ -153,8 +154,13 @@ export default function ProductPage({
       <div className="w-full flex flex-col lg:flex-row gap-4 min-h-screen">
         <section className="w-full flex-1 relative">
           <div
-            className="lg:sticky flex flex-col gap-5 left-0 p-5 bg-white"
-            style={{ top: navbarHeight + 20 }}
+            className="lg:sticky flex flex-col gap-5 left-0 p-5 bg-white lg:overflow-y-auto top-0"
+            style={{
+              top: productPanelTopHeight,
+              maxHeight: !isMediumScreen
+                ? `calc(100vh - ${productPanelTopHeight}px)`
+                : undefined,
+            }}
           >
             <article>
               {productData && !productLoading ? (
