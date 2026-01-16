@@ -50,7 +50,7 @@ export default function MyListsClient({ listId, tab }: MyListsClientProps) {
         <h2 className="font-bold text-xl flex flex-row items-center gap-3">
           <div className="flex size-9 items-center justify-center rounded-full bg-gray-100">
             {ListIconRenderer(list.type)}
-          </div>{" "}
+          </div>
           {list.name}
         </h2>
       </div>

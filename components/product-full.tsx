@@ -65,7 +65,7 @@ export default function ProductFull({
 
           <div className="flex flex-row flex-wrap items-center gap-1">
             {product.brand && product.brand !== "N/A" && (
-              <h2 className="text-sm xl:text-base">
+              <h2 className="text-sm 2xl:text-base">
                 <Link
                   href={`/search?brand=${encodeURIComponent(product.brand)}`}
                 >
@@ -75,7 +75,7 @@ export default function ProductFull({
             )}
           </div>
 
-          <h1 className="text-xl xl:text-2xl font-semibold">{product.name}</h1>
+          <h1 className="text-xl 2xl:text-2xl font-semibold">{product.name}</h1>
 
           {categories && (
             <div className="flex flex-row flex-wrap items-center gap-1 sm:gap-2">
