@@ -109,6 +109,7 @@ export default function BranchPageClient({
                     branchSlug={branch.slug}
                     imgWidth={isMobile ? 110 : 130}
                     key={`product-${p.id}-${i}`}
+                    hideStoreInfo
                   />
                 ))
               ) : (
