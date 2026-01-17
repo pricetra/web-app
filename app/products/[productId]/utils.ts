@@ -5,13 +5,18 @@ import {
   ProductDocument,
   ProductQuery,
   ProductQueryVariables,
+  ProductReferrer,
   ProductSummary,
   ProductSummaryBranchInput,
   ProductSummaryDocument,
   ProductSummaryQuery,
   ProductSummaryQueryVariables,
+  ProductViewerMetadata,
 } from "graphql-utils";
+import { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/headers";
+import { userAgentFromString } from "next/server";
 import { cache } from "react";
+import { ProductPageSearchParams } from "./types";
 
 export const cachedFetchProductDetails = cache(
   async (productId: number, jwt?: string) => {
@@ -84,4 +89,45 @@ export function productSeoTitleAndDescription(p: ProductSummary) {
     description += `. ${p.description}`;
   }
   return { title, description };
+}
+
+export function pageProductMetrics(headerList: ReadonlyHeaders, ipAddress: string, sp: ProductPageSearchParams) {
+  let referrer: ProductReferrer | undefined;
+  if (sp.sharedBy) {
+    if (!referrer) referrer = {};
+    referrer.sharedByUser = sp.sharedBy;
+  }
+  if (sp.sharedFrom) {
+    if (!referrer) referrer = {};
+    referrer.sharedFromPlatform = sp.sharedFrom;
+  }
+  if (sp.ref) {
+    try {
+      const raw_ref = atob(sp.ref);
+      referrer = JSON.parse(raw_ref) as ProductReferrer;
+    } catch {}
+  }
+
+  const userAgent = headerList.get('user-agent');
+  const { device: deviceOb } = userAgentFromString(userAgent ?? '');
+  const deviceComponents: string[] = [];
+  if (deviceOb) {
+    if (deviceOb.vendor) {
+      deviceComponents.push(deviceOb.vendor);
+    }
+    if (deviceOb.model) {
+      deviceComponents.push(deviceOb.model);
+    }
+  }
+  const device = deviceComponents.length > 0 ? deviceComponents.join(" ") : undefined;
+  const metadata: ProductViewerMetadata = {
+    ipAddress,
+    userAgent,
+    device,
+  }
+
+  return {
+    referrer,
+    metadata,
+  }
 }

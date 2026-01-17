@@ -1,22 +1,15 @@
 import type { Metadata } from "next";
-import {
-  ProductReferrer,
-} from "graphql-utils";
 import { notFound, redirect, RedirectType } from "next/navigation";
 import LayoutProvider from "@/providers/layout-provider";
 import { headers } from "next/headers";
 import { parseIntOrUndefined, serverSideIpAddress } from "@/lib/strings";
-import { cachedFetchProductSummary, productSeoTitleAndDescription } from "./utils";
+import { cachedFetchProductSummary, pageProductMetrics, productSeoTitleAndDescription } from "./utils";
 import ProductPage from "./components/product-page";
+import { ProductPageParams, ProductPageSearchParams } from "./types";
 
 type Props = {
-  params: Promise<{ productId: string }>;
-  searchParams: Promise<{
-    stockId?: string;
-    sharedBy?: string;
-    sharedFrom?: string;
-    ref?: string;
-  }>;
+  params: Promise<ProductPageParams>;
+  searchParams: Promise<ProductPageSearchParams>;
 };
 
 export async function generateMetadata({
@@ -78,29 +71,14 @@ export default async function ProductPageServer({
 
   const headerList = await headers();
   const ipAddress = serverSideIpAddress(headerList);
-
-  let referrer: ProductReferrer | undefined;
-  if (sp.sharedBy) {
-    if (!referrer) referrer = {};
-    referrer.sharedByUser = sp.sharedBy;
-  }
-  if (sp.sharedFrom) {
-    if (!referrer) referrer = {};
-    referrer.sharedFromPlatform = sp.sharedFrom;
-  }
-  if (sp.ref) {
-    try {
-      const raw_ref = atob(sp.ref);
-      referrer = JSON.parse(raw_ref) as ProductReferrer;
-    } catch {}
-  }
-
+  const { metadata, referrer } = pageProductMetrics(headerList, ipAddress, sp);
   return (
     <LayoutProvider>
       <ProductPage
         productId={parsedProductId}
         stockId={parsedStockId}
         referrer={referrer}
+        metadata={metadata}
         ipAddress={ipAddress}
         productSummary={productSummary}
       />
