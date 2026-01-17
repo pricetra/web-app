@@ -1,5 +1,6 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
 import { SmartPagination } from "@/components/ui/smart-pagination";
 import {
   Table,
@@ -15,9 +16,11 @@ import dayjs from "dayjs";
 import { PaginatedAdminProductViewEntriesDocument } from "graphql-utils";
 import Image from "next/image";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { FiRefreshCcw } from "react-icons/fi";
 
 export default function ProductViewClient() {
+  const router = useRouter();
   const searchParams = useSearchParams();
   const { data } = useQuery(PaginatedAdminProductViewEntriesDocument, {
     variables: {
@@ -30,6 +33,10 @@ export default function ProductViewClient() {
 
   return (
     <div>
+      <div className="flex flex-row items-center gap-3 mb-10">
+        <Button onClick={() => router.refresh()} variant="secondary"><FiRefreshCcw /> Refresh</Button>
+      </div>
+
       <Table>
         <TableHeader>
           <TableRow>

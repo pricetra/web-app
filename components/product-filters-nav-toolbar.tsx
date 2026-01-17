@@ -24,11 +24,9 @@ export default function ProductFilterNavToolbar({
 
   return (
     <div className="flex-1 flex flex-row items-center gap-2 px-5 overflow-x-auto h-full">
-      <div>
-        <Button size="xs" rounded variant="secondary">
-          <MdLocationPin /> {location?.fullAddress.split(",")[0]}
-        </Button>
-      </div>
+      <Button size="xs" rounded variant="secondary">
+        <MdLocationPin /> {location?.fullAddress.split(",")[0]}
+      </Button>
 
       {searchParamsBuilder.size > 0 && (
         <div className="flex flex-row items-center gap-2">
@@ -74,9 +72,9 @@ export default function ProductFilterNavToolbar({
         {COMMON_CATEGORIES.map(({ id, name }) => (
           <Button
             href={`${baseUrl}?categoryId=${id}&category=${encodeURIComponent(
-              name
+              name,
             )}`}
-            variant="secondary"
+            variant="outline"
             size="xs"
             rounded
             key={`common-category-${id}`}

@@ -154,7 +154,7 @@ export default function NavbarMain() {
                   onClick={() => {
                     setSearchPanelOpen(true);
                   }}
-                  className="rounded-md bg-gray-100 px-0 sm:px-2 py-3 border-transparent text-xs sm:text-sm shadow-none"
+                  className="rounded-md bg-gray-100 px-0 sm:px-2 py-3 border text-xs sm:text-sm shadow-none"
                 >
                   <InputGroupAddon>
                     <IoIosSearch className="size-[17px] sm:size-5" />
