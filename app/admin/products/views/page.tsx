@@ -1,18 +1,18 @@
 import LayoutProvider from "@/providers/layout-provider";
 import { Metadata } from "next";
-import AdminClient from "./admin-client";
+import ProductViewClient from "./client";
 
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Admin"
+    title: "Product views - Admin"
   }
 }
 
-export default async function SearchPageServer() {
+export default async function ProductViewsPageServer() {
   return (
     <LayoutProvider>
-      <AdminClient />
+      <ProductViewClient />
     </LayoutProvider>
   );
 }

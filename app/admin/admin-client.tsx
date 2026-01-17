@@ -7,6 +7,7 @@ import { RiAdminLine } from "react-icons/ri";
 import { BsPersonFillAdd } from "react-icons/bs";
 import { MdStorefront } from "react-icons/md";
 import AdminListItem from "./components/admin-list-item";
+import { FaEye } from "react-icons/fa";
 
 export default function AdminClient() {
   const { setPageIndicator, resetAll } = useNavbar();
@@ -36,6 +37,13 @@ export default function AdminClient() {
             icon={<BsPersonFillAdd />}
             title="Add Store User"
             content="Send a join request to a new user to an existing store"
+          />
+
+          <AdminListItem
+            href="/admin/products/views"
+            icon={<FaEye />}
+            title="Product Views"
+            content="View product views entries and metrics"
           />
         </div>
       </div>
