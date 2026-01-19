@@ -1,6 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
 import { SmartPagination } from "@/components/ui/smart-pagination";
 import {
   Table,
@@ -11,30 +15,70 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { productImageUrlWithTimestamp } from "@/lib/files";
-import { useQuery } from "@apollo/client/react";
+import { useLazyQuery } from "@apollo/client/react";
 import dayjs from "dayjs";
 import { PaginatedAdminProductViewEntriesDocument } from "graphql-utils";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 import { FiRefreshCcw } from "react-icons/fi";
+import Skeleton from "react-loading-skeleton";
 
 export default function ProductViewClient() {
-  const router = useRouter();
   const searchParams = useSearchParams();
-  const { data } = useQuery(PaginatedAdminProductViewEntriesDocument, {
-    variables: {
-      paginator: {
-        limit: 100,
-        page: +(searchParams.get("page") ?? "1"),
-      },
+  const page = searchParams.get("page") ?? "1";
+  const [limit, setLimit] = useState(50);
+  const [reload, setReload] = useState(false);
+  const [getAdminProductViewEntries, { data, loading }] = useLazyQuery(
+    PaginatedAdminProductViewEntriesDocument,
+    {
+      fetchPolicy: "no-cache",
     },
-  });
+  );
+
+  useEffect(() => {
+    getAdminProductViewEntries({
+      variables: {
+        paginator: {
+          limit,
+          page: +(searchParams.get("page") ?? "1"),
+        },
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page, reload, limit]);
 
   return (
     <div>
-      <div className="flex flex-row items-center gap-3 mb-10">
-        <Button onClick={() => router.refresh()} variant="secondary"><FiRefreshCcw /> Refresh</Button>
+      <div className="flex flex-row items-center gap-3 mb-10 px-5">
+        <Button
+          onClick={() => setReload((r) => !r)}
+          variant="secondary"
+          size="sm"
+        >
+          <FiRefreshCcw className="size-3" /> Refresh
+        </Button>
+
+        <div className="w-full max-w-28">
+          <NativeSelect
+            onChange={(e) => {
+              const limit = +e.target.value;
+              setLimit(limit);
+            }}
+          >
+            {Array(3)
+              .fill(0)
+              .map((_, i) => {
+                const value = (i + 1) * 50;
+                return (
+                  <NativeSelectOption key={`select-limit-${i}`} value={value}>
+                    Limit: {(i + 1) * 50}
+                  </NativeSelectOption>
+                );
+              })}
+          </NativeSelect>
+        </div>
       </div>
 
       <Table>
@@ -51,6 +95,49 @@ export default function ProductViewClient() {
           </TableRow>
         </TableHeader>
         <TableBody>
+          {loading &&
+            Array(limit)
+              .fill(0)
+              .map((_, i) => (
+                <TableRow key={`loading-${i}`}>
+                  <TableCell className="font-medium">
+                    <Skeleton
+                      style={{ borderRadius: 10, height: 20, width: 50 }}
+                    />
+                  </TableCell>
+                  <TableCell className="min-w-[300px]">
+                    <Skeleton
+                      style={{ borderRadius: 10, height: 20, width: 50 }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton
+                      style={{ borderRadius: 10, height: 20, width: 50 }}
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <Skeleton
+                      style={{ borderRadius: 10, height: 20, width: 50 }}
+                    />
+                  </TableCell>
+                  <TableCell></TableCell>
+                  <TableCell className="text-right">
+                    <Skeleton
+                      style={{ borderRadius: 10, height: 20, width: 50 }}
+                    />
+                  </TableCell>
+                  <TableCell className="font-mono max-w-sm">
+                    <Skeleton
+                      style={{ borderRadius: 10, height: 20, width: 50 }}
+                    />
+                  </TableCell>
+                  <TableCell className="font-mono max-w-sm">
+                    <Skeleton
+                      style={{ borderRadius: 10, height: 20, width: 50 }}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
           {data?.paginatedAdminProductViewEntries?.productViewEntries?.map(
             (p) => (
               <TableRow key={p.id}>
@@ -68,7 +155,10 @@ export default function ProductViewClient() {
                         height={100}
                         className="size-[50px]"
                       />
-                      <h4 className="line-clamp-3">{p.product.name}</h4>
+                      <div>
+                        <h4 className="line-clamp-2">{p.product.name}</h4>
+                        {p.stockId && (<p className="text-xs text-gray-500 mt-1">Stock: {p.stockId}</p>)}
+                      </div>
                     </Link>
                   )}
                 </TableCell>
