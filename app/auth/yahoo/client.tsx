@@ -14,7 +14,7 @@ export default function YahooOAuthSuccessClient(
     if (window.opener) {
       window.opener.postMessage(
         { type: "YAHOO_AUTH_SUCCESS", ...props },
-        window.location.origin
+        "*"
       );
     }
 
