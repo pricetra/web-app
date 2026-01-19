@@ -7,6 +7,8 @@ import Image from "next/image";
 import { CgSpinner } from "react-icons/cg";
 import { ReactNode } from "react";
 import { FaApple } from "react-icons/fa";
+import { FaYahoo } from "react-icons/fa6";
+import { cn } from "@/lib/utils";
 // import { IOSView } from "react-device-detect";
 
 export type AuthContainerProps = {
@@ -19,6 +21,7 @@ export type AuthContainerProps = {
   extras?: ReactNode;
   onPressSubmit?: () => void;
   onPressApple?: () => void;
+  onPressYahoo?: () => void;
   onPressGoogle?: () => void;
 };
 
@@ -32,6 +35,7 @@ export default function AuthContainer({
   extras,
   onPressSubmit,
   onPressApple,
+  onPressYahoo,
   onPressGoogle,
 }: AuthContainerProps) {
   return (
@@ -93,7 +97,7 @@ export default function AuthContainer({
                           Or continue with
                         </span>
                       </div>
-                      <div className="grid grid-cols-2 gap-4">
+                      <div className={cn("grid gap-4", onPressYahoo ? "grid-cols-3" : "grid-cols-2")}>
                         <Button
                           variant="outline"
                           className="w-full cursor-pointer"
@@ -117,6 +121,14 @@ export default function AuthContainer({
                           />
                           <span className="sr-only">Google</span>
                         </Button>
+                        {onPressYahoo && <Button
+                          variant="outline"
+                          className="w-full cursor-pointer"
+                          onClick={onPressYahoo}
+                        >
+                          <FaYahoo className="text-yahoo" />
+                          <span className="sr-only">Yahoo</span>
+                        </Button>}
                       </div>
                     </>
                   )}

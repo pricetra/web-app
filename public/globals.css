@@ -33,12 +33,14 @@
   --color-instagram: #e4405f;
   --color-pinterest: #bd081c;
   --color-nextdoor: #1b8751;
+  --color-yahoo: #410093;
   /*color- hover */
   --color-facebook-hover: #166fe5;
   --color-twitter-hover: #111111;
   --color-whatsapp-hover: #1ebe5b;
   --color-instagram-hover: #d73556;
   --color-pinterest-hover: #a50718;
+  --color-yahoo-hover: #6400cd;
 
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
