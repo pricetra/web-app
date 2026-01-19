@@ -12,6 +12,7 @@ import {
   GoogleOAuthDocument,
   LoginInternalDocument,
   ResendVerificationDocument,
+  YahooOAuthDocument,
 } from "graphql-utils";
 import AuthContainer from "@/components/auth/auth-container";
 import { useGoogleLogin } from "@react-oauth/google";
@@ -32,7 +33,6 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
   const [, setCookie] = useCookies(SITE_COOKIES);
 
   const { launchAppleOAuth, data: appleOAuthSuccessData } = useAppleLogin();
-
   const { launchYahooOAuth, data: yahooOAuthSuccessData } = useYahooLogin();
 
   const router = useRouter();
@@ -59,6 +59,10 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
     useLazyQuery(AppleOAuthDocument, {
       fetchPolicy: "no-cache",
     });
+  const [loginYahoo, { error: loginYahooError, loading: loginYahooLoading }] =
+    useLazyQuery(YahooOAuthDocument, {
+      fetchPolicy: "no-cache",
+    });
   const [resend, { error: resendError, loading: resendLoading }] = useMutation(
     ResendVerificationDocument,
     {
@@ -69,10 +73,11 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
     loginInternalLoading ||
     loginGoogleLoading ||
     loginAppleLoading ||
+    loginYahooLoading ||
     resendLoading ||
     authLoading;
   const error =
-    loginInternalError || loginGoogleError || loginAppleError || resendError;
+    loginInternalError || loginGoogleError || loginAppleError || loginYahooError || resendError;
 
   function setAuthCookie(token: string) {
     setCookie("auth_token", token, {
@@ -142,7 +147,14 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
     if (!yahooOAuthSuccessData) return;
 
     const { code } = yahooOAuthSuccessData;
-    console.log("Yahoo oauth code:", code);
+    loginYahoo({
+      variables: {
+        code,
+        device: AuthDeviceType.Web,
+        ipAddress,
+      },
+    }).then(({ data }) => handleAuthSuccess(data?.yahooOAuth as Auth));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [yahooOAuthSuccessData]);
 
   useEffect(() => {
