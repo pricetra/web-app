@@ -102,6 +102,7 @@ export default function AuthContainer({
                           variant="outline"
                           className="w-full cursor-pointer"
                           onClick={onPressApple}
+                          disabled={loading}
                         >
                           <FaApple />
                           <span className="sr-only">Apple</span>
@@ -110,6 +111,7 @@ export default function AuthContainer({
                           variant="outline"
                           className="w-full cursor-pointer"
                           onClick={onPressGoogle}
+                          disabled={loading}
                         >
                           <Image
                             src="/icons/google-color-icon.svg"
@@ -125,6 +127,7 @@ export default function AuthContainer({
                           variant="outline"
                           className="w-full cursor-pointer"
                           onClick={onPressYahoo}
+                          disabled={loading}
                         >
                           <FaYahoo className="text-yahoo" />
                           <span className="sr-only">Yahoo</span>
