@@ -2,22 +2,22 @@ import { useEffect, useState } from "react";
 
 export type YahooOAuthSuccessData = {
   code: string;
-}
+};
 
 export default function useYahooLogin() {
   const [data, setData] = useState<YahooOAuthSuccessData>();
 
-  useEffect(() => {
-    const handleMessage = (event: MessageEvent) => {
-      if (event.origin !== window.location.origin) return;
-      const { data } = event;
-      const {type, ...res} = data;
-      if (type === "YAHOO_AUTH_SUCCESS") {
-        setData(res);
-      }
-    };
-    window.addEventListener("message", handleMessage);
+  const handleMessage = (event: MessageEvent) => {
+    if (event.origin !== window.location.origin) return;
+    const { data } = event;
+    const { type, ...res } = data;
+    if (type === "YAHOO_AUTH_SUCCESS") {
+      setData(res);
+    }
+  };
 
+  useEffect(() => {
+    window.addEventListener("message", handleMessage);
     return () => window.removeEventListener("message", handleMessage);
   }, []);
 
@@ -33,15 +33,17 @@ export default function useYahooLogin() {
       if (process.env.NODE_ENV !== "production") {
         params.set(
           "state",
-          encodeURIComponent(JSON.stringify({
-            returnTo: `${window.location.origin}/auth/yahoo`,
-          }))
+          encodeURIComponent(
+            JSON.stringify({
+              returnTo: `${window.location.origin}/auth/yahoo`,
+            }),
+          ),
         );
       }
       const popup = window.open(
         `${url}?${params.toString()}`,
         "_blank",
-        "width=500,height=600"
+        "width=500,height=600",
       );
 
       if (!popup) {
