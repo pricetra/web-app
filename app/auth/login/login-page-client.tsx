@@ -12,6 +12,7 @@ import {
   GoogleOAuthDocument,
   LoginInternalDocument,
   ResendVerificationDocument,
+  YahooOAuthDocument,
 } from "graphql-utils";
 import AuthContainer from "@/components/auth/auth-container";
 import { useGoogleLogin } from "@react-oauth/google";
@@ -25,12 +26,14 @@ import { BsEnvelopeCheck } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/user-context";
 import useAppleLogin from "@/hooks/useAppleLogin";
+import useYahooLogin from "@/hooks/useYahooLogin";
 
 export default function LoginPage({ ipAddress }: { ipAddress: string }) {
   const { loggedIn, loading: authLoading } = useAuth();
   const [, setCookie] = useCookies(SITE_COOKIES);
 
   const { launchAppleOAuth, data: appleOAuthSuccessData } = useAppleLogin();
+  const { launchYahooOAuth, data: yahooOAuthSuccessData } = useYahooLogin();
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -56,6 +59,10 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
     useLazyQuery(AppleOAuthDocument, {
       fetchPolicy: "no-cache",
     });
+  const [loginYahoo, { error: loginYahooError, loading: loginYahooLoading }] =
+    useLazyQuery(YahooOAuthDocument, {
+      fetchPolicy: "no-cache",
+    });
   const [resend, { error: resendError, loading: resendLoading }] = useMutation(
     ResendVerificationDocument,
     {
@@ -66,10 +73,11 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
     loginInternalLoading ||
     loginGoogleLoading ||
     loginAppleLoading ||
+    loginYahooLoading ||
     resendLoading ||
     authLoading;
   const error =
-    loginInternalError || loginGoogleError || loginAppleError || resendError;
+    loginInternalError || loginGoogleError || loginAppleError || loginYahooError || resendError;
 
   function setAuthCookie(token: string) {
     setCookie("auth_token", token, {
@@ -136,6 +144,20 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
   }, [appleOAuthSuccessData]);
 
   useEffect(() => {
+    if (!yahooOAuthSuccessData) return;
+
+    const { code } = yahooOAuthSuccessData;
+    loginYahoo({
+      variables: {
+        code,
+        device: AuthDeviceType.Web,
+        ipAddress,
+      },
+    }).then(({ data }) => handleAuthSuccess(data?.yahooOAuth as Auth));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [yahooOAuthSuccessData]);
+
+  useEffect(() => {
     if (!loggedIn) return;
 
     router.replace(returnPath ?? "/home");
@@ -154,6 +176,7 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
       onPressSubmit={onPressLoginInternal}
       error={error?.message}
       onPressApple={launchAppleOAuth}
+      onPressYahoo={launchYahooOAuth}
       onPressGoogle={googleOAuthCallback}
       loading={loading}
       extras={

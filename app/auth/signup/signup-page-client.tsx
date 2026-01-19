@@ -11,6 +11,7 @@ import {
   AuthDeviceType,
   CreateAccountDocument,
   GoogleOAuthDocument,
+  YahooOAuthDocument,
 } from "graphql-utils";
 import AuthContainer from "@/components/auth/auth-container";
 import { useGoogleLogin } from "@react-oauth/google";
@@ -22,6 +23,7 @@ import useAppleLogin from "@/hooks/useAppleLogin";
 import { STORE_INVITE } from "../store-invite/accept/client";
 import { MdError } from "react-icons/md";
 import dayjs from "dayjs";
+import useYahooLogin from "@/hooks/useYahooLogin";
 
 export default function SignupPage({ ipAddress }: { ipAddress: string }) {
   const { loggedIn, loading: authLoading } = useAuth();
@@ -33,6 +35,7 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
   const reasonSearchParam = searchParams.get("reason");
 
   const { launchAppleOAuth, data: appleOAuthSuccessData } = useAppleLogin();
+  const { launchYahooOAuth, data: yahooOAuthSuccessData } = useYahooLogin();
 
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
@@ -53,8 +56,12 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
     useLazyQuery(AppleOAuthDocument, {
       fetchPolicy: "no-cache",
     });
-  const loading = signupLoading || loginGoogleLoading || loginAppleLoading || authLoading;
-  const error = signupError || loginGoogleError || loginAppleError;
+  const [loginYahoo, { error: loginYahooError, loading: loginYahooLoading }] =
+    useLazyQuery(YahooOAuthDocument, {
+      fetchPolicy: "no-cache",
+    });
+  const loading = signupLoading || loginGoogleLoading || loginAppleLoading || loginYahooLoading || authLoading;
+  const error = signupError || loginGoogleError || loginAppleError || loginYahooError;
 
   function onPressSignup() {
     signup({
@@ -113,6 +120,20 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
   }, [appleOAuthSuccessData, returnPath]);
 
   useEffect(() => {
+    if (!yahooOAuthSuccessData) return;
+
+    const { code } = yahooOAuthSuccessData;
+    loginYahoo({
+      variables: {
+        code,
+        device: AuthDeviceType.Web,
+        ipAddress,
+      },
+    }).then(({ data }) => handleAuth(data?.yahooOAuth as Auth));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [yahooOAuthSuccessData]);
+
+  useEffect(() => {
     if (!loggedIn) return;
 
     router.replace(returnPath ?? "/home");
@@ -132,6 +153,7 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
       error={error?.message}
       onPressApple={launchAppleOAuth}
       onPressGoogle={googleOAuthCallback}
+      onPressYahoo={launchYahooOAuth}
       loading={loading}
       extras={
         <div className="text-center text-sm">
