@@ -25,12 +25,15 @@ import { BsEnvelopeCheck } from "react-icons/bs";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/user-context";
 import useAppleLogin from "@/hooks/useAppleLogin";
+import useYahooLogin from "@/hooks/useYahooLogin";
 
 export default function LoginPage({ ipAddress }: { ipAddress: string }) {
   const { loggedIn, loading: authLoading } = useAuth();
   const [, setCookie] = useCookies(SITE_COOKIES);
 
   const { launchAppleOAuth, data: appleOAuthSuccessData } = useAppleLogin();
+
+  const { launchYahooOAuth, data: yahooOAuthSuccessData } = useYahooLogin();
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -136,6 +139,13 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
   }, [appleOAuthSuccessData]);
 
   useEffect(() => {
+    if (!yahooOAuthSuccessData) return;
+
+    const { code } = yahooOAuthSuccessData;
+    console.log("Yahoo oauth code:", code);
+  }, [yahooOAuthSuccessData]);
+
+  useEffect(() => {
     if (!loggedIn) return;
 
     router.replace(returnPath ?? "/home");
@@ -154,6 +164,7 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
       onPressSubmit={onPressLoginInternal}
       error={error?.message}
       onPressApple={launchAppleOAuth}
+      onPressYahoo={launchYahooOAuth}
       onPressGoogle={googleOAuthCallback}
       loading={loading}
       extras={
