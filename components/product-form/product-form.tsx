@@ -11,6 +11,7 @@ import {
   ProductDocument,
   ExtractProductFieldsDocument,
   SanitizeProductDocument,
+  Category,
 } from "graphql-utils";
 import { diffObjects } from "@/lib/utils";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
@@ -59,19 +60,19 @@ export default function ProductForm({
     AllBrandsDocument,
     {
       fetchPolicy: "network-only",
-    }
+    },
   );
   const [updateProduct, { loading: updateLoading }] = useMutation(
     UpdateProductDocument,
     {
       refetchQueries: [AllProductsDocument, AllBrandsDocument, ProductDocument],
-    }
+    },
   );
   const [createProduct, { loading: createLoading }] = useMutation(
     CreateProductDocument,
     {
       refetchQueries: [AllProductsDocument, AllBrandsDocument],
-    }
+    },
   );
   const productImageUploadRef = useRef<HTMLInputElement>(null);
   const loading = updateLoading || createLoading;
@@ -82,7 +83,7 @@ export default function ProductForm({
     ExtractProductFieldsDocument,
     {
       fetchPolicy: "no-cache",
-    }
+    },
   );
   const autofillWithImageRef = useRef<HTMLInputElement>(null);
 
@@ -90,8 +91,10 @@ export default function ProductForm({
     SanitizeProductDocument,
     {
       refetchQueries: [ProductDocument],
-    }
+    },
   );
+
+  const [selectedCategory, setSelectedCategory] = useState<Category>();
 
   useEffect(() => {
     if (!brandsData) return;
@@ -103,9 +106,14 @@ export default function ProductForm({
     setSelectedImage(product.image);
   }, [product]);
 
+  useEffect(() => {
+    if (product?.category?.id !== selectedCategory?.id)
+      setSelectedCategory(product?.category ?? undefined);
+  }, [product?.category, selectedCategory])
+
   async function onPressAutofill(
     formik: FormikProps<CreateProduct>,
-    base64Image: string
+    base64Image: string,
   ) {
     const { data, error } = await extractProductFields({
       variables: {
@@ -116,7 +124,7 @@ export default function ProductForm({
       window.alert(
         `Could not auto-fill using the provided image. ${
           error?.message ?? "No data found"
-        }`
+        }`,
       );
       return;
     }
@@ -286,7 +294,7 @@ export default function ProductForm({
                     ({ data }) => {
                       if (!data) return;
                       onSuccess(data.sanitizeProduct as Product, formik);
-                    }
+                    },
                   )
                 }
                 disabled={sanitizing}
@@ -355,9 +363,9 @@ export default function ProductForm({
           <div className="mb-5">
             <Label className="mb-2 block">Category</Label>
             <CategoryInput
-              category={product?.category ?? undefined}
-              onSelectCategoryId={(categoryId) => {
-                formik.setFieldValue("categoryId", categoryId);
+              category={selectedCategory}
+              onSelectCategory={(category) => {
+                formik.setFieldValue("categoryId", category.id);
               }}
             />
           </div>
@@ -425,7 +433,7 @@ export default function ProductForm({
                   }
                   formik.setFieldValue(
                     "weight",
-                    `${v.weightValue} ${v.weightType}`
+                    `${v.weightValue} ${v.weightType}`,
                   );
                 }}
                 value={formik.values.weight ?? undefined}
