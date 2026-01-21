@@ -104,12 +104,8 @@ export default function ProductForm({
   useEffect(() => {
     if (!product) return;
     setSelectedImage(product.image);
+    setSelectedCategory(product.category ?? undefined);
   }, [product]);
-
-  useEffect(() => {
-    if (product?.category?.id !== selectedCategory?.id)
-      setSelectedCategory(product?.category ?? undefined);
-  }, [product?.category, selectedCategory])
 
   async function onPressAutofill(
     formik: FormikProps<CreateProduct>,
@@ -365,6 +361,7 @@ export default function ProductForm({
             <CategoryInput
               category={selectedCategory}
               onSelectCategory={(category) => {
+                setSelectedCategory(category);
                 formik.setFieldValue("categoryId", category.id);
               }}
             />
