@@ -54,9 +54,9 @@ export default function CategorySelector({
         if (v.length === 0) return;
 
         const categorySelect = v.at(0);
-        if (!categorySelect) return;
+        if (!categorySelect || !categorySelect.id) return;
 
-        onSelect(categorySelect as Category);
+        onSelect(categorySelect);
       }}
       values={selection ? [selection] : []}
       labelField="name"
@@ -65,8 +65,8 @@ export default function CategorySelector({
       placeholder="Select Category"
       className="mb-2 text-sm"
       create
-      onCreateNew={(x) => {
-        addNewCategory(x.name).then(({ data }) => {
+      onCreateNew={(c) => {
+        addNewCategory(c.name).then(({ data }) => {
           if (!data) return;
           onSelect(data.createCategory);
         });
