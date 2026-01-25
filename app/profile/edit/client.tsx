@@ -199,7 +199,7 @@ export default function EditProfileClient() {
         <div className="border border-red-600/30 bg-red-100/20 p-5 rounded-lg">
           <h3 className="font-bold text-2xl mb-5 text-red-700">Danger Zone</h3>
 
-          <div className="flex flex-row gap-5 justify-between">
+          <div className="flex flex-col sm:flex-row gap-5 justify-between">
             <div className="flex-2">
               <h4 className="text-black font-semibold text-lg">
                 Permanently delete my account
@@ -214,7 +214,7 @@ export default function EditProfileClient() {
               <Button
                 onClick={() => router.push("/profile/delete-account")}
                 variant="destructive"
-                className="float-right"
+                className="w-full sm:w-auto sm:float-right"
               >
                 Review and Delete
               </Button>
