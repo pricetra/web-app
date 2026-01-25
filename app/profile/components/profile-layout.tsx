@@ -55,7 +55,7 @@ export default function ProfileLayout({ children }: ProfileLayoutProps) {
             <div className="mt-5 flex flex-col">
               <NavigationItem
                 text="Edit Profile"
-                href="/profile/edit/#edit"
+                href="/profile/edit"
                 icon={<FaUserEdit />}
               />
               <NavigationItem

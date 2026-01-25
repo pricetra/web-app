@@ -22,7 +22,7 @@ export default async function middleware(req: NextRequest) {
 
   if (curPath.startsWith("/profile")) {
     const authUser = await authorize(authToken);
-    if (!authUser) return NextResponse.redirect(new URL("/", req.url));
+    if (!authUser) return NextResponse.redirect(new URL(`/auth/login?return=${curPath}`, req.url));
   }
 }
 
