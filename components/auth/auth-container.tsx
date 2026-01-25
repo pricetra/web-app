@@ -67,6 +67,57 @@ export default function AuthContainer({
                       </p>
                     )}
                   </div>
+                  
+                  {onPressApple && onPressGoogle && (
+                    <>
+                      <div className={cn("grid gap-4", onPressYahoo ? "grid-cols-3" : "grid-cols-2")}>
+                        <Button
+                          variant="outline"
+                          className="w-full cursor-pointer bg-white hover:bg-black text-black hover:text-white"
+                          onClick={onPressApple}
+                          disabled={loading}
+                          title={`${buttonLabel} with Apple`}
+                        >
+                          <FaApple />
+                          <span className="sr-only">Apple</span>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="w-full cursor-pointer"
+                          onClick={onPressGoogle}
+                          disabled={loading}
+                          title={`${buttonLabel} with Google`}
+                        >
+                          <Image
+                            src="/icons/google-color-icon.svg"
+                            alt="Google"
+                            width={210}
+                            height={40}
+                            className="size-4 block w-auto color-white"
+                            priority
+                          />
+                          <span className="sr-only">Google</span>
+                        </Button>
+                        {onPressYahoo && <Button
+                          variant="outline"
+                          className="w-full cursor-pointer hover:bg-yahoo text-yahoo hover:text-white"
+                          onClick={onPressYahoo}
+                          disabled={loading}
+                          title={`${buttonLabel} with Yahoo`}
+                        >
+                          <FaYahoo />
+                          <span className="sr-only">Yahoo</span>
+                        </Button>}
+                      </div>
+
+                      <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
+                        <span className="relative z-10 bg-background px-2 text-muted-foreground">
+                          or continue with
+                        </span>
+                      </div>
+                    </>
+                  )}
+
                   {children}
 
                   <div className="mt-2">
@@ -89,52 +140,6 @@ export default function AuthContainer({
                       )}
                     </Button>
                   </div>
-
-                  {onPressApple && onPressGoogle && (
-                    <>
-                      <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-                        <span className="relative z-10 bg-background px-2 text-muted-foreground">
-                          Or continue with
-                        </span>
-                      </div>
-                      <div className={cn("grid gap-4", onPressYahoo ? "grid-cols-3" : "grid-cols-2")}>
-                        <Button
-                          variant="outline"
-                          className="w-full cursor-pointer"
-                          onClick={onPressApple}
-                          disabled={loading}
-                        >
-                          <FaApple />
-                          <span className="sr-only">Apple</span>
-                        </Button>
-                        <Button
-                          variant="outline"
-                          className="w-full cursor-pointer"
-                          onClick={onPressGoogle}
-                          disabled={loading}
-                        >
-                          <Image
-                            src="/icons/google-color-icon.svg"
-                            alt="Google"
-                            width={210}
-                            height={40}
-                            className="size-4 block w-auto color-white"
-                            priority
-                          />
-                          <span className="sr-only">Google</span>
-                        </Button>
-                        {onPressYahoo && <Button
-                          variant="outline"
-                          className="w-full cursor-pointer"
-                          onClick={onPressYahoo}
-                          disabled={loading}
-                        >
-                          <FaYahoo className="text-yahoo" />
-                          <span className="sr-only">Yahoo</span>
-                        </Button>}
-                      </div>
-                    </>
-                  )}
 
                   {extras && extras}
                 </div>

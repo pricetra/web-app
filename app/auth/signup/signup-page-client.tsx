@@ -148,7 +148,7 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
     <AuthContainer
       title="Create your account"
       description="Sign up and start saving today"
-      buttonLabel="Sign Up"
+      buttonLabel="Sign up"
       onPressSubmit={onPressSignup}
       error={error?.message}
       onPressApple={launchAppleOAuth}
