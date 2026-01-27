@@ -25,12 +25,13 @@ import WelcomeHeroBanner from "@/components/welcome-hero-banner";
 import { useLayoutEffect } from "react";
 import { useNavbar } from "@/context/navbar-context";
 import ProductFilterNavToolbar from "@/components/product-filters-nav-toolbar";
+import MyBranchPanel from "@/components/my-branches-panel";
 
 export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
   const { setSubHeader, resetAll } = useNavbar();
   const searchParams = useSearchParams();
   const pageString = searchParams.get("page");
-  const { loggedIn } = useAuth();
+  const { loggedIn, myStoreUsers } = useAuth();
   const location = useLocationInput(!loggedIn ? ipAddress : undefined);
   const { data: allStoresData } = useQuery(AllStoresDocument, {
     fetchPolicy: "cache-first",
@@ -69,20 +70,24 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
         {!loggedIn && <WelcomeHeroBanner />}
 
         {(!pageString || pageString === "1") && (
-          <div className="grid grid-cols-5 lg:grid-cols-10 gap-x-2 gap-y-5 sm:gap-5 px-5 mt-5 mb-16 sm:my-10">
-            {!allStoresData ? (
-              Array(10)
-                .fill(0)
-                .map((_, i) => <StoreMiniLoading key={`store-loading-${i}`} />)
-            ) : (
-              <>
-                {allStoresData.allStores.stores.map((store) => (
-                  <StoreMini store={store} key={`store-${store.id}`} />
-                ))}
-                <StoreMiniShowMore />
-              </>
-            )}
-          </div>
+          <>
+            <div className="grid grid-cols-5 lg:grid-cols-10 gap-x-2 gap-y-5 sm:gap-5 px-5 mt-5 mb-16 sm:my-10">
+              {!allStoresData ? (
+                Array(10)
+                  .fill(0)
+                  .map((_, i) => <StoreMiniLoading key={`store-loading-${i}`} />)
+              ) : (
+                <>
+                  {allStoresData.allStores.stores.map((store) => (
+                    <StoreMini store={store} key={`store-${store.id}`} />
+                  ))}
+                  <StoreMiniShowMore />
+                </>
+              )}
+            </div>
+
+            {myStoreUsers && <MyBranchPanel />}
+          </>
         )}
 
         <div className="flex flex-col">

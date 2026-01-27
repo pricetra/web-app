@@ -14,6 +14,8 @@ export default function useStoreUser() {
     const allStoreUserBranches: Branch[] = [];
     for (const storeUser of myStoreUsers) {
       if (!storeUser.store) continue;
+      if (!storeUser.approved || !storeUser.userId) continue;
+
       if (storeUser.branch) {
         allStoreUserBranches.push({
           ...storeUser.branch,
