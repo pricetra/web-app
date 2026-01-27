@@ -1,5 +1,6 @@
 import useLocationService from "@/hooks/useLocation";
 import {
+  Branch,
   BranchesWithProductsDocument,
   CreatePrice,
   CreatePriceDocument,
@@ -39,6 +40,7 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import useStoreUser from "@/hooks/useStoreUser";
+import { toBoolean } from "@/lib/utils";
 
 export type AddPriceFormProps = {
   product: Product;
@@ -65,7 +67,7 @@ export default function AddPriceForm({
     GetStockFromProductAndBranchIdDocument,
     {
       fetchPolicy: "no-cache",
-    }
+    },
   );
   const [createPrice, { loading }] = useMutation(CreatePriceDocument, {
     refetchQueries: [
@@ -81,13 +83,13 @@ export default function AddPriceForm({
       ...(myBranches ?? []),
       ...(branchesData?.findBranchesByDistance ?? []),
     ],
-    [branchesData, myBranches]
+    [branchesData, myBranches],
   );
   const stock = stockData?.getStockFromProductAndBranchId as Stock | undefined;
   const [branchId, setBranchId] = useState<number>();
   const selectedBranch = useMemo(
     () => (branchId ? branches.find(({ id }) => branchId === id) : undefined),
-    [branchId, branches]
+    [branchId, branches],
   );
 
   useEffect(() => {
@@ -166,7 +168,7 @@ export default function AddPriceForm({
             src={createCloudinaryUrl(
               selectedBranch.store?.logo ?? "",
               500,
-              500
+              500,
             )}
             className="size-[35px] rounded-lg border border-gray-200"
             width={100}
@@ -182,7 +184,7 @@ export default function AddPriceForm({
             onChange={(e) => {
               const val = parseInt(e.target.value);
               if (isNaN(val)) {
-                setBranchId(undefined)
+                setBranchId(undefined);
                 return;
               }
 
@@ -190,7 +192,9 @@ export default function AddPriceForm({
             }}
             className="w-full"
           >
-            <NativeSelectOption value={undefined}>Select branch</NativeSelectOption>
+            <NativeSelectOption value={undefined}>
+              Select branch
+            </NativeSelectOption>
             {branches.map((branch, i) => (
               <NativeSelectOption
                 value={branch.id}
@@ -237,6 +241,7 @@ export default function AddPriceForm({
           }
           onSubmit={(input) => {
             input.expiresAt = dayjs(input.expiresAt).toDate();
+            console.log(input);
             createPrice({
               variables: {
                 input: {
@@ -255,7 +260,11 @@ export default function AddPriceForm({
           {(formik) => (
             <div className="flex flex-col gap-5">
               <div>
-                <PriceForm latestPrice={stock?.latestPrice ?? undefined} />
+                <PriceForm
+                  stock={stock}
+                  branch={selectedBranch as Branch}
+                  latestPrice={stock?.latestPrice ?? undefined}
+                />
               </div>
 
               <div className="mt-7">
@@ -309,13 +318,28 @@ function currencyInputToNumber(value: string) {
 }
 
 type PriceFormProps = {
+  stock?: Stock;
+  branch: Branch;
   // formik: FormikProps<CreatePrice>;
   latestPrice?: Price;
 };
 
-function PriceForm({ latestPrice }: PriceFormProps) {
+function PriceForm({ stock, branch, latestPrice }: PriceFormProps) {
   const formikContext = useFormikContext<CreatePrice>();
   const nextWeek = dayjs(new Date()).add(7, "day").toDate();
+  const [available, setAvailable] = useState(true);
+  const { myStoreUsers } = useAuth();
+
+  const isStoreUser = useMemo(() => {
+    const storeUser = myStoreUsers?.find((v) => {
+      if (!v.approved) return false;
+      if (!v.branchId) {
+        return v.storeId === branch.storeId;
+      }
+      return v.branchId === branch.id;
+    });
+    return !!storeUser;
+  }, [myStoreUsers, branch]);
 
   useEffect(() => {
     if (!latestPrice) return;
@@ -323,6 +347,7 @@ function PriceForm({ latestPrice }: PriceFormProps) {
     formikContext.setValues({
       ...formikContext.values,
       amount: latestPrice.amount,
+      outOfStock: latestPrice.outOfStock,
       sale: latestPrice.sale,
       originalPrice: latestPrice.originalPrice,
       condition: latestPrice.condition,
@@ -331,6 +356,12 @@ function PriceForm({ latestPrice }: PriceFormProps) {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [latestPrice]);
+
+  useEffect(() => {
+    if (!stock) return;
+
+    setAvailable(stock.available);
+  }, [stock]);
 
   return (
     <>
@@ -345,7 +376,7 @@ function PriceForm({ latestPrice }: PriceFormProps) {
               const value = e.target.value;
               formikContext.setFieldValue(
                 "amount",
-                currencyInputToNumber(value)
+                currencyInputToNumber(value),
               );
             }}
           />
@@ -373,15 +404,47 @@ function PriceForm({ latestPrice }: PriceFormProps) {
       </div>
 
       <div className="flex flex-col gap-5 mt-5">
-        <div className="flex flex-row gap-2 items-center justify-start">
-          <Checkbox
-            id="sale"
-            checked={formikContext.values.sale ?? false}
-            onCheckedChange={(c: boolean) =>
-              formikContext.setFieldValue("sale", c)
-            }
-          />
-          <Label htmlFor="sale">Sale</Label>
+        <div className="flex flex-row items-center gap-5">
+          <div className="flex flex-row gap-2 items-center justify-start">
+            <Checkbox
+              id="sale"
+              checked={formikContext.values.sale ?? false}
+              onCheckedChange={(c: boolean) =>
+                formikContext.setFieldValue("sale", c)
+              }
+            />
+            <Label htmlFor="sale">Sale</Label>
+          </div>
+
+          <div className="flex flex-row gap-2 items-center justify-start">
+            <Checkbox
+              id="outOfStock"
+              checked={formikContext.values.outOfStock ?? false}
+              onCheckedChange={(c: boolean) =>
+                formikContext.setFieldValue("outOfStock", c)
+              }
+            />
+            <Label htmlFor="outOfStock">Out of stock</Label>
+          </div>
+
+          {stock && isStoreUser && (
+            <div className="flex flex-row gap-2 items-center justify-start">
+              <Checkbox
+                id="available"
+                checked={!available}
+                onCheckedChange={(c) => {
+                  const checked = toBoolean(c.valueOf().toString());
+                  setAvailable(checked);
+                  formikContext
+                    .setFieldValue("available", !checked)
+                    .then(() => {
+                      formikContext.submitForm();
+                    });
+                }}
+              />
+              <Label htmlFor="available">Unavailable</Label>
+            </div>
+          )}
         </div>
 
         {formikContext.values.sale && (
@@ -398,7 +461,7 @@ function PriceForm({ latestPrice }: PriceFormProps) {
                       const value = e.target.value;
                       formikContext.setFieldValue(
                         "originalPrice",
-                        currencyInputToNumber(value)
+                        currencyInputToNumber(value),
                       );
                     }}
                   />
@@ -424,7 +487,9 @@ function PriceForm({ latestPrice }: PriceFormProps) {
               <Input
                 placeholder="Sale expiration date"
                 type="date"
-                value={dayjs(formikContext.values.expiresAt ?? nextWeek).format("YYYY-MM-DD")}
+                value={dayjs(formikContext.values.expiresAt ?? nextWeek).format(
+                  "YYYY-MM-DD",
+                )}
                 onChange={(e) => {
                   const value = e.target.value;
                   formikContext.setFieldValue("expiresAt", value);
