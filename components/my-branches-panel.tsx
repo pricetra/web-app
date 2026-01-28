@@ -44,7 +44,7 @@ function MyBranchPanelItem({ branch }: MyBranchPanelItemProps) {
         />
         <div className="flex flex-row flex-wrap gap-1 flex- w-full">
           <div className="flex w-full flex-row flex-wrap items-center gap-3">
-            <h4 className="text-sm sm:text-base font-bold line-clamp-2 break-all">
+            <h4 className="text-sm sm:text-base font-bold line-clamp-2 break-all sm:break-normal">
               {branch.name}
             </h4>
           </div>

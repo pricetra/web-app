@@ -2,7 +2,7 @@ import { Product } from "graphql-utils";
 import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import useProductWeightBuilder from "@/hooks/useProductWeightBuilder";
-import { createCloudinaryUrl, productImageUrlWithTimestamp } from "@/lib/files";
+import { productImageUrlWithTimestamp } from "@/lib/files";
 import { currencyFormat, getPriceUnit, validBrand } from "@/lib/strings";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
@@ -10,6 +10,7 @@ import ProductMetadataBadge from "./product-metadata-badge";
 import Skeleton from "react-loading-skeleton";
 import Link from "next/link";
 import { useMemo } from "react";
+import ProductStockMini from "./product-stock-mini";
 
 export type ProductItemOptionalProps = {
   imgWidth?: number;
@@ -37,7 +38,7 @@ ProductItemProps) {
   const weight = useProductWeightBuilder(product);
 
   const href = useMemo(() => {
-    return `/products/${product.id}${branchSlug ? `/${branchSlug}` : ''}`;
+    return `/products/${product.id}${branchSlug ? `/${branchSlug}` : ""}`;
   }, [product.id, branchSlug]);
 
   return (
@@ -99,53 +100,78 @@ ProductItemProps) {
 
         {product.stock?.latestPrice && (
           <div className="flex flex-row items-center justify-between gap-2">
-            {!hideStoreInfo && product.__typename === "Product" && product.stock.store && (
-              <div
-                title={product.stock.branch?.name ?? product.stock.store.name}
-              >
-                <Image
-                  src={createCloudinaryUrl(
-                    product.stock.store.logo ?? "",
-                    100,
-                    100
-                  )}
-                  className="size-[25px] rounded-sm"
-                  width={100}
-                  height={100}
-                  alt={product.stock.store.name}
-                />
-              </div>
-            )}
-            
-            <div
-              className={cn(
-                "flex-1 flex-col",
-                hideStoreInfo ? "items-start" : "items-end"
+            {!hideStoreInfo &&
+              product.__typename === "Product" &&
+              product.stock.store && (
+                <div
+                  title={product.stock.branch?.name ?? product.stock.store.name}
+                  className="flex-2"
+                >
+                  <ProductStockMini stock={product.stock} />
+                </div>
               )}
-            >
-              {product.stock.latestPrice.sale &&
-                !isExpired &&
-                product.stock.latestPrice.originalPrice && (
-                  <span className="text-right text-xs line-through text-red-700 leading-none">
-                    {currencyFormat(product.stock.latestPrice.originalPrice)}
-                  </span>
+
+            <div className="flex flex-col gap-1">
+              <div
+                className={cn(
+                  "flex-1 flex flex-col gap-1 leading-none",
+                  hideStoreInfo
+                    ? "items-start"
+                    : "items-end justify-end text-right",
                 )}
-              <div className="flex flex-row items-center justify-start gap-1 leading-none">
-                <span className="font-black">
-                  {currencyFormat(calculatedAmount)}
-                </span>
-                {product.stock.latestPrice.unitType !== "item" && (
-                  <span className="text-xs text-gray-500">
-                    {getPriceUnit(product.stock.latestPrice)}
+                style={{
+                  opacity:
+                    product.stock.latestPrice?.outOfStock ||
+                    product.stock.available === false
+                      ? 0.5
+                      : 1,
+                }}
+              >
+                {product.stock.latestPrice.sale &&
+                  !isExpired &&
+                  product.stock.latestPrice.originalPrice && (
+                    <span className="text-right text-xs line-through text-red-700 leading-none">
+                      {currencyFormat(product.stock.latestPrice.originalPrice)}
+                    </span>
+                  )}
+                <div
+                  className={cn(
+                    "flex flex-row items-center gap-1",
+                    hideStoreInfo ? "justify-start" : "justify-end text-right",
+                  )}
+                >
+                  <span className="font-black">
+                    {currencyFormat(calculatedAmount)}
+                  </span>
+                  {product.stock.latestPrice.unitType !== "item" && (
+                    <span className="text-xs text-gray-500">
+                      {getPriceUnit(product.stock.latestPrice)}
+                    </span>
+                  )}
+                </div>
+                {product.quantityValue > 1 && (
+                  <span className="text-right text-[10px] text-gray-500 leading-none">
+                    {`${currencyFormat(
+                      calculatedAmount / product.quantityValue,
+                    )}/${product.quantityType}`}
                   </span>
                 )}
               </div>
-              {product.quantityValue > 1 && (
-                <span className="text-right text-[10px] text-gray-500 leading-none">
-                  {`${currencyFormat(
-                    calculatedAmount / product.quantityValue
-                  )}/${product.quantityType}`}
-                </span>
+
+              {product.stock.latestPrice?.outOfStock && (
+                <div>
+                  <p className="text-xs font-semibold color-black">
+                    <span className="bg-red-200/50">*Out of Stock</span>
+                  </p>
+                </div>
+              )}
+
+              {product.stock.available === false && (
+                <div>
+                  <p className="text-xs font-semibold color-black">
+                    <span className="bg-red-200/50">*Unavailable</span>
+                  </p>
+                </div>
               )}
             </div>
           </div>

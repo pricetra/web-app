@@ -241,7 +241,6 @@ export default function AddPriceForm({
           }
           onSubmit={(input) => {
             input.expiresAt = dayjs(input.expiresAt).toDate();
-            console.log(input);
             createPrice({
               variables: {
                 input: {
