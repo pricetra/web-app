@@ -4,15 +4,18 @@ import { CreatedByUser, UpdatedByUser } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
 
 import Image from 'next/image'
+import { MdVerifiedUser } from "react-icons/md";
 
 export type PriceUserAndTimestampProps = {
   user: CreatedByUser | UpdatedByUser;
+  verified?: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   timestamp?: any;
 };
 
 export default function PriceUserAndTimestamp({
   user,
+  verified,
   timestamp,
 }: PriceUserAndTimestampProps) {
   return (
@@ -30,7 +33,10 @@ export default function PriceUserAndTimestamp({
       />
 
       <div>
-        <h6 className="text-xs font-bold">{user.name}</h6>
+        <div className="flex flex-row items-center gap-1">
+          <h6 className="text-xs font-bold">{user.name}</h6>
+          {verified && <MdVerifiedUser className="text-pricetra-green-dark" />}
+        </div>
         {timestamp && (
           <span className="mt-1 text-[10px] italic leading-none block">
             {dayjs(timestamp).fromNow()}

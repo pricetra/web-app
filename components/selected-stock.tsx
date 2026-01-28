@@ -17,6 +17,7 @@ export default function SelectedStock(props: SelectedStockProps) {
         <div className="mt-4">
           <PriceUserAndTimestamp
             user={stock.updatedBy}
+            verified={stock.latestPrice?.verified}
             timestamp={stock.latestPrice?.createdAt ?? stock.updatedAt}
           />
         </div>

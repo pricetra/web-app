@@ -28,7 +28,7 @@ export default function ProductItemHorizontal({
     latestPrice: product.stock?.latestPrice,
   });
   const href = useMemo(() => {
-    return `/products/${product.id}${branchSlug ? `/${branchSlug}` : ''}`;
+    return `/products/${product.id}${branchSlug ? `/${branchSlug}` : ""}`;
   }, [product.id, branchSlug]);
 
   return (
@@ -107,7 +107,7 @@ export default function ProductItemHorizontal({
                     src={createCloudinaryUrl(
                       product.stock.store.logo ?? "",
                       100,
-                      100
+                      100,
                     )}
                     className="size-[25px] rounded-sm"
                     width={100}
@@ -116,28 +116,56 @@ export default function ProductItemHorizontal({
                   />
                 </div>
               )}
-            <div className="flex-1 flex-col">
-              {product.stock.latestPrice.sale &&
-                !isExpired &&
-                product.stock.latestPrice.originalPrice && (
-                  <small className="text-[10px] line-through text-red-700 block leading-none">
-                    {currencyFormat(product.stock.latestPrice.originalPrice)}
+
+            <div className="flex-2">
+              <div
+                className="flex-col"
+                style={{
+                  opacity:
+                    product.stock.latestPrice?.outOfStock ||
+                    product.stock.available === false
+                      ? 0.5
+                      : 1,
+                }}
+              >
+                {product.stock.latestPrice.sale &&
+                  !isExpired &&
+                  product.stock.latestPrice.originalPrice && (
+                    <small className="text-[10px] line-through text-red-700 block leading-none">
+                      {currencyFormat(product.stock.latestPrice.originalPrice)}
+                    </small>
+                  )}
+                <div className="flex flex-row items-center justify-start gap-1 leading-none">
+                  <h5 className="text-sm md:text-lg font-black">
+                    {currencyFormat(calculatedAmount)}
+                  </h5>
+                  <small className="text-xs text-gray-500">
+                    {getPriceUnit(product.stock.latestPrice)}
+                  </small>
+                </div>
+                {product.quantityValue > 1 && (
+                  <small className="text-[10px] text-gray-500 block leading-none">
+                    {`${currencyFormat(
+                      calculatedAmount / product.quantityValue,
+                    )}/${product.quantityType}`}
                   </small>
                 )}
-              <div className="flex flex-row items-center justify-start gap-1 leading-none">
-                <h5 className="text-sm md:text-lg font-black">
-                  {currencyFormat(calculatedAmount)}
-                </h5>
-                <small className="text-xs text-gray-500">
-                  {getPriceUnit(product.stock.latestPrice)}
-                </small>
               </div>
-              {product.quantityValue > 1 && (
-                <small className="text-[10px] text-gray-500 block leading-none">
-                  {`${currencyFormat(
-                    calculatedAmount / product.quantityValue
-                  )}/${product.quantityType}`}
-                </small>
+
+              {product.stock.latestPrice?.outOfStock && (
+                <div>
+                  <p className="text-xs font-semibold color-black">
+                    <span className="bg-red-200/50">*Out of Stock</span>
+                  </p>
+                </div>
+              )}
+
+              {product.stock.available === false && (
+                <div>
+                  <p className="text-xs font-semibold color-black">
+                    <span className="bg-red-200/50">*Unavailable</span>
+                  </p>
+                </div>
               )}
             </div>
           </div>

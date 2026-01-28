@@ -35,7 +35,10 @@ export default function StockFull({
   return (
     <div className="flex flex-row justify-between gap-5">
       <div className="flex flex-1 flex-row gap-4">
-        <Link href={`/stores/${stock.store.slug}`} className="size-[50px] xl:size-[60px]">
+        <Link
+          href={`/stores/${stock.store.slug}`}
+          className="size-[50px] xl:size-[60px]"
+        >
           <Image
             src={createCloudinaryUrl(stock.store.logo, 500, 500)}
             className="rounded-xl"
@@ -111,45 +114,71 @@ export default function StockFull({
         </div>
       </div>
 
-      <div className="flex w-fit flex-col items-end gap-0.5 py-3">
-        {stock?.latestPrice?.sale &&
-          !isExpired &&
-          stock.latestPrice.originalPrice && (
-            <h6 className="text text-right line-through text-red-700 leading-none">
-              {currencyFormat(stock.latestPrice.originalPrice)}
-            </h6>
+      <div>
+        <div
+          className="flex w-fit flex-col items-end gap-0.5 py-3"
+          style={{
+            opacity:
+              stock.latestPrice?.outOfStock || stock.available === false
+                ? 0.5
+                : 1,
+          }}
+        >
+          {stock?.latestPrice?.sale &&
+            !isExpired &&
+            stock.latestPrice.originalPrice && (
+              <h6 className="text text-right line-through text-red-700 leading-none">
+                {currencyFormat(stock.latestPrice.originalPrice)}
+              </h6>
+            )}
+
+          {stock?.latestPrice?.amount && (
+            <div className="flex flex-row items-center justify-start gap-1">
+              <span className="text-base md:text-lg xl:text-xl font-black">
+                {currencyFormat(calculatedAmount)}
+              </span>
+              <span className="text-xs text-gray-500">
+                {getPriceUnitOrEach(stock.latestPrice)}
+              </span>
+            </div>
           )}
 
-        {stock?.latestPrice?.amount && (
-          <div className="flex flex-row items-center justify-start gap-1">
-            <span className="text-base md:text-lg xl:text-xl font-black">
-              {currencyFormat(calculatedAmount)}
+          {stock.latestPrice?.amount && quantityValue && quantityValue > 1 && (
+            <span className="text-right text-[10px] text-gray-500 leading-none">
+              {`${currencyFormat(
+                calculatedAmount / quantityValue,
+              )}/${quantityType}`}
             </span>
-            <span className="text-xs text-gray-500">
-              {getPriceUnitOrEach(stock.latestPrice)}
+          )}
+
+          {approximatePrice && (
+            <span className="text-xl">
+              <span className="text-base md:text-lg xl:text-xl font-black">
+                {currencyFormat(approximatePrice)}
+              </span>
+              *
             </span>
+          )}
+
+          {!stock?.latestPrice?.amount && !approximatePrice && (
+            <span className="text-xl font-black">--</span>
+          )}
+        </div>
+
+        {stock.latestPrice?.outOfStock && (
+          <div>
+            <p className="text-xs font-semibold color-black">
+              <span className="bg-red-200/50">*Out of Stock</span>
+            </p>
           </div>
         )}
 
-        {stock.latestPrice?.amount && quantityValue && quantityValue > 1 && (
-          <span className="text-right text-[10px] text-gray-500 leading-none">
-            {`${currencyFormat(
-              calculatedAmount / quantityValue
-            )}/${quantityType}`}
-          </span>
-        )}
-
-        {approximatePrice && (
-          <span className="text-xl">
-            <span className="text-base md:text-lg xl:text-xl font-black">
-              {currencyFormat(approximatePrice)}
-            </span>
-            *
-          </span>
-        )}
-
-        {!stock?.latestPrice?.amount && !approximatePrice && (
-          <span className="text-xl font-black">--</span>
+        {stock.available === false && (
+          <div>
+            <p className="text-xs font-semibold color-black">
+              <span className="bg-red-200/50">*Unavailable</span>
+            </p>
+          </div>
         )}
       </div>
     </div>

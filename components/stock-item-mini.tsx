@@ -38,14 +38,14 @@ export default function StockItemMini({
   });
   const sale = useMemo(
     () => stock.latestPrice?.sale && !isExpired,
-    [isExpired, stock]
+    [isExpired, stock],
   );
 
   return (
     <div
       className={cn(
         "flex flex-col gap-2",
-        disabled ? "opacity-30 select-none" : "opacity-100"
+        disabled ? "opacity-30 select-none" : "opacity-100",
       )}
     >
       <LinkOrDiv
@@ -93,7 +93,15 @@ export default function StockItemMini({
             {stock.branch.address?.street}, {stock.branch.address?.city}
           </p>
 
-          <div className="mt-1 flex flex-col gap-0.5">
+          <div
+            className="mt-1 flex flex-col gap-0.5"
+            style={{
+              opacity:
+                stock.latestPrice?.outOfStock || stock.available === false
+                  ? 0.5
+                  : 1,
+            }}
+          >
             {stock?.latestPrice?.sale &&
               !isExpired &&
               stock.latestPrice.originalPrice && (
@@ -118,7 +126,7 @@ export default function StockItemMini({
               quantityValue > 1 && (
                 <span className="text-[10px] text-gray-500 leading-none">
                   {`${currencyFormat(
-                    calculatedAmount / quantityValue
+                    calculatedAmount / quantityValue,
                   )}/${quantityType}`}
                 </span>
               )}
@@ -136,6 +144,22 @@ export default function StockItemMini({
               <span className="text-lg font-black">--</span>
             )}
           </div>
+
+          {stock.latestPrice?.outOfStock && (
+            <div>
+              <p className="text-xs font-semibold color-black">
+                <span className="bg-red-200/50">*Out of Stock</span>
+              </p>
+            </div>
+          )}
+
+          {stock.available === false && (
+            <div>
+              <p className="text-xs font-semibold color-black">
+                <span className="bg-red-200/50">*Unavailable</span>
+              </p>
+            </div>
+          )}
         </div>
       </LinkOrDiv>
 
