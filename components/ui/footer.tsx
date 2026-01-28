@@ -1,3 +1,4 @@
+import { APP_STORE, PLAY_STORE } from "@/constants/mobile-app";
 import { COMMON_CATEGORIES } from "@/lib/categories";
 import Image from "next/image";
 import Link from "next/link";
@@ -5,21 +6,16 @@ import { ReactNode } from "react";
 import {
   FaFacebook,
   FaXTwitter,
-  FaGooglePlay,
   FaInstagram,
   FaLinkedin,
-  FaApple,
 } from "react-icons/fa6";
+import { AppStoreButton, GooglePlayButton } from "./app-store-buttons";
 
 export const FOOTER_MIN_HEIGHT = 100;
 
 export type FooterProps = {
   disableExtraSpacing?: boolean;
 };
-
-const APP_STORE = "https://itunes.apple.com/us/app/pricetra/id6746687630";
-const PLAY_STORE =
-  "https://play.google.com/store/apps/details?id=com.pricetra.mobileApp";
 
 export default function Footer({ disableExtraSpacing = false }: FooterProps) {
   return (
@@ -71,20 +67,8 @@ export default function Footer({ disableExtraSpacing = false }: FooterProps) {
                 <h4 className="text-sm font-semibold mb-2">Download our App</h4>
 
                 <div className="flex flex-row flex-wrap gap-2">
-                  <Link
-                    href={APP_STORE}
-                    className="rounded-lg px-4 py-2 text-sm bg-gray-800 hover:bg-black text-white flex flex-row items-center justify-center gap-2"
-                  >
-                    <FaApple />
-                    iOS
-                  </Link>
-                  <Link
-                    href={PLAY_STORE}
-                    className="rounded-lg px-4 py-2 text-sm bg-gray-800 hover:bg-black text-white flex flex-row items-center justify-center gap-2"
-                  >
-                    <FaGooglePlay />
-                    Android
-                  </Link>
+                  <AppStoreButton size="sm" href={APP_STORE} />
+                  <GooglePlayButton size="sm" href={PLAY_STORE} />
                 </div>
               </div>
             </div>
@@ -98,7 +82,9 @@ export default function Footer({ disableExtraSpacing = false }: FooterProps) {
                   <ListItemWithHover href="/search">Search</ListItemWithHover>
                   <ListItemWithHover href="/stores">Stores</ListItemWithHover>
                   <ListItemWithHover href="/scan">Scan</ListItemWithHover>
-                  <ListItemWithHover href="/business">Business</ListItemWithHover>
+                  <ListItemWithHover href="/business">
+                    Business
+                  </ListItemWithHover>
                   <ListItemWithHover href="mailto:hello@pricetra.com">
                     Contact Us
                   </ListItemWithHover>
@@ -112,7 +98,7 @@ export default function Footer({ disableExtraSpacing = false }: FooterProps) {
                   {COMMON_CATEGORIES.map(({ id, name }) => (
                     <ListItemWithHover
                       href={`/search?categoryId=${id}&category=${encodeURIComponent(
-                        name
+                        name,
                       )}`}
                       key={id}
                     >
@@ -153,7 +139,9 @@ function ListItemWithHover({
 }) {
   return (
     <li>
-      <Link href={href} className="hover:text-gray-900 cursor-pointer">{children}</Link>
+      <Link href={href} className="hover:text-gray-900 cursor-pointer">
+        {children}
+      </Link>
     </li>
   );
 }
