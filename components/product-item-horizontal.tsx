@@ -117,9 +117,9 @@ export default function ProductItemHorizontal({
                 </div>
               )}
 
-            <div>
+            <div className="flex-2">
               <div
-                className="flex-1 flex-col"
+                className="flex-col"
                 style={{
                   opacity:
                     product.stock.latestPrice?.outOfStock ||
