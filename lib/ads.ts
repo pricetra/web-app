@@ -1,13 +1,30 @@
 export type Ad = number;
 
-export function adify<T>(arr: T[], pad: number = 5): (T | Ad)[] {
-  const adifiedArr = new Array<T | Ad>();
+function getRandomOffset(jitter: number) {
+  return Math.floor(Math.random() * (jitter * 2 + 1)) - jitter;
+}
+
+export function adify<T>(
+  arr: T[],
+  pad: number = 5,
+  jitter: number = 1,
+): (T | Ad)[] {
+  const result: (T | Ad)[] = [];
+
+  let nextAdAt = pad + getRandomOffset(jitter);
+  let counter = 0;
+
   for (let i = 0; i < arr.length; i++) {
-    if (i === 0 || i % pad !== 0) {
-      adifiedArr.push(arr[i]);
-      continue;
+    result.push(arr[i]);
+    counter++;
+
+    if (counter === nextAdAt) {
+      result.push(i);
+
+      counter = 0;
+      nextAdAt = pad + getRandomOffset(jitter);
     }
-    adifiedArr.push(i);
   }
-  return adifiedArr;
+
+  return result;
 }
