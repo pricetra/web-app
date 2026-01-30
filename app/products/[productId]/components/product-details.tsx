@@ -40,13 +40,16 @@ import { useEffect, useMemo } from "react";
 import { LocationInputWithFullAddress } from "@/context/location-context";
 import { useInView } from "react-intersection-observer";
 import Link from "next/link";
+import { adify } from "@/lib/ads";
+import { getRandomIntInclusive } from "@/lib/utils";
+import HorizontalProductAd from "@/components/ads/horizontal-product-ad";
 
 export type StockWithApproximatePrice = Stock & {
   approximatePrice?: number;
 };
 
 function stockToApproxMap(
-  data: BranchListWithPrices
+  data: BranchListWithPrices,
 ): StockWithApproximatePrice {
   return {
     id: data.stock?.id ?? 0,
@@ -90,7 +93,7 @@ export default function ProductDetails({
     {
       variables: { productId: product.id },
       fetchPolicy: "no-cache",
-    }
+    },
   );
 
   const [relatedProductsSectionRef, relatedProductsSectionInView] = useInView({
@@ -108,7 +111,7 @@ export default function ProductDetails({
         productId: product.id,
       },
       fetchPolicy: "network-only",
-    }
+    },
   );
   const [updateProductNutrition, { loading: updatingProductNutrition }] =
     useMutation(UpdateProductNutritionDataDocument, {
@@ -121,15 +124,15 @@ export default function ProductDetails({
         (favBranchesPriceData?.getFavoriteBranchesWithPrices ??
           []) as BranchListWithPrices[]
       ).map(stockToApproxMap),
-    [favBranchesPriceData]
+    [favBranchesPriceData],
   );
 
   const availableFavoriteBranches = useMemo(
     () =>
       favBranchesPriceData?.getFavoriteBranchesWithPrices?.filter(
-        (d) => d.approximatePrice || d.stock?.latestPriceId
+        (d) => d.approximatePrice || d.stock?.latestPriceId,
       ) as BranchListWithPrices[] | undefined,
-    [favBranchesPriceData]
+    [favBranchesPriceData],
   );
 
   useEffect(() => {
@@ -137,7 +140,7 @@ export default function ProductDetails({
     if (!product.category || !locationInput) return;
 
     const favoriteBranchIds = (lists?.favorites?.branchList ?? []).map(
-      ({ branchId }) => branchId
+      ({ branchId }) => branchId,
     );
     const variables = {
       paginator: {
@@ -154,7 +157,7 @@ export default function ProductDetails({
     } as BranchesWithProductsQueryVariables;
     if (stock) {
       const branchIdsWithStockBranchId = favoriteBranchIds.filter(
-        (id) => id !== stock?.branchId
+        (id) => id !== stock?.branchId,
       );
       branchIdsWithStockBranchId.push(stock?.branchId);
       variables.paginator.limit = branchIdsWithStockBranchId.length;
@@ -405,16 +408,26 @@ export default function ProductDetails({
                   </div>
 
                   <ScrollContainer>
-                    {(branch.products ?? []).map((product) => (
-                      <ProductItemHorizontal
-                        product={product as Product}
-                        branchSlug={branch.slug}
-                        key={`related-branch-product-${branch.id}-${product.id}-${i}`}
-                      />
-                    ))}
+                    {adify(
+                      branch.products ?? [],
+                      getRandomIntInclusive(3, 6),
+                    ).map((product) =>
+                      typeof product === "object" ? (
+                        <ProductItemHorizontal
+                          product={product as Product}
+                          branchSlug={branch.slug}
+                          key={`related-branch-product-${branch.id}-${product.id}-${i}`}
+                        />
+                      ) : (
+                        <HorizontalProductAd
+                          id={i}
+                          key={`horizontal-product-ad-${branch.id}-${product}-${i}`}
+                        />
+                      ),
+                    )}
                   </ScrollContainer>
                 </article>
-              )
+              ),
             )}
       </section>
     </div>

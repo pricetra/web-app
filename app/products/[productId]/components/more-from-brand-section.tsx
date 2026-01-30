@@ -1,5 +1,10 @@
-import ProductItemHorizontal, { ProductLoadingItemHorizontal } from "@/components/product-item-horizontal";
+import HorizontalProductAd from "@/components/ads/horizontal-product-ad";
+import ProductItemHorizontal, {
+  ProductLoadingItemHorizontal,
+} from "@/components/product-item-horizontal";
 import ScrollContainer from "@/components/scroll-container";
+import { adify } from "@/lib/ads";
+import { getRandomIntInclusive } from "@/lib/utils";
 import { useLazyQuery } from "@apollo/client/react";
 import { Product, ProductSearchDocument } from "graphql-utils";
 import { useEffect } from "react";
@@ -59,13 +64,21 @@ export default function MoreFromBrand({ brand }: MoreFromBrandProps) {
           </ScrollContainer>
         ) : (
           <ScrollContainer>
-            {(brandProducts?.productSearch?.products ?? []).map(
-              (product, i) => (
+            {adify(
+              brandProducts?.productSearch?.products ?? [],
+              getRandomIntInclusive(3, 6),
+            ).map((product, i) =>
+              typeof product === "object" ? (
                 <ProductItemHorizontal
                   product={product as Product}
                   key={`brand-product-${product.id}-${i}`}
                 />
-              )
+              ) : (
+                <HorizontalProductAd
+                  id={i}
+                  key={`horizontal-product-ad-${product}-${i}`}
+                />
+              ),
             )}
           </ScrollContainer>
         )}

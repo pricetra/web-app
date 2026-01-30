@@ -1,5 +1,6 @@
 "use client";
 
+import HorizontalProductAd from "@/components/ads/horizontal-product-ad";
 import BranchItemWithLogo, {
   BranchItemWithLogoLoading,
 } from "@/components/branch-item-with-logo";
@@ -16,6 +17,7 @@ import WelcomeHeroBanner from "@/components/welcome-hero-banner";
 import { useNavbar } from "@/context/navbar-context";
 import { useAuth } from "@/context/user-context";
 import useLocationInput from "@/hooks/useLocationInput";
+import { adify } from "@/lib/ads";
 import { getNextWeekDateRange, getRandomIntInclusive } from "@/lib/utils";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
 import {
@@ -67,7 +69,7 @@ export default function SearchPageClient({
         brand: params.brand,
         sortByPrice: params.sortByPrice,
         sale: params.sale === "true" ? true : undefined,
-      } as ProductSearch),
+      }) as ProductSearch,
     [
       params.query,
       params.categoryId,
@@ -75,7 +77,7 @@ export default function SearchPageClient({
       params.sortByPrice,
       params.sale,
       locationInput?.locationInput,
-    ]
+    ],
   );
   const { data: branchesWithProducts } = useQuery(
     BranchesWithProductsDocument,
@@ -86,20 +88,20 @@ export default function SearchPageClient({
         filters: { ...searchVariables },
       },
       fetchPolicy: "no-cache",
-    }
+    },
   );
 
   const [getPopularSearchKeywords, { data: keywordsData }] = useLazyQuery(
     PopularSearchKeywordsDocument,
     {
       fetchPolicy: "no-cache",
-    }
+    },
   );
   const [getPopularProducts, { data: popularProductsData }] = useLazyQuery(
     PopularProductsDocument,
     {
       fetchPolicy: "no-cache",
-    }
+    },
   );
 
   const nextWeekDateRange = getNextWeekDateRange();
@@ -108,7 +110,7 @@ export default function SearchPageClient({
     resetAll();
 
     setPageIndicator(
-      <NavPageIndicator icon={IoIosSearch} title="Search" href="/search" />
+      <NavPageIndicator icon={IoIosSearch} title="Search" href="/search" />,
     );
     setSubHeader(<ProductFilterNavToolbar baseUrl="" />);
 
@@ -171,7 +173,11 @@ export default function SearchPageClient({
                     .fill(0)
                     .map((_, i) => (
                       <Skeleton
-                        style={{ borderRadius: 20, height: 34, width: getRandomIntInclusive(70, 120) }}
+                        style={{
+                          borderRadius: 20,
+                          height: 34,
+                          width: getRandomIntInclusive(70, 120),
+                        }}
                         key={`keyword-loading-${i}`}
                       />
                     ))}
@@ -195,15 +201,23 @@ export default function SearchPageClient({
                   ) : (
                     <article>
                       <ScrollContainer>
-                        {popularProductsData.popularProducts.products.map(
-                          (product) => (
+                        {adify(
+                          popularProductsData.popularProducts.products,
+                          getRandomIntInclusive(3, 6),
+                        ).map((product, i) =>
+                          typeof product === "object" ? (
                             <ProductItemHorizontal
                               product={product as Product}
                               branchSlug={product.stock?.branch?.slug}
                               key={`branch-product-${product.id}-${product.id}`}
                               hideStoreInfo={false}
                             />
-                          )
+                          ) : (
+                            <HorizontalProductAd
+                              id={i}
+                              key={`horizontal-product-ad-${product}-${i}`}
+                            />
+                          ),
                         )}
                       </ScrollContainer>
                     </article>
@@ -231,11 +245,9 @@ export default function SearchPageClient({
         <div className="flex flex-row flex-wrap gap-2 mb-5 px-5">
           <SearchFilters params={params} />
 
-          {
-            params.page && +params.page > 1 && (
-              <Button variant="link">Page {params.page}</Button>
-            )
-          }
+          {params.page && +params.page > 1 && (
+            <Button variant="link">Page {params.page}</Button>
+          )}
         </div>
       )}
 
@@ -281,16 +293,26 @@ export default function SearchPageClient({
                     </div>
 
                     <ScrollContainer>
-                      {(branch.products ?? []).map((product) => (
-                        <ProductItemHorizontal
-                          product={product as Product}
-                          branchSlug={branch.slug}
-                          key={`branch-product-${branch.id}-${product.id}`}
-                        />
-                      ))}
+                      {adify(
+                        branch.products ?? [],
+                        getRandomIntInclusive(3, 6),
+                      ).map((product, i) =>
+                        typeof product === "object" ? (
+                          <ProductItemHorizontal
+                            product={product as Product}
+                            branchSlug={branch.slug}
+                            key={`branch-product-${branch.id}-${product.id}`}
+                          />
+                        ) : (
+                          <HorizontalProductAd
+                            id={i}
+                            key={`horizontal-product-ad-${branch.id}-${product}-${i}`}
+                          />
+                        ),
+                      )}
                     </ScrollContainer>
                   </article>
-                )
+                ),
               )
             )}
           </>
