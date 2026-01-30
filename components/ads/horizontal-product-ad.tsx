@@ -1,6 +1,7 @@
 "use client";
 import { GADS_PUB_ID } from "@/constants/google";
-import { useEffect, useRef } from "react";
+import useAdSense from "@/hooks/useAdSense";
+import { useRef } from "react";
 
 export type HorizontalProductAdProps = {
   id?: string | number;
@@ -15,16 +16,9 @@ declare global {
 
 export default function HorizontalProductAd({ id }: HorizontalProductAdProps) {
   const adRef = useRef<HTMLDivElement>(null);
+  const visible = useAdSense(adRef);
 
-  useEffect(() => {
-    if (!adRef.current) return;
-
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
-      console.warn("AdSense error", e);
-    }
-  }, []);
+  if (!visible) return <></>;
 
   return (
     <div className="flex items-center justify-center h-full">

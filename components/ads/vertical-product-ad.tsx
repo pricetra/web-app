@@ -1,6 +1,8 @@
 "use client";
 import { GADS_PUB_ID } from "@/constants/google";
-import { useEffect, useRef } from "react";
+import useAdSense from "@/hooks/useAdSense";
+import { cn } from "@/lib/utils";
+import { useRef } from "react";
 
 export type VerticalProductAdProps = {
   id?: string | number;
@@ -15,19 +17,10 @@ declare global {
 
 export default function VerticalProductAd({ id }: VerticalProductAdProps) {
   const adRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (!adRef.current) return;
-
-    try {
-      (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
-      console.warn("AdSense error", e);
-    }
-  }, []);
+  const visible = useAdSense(adRef);
 
   return (
-    <div className="">
+    <div className={cn(visible ? 'hidden' : 'block')}>
       <div
         ref={adRef}
         className="relative w-full"
