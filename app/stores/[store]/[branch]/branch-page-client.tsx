@@ -10,8 +10,10 @@ import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { SmartPagination } from "@/components/ui/smart-pagination";
 import { useMediaQuery } from "react-responsive";
 import { SearchRouteParams } from "@/app/search/search-page-client";
-import { toBoolean } from "@/lib/utils";
+import { getRandomIntInclusive, toBoolean } from "@/lib/utils";
 import SearchFilters from "@/components/search-filters";
+import { adify } from "@/lib/ads";
+import VerticalProductAd from "@/components/ads/vertical-product-ad";
 
 export default function BranchPageClient({
   store,
@@ -70,7 +72,7 @@ export default function BranchPageClient({
         subTitle={branch.address.fullAddress}
         subTitleHref={branch.address.mapsLink}
         subTitleHrefTargetBlank
-      />
+      />,
     );
     setSearchPlaceholder(`Search ${branch.name}`);
     setSearchQueryPath(`/stores/${store.slug}/${branch.slug}`);
@@ -103,15 +105,25 @@ export default function BranchPageClient({
           ) : (
             <>
               {productsData.allProducts.paginator.total !== 0 ? (
-                productsData?.allProducts?.products?.map((p, i) => (
-                  <ProductItem
-                    product={p as Product}
-                    branchSlug={branch.slug}
-                    imgWidth={isMobile ? 110 : 130}
-                    key={`product-${p.id}-${i}`}
-                    hideStoreInfo
-                  />
-                ))
+                adify(
+                  productsData.allProducts.products,
+                  getRandomIntInclusive(5, 10),
+                ).map((p, i) =>
+                  typeof p === "object" ? (
+                    <ProductItem
+                      product={p as Product}
+                      branchSlug={branch.slug}
+                      imgWidth={isMobile ? 110 : 130}
+                      key={`product-${p.id}-${i}`}
+                      hideStoreInfo
+                    />
+                  ) : (
+                    <VerticalProductAd
+                      id={i}
+                      key={`vertical-product-ad-${p}-${i}`}
+                    />
+                  ),
+                )
               ) : (
                 <p className="py-10 px-5 text-center">No results</p>
               )}

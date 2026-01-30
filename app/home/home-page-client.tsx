@@ -28,6 +28,7 @@ import ProductFilterNavToolbar from "@/components/product-filters-nav-toolbar";
 import MyBranchPanel from "@/components/my-branches-panel";
 import HorizontalProductAd from "@/components/ads/horizontal-product-ad";
 import { adify } from "@/lib/ads";
+import { getRandomIntInclusive } from "@/lib/utils";
 
 export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
   const { setSubHeader, resetAll } = useNavbar();
@@ -129,7 +130,7 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
                     </div>
 
                     <ScrollContainer>
-                      {adify(branch.products ?? [], 5).map((product, i) =>
+                      {adify(branch.products ?? [], getRandomIntInclusive(3, 6)).map((product, i) =>
                         typeof product === "object" ? (
                           <ProductItemHorizontal
                             product={product as Product}
