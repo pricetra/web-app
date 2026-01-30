@@ -22,7 +22,7 @@ import useLocationInput from "@/hooks/useLocationInput";
 import { useQuery } from "@apollo/client/react";
 import { useSearchParams } from "next/navigation";
 import WelcomeHeroBanner from "@/components/welcome-hero-banner";
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useMemo } from "react";
 import { useNavbar } from "@/context/navbar-context";
 import ProductFilterNavToolbar from "@/components/product-filters-nav-toolbar";
 import MyBranchPanel from "@/components/my-branches-panel";
@@ -33,7 +33,7 @@ import VerticalSidebarAd from "@/components/ads/vertical-sidebar-ad";
 import { uniqueId } from "lodash";
 
 export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
-  const { setSubHeader, resetAll } = useNavbar();
+  const { setSubHeader, resetAll, navbarHeight } = useNavbar();
   const searchParams = useSearchParams();
   const pageString = searchParams.get("page");
   const { loggedIn, myStoreUsers } = useAuth();
@@ -57,6 +57,7 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
       },
     },
   );
+  const topHeight = useMemo(() => navbarHeight + 65, [navbarHeight]);
 
   useLayoutEffect(() => {
     resetAll();
@@ -132,7 +133,10 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
                     </div>
 
                     <ScrollContainer>
-                      {adify(branch.products ?? [], getRandomIntInclusive(3, 6)).map((product, i) =>
+                      {adify(
+                        branch.products ?? [],
+                        getRandomIntInclusive(3, 6),
+                      ).map((product, i) =>
                         typeof product === "object" ? (
                           <ProductItemHorizontal
                             product={product as Product}
@@ -163,8 +167,14 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
           )}
       </div>
 
-      <div className="w-full p-2 relative">
-        <div className="w-full h-screen hidden lg:block">
+      <div className="w-full px-2 relative">
+        <div
+          className="w-full h-screen hidden lg:block lg:sticky top-0"
+          style={{
+            top: topHeight,
+            maxHeight: `calc(100vh - ${topHeight}px)`,
+          }}
+        >
           <VerticalSidebarAd id={uniqueId()} />
         </div>
       </div>
