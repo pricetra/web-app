@@ -4,8 +4,10 @@ import {
   BranchesWithProductsQueryVariables,
   BranchListWithPrices,
   FavoriteBranchesWithPricesDocument,
+  FindBranchesByDistanceDocument,
   GetProductNutritionDataDocument,
   GetProductStocksDocument,
+  LocationInput,
   Product,
   ProductNutrition,
   Stock,
@@ -35,7 +37,7 @@ import ScrollContainer from "@/components/scroll-container";
 import { FiEdit } from "react-icons/fi";
 import { IoRefresh } from "react-icons/io5";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
-import { useAuth } from "@/context/user-context";
+import { useAuth, UserListsType } from "@/context/user-context";
 import { useEffect, useMemo } from "react";
 import { LocationInputWithFullAddress } from "@/context/location-context";
 import { useInView } from "react-intersection-observer";
@@ -43,6 +45,7 @@ import Link from "next/link";
 import { adify } from "@/lib/ads";
 import { getRandomIntInclusive } from "@/lib/utils";
 import HorizontalProductAd from "@/components/ads/horizontal-product-ad";
+import convert from "convert-units";
 
 export type StockWithApproximatePrice = Stock & {
   approximatePrice?: number;
@@ -103,6 +106,7 @@ export default function ProductDetails({
   });
   const [getRelatedBranchProducts, { data: branchesWithProducts }] =
     useLazyQuery(BranchesWithProductsDocument, { fetchPolicy: "no-cache" });
+  const [getBranchesByDistance] = useLazyQuery(FindBranchesByDistanceDocument);
 
   const { data: productNutritionData } = useQuery(
     GetProductNutritionDataDocument,
@@ -135,39 +139,65 @@ export default function ProductDetails({
     [favBranchesPriceData],
   );
 
+  async function getBranchIds(
+    lists: UserListsType | undefined,
+    locationInput: LocationInput,
+  ): Promise<number[]> {
+    if (lists && lists.favorites.branchList) {
+      return Promise.resolve(
+        lists.favorites.branchList.map(({ branchId }) => branchId),
+      );
+    }
+
+    const DEFAULT_RADIUS = Math.round(convert(20).from("mi").to("m"));
+    const { data } = await getBranchesByDistance({
+      variables: {
+        lat: locationInput.latitude,
+        lon: locationInput.longitude,
+        radiusMeters:
+          locationInput.radiusMeters ?? DEFAULT_RADIUS,
+      },
+    });
+    if (!data) return Promise.resolve([]);
+    const BRANCH_LIMIT = 5;
+    const branchIds = data.findBranchesByDistance.map(({ id }) => id);
+    if (branchIds.length <= BRANCH_LIMIT) return branchIds;
+    return branchIds.slice(0, BRANCH_LIMIT);
+  }
+
   useEffect(() => {
     if (!relatedProductsSectionInView) return;
-    if (!product.category || !locationInput) return;
+    if (!product.category) return;
+    if (!locationInput) return;
 
-    const favoriteBranchIds = (lists?.favorites?.branchList ?? []).map(
-      ({ branchId }) => branchId,
-    );
-    const variables = {
-      paginator: {
-        limit: favoriteBranchIds.length,
-        page: 1,
-      },
-      productLimit: 10,
-      filters: {
-        location: locationInput.locationInput,
-        category: product.category.name,
-        sortByPrice: "asc",
-        branchIds: favoriteBranchIds,
-      },
-    } as BranchesWithProductsQueryVariables;
-    if (stock) {
-      const branchIdsWithStockBranchId = favoriteBranchIds.filter(
-        (id) => id !== stock?.branchId,
-      );
-      branchIdsWithStockBranchId.push(stock?.branchId);
-      variables.paginator.limit = branchIdsWithStockBranchId.length;
-      variables.filters = {
-        ...variables.filters,
-        branchIds: branchIdsWithStockBranchId,
-      };
+    getBranchIds(lists, locationInput.locationInput).then((favoriteBranchIds) => {
+      const variables = {
+        paginator: {
+          limit: favoriteBranchIds.length,
+          page: 1,
+        },
+        productLimit: 10,
+        filters: {
+          location: locationInput.locationInput,
+          category: product.category!.name,
+          sortByPrice: "asc",
+          branchIds: favoriteBranchIds,
+        },
+      } as BranchesWithProductsQueryVariables;
+      if (stock) {
+        const branchIdsWithStockBranchId = favoriteBranchIds.filter(
+          (id) => id !== stock?.branchId,
+        );
+        branchIdsWithStockBranchId.push(stock?.branchId);
+        variables.paginator.limit = branchIdsWithStockBranchId.length;
+        variables.filters = {
+          ...variables.filters,
+          branchIds: branchIdsWithStockBranchId,
+        };
+        getRelatedBranchProducts({ variables });
+      }
       getRelatedBranchProducts({ variables });
-    }
-    getRelatedBranchProducts({ variables });
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     relatedProductsSectionInView,
