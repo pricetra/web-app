@@ -82,6 +82,7 @@ export default function Footer({ disableExtraSpacing = false }: FooterProps) {
                   <ListItemWithHover href="/search">Search</ListItemWithHover>
                   <ListItemWithHover href="/stores">Stores</ListItemWithHover>
                   <ListItemWithHover href="/scan">Scan</ListItemWithHover>
+                  <ListItemWithHover href="/download">Download</ListItemWithHover>
                   <ListItemWithHover href="/business">
                     Business
                   </ListItemWithHover>

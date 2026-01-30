@@ -1,13 +1,10 @@
-import LayoutProvider from "@/providers/layout-provider";
-import MobileAppPageClient from "./client";
+import { redirect } from "next/navigation";
 
 export const metadata = {
-  title: "Download our Mobile App - Pricetra",
-  description: "Pricetra is available to download on the AppStore for iOS, and the Google PlayStore for Android.",
+  title: "Mobile App Download - Pricetra",
+  description: "Mobile app download page for Pricetra",
 };
 
 export default function MobileAppPage() {
-  return <LayoutProvider>
-    <MobileAppPageClient />
-  </LayoutProvider>
+  redirect('/download');
 }
