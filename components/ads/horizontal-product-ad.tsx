@@ -1,30 +1,45 @@
-import Script from "next/script";
+"use client";
+import { GADS_PUB_ID } from "@/constants/google";
+import { useEffect, useRef } from "react";
 
 export type HorizontalProductAdProps = {
   id?: string | number;
 };
 
-export const horizontalProductAdScript = `<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9688831646501290"
-     crossorigin="anonymous"></script>
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-format="fluid"
-     data-ad-layout-key="-6t+ed+2i-1n-4w"
-     data-ad-client="ca-pub-9688831646501290"
-     data-ad-slot="8982980246"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>`;
+declare global {
+  interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    adsbygoogle: any[];
+  }
+}
 
 export default function HorizontalProductAd({ id }: HorizontalProductAdProps) {
+  const adRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!adRef.current) return;
+
+    try {
+      (window.adsbygoogle = window.adsbygoogle || []).push({});
+    } catch (e) {
+      console.warn("AdSense error", e);
+    }
+  }, []);
+
   return (
-    <div className="bg-gray-50 relative" style={{ width: 250, minHeight: 260 }}>
-      <Script
-        id={`horizontal-product-ad${id}`}
-        strategy="lazyOnload"
-        dangerouslySetInnerHTML={{
-          __html: horizontalProductAdScript,
-        }}
+    <div
+      ref={adRef}
+      className="bg-gray-50 relative"
+      style={{ width: 250, minHeight: 260 }}
+      id={`horizontal-product-ad-${id}`}
+    >
+      <ins
+        className="adsbygoogle"
+        style={{ display: "block" }}
+        data-ad-format="fluid"
+        data-ad-layout-key="-6t+ed+2i-1n-4w"
+        data-ad-client={GADS_PUB_ID}
+        data-ad-slot="8982980246"
       />
     </div>
   );
