@@ -6,10 +6,7 @@ export default function useAdSense(adRef: RefObject<HTMLDivElement | null>) {
   useEffect(() => {
     if (!adRef.current) return;
 
-    console.log('ad')
-
     const el = adRef.current;
-
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch (e) {
