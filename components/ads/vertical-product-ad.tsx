@@ -20,12 +20,12 @@ export default function VerticalProductAd({ id }: VerticalProductAdProps) {
   const visible = useAdSense(adRef);
 
   return (
-    <div className={cn(visible ? 'hidden' : 'block')}>
+    <div className={cn("", visible ? "block" : "hidden")}>
       <div
         ref={adRef}
         className="relative w-full"
         style={{ maxWidth: 474 }}
-        id={`horizontal-product-ad-${id}`}
+        id={`vertical-product-ad-${id}`}
       >
         <ins
           className="adsbygoogle"

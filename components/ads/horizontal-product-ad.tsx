@@ -1,6 +1,7 @@
 "use client";
 import { GADS_PUB_ID } from "@/constants/google";
 import useAdSense from "@/hooks/useAdSense";
+import { cn } from "@/lib/utils";
 import { useRef } from "react";
 
 export type HorizontalProductAdProps = {
@@ -18,10 +19,13 @@ export default function HorizontalProductAd({ id }: HorizontalProductAdProps) {
   const adRef = useRef<HTMLDivElement>(null);
   const visible = useAdSense(adRef);
 
-  if (!visible) return <></>;
-
   return (
-    <div className="flex items-center justify-center h-full">
+    <div
+      className={cn(
+        "flex items-center justify-center h-full",
+        visible ? "block" : "hidden",
+      )}
+    >
       <div
         ref={adRef}
         className="relative"
