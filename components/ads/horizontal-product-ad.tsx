@@ -19,7 +19,7 @@ export default function HorizontalProductAd({ id }: HorizontalProductAdProps) {
   return (
     <div
       ref={adRef}
-      className="bg-gray-50 flex items-center justify-center relative h-full"
+      className="bg-gray-50 relative"
       style={{ width: 250, minHeight: 260 }}
       id={`horizontal-product-ad-${id}`}
     >
