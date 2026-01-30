@@ -1,14 +1,26 @@
 import LayoutProvider from "@/providers/layout-provider";
 import MobileAppPageClient from "./client";
+import { Metadata } from "next";
 
-export const metadata = {
-  title: "Download our Mobile App - Pricetra",
-  description: "Pricetra is available to download on the AppStore for iOS, and the Google PlayStore for Android.",
-  image: "https://pricetra.com/screenshots/app-preview-generic.jpg"
+const title = "Download our Mobile App - Pricetra";
+const description =
+  "Pricetra is available to download on the AppStore for iOS, and the Google PlayStore for Android.";
+const image = "https://pricetra.com/screenshots/app-preview-generic.jpg";
+export const metadata: Metadata = {
+  title,
+  description,
+  openGraph: {
+    title,
+    description,
+    images: [image],
+    url: "https://pricetra.com/download",
+  },
 };
 
 export default function MobileAppPage() {
-  return <LayoutProvider>
-    <MobileAppPageClient />
-  </LayoutProvider>
+  return (
+    <LayoutProvider>
+      <MobileAppPageClient />
+    </LayoutProvider>
+  );
 }
