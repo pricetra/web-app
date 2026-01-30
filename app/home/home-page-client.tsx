@@ -26,6 +26,8 @@ import { useLayoutEffect } from "react";
 import { useNavbar } from "@/context/navbar-context";
 import ProductFilterNavToolbar from "@/components/product-filters-nav-toolbar";
 import MyBranchPanel from "@/components/my-branches-panel";
+import HorizontalProductAd from "@/components/ads/horizontal-product-ad";
+import { adify } from "@/lib/ads";
 
 export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
   const { setSubHeader, resetAll } = useNavbar();
@@ -50,7 +52,7 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
             : undefined,
         },
       },
-    }
+    },
   );
 
   useLayoutEffect(() => {
@@ -61,7 +63,7 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
     return () => {
       resetAll();
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -75,7 +77,9 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
               {!allStoresData ? (
                 Array(10)
                   .fill(0)
-                  .map((_, i) => <StoreMiniLoading key={`store-loading-${i}`} />)
+                  .map((_, i) => (
+                    <StoreMiniLoading key={`store-loading-${i}`} />
+                  ))
               ) : (
                 <>
                   {allStoresData.allStores.stores.map((store) => (
@@ -125,16 +129,23 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
                     </div>
 
                     <ScrollContainer>
-                      {(branch.products ?? []).map((product) => (
-                        <ProductItemHorizontal
-                          product={product as Product}
-                          branchSlug={branch.slug}
-                          key={`branch-product-${branch.id}-${product.id}`}
-                        />
-                      ))}
+                      {adify(branch.products ?? [], 5).map((product, i) =>
+                        typeof product === "object" ? (
+                          <ProductItemHorizontal
+                            product={product as Product}
+                            branchSlug={branch.slug}
+                            key={`branch-product-${branch.id}-${product.id}`}
+                          />
+                        ) : (
+                          <HorizontalProductAd
+                            id={i}
+                            key={`horizontal-product-ad-${branch.id}-${product}-${i}`}
+                          />
+                        ),
+                      )}
                     </ScrollContainer>
                   </article>
-                )
+                ),
               )}
         </div>
 
