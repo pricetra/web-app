@@ -8,13 +8,6 @@ export type VerticalProductAdProps = {
   id?: string | number;
 };
 
-declare global {
-  interface Window {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    adsbygoogle: any[];
-  }
-}
-
 export default function VerticalProductAd({ id }: VerticalProductAdProps) {
   const adRef = useRef<HTMLDivElement>(null);
   const visible = useAdSense(adRef);

@@ -29,6 +29,8 @@ import MyBranchPanel from "@/components/my-branches-panel";
 import HorizontalProductAd from "@/components/ads/horizontal-product-ad";
 import { adify } from "@/lib/ads";
 import { getRandomIntInclusive } from "@/lib/utils";
+import VerticalSidebarAd from "@/components/ads/vertical-sidebar-ad";
+import { uniqueId } from "lodash";
 
 export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
   const { setSubHeader, resetAll } = useNavbar();
@@ -163,21 +165,7 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
 
       <div className="w-full p-2 relative">
         <div className="w-full h-screen hidden lg:block">
-          <div
-            dangerouslySetInnerHTML={{
-              __html: `<amp-ad
-            width="100vw"
-            height="320"
-            type="adsense"
-            data-ad-client="ca-pub-9688831646501290"
-            data-ad-slot="4034724130"
-            data-auto-format="rspv"
-            data-full-width=""
-          >
-            <div overflow=""></div>
-          </amp-ad>`,
-            }}
-          />
+          <VerticalSidebarAd id={uniqueId()} />
         </div>
       </div>
     </>

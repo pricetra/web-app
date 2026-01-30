@@ -1,4 +1,5 @@
 "use client";
+
 import LocationContextProvider from "@/context/location-context";
 import { UserContextProvider } from "@/context/user-context";
 import ApolloWrapper from "@/graphql/apollo-wrapper";
@@ -16,6 +17,13 @@ import SearchContextProvider from "@/context/search-context";
 dayjs.extend(localizedFormat);
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
+
+declare global {
+  interface Window {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    adsbygoogle: any[];
+  }
+}
 
 export type AppProviderProps = {
   children: ReactNode;
