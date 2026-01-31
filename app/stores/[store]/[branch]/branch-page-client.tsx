@@ -14,6 +14,8 @@ import { getRandomIntInclusive, toBoolean } from "@/lib/utils";
 import SearchFilters from "@/components/search-filters";
 import { adify } from "@/lib/ads";
 import VerticalProductAd from "@/components/ads/vertical-product-ad";
+import VerticalSidebarAd from "@/components/ads/vertical-sidebar-ad";
+import { uniqueId } from "lodash";
 
 export default function BranchPageClient({
   store,
@@ -24,6 +26,7 @@ export default function BranchPageClient({
   branch: Branch;
   searchParams: SearchRouteParams;
 }) {
+  const { navbarHeight } = useNavbar();
   const {
     setPageIndicator,
     resetAll,
@@ -62,6 +65,8 @@ export default function BranchPageClient({
     },
   });
 
+  const topHeight = useMemo(() => navbarHeight + 30, [navbarHeight]);
+
   useLayoutEffect(() => {
     resetAll();
     setPageIndicator(
@@ -85,7 +90,7 @@ export default function BranchPageClient({
 
   return (
     <>
-      <div className="w-full max-w-[1000px] mt-5 px-5 flex-1">
+      <div className="w-full max-w-[1000px] mt-5 px-5 flex-2">
         {paramsBuilder.size > 0 && (
           <div className="mb-10">
             <SearchFilters params={searchParams} />
@@ -139,7 +144,17 @@ export default function BranchPageClient({
           )}
       </div>
 
-      <div />
+      <div className="w-full px-2 relative flex-1">
+        <div
+          className="w-full h-screen hidden lg:block lg:sticky top-0"
+          style={{
+            top: topHeight,
+            maxHeight: `calc(100vh - ${topHeight}px)`,
+          }}
+        >
+          <VerticalSidebarAd id={uniqueId()} />
+        </div>
+      </div>
     </>
   );
 }

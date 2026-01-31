@@ -8,7 +8,7 @@ import {
   Store,
 } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
-import { useLayoutEffect } from "react";
+import { useLayoutEffect, useMemo } from "react";
 import { useQuery } from "@apollo/client/react";
 import BranchItemWithLogo, {
   BranchItemWithLogoLoading,
@@ -21,8 +21,14 @@ import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import ScrollContainer from "@/components/scroll-container";
 import { SmartPagination } from "@/components/ui/smart-pagination";
 import { useSearchParams } from "next/navigation";
+import VerticalSidebarAd from "@/components/ads/vertical-sidebar-ad";
+import { uniqueId } from "lodash";
+import { adify } from "@/lib/ads";
+import { getRandomIntInclusive } from "@/lib/utils";
+import HorizontalProductAd from "@/components/ads/horizontal-product-ad";
 
 export default function SelectedStorePageClient({ store }: { store: Store }) {
+  const { navbarHeight } = useNavbar();
   const searchParams = useSearchParams();
   const pageString = searchParams.get("page");
   const searchQuery = searchParams.get("query");
@@ -52,8 +58,10 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
           query: searchQuery ?? undefined,
         },
       },
-    }
+    },
   );
+
+  const topHeight = useMemo(() => navbarHeight + 40, [navbarHeight]);
 
   useLayoutEffect(() => {
     resetAll();
@@ -62,7 +70,7 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
         title={store.name}
         imgSrc={createCloudinaryUrl(store.logo, 100, 100)}
         href={`/stores/${store.slug}`}
-      />
+      />,
     );
     setSearchPlaceholder(`Search ${store.name}`);
     setSearchQueryPath(`/stores/${store.slug}`);
@@ -117,16 +125,26 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
                     </div>
 
                     <ScrollContainer>
-                      {(branch.products ?? []).map((product) => (
-                        <ProductItemHorizontal
-                          product={product as Product}
-                          branchSlug={branch.slug}
-                          key={`branch-product-${branch.id}-${product.id}`}
-                        />
-                      ))}
+                      {adify(
+                        branch.products ?? [],
+                        getRandomIntInclusive(3, 6),
+                      ).map((product, i) =>
+                        typeof product === "object" ? (
+                          <ProductItemHorizontal
+                            product={product as Product}
+                            branchSlug={branch.slug}
+                            key={`branch-product-${branch.id}-${product.id}`}
+                          />
+                        ) : (
+                          <HorizontalProductAd
+                            id={i}
+                            key={`horizontal-product-ad-${branch.id}-${product}-${i}`}
+                          />
+                        ),
+                      )}
                     </ScrollContainer>
                   </article>
-                )
+                ),
               )}
         </section>
 
@@ -141,7 +159,17 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
           )}
       </div>
 
-      <div></div>
+      <div className="w-full px-2 relative">
+        <div
+          className="w-full h-screen hidden lg:block lg:sticky top-0"
+          style={{
+            top: topHeight,
+            maxHeight: `calc(100vh - ${topHeight}px)`,
+          }}
+        >
+          <VerticalSidebarAd id={uniqueId()} />
+        </div>
+      </div>
     </>
   );
 }
