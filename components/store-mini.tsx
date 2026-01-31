@@ -16,8 +16,13 @@ export default function StoreMini({
   return (
     <Link
       href={`/stores/${slug}`}
-      className="flex flex-col items-center justify-center gap-3"
+      className="flex flex-col items-center justify-center gap-3 relative group"
     >
+      <div
+        className="absolute inset-0 rounded-xl bg-gray-50 opacity-0 scale-95 transition-all duration-200 group-hover:opacity-100 group-hover:scale-100 -z-10 -top-2.5 -left-1.5"
+        style={{ height: "calc(100% + 20px)", width: "calc(100% + 12px)" }}
+      />
+
       <Image
         src={createCloudinaryUrl(logo, 300, 300)}
         className="size-10 md:size-14 lg:size-16 rounded-lg md:rounded-xl"

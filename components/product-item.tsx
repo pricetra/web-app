@@ -42,7 +42,12 @@ ProductItemProps) {
   }, [product.id, branchSlug]);
 
   return (
-    <Link href={href} className="flex max-w-full flex-row gap-2">
+    <Link href={href} className="flex max-w-full flex-row gap-2 relative group">
+      <div
+        className="absolute inset-0 rounded-xl bg-gray-50 opacity-0 scale-95 transition-all duration-200 group-hover:opacity-100 group-hover:scale-100 -z-10 -top-2.5 -left-2.5"
+        style={{ width: "calc(100% + 10px)", height: "calc(100% + 20px)" }}
+      />
+
       <div style={{ width: imgWidth, height: imgWidth, position: "relative" }}>
         {product.stock?.latestPrice?.sale && !isExpired && (
           <div className="absolute left-1 top-1 z-1 w-[40px]">

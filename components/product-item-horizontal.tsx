@@ -34,9 +34,14 @@ export default function ProductItemHorizontal({
   return (
     <Link
       href={href}
-      className="flex flex-col gap-2 max-w-[130px] md:max-w-[180px]"
+      className="flex flex-col gap-2 max-w-[130px] md:max-w-[180px] relative group"
       onClick={handleOnClick}
     >
+      <div
+        className="absolute inset-0 rounded-xl bg-gray-50 opacity-0 scale-95 transition-all duration-200 group-hover:opacity-100 group-hover:scale-100 -z-10 w-[150px] md:w-[200px] -top-2.5 -left-2.5"
+        style={{ width: "calc(100% + 20px)", height: "calc(100% + 20px)" }}
+      />
+
       <div className="relative size-[130px] md:size-[180px] overflow-hidden rounded-xl bg-white">
         {product.stock?.latestPrice?.sale && !isExpired && (
           <div className="absolute left-1 top-1 z-1 w-[40px]">
@@ -54,7 +59,7 @@ export default function ProductItemHorizontal({
           alt={product.name}
         />
       </div>
-      <div className="flex flex-col justify-between gap-2">
+      <div className="flex flex-col justify-between gap-2 w-full pb-2.5">
         <div className="flex flex-col gap-1">
           <div className="mb-1 flex flex-row items-center gap-1">
             {product.weightValue && product.weightType ? (

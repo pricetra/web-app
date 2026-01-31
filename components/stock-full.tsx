@@ -84,7 +84,12 @@ export default function StockFull({
           {stock.branch.address && (
             <div className="w-full">
               <h4 className="text-xs">
-                <a href={stock.branch.address.mapsLink} target="_blank">
+                <a
+                  href={stock.branch.address.mapsLink}
+                  target="_blank"
+                  className="hover:underline"
+                  title="View address in Maps"
+                >
                   {stock.branch.address.street}, {stock.branch.address.city}
                 </a>
               </h4>

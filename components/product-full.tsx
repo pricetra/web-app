@@ -14,16 +14,13 @@ export type ProductFullProps = {
   hideDescription?: boolean;
 };
 
-export default function ProductFull({
-  product,
-  hideDescription,
-}: ProductFullProps) {
+export default function ProductFull({ product }: ProductFullProps) {
   const [imgAvailable, setImgAvailable] = useState(true);
   const weight = useProductWeightBuilder(product);
   const categories = useMemo(
     () =>
       product.category ? categoriesFromChild(product.category) : undefined,
-    [product.category]
+    [product.category],
   );
 
   return (
@@ -68,6 +65,7 @@ export default function ProductFull({
               <h2 className="text-sm 2xl:text-base">
                 <Link
                   href={`/search?brand=${encodeURIComponent(product.brand)}`}
+                  className="hover:underline"
                 >
                   {product.brand}
                 </Link>
@@ -86,7 +84,7 @@ export default function ProductFull({
                     href={`/search?categoryId=${
                       c.id
                     }&category=${encodeURIComponent(c.name)}`}
-                    className="text-xs sm:text-sm text-gray-800 leading-none"
+                    className="text-xs sm:text-sm text-gray-800 leading-none hover:text-black hover:underline"
                   >
                     {c.name}
                   </Link>
@@ -95,12 +93,6 @@ export default function ProductFull({
             </div>
           )}
         </div>
-
-        {!hideDescription && product.description.length > 0 && (
-          <div className="mt-10">
-            <p>{product.description}</p>
-          </div>
-        )}
       </div>
     </div>
   );
