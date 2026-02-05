@@ -2,6 +2,7 @@
 
 import ProductFull, { ProductFullLoading } from "@/components/product-full";
 import {
+  Branch,
   Product,
   ProductDocument,
   ProductReferrer,
@@ -9,6 +10,7 @@ import {
   ProductViewerMetadata,
   Stock,
   StockDocument,
+  Store,
 } from "graphql-utils";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
 import { useEffect, useLayoutEffect, useMemo } from "react";
@@ -32,6 +34,9 @@ import { StockItemMiniLoading } from "@/components/stock-item-mini";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { IoArrowBackOutline } from "react-icons/io5";
+import BranchPageClient from "@/app/stores/[store]/[branch]/branch-page-client";
+import { useInView } from "react-intersection-observer";
+import Image from "next/image";
 
 export type ProductPageProps = {
   productId: number;
@@ -60,18 +65,23 @@ export default function ProductPage({
     {
       fetchPolicy: "network-only",
       variables: { productId, viewerTrail: { stockId, referrer, metadata } },
-    }
+    },
   );
   const [getStock, { data: stockData, error: stockError }] = useLazyQuery(
     StockDocument,
-    { fetchPolicy: "no-cache" }
+    { fetchPolicy: "no-cache" },
   );
   const isMediumScreen = useMediaQuery({ query: "(max-width: 640px)" });
 
   const productPanelTopHeight = useMemo(
     () => navbarHeight + 20,
-    [navbarHeight]
+    [navbarHeight],
   );
+  const [extraFromStoreRef, extraFromStoreInView] = useInView({
+    triggerOnce: true,
+    threshold: 0,
+    initialInView: false,
+  });
 
   // Get stock from stockId
   useEffect(() => {
@@ -97,7 +107,7 @@ export default function ProductPage({
         title={productSummary.store}
         imgSrc={createCloudinaryUrl(productSummary.storeLogo, 100, 100)}
         href={`/stores/${productSummary.storeSlug}`}
-      />
+      />,
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stockId, productSummary]);
@@ -130,7 +140,7 @@ export default function ProductPage({
             <div className="flex flex-row gap-2 items-center justify-end">
               {NavTools}
             </div>
-          </div>
+          </div>,
         );
       }
       setNavTools(undefined);
@@ -148,6 +158,10 @@ export default function ProductPage({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    console.log(extraFromStoreInView);
+  }, [extraFromStoreInView]);
 
   return (
     <div className="w-full flex-1">
@@ -276,6 +290,48 @@ export default function ProductPage({
           )}
         </div>
       </div>
+
+      <div className="h-[10vh]" />
+
+      {productData &&
+        stockData &&
+        stockData.stock.store &&
+        stockData.stock.branch && (
+          <div ref={extraFromStoreRef}>
+            {extraFromStoreInView && (
+              <>
+                <div className="px-5">
+                  <h3 className="font-bold text-lg mb-2">Browse more from</h3>
+                  <div className="flex flex-row items-center gap-3">
+                    <Image
+                      src={createCloudinaryUrl(
+                        stockData.stock.store.logo,
+                        300,
+                        300,
+                      )}
+                      alt={stockData.stock.store.name}
+                      width={100}
+                      height={100}
+                      className="size-12 sm:size-14 rounded-lg border"
+                    />
+                    <h2 className="font-bold text-xl sm:text-2xl">{stockData.stock.branch.name}</h2>
+                  </div>
+                </div>
+
+                <div className="flex flex-col lg:flex-row gap-5">
+                  <BranchPageClient
+                    store={stockData.stock.store as Store}
+                    branch={stockData.stock.branch as Branch}
+                    searchParams={{
+                      category: productData.product.category?.name,
+                      limit: String(20),
+                    }}
+                  />
+                </div>
+              </>
+            )}
+          </div>
+        )}
     </div>
   );
 }

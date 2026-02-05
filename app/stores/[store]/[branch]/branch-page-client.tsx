@@ -48,7 +48,7 @@ export default function BranchPageClient({
     variables: {
       paginator: {
         page: +(searchParams.page ?? 1),
-        limit: 30,
+        limit: +(searchParams.limit ?? 30),
       },
       search: {
         storeId: store.id,
@@ -139,7 +139,7 @@ export default function BranchPageClient({
         {productsData?.allProducts?.paginator &&
           productsData.allProducts.paginator.numPages > 1 && (
             <div className="mt-20">
-              <SmartPagination paginator={productsData.allProducts.paginator} />
+              <SmartPagination paginator={productsData.allProducts.paginator} urlBase={`/stores/${store.slug}/${branch.slug}`} />
             </div>
           )}
       </div>

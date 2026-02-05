@@ -41,6 +41,7 @@ export type SearchRouteParams = {
   sale?: string;
   sortByPrice?: string;
   page?: string;
+  limit?: string;
 };
 
 export type SearchPageClientProps = {
