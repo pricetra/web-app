@@ -1,0 +1,39 @@
+"use client";
+import { GADS_PUB_ID } from "@/constants/google";
+import useAdSense from "@/hooks/useAdSense";
+import { cn } from "@/lib/utils";
+import { useRef } from "react";
+
+export type HorizontalBannerAdProps = {
+  id?: string | number;
+};
+
+export default function HorizontalBannerAd({ id }: HorizontalBannerAdProps) {
+  const adRef = useRef<HTMLDivElement>(null);
+  const visible = useAdSense(adRef);
+
+  return (
+    <div
+      className={cn(
+        "flex items-center justify-center h-full",
+        visible ? "block" : "hidden",
+      )}
+    >
+      <div
+        ref={adRef}
+        className="relative"
+        style={{ width: 250 }}
+        id={`horizontal-product-ad-${id}`}
+      >
+        <ins
+          className="adsbygoogle"
+          style={{ display: "block" }}
+          data-ad-format="auto"
+          data-ad-client={GADS_PUB_ID}
+          data-ad-slot="2226000208"
+          data-full-width-responsive="true"
+        />
+      </div>
+    </div>
+  );
+}

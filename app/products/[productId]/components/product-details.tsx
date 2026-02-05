@@ -46,6 +46,8 @@ import { adify } from "@/lib/ads";
 import { getRandomIntInclusive } from "@/lib/utils";
 import HorizontalProductAd from "@/components/ads/horizontal-product-ad";
 import convert from "convert-units";
+import HorizontalBannerAd from "@/components/ads/horizontal-banner-ad";
+import MultiplexAds from "@/components/ads/multiplex-ads";
 
 export type StockWithApproximatePrice = Stock & {
   approximatePrice?: number;
@@ -154,8 +156,7 @@ export default function ProductDetails({
       variables: {
         lat: locationInput.latitude,
         lon: locationInput.longitude,
-        radiusMeters:
-          locationInput.radiusMeters ?? DEFAULT_RADIUS,
+        radiusMeters: locationInput.radiusMeters ?? DEFAULT_RADIUS,
       },
     });
     if (!data) return Promise.resolve([]);
@@ -170,34 +171,36 @@ export default function ProductDetails({
     if (!product.category) return;
     if (!locationInput) return;
 
-    getBranchIds(lists, locationInput.locationInput).then((favoriteBranchIds) => {
-      const variables = {
-        paginator: {
-          limit: favoriteBranchIds.length,
-          page: 1,
-        },
-        productLimit: 10,
-        filters: {
-          location: locationInput.locationInput,
-          category: product.category!.name,
-          sortByPrice: "asc",
-          branchIds: favoriteBranchIds,
-        },
-      } as BranchesWithProductsQueryVariables;
-      if (stock) {
-        const branchIdsWithStockBranchId = favoriteBranchIds.filter(
-          (id) => id !== stock?.branchId,
-        );
-        branchIdsWithStockBranchId.push(stock?.branchId);
-        variables.paginator.limit = branchIdsWithStockBranchId.length;
-        variables.filters = {
-          ...variables.filters,
-          branchIds: branchIdsWithStockBranchId,
-        };
+    getBranchIds(lists, locationInput.locationInput).then(
+      (favoriteBranchIds) => {
+        const variables = {
+          paginator: {
+            limit: favoriteBranchIds.length,
+            page: 1,
+          },
+          productLimit: 10,
+          filters: {
+            location: locationInput.locationInput,
+            category: product.category!.name,
+            sortByPrice: "asc",
+            branchIds: favoriteBranchIds,
+          },
+        } as BranchesWithProductsQueryVariables;
+        if (stock) {
+          const branchIdsWithStockBranchId = favoriteBranchIds.filter(
+            (id) => id !== stock?.branchId,
+          );
+          branchIdsWithStockBranchId.push(stock?.branchId);
+          variables.paginator.limit = branchIdsWithStockBranchId.length;
+          variables.filters = {
+            ...variables.filters,
+            branchIds: branchIdsWithStockBranchId,
+          };
+          getRelatedBranchProducts({ variables });
+        }
         getRelatedBranchProducts({ variables });
-      }
-      getRelatedBranchProducts({ variables });
-    });
+      },
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     relatedProductsSectionInView,
@@ -330,6 +333,10 @@ export default function ProductDetails({
           </AccordionContent>
         </AccordionItem>
 
+        <div className="my-10 flex flex-row items-center justify-center">
+          <HorizontalBannerAd id="product-details-horizontal-banner-1" />
+        </div>
+
         {productNutritionData && (
           <AccordionItem value="nutrition-facts">
             <AccordionTrigger>Nutrition Facts</AccordionTrigger>
@@ -424,8 +431,14 @@ export default function ProductDetails({
                   </ScrollContainer>
                 </article>
               ))
-          : branchesWithProducts.branchesWithProducts.branches.map(
-              (branch, i) => (
+          : adify(
+              branchesWithProducts.branchesWithProducts.branches,
+              getRandomIntInclusive(
+                1,
+                branchesWithProducts.branchesWithProducts.branches.length / 2,
+              ),
+            ).map((branch, i) =>
+              typeof branch === "object" ? (
                 <article
                   className="my-7"
                   key={`branch-with-product-${branch.id}`}
@@ -457,6 +470,13 @@ export default function ProductDetails({
                     )}
                   </ScrollContainer>
                 </article>
+              ) : (
+                <div
+                  className="flex items-center justify-center"
+                  key={`multiplex-ad-${i}`}
+                >
+                  <MultiplexAds id={`multiplex-ad-slot-${i}`} />
+                </div>
               ),
             )}
       </section>
