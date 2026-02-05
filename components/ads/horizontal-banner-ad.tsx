@@ -30,7 +30,7 @@ export default function HorizontalBannerAd({ id }: HorizontalBannerAdProps) {
           style={{ display: "block" }}
           data-ad-format="auto"
           data-ad-client={GADS_PUB_ID}
-          data-ad-slot="2226000208"
+          data-ad-slot="6749441134"
           data-full-width-responsive="true"
         />
       </div>
