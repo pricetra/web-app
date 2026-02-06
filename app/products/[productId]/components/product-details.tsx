@@ -46,7 +46,6 @@ import { adify } from "@/lib/ads";
 import { getRandomIntInclusive } from "@/lib/utils";
 import HorizontalProductAd from "@/components/ads/horizontal-product-ad";
 import convert from "convert-units";
-import HorizontalBannerAd from "@/components/ads/horizontal-banner-ad";
 import MultiplexAds from "@/components/ads/multiplex-ads";
 
 export type StockWithApproximatePrice = Stock & {
@@ -333,8 +332,8 @@ export default function ProductDetails({
           </AccordionContent>
         </AccordionItem>
 
-        <div className="my-10 flex flex-row items-center justify-center" style={{ maxHeight: '30vh' }}>
-          <HorizontalBannerAd id="product-details-horizontal-banner-1" />
+        <div className="my-10 flex flex-row items-center justify-center py-5 overflow-y-auto" style={{ maxHeight: '30vh' }}>
+          <MultiplexAds id="product-details-multiplex-1" />
         </div>
 
         {productNutritionData && (
@@ -431,14 +430,7 @@ export default function ProductDetails({
                   </ScrollContainer>
                 </article>
               ))
-          : adify(
-              branchesWithProducts.branchesWithProducts.branches,
-              getRandomIntInclusive(
-                1,
-                branchesWithProducts.branchesWithProducts.branches.length / 2,
-              ),
-            ).map((branch, i) =>
-              typeof branch === "object" ? (
+          : branchesWithProducts.branchesWithProducts.branches.map((branch, i) => (
                 <article
                   className="my-7"
                   key={`branch-with-product-${branch.id}`}
@@ -470,14 +462,6 @@ export default function ProductDetails({
                     )}
                   </ScrollContainer>
                 </article>
-              ) : (
-                <div
-                  className="flex items-center justify-center"
-                  key={`multiplex-ad-${i}`}
-                  style={{ maxHeight: '30vh' }}
-                >
-                  <MultiplexAds id={`multiplex-ad-slot-${i}`} />
-                </div>
               ),
             )}
       </section>
