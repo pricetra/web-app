@@ -333,7 +333,7 @@ export default function ProductDetails({
           </AccordionContent>
         </AccordionItem>
 
-        <div className="my-10 flex flex-row items-center justify-center">
+        <div className="my-10 flex flex-row items-center justify-center" style={{ maxHeight: '30vh' }}>
           <HorizontalBannerAd id="product-details-horizontal-banner-1" />
         </div>
 
@@ -474,6 +474,7 @@ export default function ProductDetails({
                 <div
                   className="flex items-center justify-center"
                   key={`multiplex-ad-${i}`}
+                  style={{ maxHeight: '30vh' }}
                 >
                   <MultiplexAds id={`multiplex-ad-slot-${i}`} />
                 </div>

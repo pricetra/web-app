@@ -37,6 +37,7 @@ import { IoArrowBackOutline } from "react-icons/io5";
 import BranchPageClient from "@/app/stores/[store]/[branch]/branch-page-client";
 import { useInView } from "react-intersection-observer";
 import Image from "next/image";
+import Link from "next/link";
 
 export type ProductPageProps = {
   productId: number;
@@ -300,9 +301,9 @@ export default function ProductPage({
           <div ref={extraFromStoreRef}>
             {extraFromStoreInView && (
               <>
-                <div className="px-5">
-                  <h3 className="font-bold text-lg mb-2">Browse more from</h3>
-                  <div className="flex flex-row items-center gap-3">
+                <div className="px-5 max-w-full w-lg">
+                  <h3 className="text-base sm:text-lg mb-2">Browse more from</h3>
+                  <Link href={`/stores/${stockData.stock.store.slug}/${stockData.stock.branch.slug}`} className="flex flex-row items-center gap-3">
                     <Image
                       src={createCloudinaryUrl(
                         stockData.stock.store.logo,
@@ -314,8 +315,8 @@ export default function ProductPage({
                       height={100}
                       className="size-12 sm:size-14 rounded-lg border"
                     />
-                    <h2 className="font-bold text-xl sm:text-2xl">{stockData.stock.branch.name}</h2>
-                  </div>
+                    <h2 className="font-bold text-lg sm:text-xl">{stockData.stock.branch.name}</h2>
+                  </Link>
                 </div>
 
                 <div className="flex flex-col lg:flex-row gap-5">
