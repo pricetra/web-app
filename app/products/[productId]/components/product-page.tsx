@@ -160,10 +160,6 @@ export default function ProductPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    console.log(extraFromStoreInView);
-  }, [extraFromStoreInView]);
-
   return (
     <div className="w-full flex-1">
       <div className="w-full flex flex-col lg:flex-row gap-4 min-h-screen">
