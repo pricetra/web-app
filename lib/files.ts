@@ -1,13 +1,24 @@
+import { startOfNextSundayUTC } from "./utils";
+
 export const CLOUDINARY_UPLOAD_BASE = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`;
 
-export function createCloudinaryUrl(public_id: string, width?: number, height?: number) {
+export function createCloudinaryUrl(
+  public_id: string,
+  width?: number,
+  height?: number,
+  timestamp: object | string | undefined | null = startOfNextSundayUTC(),
+) {
   let url = CLOUDINARY_UPLOAD_BASE;
   const transformations: string[] = [];
   if (width) transformations.push(`w_${width}`);
   if (height) transformations.push(`h_${height}`);
-  if (transformations.length > 0) url += `/${transformations.join(',')}`;
+  if (transformations.length > 0) url += `/${transformations.join(",")}`;
   url += `/${public_id}`;
-  return url;
+  let updatedAt = "";
+  if (timestamp) {
+    updatedAt = "?updatedAt=" + encodeURIComponent(timestamp.toString());
+  }
+  return url + updatedAt;
 }
 
 export function productImageUrlWithTimestamp(
@@ -15,20 +26,18 @@ export function productImageUrlWithTimestamp(
   width?: number,
   height?: number,
 ) {
-  let updatedAt = ''
-  if (product.updatedAt) {
-    updatedAt = '?updatedAt=' + encodeURIComponent(product.updatedAt.toString())
-  }
-  return `${createCloudinaryUrl(product.code, width, height)}${updatedAt}`;
+  return createCloudinaryUrl(product.code, width, height, product.updatedAt);
 }
 
-export async function convertFileToBase64(file: File): Promise<string | ArrayBuffer | null> {
+export async function convertFileToBase64(
+  file: File,
+): Promise<string | ArrayBuffer | null> {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.readAsDataURL(file)
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
     reader.onload = () => {
-      resolve(reader.result)
-    }
-    reader.onerror = reject
-  })
-};
+      resolve(reader.result);
+    };
+    reader.onerror = reject;
+  });
+}
