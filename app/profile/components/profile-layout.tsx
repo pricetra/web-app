@@ -72,8 +72,9 @@ export default function ProfileLayout({ children }: ProfileLayoutProps) {
 
               <div className="mt-5 flex flex-col">
                 {lists.allLists.map((list, i) => (
-                  <ListItem list={list} key={`list-${list.id}-${i}`} />
+                  <ListItem type={list.type} list={list} key={`list-${list.id}-${i}`} />
                 ))}
+                <ListItem type="history" />
               </div>
             </div>
           )}
