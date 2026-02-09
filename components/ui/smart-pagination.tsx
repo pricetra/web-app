@@ -13,14 +13,22 @@ import { useSearchParams } from "next/navigation";
 export type SmartPaginationProps = {
   paginator: Paginator;
   urlBase?: string;
+  onPageChange?: (page: number) => void;
+  disableHref?: boolean;
 };
 
-export function SmartPagination({ paginator, urlBase = '' }: SmartPaginationProps) {
+export function SmartPagination({
+  paginator,
+  urlBase = "",
+  disableHref = false,
+  onPageChange,
+}: SmartPaginationProps) {
   const { page, numPages, prev, next } = paginator;
   const searchParams = useSearchParams();
   const searchParamsBuilder = new URLSearchParams(searchParams);
 
   function buildHref(page: number) {
+    if (disableHref) return "";
     searchParamsBuilder.set("page", String(page));
     return `${urlBase}?${searchParamsBuilder.toString()}`;
   }
@@ -32,7 +40,7 @@ export function SmartPagination({ paginator, urlBase = '' }: SmartPaginationProp
   const lastPages = [numPages - 1, numPages];
 
   const middlePages = [page - 1, page, page + 1].filter(
-    (p) => p >= 1 && p <= numPages
+    (p) => p >= 1 && p <= numPages,
   );
 
   // Add first two pages
@@ -62,6 +70,10 @@ export function SmartPagination({ paginator, urlBase = '' }: SmartPaginationProp
         <PaginationItem>
           <PaginationPrevious
             href={prev ? buildHref(prev) : undefined}
+            onClick={() => {
+              if (!onPageChange || !prev) return;
+              onPageChange(prev);
+            }}
             aria-disabled={!prev}
             className={!prev ? "pointer-events-none opacity-50" : ""}
           />
@@ -75,16 +87,27 @@ export function SmartPagination({ paginator, urlBase = '' }: SmartPaginationProp
             </PaginationItem>
           ) : (
             <PaginationItem key={p}>
-              <PaginationLink href={buildHref(p)} isActive={p === page}>
+              <PaginationLink
+                href={buildHref(p)}
+                onClick={() => {
+                  if (!onPageChange) return;
+                  onPageChange(p);
+                }}
+                isActive={p === page}
+              >
                 {p}
               </PaginationLink>
             </PaginationItem>
-          )
+          ),
         )}
 
         <PaginationItem>
           <PaginationNext
             href={next ? buildHref(next) : undefined}
+            onClick={() => {
+              if (!onPageChange || !next) return;
+              onPageChange(next);
+            }}
             aria-disabled={!next}
             className={!next ? "pointer-events-none opacity-50" : ""}
           />
