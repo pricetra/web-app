@@ -12,6 +12,7 @@ import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import Skeleton from "react-loading-skeleton";
 import { SmartPagination } from "@/components/ui/smart-pagination";
 import { useSearchParams } from "next/navigation";
+import { startOfNextSundayUTC } from "@/lib/utils";
 
 export default function StorePageClient() {
   const searchParams = useSearchParams();
@@ -61,7 +62,7 @@ export default function StorePageClient() {
                     key={`store-${s.slug}-${i}`}
                   >
                     <Image
-                      src={createCloudinaryUrl(s.logo, 500, 500)}
+                      src={createCloudinaryUrl(s.logo, 500, 500, startOfNextSundayUTC())}
                       className="size-[40px] sm:size-[60px] rounded-lg sm:rounded-xl"
                       width={200}
                       height={200}

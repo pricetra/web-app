@@ -1,7 +1,12 @@
 "use client";
 
 import { useNavbar } from "@/context/navbar-context";
-import { AllProductsDocument, Branch, Product, Store } from "graphql-utils";
+import {
+  AllProductsDocument,
+  Branch,
+  Product,
+  Store,
+} from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
 import { useLayoutEffect, useMemo } from "react";
 import { useQuery } from "@apollo/client/react";
@@ -10,12 +15,13 @@ import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { SmartPagination } from "@/components/ui/smart-pagination";
 import { useMediaQuery } from "react-responsive";
 import { SearchRouteParams } from "@/app/search/search-page-client";
-import { getRandomIntInclusive, toBoolean } from "@/lib/utils";
+import { getRandomIntInclusive, startOfNextSundayUTC, toBoolean } from "@/lib/utils";
 import SearchFilters from "@/components/search-filters";
 import { adify } from "@/lib/ads";
 import VerticalProductAd from "@/components/ads/vertical-product-ad";
 import VerticalSidebarAd from "@/components/ads/vertical-sidebar-ad";
 import { uniqueId } from "lodash";
+import BranchPageNavTools from './components/branch-page-nav-tools';
 
 export default function BranchPageClient({
   store,
@@ -26,12 +32,13 @@ export default function BranchPageClient({
   branch: Branch;
   searchParams: SearchRouteParams;
 }) {
-  const { navbarHeight } = useNavbar();
   const {
     setPageIndicator,
     resetAll,
     setSearchPlaceholder,
     setSearchQueryPath,
+    navbarHeight,
+    setNavTools,
   } = useNavbar();
   const isMobile = useMediaQuery({
     query: "(max-width: 640px)",
@@ -73,7 +80,7 @@ export default function BranchPageClient({
       <NavPageIndicator
         title={store.name}
         href={`/stores/${store.slug}`}
-        imgSrc={createCloudinaryUrl(store.logo, 100, 100)}
+        imgSrc={createCloudinaryUrl(store.logo, 100, 100, startOfNextSundayUTC())}
         subTitle={branch.address.fullAddress}
         subTitleHref={branch.address.mapsLink}
         subTitleHrefTargetBlank
@@ -87,6 +94,11 @@ export default function BranchPageClient({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useLayoutEffect(() => {
+    setNavTools(<BranchPageNavTools branch={branch} />);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [branch]);
 
   return (
     <>
@@ -139,7 +151,10 @@ export default function BranchPageClient({
         {productsData?.allProducts?.paginator &&
           productsData.allProducts.paginator.numPages > 1 && (
             <div className="mt-20">
-              <SmartPagination paginator={productsData.allProducts.paginator} urlBase={`/stores/${store.slug}/${branch.slug}`} />
+              <SmartPagination
+                paginator={productsData.allProducts.paginator}
+                urlBase={`/stores/${store.slug}/${branch.slug}`}
+              />
             </div>
           )}
       </div>

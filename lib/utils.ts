@@ -1,17 +1,17 @@
-import { type ClassValue, clsx } from 'clsx';
-import convert from 'convert-units';
-import dayjs from 'dayjs';
-import { twMerge } from 'tailwind-merge';
+import { type ClassValue, clsx } from "clsx";
+import convert from "convert-units";
+import dayjs from "dayjs";
+import { twMerge } from "tailwind-merge";
 
-import { postgresArrayToNumericArray } from './strings';
+import { postgresArrayToNumericArray } from "./strings";
 
-import { Category, Price, Product, TimestampRangeBetween } from 'graphql-utils';
+import { Category, Price, Product, TimestampRangeBetween } from "graphql-utils";
 
 export function cn(...inputs: ClassValue[]) {
-  return twMerge(clsx(inputs))
+  return twMerge(clsx(inputs));
 }
 
-export const CATEGORY_DELIM = ' > ';
+export const CATEGORY_DELIM = " > ";
 
 /**
  * This method creates an array with the parent and all it's child categories.
@@ -26,16 +26,21 @@ export function categoriesFromChild(category: Category): Category[] {
   for (let i = 0; i < path.length; i++) {
     categories.push({
       id: path[i],
-      path: `{${[...path].splice(0, i + 1).join(',')}}`,
+      path: `{${[...path].splice(0, i + 1).join(",")}}`,
       name: categoryNames[i],
-      expandedPathname: [...categoryNames].splice(0, i + 1).join(CATEGORY_DELIM),
+      expandedPathname: [...categoryNames]
+        .splice(0, i + 1)
+        .join(CATEGORY_DELIM),
       depth: i + 1,
     });
   }
   return categories;
 }
 
-export function diffObjects<T extends Record<string, unknown>>(obj1: T, obj2: T): Partial<T> {
+export function diffObjects<T extends Record<string, unknown>>(
+  obj1: T,
+  obj2: T,
+): Partial<T> {
   const result: Partial<T> = {};
   for (const key in obj1) {
     if (!obj1.hasOwnProperty(key)) continue;
@@ -50,19 +55,22 @@ export function toPrecision(n: number, p: number): string {
 }
 
 export function metersToMiles(m: number) {
-  return toPrecision(convert(m).from('m').to('mi'), 2);
+  return toPrecision(convert(m).from("m").to("mi"), 2);
 }
 
 export function incompleteProductFields(product: Product): string[] {
   const fields: string[] = [];
-  if (product.name.trim() === '') {
-    fields.push('name');
+  if (product.name.trim() === "") {
+    fields.push("name");
   }
-  if (product.brand.trim() === '') {
-    fields.push('brand');
+  if (product.brand.trim() === "") {
+    fields.push("brand");
   }
-  if (product.categoryId.toString() === '0' || product.categoryId.toString() === '842') {
-    fields.push('category');
+  if (
+    product.categoryId.toString() === "0" ||
+    product.categoryId.toString() === "842"
+  ) {
+    fields.push("category");
   }
   return fields;
 }
@@ -78,7 +86,7 @@ export function isSaleExpired(price: Price) {
 
 export function toBoolean(value?: string): boolean {
   if (!value) return false;
-  return value.toLowerCase() === 'true';
+  return value.toLowerCase() === "true";
 }
 
 export function stringToNumber(value?: string): number | undefined {
@@ -124,3 +132,6 @@ export function getRandomIntInclusive(min: number, max: number): number {
   max = Math.floor(max);
   return Math.floor(Math.random() * (max - min + 1)) + min; // The maximum is inclusive and the minimum is inclusive
 }
+
+export const startOfNextSundayUTC = () =>
+  dayjs.utc().add(1, "week").startOf("week").toISOString();

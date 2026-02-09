@@ -38,6 +38,7 @@ import BranchPageClient from "@/app/stores/[store]/[branch]/branch-page-client";
 import { useInView } from "react-intersection-observer";
 import Image from "next/image";
 import Link from "next/link";
+import { startOfNextSundayUTC } from "@/lib/utils";
 
 export type ProductPageProps = {
   productId: number;
@@ -159,10 +160,6 @@ export default function ProductPage({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  useEffect(() => {
-    console.log(extraFromStoreInView);
-  }, [extraFromStoreInView]);
 
   return (
     <div className="w-full flex-1">
@@ -309,6 +306,7 @@ export default function ProductPage({
                         stockData.stock.store.logo,
                         300,
                         300,
+                        startOfNextSundayUTC(),
                       )}
                       alt={stockData.stock.store.name}
                       width={100}

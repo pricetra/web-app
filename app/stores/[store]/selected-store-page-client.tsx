@@ -24,7 +24,7 @@ import { useSearchParams } from "next/navigation";
 import VerticalSidebarAd from "@/components/ads/vertical-sidebar-ad";
 import { uniqueId } from "lodash";
 import { adify } from "@/lib/ads";
-import { getRandomIntInclusive } from "@/lib/utils";
+import { getRandomIntInclusive, startOfNextSundayUTC } from "@/lib/utils";
 import HorizontalProductAd from "@/components/ads/horizontal-product-ad";
 
 export default function SelectedStorePageClient({ store }: { store: Store }) {
@@ -68,7 +68,7 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
     setPageIndicator(
       <NavPageIndicator
         title={store.name}
-        imgSrc={createCloudinaryUrl(store.logo, 100, 100)}
+        imgSrc={createCloudinaryUrl(store.logo, 100, 100, startOfNextSundayUTC())}
         href={`/stores/${store.slug}`}
       />,
     );

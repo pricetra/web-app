@@ -4,7 +4,7 @@ import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import { createCloudinaryUrl } from "@/lib/files";
 import { currencyFormat, getPriceUnitOrEach } from "@/lib/strings";
-import { cn, metersToMiles } from "@/lib/utils";
+import { cn, metersToMiles, startOfNextSundayUTC } from "@/lib/utils";
 import Image from "next/image";
 import { DetailedHTMLProps, HTMLAttributes, useMemo } from "react";
 import Link from "next/link";
@@ -57,7 +57,12 @@ export default function StockItemMini({
         className="flex gap-2 flex-row"
       >
         <Image
-          src={createCloudinaryUrl(stock.store.logo, 100, 100)}
+          src={createCloudinaryUrl(
+            stock.store.logo,
+            100,
+            100,
+            startOfNextSundayUTC(),
+          )}
           className="size-[30px] sm:size-[40px] rounded-lg border border-gray-100"
           width={100}
           height={100}
