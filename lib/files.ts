@@ -1,12 +1,10 @@
-import { startOfNextSundayUTC } from "./utils";
-
 export const CLOUDINARY_UPLOAD_BASE = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`;
 
 export function createCloudinaryUrl(
   public_id: string,
   width?: number,
   height?: number,
-  timestamp: object | string | undefined | null = startOfNextSundayUTC(),
+  timestamp?: object | string | null,
 ) {
   let url = CLOUDINARY_UPLOAD_BASE;
   const transformations: string[] = [];

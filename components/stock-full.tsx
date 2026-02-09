@@ -3,7 +3,7 @@ import dayjs from "dayjs";
 import { Stock } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
 import { currencyFormat, getPriceUnitOrEach } from "@/lib/strings";
-import { metersToMiles } from "@/lib/utils";
+import { metersToMiles, startOfNextSundayUTC } from "@/lib/utils";
 import Image from "next/image";
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import useCalculatedPrice from "@/hooks/useCalculatedPrice";
@@ -40,7 +40,12 @@ export default function StockFull({
           className="size-[50px] xl:size-[60px]"
         >
           <Image
-            src={createCloudinaryUrl(stock.store.logo, 500, 500)}
+            src={createCloudinaryUrl(
+              stock.store.logo,
+              500,
+              500,
+              startOfNextSundayUTC(),
+            )}
             className="rounded-xl"
             width={100}
             height={100}

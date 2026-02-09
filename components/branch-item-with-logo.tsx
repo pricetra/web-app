@@ -1,5 +1,5 @@
 import { createCloudinaryUrl } from "@/lib/files";
-import { metersToMiles } from "@/lib/utils";
+import { metersToMiles, startOfNextSundayUTC } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
 import { useMemo } from "react";
@@ -37,7 +37,12 @@ export default function BranchItemWithLogo({
             className="block min-w-[40px] sm:min-w-[50px]"
           >
             <Image
-              src={createCloudinaryUrl(branch.store?.logo ?? "", 500, 500)}
+              src={createCloudinaryUrl(
+                branch.store?.logo ?? "",
+                500,
+                500,
+                startOfNextSundayUTC(),
+              )}
               className="size-[40px] sm:size-[50px] rounded-lg"
               width={500}
               height={500}

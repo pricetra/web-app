@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Branch } from "graphql-utils";
 import Image from "next/image";
 import { createCloudinaryUrl } from "@/lib/files";
+import { startOfNextSundayUTC } from "@/lib/utils";
 
 export default function MyBranchPanel() {
   const myStoreUserBranches = useStoreUserBranches();
@@ -36,7 +37,12 @@ function MyBranchPanelItem({ branch }: MyBranchPanelItemProps) {
     >
       <div className="flex flex-1 flex-row gap-4">
         <Image
-          src={createCloudinaryUrl(branch.store?.logo ?? "", 500, 500)}
+          src={createCloudinaryUrl(
+            branch.store?.logo ?? "",
+            500,
+            500,
+            startOfNextSundayUTC(),
+          )}
           className="size-[40px] rounded-xl"
           width={100}
           height={100}

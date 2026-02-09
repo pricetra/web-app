@@ -15,7 +15,7 @@ import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { SmartPagination } from "@/components/ui/smart-pagination";
 import { useMediaQuery } from "react-responsive";
 import { SearchRouteParams } from "@/app/search/search-page-client";
-import { getRandomIntInclusive, toBoolean } from "@/lib/utils";
+import { getRandomIntInclusive, startOfNextSundayUTC, toBoolean } from "@/lib/utils";
 import SearchFilters from "@/components/search-filters";
 import { adify } from "@/lib/ads";
 import VerticalProductAd from "@/components/ads/vertical-product-ad";
@@ -80,7 +80,7 @@ export default function BranchPageClient({
       <NavPageIndicator
         title={store.name}
         href={`/stores/${store.slug}`}
-        imgSrc={createCloudinaryUrl(store.logo, 100, 100)}
+        imgSrc={createCloudinaryUrl(store.logo, 100, 100, startOfNextSundayUTC())}
         subTitle={branch.address.fullAddress}
         subTitleHref={branch.address.mapsLink}
         subTitleHrefTargetBlank

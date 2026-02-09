@@ -12,6 +12,7 @@ import convert from "convert-units";
 import { createCloudinaryUrl } from "@/lib/files";
 import { MdCheck } from "react-icons/md";
 import { useAuth } from "@/context/user-context";
+import { startOfNextSundayUTC } from "@/lib/utils";
 
 export enum WelcomePageType {
   WELCOME,
@@ -227,7 +228,8 @@ export default function WelcomeScreen({user}: WelcomeScreenProps) {
                         src={createCloudinaryUrl(
                           branch.store?.logo ?? "",
                           100,
-                          100
+                          100,
+                          startOfNextSundayUTC(),
                         )}
                         width={100}
                         height={100}

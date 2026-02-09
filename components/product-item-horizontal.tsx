@@ -8,6 +8,7 @@ import Link from "next/link";
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 import { useMemo } from "react";
+import { startOfNextSundayUTC } from "@/lib/utils";
 
 export type ProductItemHorizontalProps = {
   product: ProductSimple | Product;
@@ -113,6 +114,7 @@ export default function ProductItemHorizontal({
                       product.stock.store.logo ?? "",
                       100,
                       100,
+                      startOfNextSundayUTC()
                     )}
                     className="size-[25px] rounded-sm"
                     width={100}
