@@ -332,7 +332,7 @@ export default function ProductDetails({
           </AccordionContent>
         </AccordionItem>
 
-        <div className="my-10 flex flex-row items-center justify-center py-5 overflow-y-auto" style={{ maxHeight: '30vh' }}>
+        <div className="my-10 flex flex-row items-center justify-center py-5">
           <MultiplexAds id="product-details-multiplex-1" />
         </div>
 
