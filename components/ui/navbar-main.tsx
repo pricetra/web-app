@@ -94,12 +94,12 @@ export default function NavbarMain() {
         style={{ minHeight: navbarHeight }}
       >
         <div
-          className="w-full lg:container mx-auto flex items-center justify-between gap-2 md:gap-5"
+          className="w-full lg:container mx-auto flex items-center justify-between gap-1 sm:gap-2 md:gap-5"
           style={{ height: navbarHeight }}
         >
           <div
             className={cn(
-              "flex flex-row gap-6 items-center justify-start flex-1 w-full pl-5 pr-0 sm:pr-5",
+              "flex flex-row gap-1 sm:gap-3 lg:gap-6 items-center justify-start flex-1 w-full pl-5 pr-0",
               searchPanelOpen || navTools ? "max-w-full" : "max-w-4xl"
             )}
           >
@@ -141,7 +141,7 @@ export default function NavbarMain() {
               </Link>
 
               {pageIndicator && (
-                <div className="flex flex-1 flex-row items-center ml-3 sm:mr-3 mr-0 pl-3 gap-2 justify-start border-l border-gray-200 min-h-[35px]">
+                <div className="flex flex-1 flex-row items-center ml-2 2xs:ml-3 sm:mr-3 mr-0 pl-2 2xs:pl-3 gap-2 justify-start border-l border-gray-200 sm:min-h-[35px]">
                   {pageIndicator}
                 </div>
               )}
