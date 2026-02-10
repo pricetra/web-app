@@ -5,6 +5,7 @@ import Skeleton from "react-loading-skeleton";
 
 import { FiArrowRight } from "react-icons/fi";
 import Link from "next/link";
+import { startOfNextSundayUTC } from "@/lib/utils";
 
 export type StoreMiniProps = {
   store: Store;
@@ -24,7 +25,7 @@ export default function StoreMini({
       />
 
       <Image
-        src={createCloudinaryUrl(logo, 300, 300)}
+        src={createCloudinaryUrl(logo, 300, 300, startOfNextSundayUTC())}
         className="size-10 md:size-14 lg:size-16 rounded-lg md:rounded-xl"
         alt={name}
         width={300}
@@ -46,7 +47,7 @@ export function StoreMiniShowMore() {
       href="/stores"
       className="flex flex-col items-center justify-center gap-3"
     >
-      <div className="size-10 md:size-14 lg:size-16 rounded-lg md:rounded-xl border-[1px] border-gray-200 bg-gray-50 flex items-center justify-center">
+      <div className="size-10 md:size-14 lg:size-16 rounded-lg md:rounded-xl border border-gray-200 bg-gray-50 flex items-center justify-center">
         <FiArrowRight className="size-[20px] md:size-[27px]" color="#374151" />
       </div>
       <h3 className="text-xs md:text-sm max-w-14 sm:max-w-20 text-center leading-5 truncate-1">
