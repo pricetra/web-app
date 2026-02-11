@@ -4,6 +4,7 @@ import { useLazyQuery, useMutation } from "@apollo/client/react";
 import {
   BarcodeScanDocument,
   ExtractAndCreateProductDocument,
+  LocationInput,
 } from "graphql-utils";
 import { debounce } from "lodash";
 import { useRouter } from "next/navigation";
@@ -29,6 +30,7 @@ import {
   allowedImageTypesString,
 } from "@/constants/uploads";
 import { convertFileToBase64 } from "@/lib/files";
+import useLocationService from "@/hooks/useLocation";
 
 export default function MobileScanner() {
   const router = useRouter();
@@ -36,16 +38,16 @@ export default function MobileScanner() {
   const [barcodeScan, { loading: processingBarcode }] =
     useLazyQuery(BarcodeScanDocument);
   const debouncedHandleBarcodeScan = useMemo(
-    () =>
-      debounce(_handleBarcodeScan, 500, { leading: true, trailing: false }),
+    () => debounce(_handleBarcodeScan, 500, { leading: true, trailing: false }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    []
+    [],
   );
   const [openAddUpcModal, setOpenAddUpcModal] = useState(false);
   const imageUploadRef = useRef<HTMLInputElement>(null);
   const [extractProductFields, { loading: extractingProduct }] = useMutation(
-    ExtractAndCreateProductDocument
+    ExtractAndCreateProductDocument,
   );
+  const { getCurrentGeocodeAddress, location } = useLocationService();
 
   async function _handleBarcodeScan(barcodes: DetectedBarcode[]) {
     if (barcodes.length === 0) return;
@@ -54,17 +56,32 @@ export default function MobileScanner() {
     const barcodeObject = barcodes.at(0);
     if (!barcodeObject) return;
 
+    let locationInput: LocationInput | undefined = undefined;
+    if (location) {
+      locationInput = {
+        latitude: location?.coords.latitude,
+        longitude: location?.coords?.longitude,
+      };
+    }
     const barcode = barcodeObject.rawValue;
     setScannedCode(barcode);
     barcodeScan({
       variables: {
         barcode,
+        location: locationInput,
       },
     })
       .then(({ data }) => {
         if (!data) return;
+
         setScannedCode(undefined);
-        router.push(`/products/${data.barcodeScan.id}`);
+        const params = new URLSearchParams();
+        if (data.barcodeScan.stock) {
+          params.set("stockId", String(data.barcodeScan.stock.id));
+        }
+        router.push(
+          `/products/${data.barcodeScan.id}${params.size > 0 ? `?${params.toString()}` : ""}`,
+        );
       })
       .catch(() => setOpenAddUpcModal(true));
   }
@@ -97,7 +114,9 @@ export default function MobileScanner() {
   }
 
   useLayoutEffect(() => {
+    getCurrentGeocodeAddress();
     setScannedCode(undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -113,7 +132,8 @@ export default function MobileScanner() {
             <DialogHeader>
               <DialogTitle className="mb-5">Add UPC</DialogTitle>
               <DialogDescription>
-                The barcode you scanned does not exist in our database.
+                The barcode ({scannedCode}) you scanned does not exist in our
+                database.
               </DialogDescription>
               <DialogDescription>
                 You can help us record and track prices for this product by
