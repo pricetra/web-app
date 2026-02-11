@@ -204,3 +204,13 @@
   mask-mode: alpha; /* Ensures the mask works correctly */
 }
 
+/* nprogress styles */
+#nprogress .bar {
+  background: var(--color-pricetra-green-dark)!important; /* your brand color */
+  height: 3px;
+}
+
+#nprogress .spinner {
+  display: none;
+}
+
