@@ -8,6 +8,7 @@ import "react-horizontal-scrolling-menu/dist/styles.css";
 import "@/public/globals.css";
 import AppProvider from "@/providers/app-provider";
 import { GA_TRACKING_ID, GADS_PUB_ID } from "@/constants/google";
+import RouteProgress from "@/components/ui/route-progress";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -85,6 +86,8 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <RouteProgress />
+
         <Suspense fallback={<SuspenseFallback />}>
           <AppProvider>{children}</AppProvider>
         </Suspense>
