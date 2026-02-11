@@ -31,6 +31,8 @@ import {
 } from "@/constants/uploads";
 import { convertFileToBase64 } from "@/lib/files";
 import useLocationService from "@/hooks/useLocation";
+import { MdKeyboard } from "react-icons/md";
+import ManualBarcodeForm from "./components/manual-barcode-form";
 
 export default function MobileScanner() {
   const router = useRouter();
@@ -48,6 +50,9 @@ export default function MobileScanner() {
     ExtractAndCreateProductDocument,
   );
   const { geocodeWithCallback } = useLocationService();
+  const [openManualBarcodeModal, setOpenManualBarcodeModal] = useState(false);
+
+  const modalActivated = openAddUpcModal || openManualBarcodeModal;
 
   async function _handleBarcodeScan(barcodes: DetectedBarcode[]) {
     if (barcodes.length === 0) return;
@@ -116,9 +121,7 @@ export default function MobileScanner() {
   }
 
   useLayoutEffect(() => {
-    getCurrentGeocodeAddress();
     setScannedCode(undefined);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -199,7 +202,22 @@ export default function MobileScanner() {
         </Dialog>
       )}
 
-      {processingBarcode ? (
+      <Dialog
+        modal
+        open={openManualBarcodeModal}
+        defaultOpen={openManualBarcodeModal}
+        onOpenChange={(o) => setOpenManualBarcodeModal(o)}
+      >
+        <DialogContent clickableOverlay={false} position="bottom" size="full">
+          <DialogHeader>
+            <DialogTitle className="mb-5">Search Products</DialogTitle>
+          </DialogHeader>
+
+          <ManualBarcodeForm />
+        </DialogContent>
+      </Dialog>
+
+      {processingBarcode || modalActivated ? (
         <div className="fixed z-10 flex h-full w-full items-center justify-center">
           <div className="flex flex-col items-center justify-center rounded-xl bg-black/50 px-10 py-7">
             <CgSpinner className="animate-spin text-white size-16" />
@@ -213,7 +231,9 @@ export default function MobileScanner() {
       <BarcodeScanner
         options={{ formats: ["upc_a", "upc_e", "ean_8", "ean_13"] }}
         onCapture={debouncedHandleBarcodeScan}
-        paused={scannedCode !== undefined || openAddUpcModal}
+        paused={
+          scannedCode !== undefined || modalActivated
+        }
       />
 
       <div className="fixed bottom-0 z-2 w-full rounded-t-3xl bg-black px-5 py-7 text-white">
@@ -230,10 +250,21 @@ export default function MobileScanner() {
           </Button>
         </div>
 
-        <div className="my-5">
-          <p className="text-white">
+        <div className="mt-3 mb-5">
+          <p className="text-white text-sm">
             Point your camera at the product barcode to search
           </p>
+
+          <div className="mt-3">
+            <Button
+              onClick={() => {
+                setOpenManualBarcodeModal(true);
+              }}
+              className="bg-[#111] color-white"
+            >
+              <MdKeyboard /> Use Keyboard
+            </Button>
+          </div>
         </div>
       </div>
     </>
