@@ -36,10 +36,23 @@ export default function useLocationService() {
     })
   }
 
+  function geocodeWithCallback(cb: GeolocationCallback) {
+    navigator.geolocation.getCurrentPosition((l) => {
+      setPermissionGranted(true);
+      setLocation(l);
+      cb(l)
+    }, () => {
+      setPermissionGranted(false);
+      setLocation(undefined)
+      cb(undefined);
+    });
+  }
+
   return {
     location,
     permissionGranted,
     watchLocation,
     getCurrentGeocodeAddress,
+    geocodeWithCallback,
   };
 }
