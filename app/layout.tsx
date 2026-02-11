@@ -86,9 +86,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <RouteProgress />
-
         <Suspense fallback={<SuspenseFallback />}>
+          <RouteProgress />
+
           <AppProvider>{children}</AppProvider>
         </Suspense>
       </body>
