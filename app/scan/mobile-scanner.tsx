@@ -33,6 +33,7 @@ import { convertFileToBase64 } from "@/lib/files";
 import useLocationService from "@/hooks/useLocation";
 import { MdKeyboard } from "react-icons/md";
 import ManualBarcodeForm from "./components/manual-barcode-form";
+import { IoSearch } from "react-icons/io5";
 
 export default function MobileScanner() {
   const router = useRouter();
@@ -208,9 +209,9 @@ export default function MobileScanner() {
         defaultOpen={openManualBarcodeModal}
         onOpenChange={(o) => setOpenManualBarcodeModal(o)}
       >
-        <DialogContent clickableOverlay={false} position="bottom" size="full">
-          <DialogHeader>
-            <DialogTitle className="mb-5">Search Products</DialogTitle>
+        <DialogContent clickableOverlay={false} position="bottom" size="full" padding={false}>
+          <DialogHeader className="px-5 pt-5">
+            <DialogTitle className="mb-5 flex flex-row items-center gap-2 font-bold"><IoSearch /> Search Products</DialogTitle>
           </DialogHeader>
 
           <ManualBarcodeForm />

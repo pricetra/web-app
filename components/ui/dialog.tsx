@@ -35,6 +35,7 @@ export type DialogContentCustomProps = React.ComponentPropsWithoutRef<
   size?: "sm" | "default" | "lg" | "xl" | "2xl" | "full";
   clickableOverlay?: boolean;
   position?: "top" | "bottom" | "middle";
+  padding?: boolean;
 };
 
 const DialogContent = React.forwardRef<
@@ -47,6 +48,7 @@ const DialogContent = React.forwardRef<
       children,
       size = "default",
       position = "middle",
+      padding = true,
       clickableOverlay = true,
       ...props
     },
@@ -73,13 +75,14 @@ const DialogContent = React.forwardRef<
           )}>
           <div
             className={cn(
-              "z-50 grid w-full gap-4 border bg-background p-6 shadow-lg xs:rounded-lg relative",
+              "z-50 grid w-full gap-4 border bg-background shadow-lg xs:rounded-lg relative",
               size === "2xl" ? "xs:max-w-4xl" : "",
               size === "xl" ? "xs:max-w-2xl" : "",
               size === "lg" ? "xs:max-w-xl" : "",
               size === "default" ? "xs:max-w-lg" : "",
               size === "sm" ? "xs:max-w-sm" : "",
               size === "full" ? "xs:max-w-full w-full" : "",
+              padding ? 'p-5' : 'p-0'
             )}
           >
             <div className="w-full max-w-full min-w-full">
