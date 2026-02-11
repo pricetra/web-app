@@ -32,8 +32,9 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 export type DialogContentCustomProps = React.ComponentPropsWithoutRef<
   typeof DialogPrimitive.Content
 > & {
-  size?: "sm" | "default" | "lg" | "xl" | "2xl";
+  size?: "sm" | "default" | "lg" | "xl" | "2xl" | "full";
   clickableOverlay?: boolean;
+  position?: "top" | "bottom" | "middle";
 };
 
 const DialogContent = React.forwardRef<
@@ -45,6 +46,7 @@ const DialogContent = React.forwardRef<
       className,
       children,
       size = "default",
+      position = "middle",
       clickableOverlay = true,
       ...props
     },
@@ -63,7 +65,12 @@ const DialogContent = React.forwardRef<
         {clickableOverlay && (
           <DialogPrimitive.Close className="absolute top-0 left-0 w-screen h-screen" />
         )}
-        <div className="w-full min-h-full p-0 xs:p-5 flex flex-row items-center justify-center">
+        <div className={cn(
+          "w-full min-h-full p-0 xs:p-5 flex flex-col",
+          position === "top" ? "justify-start items-center" : "",
+          position === "bottom" ? "justify-end items-center" : "",
+          position === "middle" ? "items-center justify-center" : "",
+          )}>
           <div
             className={cn(
               "z-50 grid w-full gap-4 border bg-background p-6 shadow-lg xs:rounded-lg relative",
@@ -71,7 +78,8 @@ const DialogContent = React.forwardRef<
               size === "xl" ? "xs:max-w-2xl" : "",
               size === "lg" ? "xs:max-w-xl" : "",
               size === "default" ? "xs:max-w-lg" : "",
-              size === "sm" ? "xs:max-w-sm" : ""
+              size === "sm" ? "xs:max-w-sm" : "",
+              size === "full" ? "xs:max-w-full w-full" : "",
             )}
           >
             <div className="w-full max-w-full min-w-full">
