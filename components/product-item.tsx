@@ -96,7 +96,7 @@ ProductItemProps) {
           </div>
 
           <h3
-            className="text-sm sm:text-base line-clamp-3"
+            className="text-sm sm:text-base line-clamp-2"
             title={product.name}
           >
             {product.name}
