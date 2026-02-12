@@ -45,6 +45,7 @@ type ButtonProps = React.ComponentProps<"button"> &
     rounded?: boolean;
     href?: string;
     target?: string;
+    preventDefault?: boolean;
   };
 
 function Button({
@@ -55,6 +56,8 @@ function Button({
   rounded = false,
   children,
   href,
+  onClick,
+  preventDefault = true,
   ...props
 }: ButtonProps) {
   const Comp = asChild ? Slot : "button";
@@ -66,6 +69,10 @@ function Button({
         buttonVariants({ variant, size, className }),
         rounded ? "rounded-full" : ""
       )}
+      onClick={(e) => {
+        if (preventDefault) e.preventDefault();
+        if (onClick) onClick(e);
+      }}
       {...props}
     >
       {href ? (<Link href={href} target={props.target}>{children}</Link>) : <>{children}</>}
