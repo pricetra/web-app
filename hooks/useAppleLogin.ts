@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import { isMobile } from "react-device-detect";
 
 export type AppleOAuthSuccessData = {
   code: string;
   id_token: string;
   user?: string;
-}
+};
 
 export default function useAppleLogin() {
   const [data, setData] = useState<AppleOAuthSuccessData>();
@@ -13,7 +14,7 @@ export default function useAppleLogin() {
     const handleMessage = (event: MessageEvent) => {
       if (event.origin !== window.location.origin) return;
       const { data } = event;
-      const {type, ...res} = data;
+      const { type, ...res } = data;
       if (type === "APPLE_AUTH_SUCCESS") {
         setData(res);
       }
@@ -38,19 +39,22 @@ export default function useAppleLogin() {
           "state",
           JSON.stringify({
             returnTo: `${window.location.origin}/auth/apple`,
-          })
+          }),
         );
       }
-      const popup = window.open(
-        `${url}?${params.toString()}`,
-        "_blank",
-        "width=500,height=600"
-      );
+      const authFlowUrl = `${url}?${params.toString()}`;
+      let popup: Window | null = null;
+      if (isMobile) {
+        window.location.href = authFlowUrl;
+      } else {
+        popup = window.open(authFlowUrl, "_blank", "width=500,height=600");
 
-      if (!popup) {
-        window.alert("Popup blocked! Please allow popups for this website.");
-        return;
+        if (!popup) {
+          window.alert("Popup blocked! Please allow popups for this website.");
+          return;
+        }
       }
+
     },
     data,
   };

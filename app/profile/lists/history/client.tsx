@@ -5,6 +5,7 @@ import { ListIconRenderer } from "../../components/list-item";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProductHistoryListView from "./product-history-list-view";
 import { useRouter } from "next/navigation";
+import SearchHistoryListView from "./search-history-list-view";
 
 export type MyHistoryListsClientProps = {
   tab: string;
@@ -39,18 +40,18 @@ export default function MyHistoryListsClient({
             Products
           </TabsTrigger>
           <TabsTrigger
-            value={ListScreenTabType.Branches}
-            onClick={() => toTab(ListScreenTabType.Branches)}
+            value={ListScreenTabType.Searches}
+            onClick={() => toTab(ListScreenTabType.Searches)}
           >
-            Branches
+            Search History
           </TabsTrigger>
         </TabsList>
 
         <TabsContent value={ListScreenTabType.Products}>
           <ProductHistoryListView />
         </TabsContent>
-        <TabsContent value={ListScreenTabType.Branches}>
-          {/* TODO: Add branch view history */}
+        <TabsContent value={ListScreenTabType.Searches}>
+          <SearchHistoryListView />
         </TabsContent>
       </Tabs>
     </div>
