@@ -36,7 +36,7 @@ export default function LandingHeader() {
             </Link>
           </div>
         ) : (
-          <div className="flex gap-2 items-center flex-nowrap">
+          <Link href="/profile" className="flex gap-2 items-center flex-nowrap">
             <Image
               src={createCloudinaryUrl(
                 user.avatar ?? "f89a1553-b74e-426c-a82a-359787168a53",
@@ -58,7 +58,7 @@ export default function LandingHeader() {
                 {user.email}
               </h5>
             </div>
-          </div>
+          </Link>
         )}
       </div>
     </header>
