@@ -1,4 +1,4 @@
-import { LinkProps } from "next/link";
+import NextLink, { LinkProps } from "next/link";
 import NProgress from "nprogress";
 import { AnchorHTMLAttributes, ReactNode } from "react";
 
@@ -9,7 +9,7 @@ export type CustomLinkType = AnchorHTMLAttributes<HTMLAnchorElement> &
 
 export default function Link({ onClick, ...props }: CustomLinkType) {
   return (
-    <Link
+    <NextLink
       onClick={(e) => {
         if (
           e.metaKey ||
