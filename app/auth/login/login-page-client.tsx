@@ -209,7 +209,6 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
           id="email"
           type="email"
           placeholder="user@example.com"
-          required
           value={email}
           onChange={(v) => setEmail(v.target.value)}
           disabled={loading}
@@ -229,7 +228,6 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
           id="password"
           type="password"
           placeholder="Password"
-          required
           value={password}
           onChange={(v) => setPassword(v.target.value)}
           disabled={loading}
