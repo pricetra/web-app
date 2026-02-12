@@ -5,23 +5,14 @@ import { usePathname, useSearchParams } from "next/navigation";
 import NProgress from "nprogress";
 import "nprogress/nprogress.css";
 
-NProgress.configure({ showSpinner: false, trickleSpeed: 100 });
+NProgress.configure({ showSpinner: false, trickleSpeed: 50 });
 
 export default function RouteProgress() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
   useEffect(() => {
-    NProgress.start();
-
-    const timeout = setTimeout(() => {
-      NProgress.done();
-    }, 300);
-
-    return () => {
-      clearTimeout(timeout);
-      NProgress.done();
-    };
+    NProgress.done();
   }, [pathname, searchParams]);
 
   return null;

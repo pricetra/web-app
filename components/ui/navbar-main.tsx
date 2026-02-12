@@ -31,6 +31,7 @@ import {
 } from "./dropdown-menu";
 import { BiCaretDown } from "react-icons/bi";
 import { FiPower } from "react-icons/fi";
+import NProgress from 'nprogress';
 
 export default function NavbarMain() {
   const router = useRouter();
@@ -70,6 +71,7 @@ export default function NavbarMain() {
       if (e.key === "Enter") {
         setSearchPanelOpen(false);
         const eventInputValue = e.currentTarget.value.trim();
+        NProgress.start();
         router.push(
           `${searchQueryPath}?query=${encodeURIComponent(eventInputValue)}`
         );
