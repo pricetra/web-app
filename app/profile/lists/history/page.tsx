@@ -26,6 +26,8 @@ export default async function MyHistoryListsPageServer({
       break;
     case "products":
       break;
+    case "searches":
+      break;
     default:
       redirect(`/profile/lists/history?tab=products`);
   }

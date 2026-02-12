@@ -13,6 +13,7 @@ import { ListIconRenderer } from "../../components/list-item";
 export enum ListScreenTabType {
   Products = "products",
   Branches = "branches",
+  Searches = "searches"
 }
 
 type MyListsClientProps = {
