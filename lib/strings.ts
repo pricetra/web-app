@@ -8,7 +8,7 @@ import {
   User,
 } from "graphql-utils";
 import { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/headers";
-import { isDateExpired } from "./utils";
+import { isDateExpired, toBoolean } from "./utils";
 
 export function titleCase(str: string) {
   return str
@@ -126,6 +126,18 @@ export function searchParamsTitleBuilder(
       const parsedPage = parseInt(sp.page, 10);
       if (!isNaN(parsedPage) && parsedPage > 1) {
         title += ` page ${sp.page}`;
+      }
+    }
+    if (sp.sale && toBoolean(sp.sale)) {
+      title += ` On Sale`;
+    }
+    if (sp.sortByPrice) {
+      if (sp.sortByPrice === "asc") {
+        title += ` Sorted by lowest to highest price`;
+      }
+
+      if (sp.sortByPrice === "desc") {
+        title += ` Sorted by highest to lowest price`;
       }
     }
   }

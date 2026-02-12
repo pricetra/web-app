@@ -22,6 +22,7 @@ import VerticalProductAd from "@/components/ads/vertical-product-ad";
 import VerticalSidebarAd from "@/components/ads/vertical-sidebar-ad";
 import { uniqueId } from "lodash";
 import BranchPageNavTools from './components/branch-page-nav-tools';
+import ProductFilterNavToolbar from "@/components/product-filters-nav-toolbar";
 
 export default function BranchPageClient({
   store,
@@ -39,6 +40,7 @@ export default function BranchPageClient({
     setSearchQueryPath,
     navbarHeight,
     setNavTools,
+    setSubHeader,
   } = useNavbar();
   const isMobile = useMediaQuery({
     query: "(max-width: 640px)",
@@ -72,10 +74,11 @@ export default function BranchPageClient({
     },
   });
 
-  const topHeight = useMemo(() => navbarHeight + 30, [navbarHeight]);
+  const topHeight = useMemo(() => navbarHeight + 65, [navbarHeight]);
 
   useLayoutEffect(() => {
     resetAll();
+
     setPageIndicator(
       <NavPageIndicator
         title={store.name}
@@ -88,6 +91,8 @@ export default function BranchPageClient({
     );
     setSearchPlaceholder(`Search ${branch.name}`);
     setSearchQueryPath(`/stores/${store.slug}/${branch.slug}`);
+
+    setSubHeader(<ProductFilterNavToolbar baseUrl="" />);
 
     return () => {
       resetAll();
@@ -104,7 +109,7 @@ export default function BranchPageClient({
     <>
       <div className="w-full max-w-[1000px] mt-5 px-5 flex-2">
         {paramsBuilder.size > 0 && (
-          <div className="mb-10">
+          <div className="flex flex-row items-center gap-2 mb-10 flex-wrap">
             <SearchFilters params={searchParams} />
           </div>
         )}
