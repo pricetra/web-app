@@ -1,6 +1,6 @@
 import useStoreUserBranches from "@/hooks/useStoreUser";
 import ScrollContainer from "./scroll-container";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { Branch } from "graphql-utils";
 import Image from "next/image";
 import { createCloudinaryUrl } from "@/lib/files";

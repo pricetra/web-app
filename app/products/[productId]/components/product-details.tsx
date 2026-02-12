@@ -41,7 +41,7 @@ import { useAuth, UserListsType } from "@/context/user-context";
 import { useEffect, useMemo } from "react";
 import { LocationInputWithFullAddress } from "@/context/location-context";
 import { useInView } from "react-intersection-observer";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { adify } from "@/lib/ads";
 import { getRandomIntInclusive } from "@/lib/utils";
 import HorizontalProductAd from "@/components/ads/horizontal-product-ad";

@@ -7,7 +7,7 @@ import { currencyFormat, getPriceUnitOrEach } from "@/lib/strings";
 import { cn, metersToMiles, startOfNextSundayUTC } from "@/lib/utils";
 import Image from "next/image";
 import { DetailedHTMLProps, HTMLAttributes, useMemo } from "react";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import Skeleton from "react-loading-skeleton";
 import { useMediaQuery } from "react-responsive";
 

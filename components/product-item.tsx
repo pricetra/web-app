@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import ProductMetadataBadge from "./product-metadata-badge";
 import Skeleton from "react-loading-skeleton";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { useMemo } from "react";
 import ProductStockMini from "./product-stock-mini";
 

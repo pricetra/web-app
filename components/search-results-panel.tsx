@@ -12,7 +12,7 @@ import ProductItemHorizontal, {
   ProductLoadingItemHorizontal,
 } from "./product-item-horizontal";
 import Skeleton from "react-loading-skeleton";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { useEffect, useState } from "react";
 import { getNextWeekDateRange } from "@/lib/utils";
 import { useAuth } from "@/context/user-context";

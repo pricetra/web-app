@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { FiChevronRight } from "react-icons/fi";
 import { List, ListType } from "graphql-utils";
 import { AiFillEye, AiFillHeart } from "react-icons/ai";

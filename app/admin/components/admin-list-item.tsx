@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/item";
 import { ReactNode } from "react";
 import { FaAngleRight } from "react-icons/fa6";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 
 export type AdminListItemProps = {
   href: string;

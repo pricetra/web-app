@@ -28,7 +28,7 @@ import {
   Product,
   ProductSearch,
 } from "graphql-utils";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { useEffect, useLayoutEffect, useMemo } from "react";
 import { IoIosSearch } from "react-icons/io";
 import Skeleton from "react-loading-skeleton";

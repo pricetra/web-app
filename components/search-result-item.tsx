@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { IoIosSearch } from "react-icons/io";
 
 export type SearchResultItemProps = {

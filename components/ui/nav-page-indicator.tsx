@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { IconType } from "react-icons/lib";
 import Skeleton from "react-loading-skeleton";
 

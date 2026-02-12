@@ -4,7 +4,7 @@ import { createCloudinaryUrl, productImageUrlWithTimestamp } from "@/lib/files";
 import { currencyFormat, getPriceUnit, validBrand } from "@/lib/strings";
 import Skeleton from "react-loading-skeleton";
 import ProductMetadataBadge from "./product-metadata-badge";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 import { useMemo } from "react";

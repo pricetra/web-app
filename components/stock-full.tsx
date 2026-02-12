@@ -8,7 +8,7 @@ import Image from "next/image";
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 import Skeleton from "react-loading-skeleton";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 
 export type StockFullProps = {
   stock: Stock;

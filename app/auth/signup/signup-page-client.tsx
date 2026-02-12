@@ -2,7 +2,7 @@
 
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { useEffect, useState } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
 import {

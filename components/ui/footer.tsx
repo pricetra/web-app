@@ -1,7 +1,7 @@
 import { APP_STORE, PLAY_STORE } from "@/constants/mobile-app";
 import { COMMON_CATEGORIES } from "@/lib/categories";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { ReactNode } from "react";
 import {
   FaFacebook,

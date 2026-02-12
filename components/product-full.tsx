@@ -6,7 +6,7 @@ import { IoIosArrowForward } from "react-icons/io";
 import Image from "next/image";
 import useProductWeightBuilder from "@/hooks/useProductWeightBuilder";
 import Skeleton from "react-loading-skeleton";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { productImageUrlWithTimestamp } from "@/lib/files";
 
 export type ProductFullProps = {

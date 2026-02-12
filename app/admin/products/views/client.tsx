@@ -19,7 +19,7 @@ import { useLazyQuery } from "@apollo/client/react";
 import dayjs from "dayjs";
 import { PaginatedAdminProductViewEntriesDocument } from "graphql-utils";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FiRefreshCcw } from "react-icons/fi";

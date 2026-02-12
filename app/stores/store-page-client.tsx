@@ -7,7 +7,7 @@ import { useQuery } from "@apollo/client/react";
 import { useLayoutEffect } from "react";
 import { MdStorefront } from "react-icons/md";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import Skeleton from "react-loading-skeleton";
 import { SmartPagination } from "@/components/ui/smart-pagination";

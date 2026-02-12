@@ -1,7 +1,7 @@
 import { createCloudinaryUrl } from "@/lib/files";
 import { metersToMiles, startOfNextSundayUTC } from "@/lib/utils";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 import { FiChevronRight } from "react-icons/fi";

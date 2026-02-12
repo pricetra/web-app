@@ -37,7 +37,7 @@ import { IoArrowBackOutline } from "react-icons/io5";
 import BranchPageClient from "@/app/stores/[store]/[branch]/branch-page-client";
 import { useInView } from "react-intersection-observer";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { startOfNextSundayUTC } from "@/lib/utils";
 
 export type ProductPageProps = {

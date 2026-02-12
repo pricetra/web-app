@@ -4,7 +4,7 @@ import Image from "next/image";
 import Skeleton from "react-loading-skeleton";
 
 import { FiArrowRight } from "react-icons/fi";
-import Link from "next/link";
+import Link from "@/components/ui/link";
 import { startOfNextSundayUTC } from "@/lib/utils";
 
 export type StoreMiniProps = {
