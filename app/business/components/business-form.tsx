@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { allowedImageTypes } from "@/constants/uploads";
 import { useMutation } from "@apollo/client/react";
-import { Formik } from "formik";
+import { Formik, FormikErrors } from "formik";
 import { BusinessFormInput, BusinessSingUpFormDocument } from "graphql-utils";
 import { useRef, useState } from "react";
 import { CgSpinner } from "react-icons/cg";
@@ -73,6 +73,27 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
     <div>
       <Formik
         initialValues={{} as BusinessFormInput}
+        validateOnMount
+        validateOnChange
+        validate={(v) => {
+          const errors: FormikErrors<BusinessFormInput> = {};
+          if (v.firstName === undefined || v.email.length === 0)
+            errors.firstName = "First name is required";
+          if (v.lastName === undefined || v.lastName.length === 0)
+            errors.lastName = "Last name is required";
+          if (v.email === undefined || v.email.length === 0)
+            errors.email = "Email is required";
+          if (v.storeName === undefined || v.storeName.length === 0)
+            errors.storeName = "Store name is required";
+          if (v.storeAddress === undefined || v.storeAddress.length === 0)
+            errors.storeAddress = "Branch address is required";
+          if (v.storeLogo === undefined || v.storeLogo.length === 0)
+            errors.storeLogo =
+              "Store logo is required. Must be an 1:1 square image";
+          if (v.storeUrl === undefined || v.storeUrl.length === 0)
+            errors.storeUrl = "URL is required";
+          return errors;
+        }}
         onSubmit={(input) => {
           businessSignUpForm({
             variables: {
@@ -303,10 +324,11 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                 )}
 
                 {formik.errors && (
-                  <ul>
+                  <ul className="list-disc list-inside p-5 bg-red-50 border border-red-100 rounded-lg text-sm">
+                    <h4 className="font-bold text-red-800 mb-3 text-base">Errors:</h4>
                     {Object.entries(formik.errors).map(([key, val], i) => (
-                      <li className="text-red-700" key={`error-${key}-${i}`}>
-                        {key}: {val}
+                      <li className="text-red-800" key={`error-${key}-${i}`}>
+                        {val}
                       </li>
                     ))}
                   </ul>
@@ -319,7 +341,7 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                   variant="pricetra"
                   size="lg"
                   className="font-bold"
-                  disabled={loading}
+                  disabled={loading || !formik.isValid}
                 >
                   {loading ? (
                     <>
