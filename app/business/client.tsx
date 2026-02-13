@@ -6,14 +6,33 @@ import Step from "./components/step";
 import GoogleSearchMock from "./components/google-search-mock";
 import LandingFooter from "@/components/ui/landing-footer";
 import Link from "@/components/ui/link";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import BusinessForm from "./components/business-form";
 
 export const G_FORM_LINK = "https://forms.gle/WTjYKPQQioGsQbWR8";
 
 export default function BusinessPageClient() {
+  const [openForm, setOpenForm] = useState(false);
 
   return (
     <main className="bg-white">
       <LandingHeader />
+
+      <Dialog
+        modal
+        open={openForm}
+        defaultOpen={openForm}
+        onOpenChange={(o) => setOpenForm(o)}
+      >
+        <DialogContent clickableOverlay={false} size="xl">
+          <DialogHeader>
+            <div className="mt-5 px-0 sm:px-3">
+              <BusinessForm onCancel={() => setOpenForm(false)} />
+            </div>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
 
       {/* HERO */}
       <section className="mx-auto max-w-7xl px-6 py-20 flex flex-row min-h-[60vh] items-center">
@@ -186,12 +205,14 @@ export default function BusinessPageClient() {
         </p>
 
         <div className="mt-8">
-          <Link
-            href="/business/signup"
-            className="inline-flex rounded-full bg-pricetra-green-logo/20 px-8 py-3 font-semibold text-pricetra-green-heavy-dark transition hover:bg-pricetra-green-logo/30"
+          <button
+            onClick={() => {
+              setOpenForm(true);
+            }}
+            className="inline-flex rounded-full bg-pricetra-green-logo/20 px-8 py-3 font-semibold text-pricetra-green-heavy-dark transition hover:bg-pricetra-green-logo/30 cursor-pointer"
           >
             List your store for free
-          </Link>
+          </button>
         </div>
       </section>
 

@@ -14,7 +14,6 @@ import { allowedImageTypes } from "@/constants/uploads";
 import { useMutation } from "@apollo/client/react";
 import { Formik } from "formik";
 import { BusinessFormInput, BusinessSingUpFormDocument } from "graphql-utils";
-import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { CgSpinner } from "react-icons/cg";
 import { RiImageCircleFill } from "react-icons/ri";
@@ -32,8 +31,11 @@ import { TbLocationCheck } from "react-icons/tb";
 import Link from "@/components/ui/link";
 import { Separator } from "@/components/ui/separator";
 
-export default function BusinessForm() {
-  const router = useRouter();
+export type BusinessFormProps = {
+  onCancel: () => void;
+};
+
+export default function BusinessForm({ onCancel }: BusinessFormProps) {
   const logoUploadInputRef = useRef<HTMLInputElement>(null);
   const [selectedImage, setSelectedImage] = useState<string>();
   const [businessSignUpForm, { data, loading, error }] = useMutation(
@@ -50,16 +52,13 @@ export default function BusinessForm() {
             </EmptyMedia>
             <EmptyTitle>Information Submitted</EmptyTitle>
             <EmptyDescription className="text-gray-700">
-              Almost done. You will hear
-              back from us regarding next steps within 1-3 business days
+              Almost done. You will hear back from us regarding next steps
+              within 1-3 business days
             </EmptyDescription>
             <Separator className="my-5" />
             <EmptyDescription className="text-gray-700">
               In the meantime, if you haven&apos;t already, please{" "}
-              <Link
-                href="/auth/signup"
-                className="text-blue-500"
-              >
+              <Link href="/auth/signup" className="text-blue-500">
                 click here
               </Link>{" "}
               to create an account.
@@ -335,7 +334,7 @@ export default function BusinessForm() {
                   type="button"
                   size="lg"
                   disabled={loading}
-                  onClick={() => router.back()}
+                  onClick={onCancel}
                 >
                   Cancel
                 </Button>
@@ -344,8 +343,6 @@ export default function BusinessForm() {
           </form>
         )}
       </Formik>
-
-      <div style={{ height: "10vh" }} />
     </div>
   );
 }
