@@ -10,36 +10,62 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { allowedImageTypes } from "@/constants/uploads";
 import { useMutation } from "@apollo/client/react";
 import { Formik } from "formik";
 import { BusinessFormInput, BusinessSingUpFormDocument } from "graphql-utils";
 import { useRouter } from "next/navigation";
+import { useRef, useState } from "react";
 import { CgSpinner } from "react-icons/cg";
+import { RiImageCircleFill } from "react-icons/ri";
+import Image from "next/image";
+import { convertFileToBase64 } from "@/lib/files";
+import { toast } from "sonner";
 
 export default function BusinessForm() {
   const router = useRouter();
+  const logoUploadInputRef = useRef<HTMLInputElement>(null);
+  const [selectedImage, setSelectedImage] = useState<string>();
   const [businessSignUpForm, { loading, error }] = useMutation(
     BusinessSingUpFormDocument,
   );
 
   return (
     <div>
-      <Formik initialValues={{} as BusinessFormInput} onSubmit={(input) => {
-        businessSignUpForm({
-          variables: {
-            input,
-          }
-        })
-      }}>
+      <Formik
+        initialValues={{} as BusinessFormInput}
+        onSubmit={(input) => {
+          businessSignUpForm({
+            variables: {
+              input,
+            },
+          }).then(({ data }) => {
+            if (!data) return;
+            toast("Your information was submitted successfully!");
+          });
+        }}
+      >
         {(formik) => (
           <form>
             <FieldGroup>
               <FieldSet>
-                <FieldLegend variant="title" className="font-bold text-xl">
+                <FieldLegend variant="title" className="font-bold">
                   Sign up for Pricetra Business
                 </FieldLegend>
                 <FieldDescription>
                   Leverage our online store platform and grow your store today.
+                </FieldDescription>
+              </FieldSet>
+
+              <FieldSeparator />
+
+              <FieldSet>
+                <FieldLegend className="font-bold">
+                  Contact Information
+                </FieldLegend>
+                <FieldDescription>
+                  Fill in your contact information. This information is{" "}
+                  <i>not</i> shared
                 </FieldDescription>
 
                 <FieldGroup className="flex flex-row">
@@ -142,26 +168,60 @@ export default function BusinessForm() {
                       required
                     />
                   </Field>
-                </FieldGroup>
 
-                <FieldGroup className="flex flex-row">
-                  <Field className="flex-1">
+                  <Field>
                     <FieldLabel htmlFor="storeLogo" className="items-end">
                       Logo <small className="text-gray-500">(1:1)</small>
                     </FieldLabel>
-                    <Input
-                      id="storeLogo"
-                      placeholder="https://walmart.com"
-                      value={formik.values.storeLogo}
-                      onChange={(v) =>
-                        formik.setFieldValue("storeLogo", v.target.value)
-                      }
-                      required
+
+                    <div>
+                      {selectedImage ? (
+                        <Image
+                          src={selectedImage ?? ""}
+                          className="size-20 rounded-xl object-cover cursor-pointer"
+                          width={500}
+                          height={500}
+                          alt="Product image"
+                          onClick={() => logoUploadInputRef.current?.click()}
+                          onError={() => setSelectedImage(undefined)}
+                        />
+                      ) : (
+                        <div
+                          className="flex size-20 items-center justify-center rounded-xl bg-gray-400 cursor-pointer"
+                          onClick={() => logoUploadInputRef.current?.click()}
+                        >
+                          <RiImageCircleFill className="size-[35px] text-white" />
+                        </div>
+                      )}
+                    </div>
+
+                    <input
                       type="file"
+                      name="storeLogo"
+                      ref={logoUploadInputRef}
+                      className="hidden"
+                      onChange={(e) => {
+                        const files = e.target.files;
+                        const file = files?.item(0);
+                        if (!file) return;
+                        if (!allowedImageTypes.includes(file.type)) {
+                          window.alert("invalid file type");
+                          return;
+                        }
+
+                        setSelectedImage(URL.createObjectURL(file));
+                        convertFileToBase64(file).then((base64File) => {
+                          if (!base64File) return;
+                          formik.setFieldValue(
+                            "storeLogo",
+                            base64File.toString(),
+                          );
+                        });
+                      }}
                     />
                   </Field>
 
-                  <Field className="flex-2">
+                  <Field>
                     <FieldLabel htmlFor="storeUrl">Website URL</FieldLabel>
                     <Input
                       id="storeUrl"
@@ -185,7 +245,10 @@ export default function BusinessForm() {
                       placeholder="Any additional information or comments"
                       value={formik.values.additionalInformation ?? ""}
                       onChange={(v) =>
-                        formik.setFieldValue("additionalInformation", v.target.value)
+                        formik.setFieldValue(
+                          "additionalInformation",
+                          v.target.value,
+                        )
                       }
                       className="resize-y"
                     />
