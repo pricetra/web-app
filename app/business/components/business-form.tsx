@@ -324,10 +324,10 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                         />
                       ) : (
                         <div
-                          className="flex size-20 items-center justify-center rounded-xl bg-blue-100/50 hover:bg-blue-100 cursor-pointer border border-blue-200/50"
+                          className="flex size-20 items-center justify-center rounded-xl bg-gray-100/50 hover:bg-gray-100 cursor-pointer border border-gray-200/50"
                           onClick={() => logoUploadInputRef.current?.click()}
                         >
-                          <RiImageCircleFill className="size-14 text-blue-500 hover:text-blue-600" />
+                          <RiImageCircleFill className="size-14 text-gray-500 hover:text-gray-600" />
                         </div>
                       )}
                     </div>
