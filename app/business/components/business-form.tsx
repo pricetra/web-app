@@ -21,14 +21,54 @@ import { RiImageCircleFill } from "react-icons/ri";
 import Image from "next/image";
 import { convertFileToBase64 } from "@/lib/files";
 import { toast } from "sonner";
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty";
+import { TbLocationCheck } from "react-icons/tb";
+import Link from "@/components/ui/link";
+import { Separator } from "@/components/ui/separator";
 
 export default function BusinessForm() {
   const router = useRouter();
   const logoUploadInputRef = useRef<HTMLInputElement>(null);
   const [selectedImage, setSelectedImage] = useState<string>();
-  const [businessSignUpForm, { loading, error }] = useMutation(
+  const [businessSignUpForm, { data, loading, error }] = useMutation(
     BusinessSingUpFormDocument,
   );
+
+  if (data) {
+    return (
+      <div>
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant="icon">
+              <TbLocationCheck className="text-pricetra-green-heavy-dark" />
+            </EmptyMedia>
+            <EmptyTitle>Information Submitted</EmptyTitle>
+            <EmptyDescription className="text-gray-700">
+              Almost done. You will hear
+              back from us regarding next steps within 1-3 business days
+            </EmptyDescription>
+            <Separator className="my-5" />
+            <EmptyDescription className="text-gray-700">
+              In the meantime, if you haven&apos;t already, please{" "}
+              <Link
+                href="/auth/signup"
+                className="text-blue-500"
+              >
+                click here
+              </Link>{" "}
+              to create an account.
+            </EmptyDescription>
+          </EmptyHeader>
+        </Empty>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -187,10 +227,10 @@ export default function BusinessForm() {
                         />
                       ) : (
                         <div
-                          className="flex size-20 items-center justify-center rounded-xl bg-gray-400 cursor-pointer"
+                          className="flex size-20 items-center justify-center rounded-xl bg-blue-100/50 hover:bg-blue-100 cursor-pointer border border-blue-200/50"
                           onClick={() => logoUploadInputRef.current?.click()}
                         >
-                          <RiImageCircleFill className="size-[35px] text-white" />
+                          <RiImageCircleFill className="size-14 text-blue-500 hover:text-blue-600" />
                         </div>
                       )}
                     </div>
