@@ -11,11 +11,15 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { allowedImageTypes } from "@/constants/uploads";
-import { useMutation } from "@apollo/client/react";
+import { useLazyQuery, useMutation } from "@apollo/client/react";
 import { Formik, FormikErrors } from "formik";
-import { BusinessFormInput, BusinessSingUpFormDocument } from "graphql-utils";
-import { useRef, useState } from "react";
-import { CgSpinner } from "react-icons/cg";
+import {
+  BusinessFormInput,
+  BusinessSingUpFormDocument,
+  StoreSlugAvailabilityDocument,
+} from "graphql-utils";
+import { useCallback, useRef, useState } from "react";
+import { CgCheckO, CgCloseO, CgSpinner } from "react-icons/cg";
 import { RiImageCircleFill } from "react-icons/ri";
 import Image from "next/image";
 import { convertFileToBase64 } from "@/lib/files";
@@ -30,6 +34,13 @@ import {
 import { TbLocationCheck } from "react-icons/tb";
 import Link from "@/components/ui/link";
 import { Separator } from "@/components/ui/separator";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import _ from "lodash";
+import slugify from "slugify";
 
 export type BusinessFormProps = {
   onCancel: () => void;
@@ -40,6 +51,18 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
   const [selectedImage, setSelectedImage] = useState<string>();
   const [businessSignUpForm, { data, loading, error }] = useMutation(
     BusinessSingUpFormDocument,
+  );
+  const [
+    storeSlugAvailability,
+    { data: storeAvailabilityData, loading: storeAvailabilityLoading },
+  ] = useLazyQuery(StoreSlugAvailabilityDocument);
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedStoreAvailability = useCallback(
+    _.debounce((store: string) => {
+      storeSlugAvailability({ variables: { store } });
+    }, 300),
+    [],
   );
 
   if (data) {
@@ -75,6 +98,7 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
         initialValues={{} as BusinessFormInput}
         validateOnMount
         validateOnChange
+        validateOnBlur
         validate={(v) => {
           const errors: FormikErrors<BusinessFormInput> = {};
           if (v.firstName === undefined || v.email.length === 0)
@@ -92,6 +116,11 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
               "Store logo is required. Must be an 1:1 square image";
           if (v.storeUrl === undefined || v.storeUrl.length === 0)
             errors.storeUrl = "URL is required";
+          if (
+            storeAvailabilityData &&
+            !storeAvailabilityData.storeSlugAvailability
+          )
+            errors.storeName = "Store name is unavailable";
           return errors;
         }}
         onSubmit={(input) => {
@@ -203,15 +232,42 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                 <FieldGroup>
                   <Field>
                     <FieldLabel htmlFor="storeName">Store Name</FieldLabel>
-                    <Input
-                      id="storeName"
-                      placeholder="Walmart"
-                      value={formik.values.storeName}
-                      onChange={(v) =>
-                        formik.setFieldValue("storeName", v.target.value)
-                      }
-                      required
-                    />
+
+                    <InputGroup>
+                      <InputGroupInput
+                        id="storeName"
+                        placeholder="Walmart"
+                        value={formik.values.storeName}
+                        onChange={(v) => {
+                          formik.setFieldValue("storeName", v.target.value);
+                          debouncedStoreAvailability(v.target.value);
+                        }}
+                        required
+                      />
+                      <InputGroupAddon align="inline-end">
+                        {storeAvailabilityLoading && (
+                          <CgSpinner className="animate-spin" />
+                        )}
+                        {storeAvailabilityData && (
+                          <>
+                            {storeAvailabilityData.storeSlugAvailability ? (
+                              <CgCheckO className="text-green-700" />
+                            ) : (
+                              <CgCloseO className="text-red-700" />
+                            )}
+                          </>
+                        )}
+                      </InputGroupAddon>
+                    </InputGroup>
+
+                    {formik.values.storeName.length > 0 && (
+                      <FieldDescription>
+                        pricetra.com/stores/
+                        <b className="text-zinc-700">
+                          {slugify(formik.values.storeName, { lower: true })}
+                        </b>
+                      </FieldDescription>
+                    )}
                   </Field>
                 </FieldGroup>
 
@@ -325,7 +381,9 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
 
                 {formik.errors && (
                   <ul className="list-disc list-inside p-5 bg-red-50 border border-red-100 rounded-lg text-sm">
-                    <h4 className="font-bold text-red-800 mb-3 text-base">Errors:</h4>
+                    <h4 className="font-bold text-red-800 mb-3 text-base">
+                      Errors:
+                    </h4>
                     {Object.entries(formik.errors).map(([key, val], i) => (
                       <li className="text-red-800" key={`error-${key}-${i}`}>
                         {val}
