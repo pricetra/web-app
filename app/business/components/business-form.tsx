@@ -41,6 +41,7 @@ import {
 } from "@/components/ui/input-group";
 import _ from "lodash";
 import slugify from "slugify";
+import { HiMiniInformationCircle } from "react-icons/hi2";
 
 export type BusinessFormProps = {
   onCancel: () => void;
@@ -95,7 +96,16 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
   return (
     <div>
       <Formik
-        initialValues={{} as BusinessFormInput}
+        initialValues={
+          {
+            firstName: "",
+            lastName: "",
+            email: "",
+            storeName: "",
+            storeAddress: "",
+            storeUrl: "",
+          } as BusinessFormInput
+        }
         validateOnMount
         validateOnChange
         validateOnBlur
@@ -273,7 +283,9 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
 
                 <FieldGroup>
                   <Field>
-                    <FieldLabel htmlFor="storeAddress">Address</FieldLabel>
+                    <FieldLabel htmlFor="storeAddress">
+                      Store Address
+                    </FieldLabel>
                     <Input
                       id="storeAddress"
                       placeholder="150 Smith Rd, St. Charles, IL 60174"
@@ -283,6 +295,15 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                       }
                       required
                     />
+
+                    <FieldDescription className="flex flex-row gap-2">
+                      <HiMiniInformationCircle className="text-2xl inline-block" />{" "}
+                      <span>
+                        We will automatically add a store at this address once
+                        your business account is approved. You can always add
+                        new locations later.
+                      </span>
+                    </FieldDescription>
                   </Field>
 
                   <Field>
@@ -335,6 +356,13 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                         });
                       }}
                     />
+
+                    <FieldDescription className="flex flex-row gap-2">
+                      <HiMiniInformationCircle className="text-2xl inline-block" />{" "}
+                      <span className="text-sm">
+                        This will be your primary store identifier. Make sure it&apos;s clean and easy to spot. Preferably with a white or transparent background.
+                      </span>
+                    </FieldDescription>
                   </Field>
 
                   <Field>
@@ -348,6 +376,13 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                       }
                       required
                     />
+
+                    <FieldDescription className="flex flex-row gap-2">
+                      <HiMiniInformationCircle className="text-lg inline-block" />{" "}
+                      <span className="text-sm">
+                        Your website or your primary social media URL
+                      </span>
+                    </FieldDescription>
                   </Field>
                 </FieldGroup>
 
