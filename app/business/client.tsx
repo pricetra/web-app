@@ -5,19 +5,42 @@ import Feature from "./components/feature";
 import Step from "./components/step";
 import GoogleSearchMock from "./components/google-search-mock";
 import LandingFooter from "@/components/ui/landing-footer";
+import Link from "@/components/ui/link";
+import { useState } from "react";
+import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
+import BusinessForm from "./components/business-form";
 
 export const G_FORM_LINK = "https://forms.gle/WTjYKPQQioGsQbWR8";
 
 export default function BusinessPageClient() {
+  const [openForm, setOpenForm] = useState(false);
+
   return (
     <main className="bg-white">
       <LandingHeader />
+
+      <Dialog
+        modal
+        open={openForm}
+        defaultOpen={openForm}
+        onOpenChange={(o) => setOpenForm(o)}
+      >
+        <DialogContent clickableOverlay={false} size="xl">
+          <DialogHeader>
+            <div className="mt-5 px-0 sm:px-3">
+              <BusinessForm onCancel={() => setOpenForm(false)} />
+            </div>
+          </DialogHeader>
+        </DialogContent>
+      </Dialog>
 
       {/* HERO */}
       <section className="mx-auto max-w-7xl px-6 py-20 flex flex-row min-h-[60vh] items-center">
         <div className="text-center flex-1">
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight text-gray-900">
-            Help customers find <span className="text-pricetra-green-dark">Your Store.</span> Online.
+            Help customers find{" "}
+            <span className="text-pricetra-green-dark">Your Store.</span>{" "}
+            Online.
           </h1>
 
           <p className="mt-6 text-lg text-gray-600 max-w-3xl mx-auto">
@@ -27,13 +50,12 @@ export default function BusinessPageClient() {
           </p>
 
           <div className="mt-8 flex flex-col xs:flex-row justify-center gap-4">
-            <a
-              href={G_FORM_LINK}
-              target="_blank"
+            <Link
+              href="/business/signup"
               className="rounded-full bg-pricetra-green-dark px-8 py-3 font-semibold text-white transition hover:bg-pricetra-green-heavy-dark"
             >
               List your store for free
-            </a>
+            </Link>
             <a
               href="#how-it-works"
               className="rounded-full px-8 py-3 font-semibold text-gray-700 hover:text-gray-900 hover:bg-gray-100"
@@ -79,7 +101,9 @@ export default function BusinessPageClient() {
         <div className="h-[10vh]" />
 
         <h2 className="text-center text-3xl font-bold text-gray-900">
-          Pricetra puts <i className="underline text-pricetra-green-dark">your store</i> on the map
+          Pricetra puts{" "}
+          <i className="underline text-pricetra-green-dark">your store</i> on
+          the map
         </h2>
 
         <p className="mt-4 text-center text-gray-600 max-w-3xl mx-auto">
@@ -181,13 +205,14 @@ export default function BusinessPageClient() {
         </p>
 
         <div className="mt-8">
-          <a
-            href={G_FORM_LINK}
-            target="_blank"
-            className="inline-flex rounded-full bg-pricetra-green-logo/20 px-8 py-3 font-semibold text-pricetra-green-heavy-dark transition hover:bg-pricetra-green-logo/30"
+          <button
+            onClick={() => {
+              setOpenForm(true);
+            }}
+            className="inline-flex rounded-full bg-pricetra-green-logo/20 px-8 py-3 font-semibold text-pricetra-green-heavy-dark transition hover:bg-pricetra-green-logo/30 cursor-pointer"
           >
             List your store for free
-          </a>
+          </button>
         </div>
       </section>
 

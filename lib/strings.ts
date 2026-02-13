@@ -218,3 +218,15 @@ export function generateProductShareDescription(
   }
   return description;
 }
+
+export function parseBase64StringToObject<T>(rawData: string): T {
+  const bufferDataObj = Buffer.from(rawData, "base64");
+  const decodedRawDataObj = bufferDataObj.toString("utf-8");
+  let parsedData = {} as T;
+  try {
+    parsedData = JSON.parse(decodedRawDataObj);
+    return parsedData;
+  } catch {
+    throw new Error("could not parse");
+  }
+}
