@@ -1,8 +1,6 @@
 "use client";
 
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Link from "@/components/ui/link";
 import { useEffect, useState } from "react";
 import { useMutation } from "@apollo/client/react";
 import { ResendVerificationDocument, VerifyEmailDocument } from "graphql-utils";
@@ -10,6 +8,15 @@ import AuthContainer from "@/components/auth/auth-container";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { BsEnvelopeCheck } from "react-icons/bs";
+import { Button } from "@/components/ui/button";
+import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from "@/components/ui/input-otp";
+import { REGEXP_ONLY_DIGITS } from "input-otp";
+
+const CELL_COUNT = 6;
 
 export default function EmailVerificationPage() {
   const router = useRouter();
@@ -22,13 +29,13 @@ export default function EmailVerificationPage() {
     VerifyEmailDocument,
     {
       fetchPolicy: "no-cache",
-    }
+    },
   );
   const [resend, { error: resendError, loading: resendLoading }] = useMutation(
     ResendVerificationDocument,
     {
       fetchPolicy: "no-cache",
-    }
+    },
   );
 
   const loading = verifyLoading || resendLoading;
@@ -43,7 +50,7 @@ export default function EmailVerificationPage() {
       paramsBuilder.set("email", data.verifyEmail.email);
       paramsBuilder.set(
         "emailVerificationStatus",
-        String(data.verifyEmail.active)
+        String(data.verifyEmail.active),
       );
       if (returnPath) {
         paramsBuilder.set("return", returnPath);
@@ -68,15 +75,15 @@ export default function EmailVerificationPage() {
       extras={
         <div className="text-center text-sm">
           Didn&apos;t get an email?{" "}
-          <Link
-            href="#"
-            className="underline underline-offset-4"
+          <Button
+            variant="link"
+            className="underline underline-offset-4 px-1"
             onClick={() =>
               resend({ variables: { email: emailSearchParam ?? "" } })
             }
           >
-            Resend verification code
-          </Link>
+            Resend code
+          </Button>
         </div>
       }
     >
@@ -92,16 +99,24 @@ export default function EmailVerificationPage() {
       )}
 
       <div className="grid gap-2">
-        <Label htmlFor="email">Code</Label>
-        <Input
-          id="code"
-          type="number"
-          placeholder="Verification code"
-          required
-          value={verificationCode}
-          onChange={(v) => setVerificationCode(v.target.value)}
-          disabled={verifyLoading}
-        />
+        <Label htmlFor="code">Code</Label>
+        <div className="flex flex-row justify-center mt-2">
+          <InputOTP
+            maxLength={CELL_COUNT}
+            value={verificationCode}
+            onChange={(value) => setVerificationCode(value)}
+            id="code"
+            pattern={REGEXP_ONLY_DIGITS}
+          >
+            <InputOTPGroup>
+              {Array(CELL_COUNT)
+                .fill(0)
+                .map((_, i) => (
+                  <InputOTPSlot index={i} key={`code-${i}`} />
+                ))}
+            </InputOTPGroup>
+          </InputOTP>
+        </div>
       </div>
     </AuthContainer>
   );

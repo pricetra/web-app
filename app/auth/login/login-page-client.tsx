@@ -40,7 +40,7 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
   const returnPath = searchParams.get("return");
   const emailSearchParam = searchParams.get("email");
   const emailVerificationStatus = toBoolean(
-    searchParams.get("emailVerificationStatus") ?? undefined
+    searchParams.get("emailVerificationStatus") ?? undefined,
   );
 
   const [email, setEmail] = useState("");
@@ -67,7 +67,7 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
     ResendVerificationDocument,
     {
       fetchPolicy: "no-cache",
-    }
+    },
   );
   const loading =
     loginInternalLoading ||
@@ -77,7 +77,11 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
     resendLoading ||
     authLoading;
   const error =
-    loginInternalError || loginGoogleError || loginAppleError || loginYahooError || resendError;
+    loginInternalError ||
+    loginGoogleError ||
+    loginAppleError ||
+    loginYahooError ||
+    resendError;
 
   function setAuthCookie(token: string) {
     setCookie("auth_token", token, {
@@ -154,7 +158,7 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
         ipAddress,
       },
     }).then(({ data }) => handleAuthSuccess(data?.yahooOAuth as Auth));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [yahooOAuthSuccessData]);
 
   useEffect(() => {
@@ -217,12 +221,16 @@ export default function LoginPage({ ipAddress }: { ipAddress: string }) {
       <div className="grid gap-2">
         <div className="flex items-center">
           <Label htmlFor="password">Password</Label>
-          <Link
-            href="/forgot-password"
-            className="ml-auto text-xs underline-offset-2 hover:underline text-gray-600 hover:text-black"
-          >
-            Forgot password?
-          </Link>
+          {email.length > 2 && (
+            <Link
+              href={`/auth/forgot-password?email=${encodeURIComponent(email)}${
+                returnPath ? `&return=${returnPath}` : ""
+              }`}
+              className="ml-auto text-xs underline-offset-2 hover:underline text-gray-600 hover:text-black"
+            >
+              Forgot password?
+            </Link>
+          )}
         </div>
         <Input
           id="password"
