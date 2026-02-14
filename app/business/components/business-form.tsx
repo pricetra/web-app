@@ -414,7 +414,7 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                   </p>
                 )}
 
-                {formik.errors && (
+                {!formik.isValid && (
                   <ul className="list-disc list-inside p-5 bg-red-50 border border-red-100 rounded-lg text-sm">
                     <h4 className="font-bold text-red-800 mb-3 text-base">
                       Errors:
