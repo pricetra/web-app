@@ -20,6 +20,7 @@ import { useEffect, useMemo, useState } from "react";
 import { BsEnvelopeCheck } from "react-icons/bs";
 import { toast } from "sonner";
 import NProgress from "nprogress";
+import { REGEXP_ONLY_DIGITS_AND_CHARS } from "input-otp";
 
 const CELL_COUNT = 6;
 
@@ -147,6 +148,7 @@ export default function ForgotPasswordClient() {
                 value={code}
                 onChange={(value) => setCode(value)}
                 id="code"
+                pattern={REGEXP_ONLY_DIGITS_AND_CHARS}
               >
                 <InputOTPGroup>
                   {Array(CELL_COUNT)
