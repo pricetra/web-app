@@ -1,4 +1,4 @@
-import { Product } from "graphql-utils";
+import { Product, Stock } from "graphql-utils";
 import ProductMetadataBadge from "./product-metadata-badge";
 import { Fragment, useMemo, useState } from "react";
 import { categoriesFromChild } from "@/lib/utils";
@@ -12,9 +12,10 @@ import { productImageUrlWithTimestamp } from "@/lib/files";
 export type ProductFullProps = {
   product: Product;
   hideDescription?: boolean;
+  stock?: Stock;
 };
 
-export default function ProductFull({ product }: ProductFullProps) {
+export default function ProductFull({ product, stock }: ProductFullProps) {
   const [imgAvailable, setImgAvailable] = useState(true);
   const weight = useProductWeightBuilder(product);
   const categories = useMemo(
@@ -22,6 +23,13 @@ export default function ProductFull({ product }: ProductFullProps) {
       product.category ? categoriesFromChild(product.category) : undefined,
     [product.category],
   );
+
+  const searchPath = useMemo(() => {
+    if (!stock || (!stock.store && stock.branch)) return "/search";
+    if (stock.store && !stock.branch) return `/stores/${stock.store.slug}`;
+    if (stock.branch)
+      return `/stores/${stock.store?.slug ?? stock.branch.storeSlug}/${stock.branch.slug}`;
+  }, [stock]);
 
   return (
     <div className="flex flex-col gap-3">
@@ -64,7 +72,7 @@ export default function ProductFull({ product }: ProductFullProps) {
             {product.brand && product.brand !== "N/A" && (
               <h2 className="text-sm 2xl:text-base">
                 <Link
-                  href={`/search?brand=${encodeURIComponent(product.brand)}`}
+                  href={`${searchPath}?brand=${encodeURIComponent(product.brand)}`}
                   className="hover:underline"
                 >
                   {product.brand}
@@ -81,9 +89,7 @@ export default function ProductFull({ product }: ProductFullProps) {
                 <Fragment key={c.id}>
                   {i !== 0 && <IoIosArrowForward size={10} color="#1e2939" />}
                   <Link
-                    href={`/search?categoryId=${
-                      c.id
-                    }&category=${encodeURIComponent(c.name)}`}
+                    href={`${searchPath}?category=${encodeURIComponent(c.name)}`}
                     className="text-xs sm:text-sm text-gray-800 leading-none hover:text-black hover:underline"
                   >
                     {c.name}
