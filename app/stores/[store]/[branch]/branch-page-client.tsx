@@ -102,6 +102,9 @@ export default function BranchPageClient({
 
   useLayoutEffect(() => {
     setNavTools(<BranchPageNavTools branch={branch} />);
+    return () => {
+      setNavTools(undefined)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [branch]);
 

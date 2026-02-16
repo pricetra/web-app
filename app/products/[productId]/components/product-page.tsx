@@ -108,7 +108,7 @@ export default function ProductPage({
       <NavPageIndicator
         title={productSummary.store}
         imgSrc={createCloudinaryUrl(productSummary.storeLogo, 100, 100)}
-        href={`/stores/${productSummary.storeSlug}`}
+        href={`/stores/${productSummary.storeSlug}/${productSummary.branchSlug}`}
       />,
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -179,6 +179,7 @@ export default function ProductPage({
                 <ProductFull
                   product={productData.product as Product}
                   hideDescription
+                  stock={stockData?.stock as Stock | undefined}
                 />
               ) : (
                 <ProductFullLoading />
