@@ -24,7 +24,7 @@ export default function ProductFull({ product, stock }: ProductFullProps) {
     [product.category],
   );
 
-  const searchPath = useMemo(() => {
+  const searchRoute = useMemo(() => {
     if (!stock || (!stock.store && stock.branch)) return "/search";
     if (stock.store && !stock.branch) return `/stores/${stock.store.slug}`;
     if (stock.branch)
@@ -72,7 +72,7 @@ export default function ProductFull({ product, stock }: ProductFullProps) {
             {product.brand && product.brand !== "N/A" && (
               <h2 className="text-sm 2xl:text-base">
                 <Link
-                  href={`${searchPath}?brand=${encodeURIComponent(product.brand)}`}
+                  href={`${searchRoute}?brand=${encodeURIComponent(product.brand)}`}
                   className="hover:underline"
                 >
                   {product.brand}
@@ -89,7 +89,7 @@ export default function ProductFull({ product, stock }: ProductFullProps) {
                 <Fragment key={c.id}>
                   {i !== 0 && <IoIosArrowForward size={10} color="#1e2939" />}
                   <Link
-                    href={`${searchPath}?category=${encodeURIComponent(c.name)}`}
+                    href={`${searchRoute}?category=${encodeURIComponent(c.name)}`}
                     className="text-xs sm:text-sm text-gray-800 leading-none hover:text-black hover:underline"
                   >
                     {c.name}
