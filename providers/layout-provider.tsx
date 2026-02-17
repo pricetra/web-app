@@ -2,6 +2,7 @@
 import Footer from "@/components/ui/footer";
 import NavbarMain from "@/components/ui/navbar-main";
 import { ReactNode } from "react";
+import { PhotoProvider } from "react-photo-view";
 
 export default function LayoutProvider({ children }: { children: ReactNode }) {
   return (
@@ -10,7 +11,9 @@ export default function LayoutProvider({ children }: { children: ReactNode }) {
         <NavbarMain />
 
         <div className="max-w-full sm:container mx-auto mt-5 relative flex flex-col lg:flex-row gap-3">
-          {children}
+          <PhotoProvider>
+            {children}
+          </PhotoProvider>
         </div>
       </div>
 
