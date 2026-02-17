@@ -285,7 +285,7 @@ export default function ProductDetails({
               <>
                 {stocksData.getProductStocks.paginator.total > 0 ? (
                   <>
-                    <section className="grid grid-cols-2 gap-5 mt-5">
+                    <section className="grid grid-cols-2 md:grid-cols-3 gap-5 mt-5">
                       {stocksData.getProductStocks.stocks.map((s, i) => (
                         <div
                           className="mb-3 flex flex-row"
@@ -319,7 +319,7 @@ export default function ProductDetails({
                 )}
               </>
             ) : (
-              <section className="grid grid-cols-2 gap-5 mt-5">
+              <section className="grid grid-cols-2 md:grid-cols-3 gap-5 mt-5">
                 {Array(5)
                   .fill(0)
                   .map((_, i) => (

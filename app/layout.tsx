@@ -6,6 +6,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 import "aos/dist/aos.css";
 import "react-horizontal-scrolling-menu/dist/styles.css";
 import "@/public/globals.css";
+import 'react-photo-view/dist/react-photo-view.css';
 import AppProvider from "@/providers/app-provider";
 import { GA_TRACKING_ID, GADS_PUB_ID } from "@/constants/google";
 import RouteProgress from "@/components/ui/route-progress";
