@@ -8,6 +8,7 @@ import useProductWeightBuilder from "@/hooks/useProductWeightBuilder";
 import Skeleton from "react-loading-skeleton";
 import Link from "@/components/ui/link";
 import { productImageUrlWithTimestamp } from "@/lib/files";
+import { PhotoView } from "react-photo-view";
 
 export type ProductFullProps = {
   product: Product;
@@ -36,15 +37,17 @@ export default function ProductFull({ product, stock }: ProductFullProps) {
       {imgAvailable && (
         <div className="relative mx-auto h-[30vh] mb-5">
           <div className="w-full aspect-square size-full overflow-hidden">
-            <Image
-              src={productImageUrlWithTimestamp(product)}
-              className="h-full w-full object-cover rounded-xl bg-white"
-              onError={() => setImgAvailable(false)}
-              alt="Product image"
-              width={500}
-              height={500}
-              quality={100}
-            />
+            <PhotoView src={product.image}>
+              <Image
+                src={productImageUrlWithTimestamp(product)}
+                className="h-full w-full object-cover rounded-xl bg-white"
+                onError={() => setImgAvailable(false)}
+                alt="Product image"
+                width={500}
+                height={500}
+                quality={100}
+              />
+            </PhotoView>
           </div>
         </div>
       )}
