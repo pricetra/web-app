@@ -40,12 +40,13 @@ export default function ProductFull({ product, stock }: ProductFullProps) {
             <PhotoView src={product.image}>
               <Image
                 src={productImageUrlWithTimestamp(product)}
-                className="h-full w-full object-cover rounded-xl bg-white"
+                className="h-full w-full object-cover rounded-xl bg-white cursor-zoom-in"
                 onError={() => setImgAvailable(false)}
                 alt="Product image"
                 width={500}
                 height={500}
                 quality={100}
+                title="View image in full screen"
               />
             </PhotoView>
           </div>
