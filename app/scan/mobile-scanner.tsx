@@ -135,13 +135,15 @@ export default function MobileScanner() {
         </DialogContent>
       </Dialog>
 
-      {processingBarcode || modalActivated ? (
+      {processingBarcode ? (
         <div className="fixed z-10 flex h-full w-full items-center justify-center">
           <div className="flex flex-col items-center justify-center rounded-xl bg-black/50 px-10 py-7">
             <CgSpinner className="animate-spin text-white size-16" />
             <h3 className="mt-4 text-white">Processing Barcode</h3>
           </div>
         </div>
+      ) : modalActivated ? (
+        <></>
       ) : (
         <ScannerOverlay />
       )}
