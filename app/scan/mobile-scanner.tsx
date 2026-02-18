@@ -2,7 +2,7 @@
 
 import { debounce } from "lodash";
 import { useRouter } from "next/navigation";
-import { useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useLayoutEffect, useMemo, useState } from "react";
 import { BarcodeScanner, DetectedBarcode } from "react-barcode-scanner";
 import "react-barcode-scanner/polyfill";
 import ScannerOverlay from "./scanner-overlay";
@@ -11,19 +11,15 @@ import { AiOutlineClose } from "react-icons/ai";
 import { CgSpinner } from "react-icons/cg";
 import {
   Dialog,
-  DialogClose,
   DialogContent,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { DialogDescription } from "@radix-ui/react-dialog";
-import { FiCamera } from "react-icons/fi";
-import { allowedImageTypesString } from "@/constants/uploads";
 import { MdKeyboard } from "react-icons/md";
 import ManualBarcodeForm from "./components/manual-barcode-form";
 import { IoSearch } from "react-icons/io5";
 import useAddProductPrompt from "@/hooks/useAddProductPrompt";
+import ExtractImageDialog from "./components/extract-image-dialog";
 import { handleInputFile } from "@/lib/files";
 import { toast } from "sonner";
 
@@ -37,10 +33,7 @@ export default function MobileScanner() {
   } = useAddProductPrompt();
   const [scannedCode, setScannedCode] = useState<string>();
   const [openAddUpcModal, setOpenAddUpcModal] = useState(false);
-
-  const imageUploadRef = useRef<HTMLInputElement>(null);
   const [openManualBarcodeModal, setOpenManualBarcodeModal] = useState(false);
-
   const modalActivated = openAddUpcModal || openManualBarcodeModal;
 
   useLayoutEffect(() => {
@@ -90,82 +83,33 @@ export default function MobileScanner() {
           defaultOpen={openAddUpcModal}
           onOpenChange={(o) => setOpenAddUpcModal(o)}
         >
-          <DialogContent clickableOverlay={false}>
-            <DialogHeader>
-              <DialogTitle className="mb-5">Add UPC</DialogTitle>
-              <DialogDescription>
-                The barcode ({scannedCode}) you scanned does not exist in our
-                database.
-              </DialogDescription>
-              <DialogDescription>
-                You can help us record and track prices for this product by
-                taking a picture.
-              </DialogDescription>
-            </DialogHeader>
+          <ExtractImageDialog
+            scannedCode={scannedCode}
+            extractingProduct={extractingProduct}
+            onFileChange={(e) => {
+              const file = handleInputFile(e);
+              if (!file) return;
 
-            <DialogFooter>
-              <DialogClose asChild>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setScannedCode(undefined);
-                    setOpenAddUpcModal(false);
-                  }}
-                  disabled={extractingProduct}
-                >
-                  Cancel
-                </Button>
-              </DialogClose>
-
-              <Button
-                disabled={extractingProduct}
-                onClick={() => {
-                  imageUploadRef.current?.click();
-                }}
-              >
-                {extractingProduct ? (
-                  <>
-                    <CgSpinner className="animate-spin" />
-                    Extracting Image Data
-                  </>
-                ) : (
-                  <>
-                    <FiCamera />
-                    Take Picture
-                  </>
-                )}
-              </Button>
-
-              <div className="hidden">
-                <input
-                  ref={imageUploadRef}
-                  type="file"
-                  accept={allowedImageTypesString}
-                  onChange={async (e) => {
-                    const file = handleInputFile(e);
-                    if (!file) return;
-
-                    handleExtractionImage(file, scannedCode, {
-                      onSuccess: (data) => {
-                        router.push(
-                          `/products/${data.extractAndCreateProduct.id}`,
-                        );
-                      },
-                      onError: (err) => {
-                        toast.error(
-                          `Error extracting data from image: ${err.message}`,
-                        );
-                      },
-                      onFinally: () => {
-                        setScannedCode(undefined);
-                        setOpenAddUpcModal(false);
-                      },
-                    });
-                  }}
-                />
-              </div>
-            </DialogFooter>
-          </DialogContent>
+              handleExtractionImage(file, scannedCode, {
+                onSuccess: (data) => {
+                  router.push(`/products/${data.extractAndCreateProduct.id}`);
+                },
+                onError: (err) => {
+                  toast.error(
+                    `Error extracting data from image: ${err.message}`,
+                  );
+                },
+                onFinally: () => {
+                  setScannedCode(undefined);
+                  setOpenAddUpcModal(false);
+                },
+              });
+            }}
+            onCancel={() => {
+              setScannedCode(undefined);
+              setOpenAddUpcModal(false);
+            }}
+          />
         </Dialog>
       )}
 
