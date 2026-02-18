@@ -1,3 +1,6 @@
+import { allowedImageTypes } from "@/constants/uploads";
+import { ChangeEvent } from "react";
+
 export const CLOUDINARY_UPLOAD_BASE = `https://res.cloudinary.com/${process.env.NEXT_PUBLIC_CLOUD_NAME}/image/upload`;
 
 export function createCloudinaryUrl(
@@ -25,6 +28,20 @@ export function productImageUrlWithTimestamp(
   height?: number,
 ) {
   return createCloudinaryUrl(product.code, width, height, product.updatedAt);
+}
+
+export function handleInputFile(
+  e: ChangeEvent<HTMLInputElement>,
+  allowedFileTypes: string[] = allowedImageTypes,
+) {
+  const files = e.target.files;
+  const file = files?.item(0);
+  if (!file) return;
+  if (!allowedFileTypes.includes(file.type)) {
+    window.alert("invalid file type");
+    return;
+  }
+  return file;
 }
 
 export async function convertFileToBase64(
