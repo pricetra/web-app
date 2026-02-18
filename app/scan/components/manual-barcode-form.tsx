@@ -3,15 +3,23 @@ import ProductItemHorizontal, {
 } from "@/components/product-item-horizontal";
 import ScrollContainer from "@/components/scroll-container";
 import { Button } from "@/components/ui/button";
+import { Dialog } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
+import useAddProductPrompt from "@/hooks/useAddProductPrompt";
 import { useLazyQuery } from "@apollo/client/react";
 import { Product, ProductSearchDocument } from "graphql-utils";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
+import ExtractImageDialog from "./extract-image-dialog";
+import { handleInputFile } from "@/lib/files";
+import { toast } from "sonner";
+import { CgSpinner } from "react-icons/cg";
 
 const LIMIT = 10;
 
 export default function ManualBarcodeForm() {
+  const router = useRouter();
   const [text, setText] = useState("");
   const [productSearch, { data: searchResults, loading }] = useLazyQuery(
     ProductSearchDocument,
@@ -19,6 +27,10 @@ export default function ManualBarcodeForm() {
       fetchPolicy: "no-cache",
     },
   );
+
+  const { handleBarcodeScan, handleExtractionImage, processingBarcode, extractingProduct } =
+    useAddProductPrompt();
+  const [openAddUpcModal, setOpenAddUpcModal] = useState(false);
 
   function fetchProducts(page = 1) {
     productSearch({
@@ -31,6 +43,38 @@ export default function ManualBarcodeForm() {
 
   return (
     <div>
+      <Dialog
+        modal
+        open={openAddUpcModal}
+        defaultOpen={openAddUpcModal}
+        onOpenChange={(o) => setOpenAddUpcModal(o)}
+      >
+        <ExtractImageDialog
+          scannedCode={text}
+          extractingProduct={extractingProduct}
+          onFileChange={(e) => {
+            const file = handleInputFile(e);
+            if (!file) return;
+
+            handleExtractionImage(file, text, {
+              onSuccess: (data) => {
+                router.push(`/products/${data.extractAndCreateProduct.id}`);
+              },
+              onError: (err) => {
+                toast.error(`Error extracting data from image: ${err.message}`);
+              },
+              onFinally: () => {
+                setText("");
+                setOpenAddUpcModal(false);
+              },
+            });
+          }}
+          onCancel={() => {
+            setOpenAddUpcModal(false);
+          }}
+        />
+      </Dialog>
+
       <div className="p-5 pt-0">
         <Input
           type="text"
@@ -106,7 +150,39 @@ export default function ManualBarcodeForm() {
               </ScrollContainer>
             </div>
           ) : (
-            <p className="text-center">No results found</p>
+            <div>
+              <p className="text-center">
+                No results found.{" "}
+                <span
+                  onClick={() => {
+                    if (extractingProduct || processingBarcode) return;
+                    if (text.length < 4) return;
+
+                    handleBarcodeScan(text, {
+                      onSuccess: (data) => {
+                        const params = new URLSearchParams();
+                        if (data.barcodeScan.stock) {
+                          params.set(
+                            "stockId",
+                            String(data.barcodeScan.stock.id),
+                          );
+                        }
+                        router.push(
+                          `/products/${data.barcodeScan.id}${params.size > 0 ? `?${params.toString()}` : ""}`,
+                        );
+                      },
+                      onError: () => setOpenAddUpcModal(true),
+                    });
+                  }}
+                  className="text-blue-500 hover:underline hover:text-blue-600 cursor-pointer font-bold inline-block ml-1"
+                >
+                  {processingBarcode ? (<span className="flex flex-row gap-1 items-center">
+                    <CgSpinner className="animate-spin" />
+                    Adding product
+                  </span>) : (<>Add product</>)}
+                </span>
+              </p>
+            </div>
           )}
         </>
       )}
