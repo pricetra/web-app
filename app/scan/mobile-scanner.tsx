@@ -1,11 +1,5 @@
 "use client";
 
-import { useLazyQuery, useMutation } from "@apollo/client/react";
-import {
-  BarcodeScanDocument,
-  ExtractAndCreateProductDocument,
-  LocationInput,
-} from "graphql-utils";
 import { debounce } from "lodash";
 import { useRouter } from "next/navigation";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
@@ -25,105 +19,67 @@ import {
 } from "@/components/ui/dialog";
 import { DialogDescription } from "@radix-ui/react-dialog";
 import { FiCamera } from "react-icons/fi";
-import {
-  allowedImageTypes,
-  allowedImageTypesString,
-} from "@/constants/uploads";
-import { convertFileToBase64 } from "@/lib/files";
-import useLocationService from "@/hooks/useLocation";
+import { allowedImageTypesString } from "@/constants/uploads";
 import { MdKeyboard } from "react-icons/md";
 import ManualBarcodeForm from "./components/manual-barcode-form";
 import { IoSearch } from "react-icons/io5";
+import useAddProductPrompt from "@/hooks/useAddProductPrompt";
+import { handleInputFile } from "@/lib/files";
+import { toast } from "sonner";
 
 export default function MobileScanner() {
   const router = useRouter();
+  const {
+    handleBarcodeScan,
+    extractingProduct,
+    processingBarcode,
+    handleExtractionImage,
+  } = useAddProductPrompt();
   const [scannedCode, setScannedCode] = useState<string>();
-  const [barcodeScan, { loading: processingBarcode }] =
-    useLazyQuery(BarcodeScanDocument);
-  const debouncedHandleBarcodeScan = useMemo(
-    () => debounce(_handleBarcodeScan, 500, { leading: true, trailing: false }),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
   const [openAddUpcModal, setOpenAddUpcModal] = useState(false);
+
   const imageUploadRef = useRef<HTMLInputElement>(null);
-  const [extractProductFields, { loading: extractingProduct }] = useMutation(
-    ExtractAndCreateProductDocument,
-  );
-  const { geocodeWithCallback } = useLocationService();
   const [openManualBarcodeModal, setOpenManualBarcodeModal] = useState(false);
 
   const modalActivated = openAddUpcModal || openManualBarcodeModal;
 
-  async function _handleBarcodeScan(barcodes: DetectedBarcode[]) {
-    if (barcodes.length === 0) return;
-    if (scannedCode) return;
-
-    const barcodeObject = barcodes.at(0);
-    if (!barcodeObject) return;
-
-    geocodeWithCallback((geoLocation) => {
-      let locationInput: LocationInput | undefined = undefined;
-      if (geoLocation) {
-        locationInput = {
-          latitude: geoLocation.coords.latitude,
-          longitude: geoLocation.coords.longitude,
-        };
-      }
-      const barcode = barcodeObject.rawValue;
-      setScannedCode(barcode);
-      barcodeScan({
-        variables: {
-          barcode,
-          location: locationInput,
-        },
-      })
-        .then(({ data }) => {
-          if (!data) return;
-
-          setScannedCode(undefined);
-          const params = new URLSearchParams();
-          if (data.barcodeScan.stock) {
-            params.set("stockId", String(data.barcodeScan.stock.id));
-          }
-          router.push(
-            `/products/${data.barcodeScan.id}${params.size > 0 ? `?${params.toString()}` : ""}`,
-          );
-        })
-        .catch(() => setOpenAddUpcModal(true));
-    });
-  }
-
-  async function handleExtractionImage(file: File, barcode: string) {
-    const base64Image = await convertFileToBase64(file);
-    if (!base64Image) {
-      window.alert("Could not handle file to base64 conversion");
-      return;
-    }
-
-    extractProductFields({
-      variables: {
-        barcode,
-        base64Image: base64Image.toString(),
-      },
-    })
-      .then(async ({ data }) => {
-        if (!data) throw new Error("could not extract data");
-
-        router.push(`/products/${data.extractAndCreateProduct.id}`);
-      })
-      .catch((err) => {
-        window.alert(`Error extracting product data. ${err}`);
-      })
-      .finally(() => {
-        setScannedCode(undefined);
-        setOpenAddUpcModal(false);
-      });
-  }
-
   useLayoutEffect(() => {
     setScannedCode(undefined);
   }, []);
+
+  const debouncedHandleBarcodeScan = useMemo(
+    () =>
+      debounce(
+        (barcodes: DetectedBarcode[]) => {
+          if (barcodes.length === 0) return;
+          if (scannedCode) return;
+
+          const barcodeObject = barcodes.at(0);
+          if (!barcodeObject) return;
+
+          const barcode = barcodeObject.rawValue;
+          setScannedCode(barcode);
+
+          handleBarcodeScan(barcode, {
+            onSuccess: (data) => {
+              setScannedCode(undefined);
+              const params = new URLSearchParams();
+              if (data.barcodeScan.stock) {
+                params.set("stockId", String(data.barcodeScan.stock.id));
+              }
+              router.push(
+                `/products/${data.barcodeScan.id}${params.size > 0 ? `?${params.toString()}` : ""}`,
+              );
+            },
+            onError: () => setOpenAddUpcModal(true),
+          });
+        },
+        500,
+        { leading: true, trailing: false },
+      ),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [],
+  );
 
   return (
     <>
@@ -186,15 +142,25 @@ export default function MobileScanner() {
                   type="file"
                   accept={allowedImageTypesString}
                   onChange={async (e) => {
-                    const files = e.target.files;
-                    const file = files?.item(0);
+                    const file = handleInputFile(e);
                     if (!file) return;
-                    if (!allowedImageTypes.includes(file.type)) {
-                      window.alert("invalid file type");
-                      return;
-                    }
 
-                    handleExtractionImage(file, scannedCode);
+                    handleExtractionImage(file, scannedCode, {
+                      onSuccess: (data) => {
+                        router.push(
+                          `/products/${data.extractAndCreateProduct.id}`,
+                        );
+                      },
+                      onError: (err) => {
+                        toast.error(
+                          `Error extracting data from image: ${err.message}`,
+                        );
+                      },
+                      onFinally: () => {
+                        setScannedCode(undefined);
+                        setOpenAddUpcModal(false);
+                      },
+                    });
                   }}
                 />
               </div>
@@ -209,9 +175,16 @@ export default function MobileScanner() {
         defaultOpen={openManualBarcodeModal}
         onOpenChange={(o) => setOpenManualBarcodeModal(o)}
       >
-        <DialogContent clickableOverlay={false} position="bottom" size="full" padding={false}>
+        <DialogContent
+          clickableOverlay={false}
+          position="bottom"
+          size="full"
+          padding={false}
+        >
           <DialogHeader className="px-5 pt-5">
-            <DialogTitle className="mb-5 flex flex-row items-center gap-2 font-bold"><IoSearch /> Search Products</DialogTitle>
+            <DialogTitle className="mb-5 flex flex-row items-center gap-2 font-bold">
+              <IoSearch /> Search Products
+            </DialogTitle>
           </DialogHeader>
 
           <ManualBarcodeForm />
@@ -232,9 +205,7 @@ export default function MobileScanner() {
       <BarcodeScanner
         options={{ formats: ["upc_a", "upc_e", "ean_8", "ean_13"] }}
         onCapture={debouncedHandleBarcodeScan}
-        paused={
-          scannedCode !== undefined || modalActivated
-        }
+        paused={scannedCode !== undefined || modalActivated}
       />
 
       <div className="fixed bottom-0 z-2 w-full rounded-t-3xl bg-black px-5 py-7 text-white">
