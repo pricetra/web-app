@@ -58,7 +58,8 @@ export default function ProductPage({
   productSummary,
 }: ProductPageProps) {
   const router = useRouter();
-  const { navbarHeight } = useNavbar();
+  const { navbarHeight, setSearchPlaceholder, setSearchQueryPath } =
+    useNavbar();
   const { loggedIn, lists } = useAuth();
   const { setPageIndicator, resetAll, setNavTools, setSubHeader } = useNavbar();
   const locationInput = useLocationInput(!loggedIn ? ipAddress : undefined);
@@ -110,6 +111,11 @@ export default function ProductPage({
         imgSrc={createCloudinaryUrl(productSummary.storeLogo, 100, 100)}
         href={`/stores/${productSummary.storeSlug}/${productSummary.branchSlug}`}
       />,
+    );
+
+    setSearchPlaceholder(`Search ${productSummary.branch}`);
+    setSearchQueryPath(
+      `/stores/${productSummary.storeSlug}/${productSummary.branchSlug}`,
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [stockId, productSummary]);
@@ -300,8 +306,13 @@ export default function ProductPage({
             {extraFromStoreInView && (
               <>
                 <div className="px-5 max-w-full w-lg">
-                  <h3 className="text-base sm:text-lg mb-2">Browse more from</h3>
-                  <Link href={`/stores/${stockData.stock.store.slug}/${stockData.stock.branch.slug}`} className="flex flex-row items-center gap-3">
+                  <h3 className="text-base sm:text-lg mb-2">
+                    Browse more from
+                  </h3>
+                  <Link
+                    href={`/stores/${stockData.stock.store.slug}/${stockData.stock.branch.slug}`}
+                    className="flex flex-row items-center gap-3"
+                  >
                     <Image
                       src={createCloudinaryUrl(
                         stockData.stock.store.logo,
@@ -314,7 +325,9 @@ export default function ProductPage({
                       height={100}
                       className="size-12 sm:size-14 rounded-lg border"
                     />
-                    <h2 className="font-bold text-lg sm:text-xl">{stockData.stock.branch.name}</h2>
+                    <h2 className="font-bold text-lg sm:text-xl">
+                      {stockData.stock.branch.name}
+                    </h2>
                   </Link>
                 </div>
 
