@@ -170,9 +170,9 @@ export default function BranchPageClient({
 
   return (
     <>
-      <div className="w-full max-w-[1000px] mt-5 px-5 flex-2">
+      <div className="w-full max-w-[1000px] mt-5 flex-2">
         {paramsBuilder.size > 0 && (
-          <div className="flex flex-row items-center gap-2 mb-10 flex-wrap">
+          <div className="flex flex-row items-center gap-2 mb-10 flex-wrap px-5">
             <SearchFilters params={searchParams} />
           </div>
         )}
@@ -185,7 +185,7 @@ export default function BranchPageClient({
                     .fill(0)
                     .map((_, i) => (
                       <article
-                        className="my-7"
+                        className="my-5"
                         key={`branch-with-product-loading-${i}`}
                       >
                         <div className="mb-3 px-5">
@@ -214,7 +214,7 @@ export default function BranchPageClient({
                         categories.at(categories.length - 2) ?? category;
                       return (
                         <article
-                          className="my-7"
+                          className="my-5"
                           key={`categorized-products-${category.id}-${i}`}
                         >
                           <div className="flex flex-row items-center mb-3 px-5 w-full">
@@ -278,7 +278,7 @@ export default function BranchPageClient({
               )}
           </div>
         ) : (
-          <div>
+          <div className="px-5">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-3">
               {!productsData ? (
                 Array(10)
