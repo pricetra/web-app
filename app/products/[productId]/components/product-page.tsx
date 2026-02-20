@@ -326,6 +326,7 @@ export default function ProductPage({
                       category: productData.product.category?.name,
                       limit: String(20),
                     }}
+                    disableNavSettings
                   />
                 </div>
               </>
