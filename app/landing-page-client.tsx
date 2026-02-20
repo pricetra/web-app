@@ -31,11 +31,13 @@ import LandingHeader from "@/components/ui/landing-header";
 import useLocationInput from "@/hooks/useLocationInput";
 import ScrollContainer from "@/components/scroll-container";
 import LandingFooter from "@/components/ui/landing-footer";
+import { useRouter } from "next/navigation";
 
 const paginator: PaginatorInput = { page: 1, limit: 3 };
 const productLimit = 10;
 
 export default function LandingPage({ ipAddress }: { ipAddress: string }) {
+  const router = useRouter();
   const { loggedIn } = useAuth();
   const fullLocationInput = useLocationInput(ipAddress);
   const { data: allStoresData } = useQuery(AllStoresDocument, {
@@ -46,7 +48,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
     BranchesWithProductsDocument,
     {
       fetchPolicy: "no-cache",
-    }
+    },
   );
 
   useEffect(() => {
@@ -65,6 +67,12 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
       },
     });
   }, [getBranchProducts, fullLocationInput]);
+
+  useEffect(() => {
+    if (!loggedIn) return;
+    router.push("/home");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loggedIn]);
 
   return (
     <div className="min-h-screen flex flex-col bg-white overflow-x-hidden">
@@ -191,7 +199,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                       ))}
                     </ScrollContainer>
                   </article>
-                )
+                ),
               )}
 
           <div>
