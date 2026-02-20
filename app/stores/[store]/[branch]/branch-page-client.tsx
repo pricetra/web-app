@@ -5,6 +5,7 @@ import {
   AllProductsDocument,
   Branch,
   CategoriesWithProductsDocument,
+  Category,
   Product,
   Store,
 } from "graphql-utils";
@@ -17,6 +18,7 @@ import { SmartPagination } from "@/components/ui/smart-pagination";
 import { useMediaQuery } from "react-responsive";
 import { SearchRouteParams } from "@/app/search/search-page-client";
 import {
+  categoriesFromChild,
   getRandomIntInclusive,
   startOfNextSundayUTC,
   toBoolean,
@@ -34,6 +36,8 @@ import ProductItemHorizontal, {
 } from "@/components/product-item-horizontal";
 import HorizontalProductAd from "@/components/ads/horizontal-product-ad";
 import Skeleton from "react-loading-skeleton";
+import Link from "@/components/ui/link";
+import { FiChevronRight } from "react-icons/fi";
 
 export default function BranchPageClient({
   store,
@@ -184,7 +188,7 @@ export default function BranchPageClient({
                         className="my-7"
                         key={`branch-with-product-loading-${i}`}
                       >
-                        <div className="mb-5 px-5">
+                        <div className="mb-3 px-5">
                           <Skeleton width="20%" height={28} borderRadius={10} />
                         </div>
 
@@ -200,38 +204,64 @@ export default function BranchPageClient({
                       </article>
                     ))
                 : categorizedProductsData.categoriesWithProducts.categories.map(
-                    (category, i) => (
-                      <article
-                        className="my-7"
-                        key={`categorized-products-${category.id}-${i}`}
-                      >
-                        <div className="mb-5 px-5">
-                          <h2 className="text-base xs:text-lg sm:text-xl">
-                            {category.name}
-                          </h2>
-                        </div>
+                    (category, i) => {
+                      const categories = categoriesFromChild(
+                        category as Category,
+                      );
+                      const linkBase = `/stores/${branch.storeSlug}/${branch.slug}`;
+                      const link = `${linkBase}?categoryId=${category.id}&category=${category.name}`;
+                      const prevCategory =
+                        categories.at(categories.length - 2) ?? category;
+                      return (
+                        <article
+                          className="my-7"
+                          key={`categorized-products-${category.id}-${i}`}
+                        >
+                          <div className="flex flex-row items-center mb-3 px-5 w-full">
+                            <div className="flex flex-col gap-1 flex-2">
+                              <Link href={link} className="hover:underline">
+                                <h2 className="text-base xs:text-lg font-bold sm:text-xl">
+                                  {category.name}
+                                </h2>
+                              </Link>
+                              <p className="text-xs">
+                                in{" "}
+                                <Link
+                                  href={`${linkBase}?categoryId=${prevCategory.id}&category=${prevCategory.name}`}
+                                  className="hover:underline font-semibold"
+                                >
+                                  {prevCategory.name}
+                                </Link>
+                              </p>
+                            </div>
 
-                        <ScrollContainer>
-                          {adify(
-                            category.products ?? [],
-                            getRandomIntInclusive(3, 6),
-                          ).map((product, i) =>
-                            typeof product === "object" ? (
-                              <ProductItemHorizontal
-                                product={product as Product}
-                                branchSlug={branch.slug}
-                                key={`branch-product-${category.id}-${product.id}`}
-                              />
-                            ) : (
-                              <HorizontalProductAd
-                                id={i}
-                                key={`horizontal-product-ad-${category.id}-${product}-${i}`}
-                              />
-                            ),
-                          )}
-                        </ScrollContainer>
-                      </article>
-                    ),
+                            <Link href={link} className="p-2">
+                              <FiChevronRight className="size-5" />
+                            </Link>
+                          </div>
+
+                          <ScrollContainer>
+                            {adify(
+                              category.products ?? [],
+                              getRandomIntInclusive(3, 6),
+                            ).map((product, i) =>
+                              typeof product === "object" ? (
+                                <ProductItemHorizontal
+                                  product={product as Product}
+                                  branchSlug={branch.slug}
+                                  key={`branch-product-${category.id}-${product.id}`}
+                                />
+                              ) : (
+                                <HorizontalProductAd
+                                  id={i}
+                                  key={`horizontal-product-ad-${category.id}-${product}-${i}`}
+                                />
+                              ),
+                            )}
+                          </ScrollContainer>
+                        </article>
+                      );
+                    },
                   )}
             </div>
 
