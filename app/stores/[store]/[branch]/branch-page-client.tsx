@@ -208,7 +208,7 @@ export default function BranchPageClient({
                       const categories = categoriesFromChild(
                         category as Category,
                       );
-                      const linkBase = `/stores/${branch.storeSlug}/${branch.slug}`;
+                      const linkBase = `/stores/${store.slug}/${branch.slug}`;
                       const link = `${linkBase}?categoryId=${category.id}&category=${category.name}`;
                       const prevCategory =
                         categories.at(categories.length - 2) ?? category;
