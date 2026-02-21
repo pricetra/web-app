@@ -62,6 +62,20 @@ function Button({
 }: ButtonProps) {
   const Comp = asChild ? Slot : "button";
 
+  if (href) {
+    return <Link
+      data-slot="button"
+      className={cn(
+        buttonVariants({ variant, size, className }),
+        rounded ? "rounded-full" : ""
+      )}
+      href={href}
+      target={props.target}
+    >
+      {children}
+    </Link>
+  }
+
   return (
     <Comp
       data-slot="button"
@@ -75,7 +89,7 @@ function Button({
       }}
       {...props}
     >
-      {href ? (<Link href={href} target={props.target}>{children}</Link>) : <>{children}</>}
+      {children}
     </Comp>
   );
 }

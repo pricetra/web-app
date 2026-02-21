@@ -217,18 +217,18 @@ export default function BranchPageClient({
                           className="my-5"
                           key={`categorized-products-${category.id}-${i}`}
                         >
-                          <div className="flex flex-row items-center mb-3 px-5 w-full">
-                            <div className="flex flex-col gap-1 flex-2">
-                              <Link href={link} className="hover:underline">
-                                <h2 className="text-base xs:text-lg font-bold sm:text-xl">
+                          <div className="flex flex-row items-center mb-3 px-5 w-full border-l-4 border-pricetra-green-dark py-1">
+                            <div className="flex flex-col gap-2 flex-2">
+                              <h2 className="text-base xs:text-lg font-bold sm:text-xl leading-none">
+                                <Link href={link} className="hover:underline">
                                   {category.name}
-                                </h2>
-                              </Link>
-                              <p className="text-xs">
+                                </Link>
+                              </h2>
+                              <p className="text-xs leading-none">
                                 in{" "}
                                 <Link
                                   href={`${linkBase}?categoryId=${prevCategory.id}&category=${prevCategory.name}`}
-                                  className="hover:underline font-semibold"
+                                  className="hover:underline"
                                 >
                                   {prevCategory.name}
                                 </Link>

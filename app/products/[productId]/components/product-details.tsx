@@ -340,19 +340,22 @@ export default function ProductDetails({
           <AccordionItem value="nutrition-facts">
             <AccordionTrigger>Nutrition Facts</AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 text-balance">
-              <div className="mb-5 flex flex-row items-center justify-end gap-2">
-                <a
-                  className="inline-flex items-center justify-center gap-2 bg-gray-700 px-4 py-1.5 rounded-full text-white"
+              <div className="flex flex-row items-center justify-end gap-2">
+                <Button
+                  size="xs"
+                  variant="default"
+                  rounded
                   href={`https://world.openfoodfacts.org/cgi/product.pl?type=edit&code=${product.code}`}
                   target="_blank"
                 >
-                  <FiEdit />
+                  <FiEdit className="size-3.5" />
                   Edit
-                </a>
+                </Button>
 
                 <Button
-                  size="sm"
-                  className="cursor-pointer rounded-full bg-pricetra-green-heavy-dark has-[>svg]:px-4 px-4"
+                  size="xs"
+                  variant="pricetra"
+                  rounded
                   onClick={() =>
                     updateProductNutrition({
                       variables: { productId: product.id },
@@ -365,26 +368,30 @@ export default function ProductDetails({
                 </Button>
               </div>
 
-              {productNutritionData.getProductNutritionData.nutriments && (
-                <NutritionFacts
-                  {...(productNutritionData.getProductNutritionData as ProductNutrition)}
-                />
-              )}
-
-              {productNutritionData.getProductNutritionData.ingredientList &&
-                productNutritionData.getProductNutritionData.ingredientList
-                  .length > 0 && (
-                  <div className="mt-7">
-                    <h5 className="mb-1.5 text-base font-semibold">
-                      Ingredients
-                    </h5>
-                    <p className="text-sm">
-                      {productNutritionData.getProductNutritionData.ingredientList
-                        .map((i) => i.toUpperCase())
-                        .join(", ")}
-                    </p>
+              <div className="flex flex-col md:flex-row gap-3 lg:gap-7 mb-7">
+                {productNutritionData.getProductNutritionData.nutriments && (
+                  <div className="flex-2 xl:flex-1">
+                    <NutritionFacts
+                      {...(productNutritionData.getProductNutritionData as ProductNutrition)}
+                    />
                   </div>
                 )}
+
+                {productNutritionData.getProductNutritionData.ingredientList &&
+                  productNutritionData.getProductNutritionData.ingredientList
+                    .length > 0 && (
+                    <div className="flex-2">
+                      <h5 className="mb-1.5 text-base font-semibold">
+                        Ingredients
+                      </h5>
+                      <p className="text-xs">
+                        {productNutritionData.getProductNutritionData.ingredientList
+                          .map((i) => i.toUpperCase())
+                          .join(", ")}
+                      </p>
+                    </div>
+                  )}
+              </div>
             </AccordionContent>
           </AccordionItem>
         )}
@@ -430,7 +437,8 @@ export default function ProductDetails({
                   </ScrollContainer>
                 </article>
               ))
-          : branchesWithProducts.branchesWithProducts.branches.map((branch, i) => (
+          : branchesWithProducts.branchesWithProducts.branches.map(
+              (branch, i) => (
                 <article
                   className="my-7"
                   key={`branch-with-product-${branch.id}`}
