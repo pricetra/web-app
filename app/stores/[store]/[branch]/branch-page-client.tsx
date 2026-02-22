@@ -24,7 +24,6 @@ import {
   startOfNextSundayUTC,
   toBoolean,
 } from "@/lib/utils";
-import SearchFilters from "@/components/search-filters";
 import { adify } from "@/lib/ads";
 import VerticalProductAd from "@/components/ads/vertical-product-ad";
 import VerticalSidebarAd from "@/components/ads/vertical-sidebar-ad";
@@ -178,13 +177,7 @@ export default function BranchPageClient({
 
   return (
     <>
-      <div className="w-full max-w-[1000px] mt-5 flex-2">
-        {paramsBuilder.size > 0 && (
-          <div className="flex flex-row items-center gap-2 mb-10 flex-wrap px-5">
-            <SearchFilters params={searchParams} />
-          </div>
-        )}
-
+      <div className="w-full max-w-[1000px] flex-2">
         {paramsBuilder.size === 0 ? (
           <div>
             <div className="flex flex-col">
@@ -225,7 +218,7 @@ export default function BranchPageClient({
                           className="my-5"
                           key={`categorized-products-${category.id}-${i}`}
                         >
-                          <div className="flex flex-row items-center mb-3 px-5 w-full border-l-4 border-pricetra-green-dark py-1">
+                          <div className="flex flex-row items-center mb-3 px-5 w-full py-1">
                             <div className="flex flex-col gap-2 flex-2">
                               <h2 className="text-base xs:text-lg font-bold sm:text-xl leading-none">
                                 <Link href={link} className="hover:underline">
@@ -286,7 +279,7 @@ export default function BranchPageClient({
               )}
           </div>
         ) : (
-          <div className="px-5">
+          <div className="px-5 mt-5">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-3">
               {!productsData ? (
                 Array(10)
