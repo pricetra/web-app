@@ -7,6 +7,7 @@ import {
   CategoriesWithProductsDocument,
   Category,
   Product,
+  ProductSearch,
   Store,
 } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
@@ -66,6 +67,8 @@ export default function BranchPageClient({
   const paramsBuilder = useMemo(() => {
     const sp = { ...searchParams };
     delete sp.page;
+    delete sp.sale;
+    delete sp.sortByPrice;
     return new URLSearchParams(sp);
   }, [searchParams]);
 
@@ -129,6 +132,11 @@ export default function BranchPageClient({
   }, [branch, disableNavSettings]);
 
   useEffect(() => {
+    const search = {
+      sortByPrice: searchParams.sortByPrice,
+      sale: searchParams.sale ? toBoolean(searchParams.sale) : undefined,
+    } as ProductSearch;
+
     if (paramsBuilder.size > 0) {
       // Load all products
       getProducts({
@@ -146,8 +154,7 @@ export default function BranchPageClient({
             categoryId: searchParams.categoryId
               ? +searchParams.categoryId
               : undefined,
-            sortByPrice: searchParams.sortByPrice,
-            sale: searchParams.sale ? toBoolean(searchParams.sale) : undefined,
+            ...search,
           },
         },
       });
@@ -161,6 +168,7 @@ export default function BranchPageClient({
           productLimit: 20,
           filters: {
             branchId: branch.id,
+            ...search,
           },
         },
       });
