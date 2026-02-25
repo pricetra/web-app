@@ -102,7 +102,7 @@ export default function NavbarMain() {
           <div
             className={cn(
               "flex flex-row gap-1 sm:gap-3 lg:gap-6 items-center justify-start flex-1 w-full pl-5 pr-0",
-              searchPanelOpen || navTools ? "max-w-full" : "max-w-4xl"
+              searchPanelOpen ? "max-w-full" : "max-w-5xl"
             )}
           >
             <div className="page-indicator flex flex-row items-center justify-start">
