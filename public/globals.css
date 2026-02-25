@@ -214,3 +214,16 @@
   display: none;
 }
 
+/* react-photo-view */
+.PhotoView-Slider__Backdrop {
+  background-color: rgba(255, 255, 255) !important; /* Example: a dark grey with 90% opacity */
+}
+
+.PhotoView-Slider__BannerWrap {
+  color: #000!important;
+  background-color: #fff!important;
+}
+
+.PhotoView-Slider__toolbarIcon {
+  fill: #000!important;
+}
