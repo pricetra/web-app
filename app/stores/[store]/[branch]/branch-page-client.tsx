@@ -65,6 +65,7 @@ export default function BranchPageClient({
 
   const paramsBuilder = useMemo(() => {
     const sp = { ...searchParams };
+    if (sp.query?.length === 0) delete sp.query;
     delete sp.page;
     delete sp.sale;
     delete sp.sortByPrice;
