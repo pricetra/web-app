@@ -97,8 +97,9 @@ export default function BranchPageClient({
 
     setPageIndicator(
       <NavPageIndicator
-        title={store.name}
         href={`/stores/${store.slug}`}
+        title={store.name}
+        titleHref={`/stores/${store.slug}/${branch.slug}`}
         imgSrc={createCloudinaryUrl(
           store.logo,
           100,
