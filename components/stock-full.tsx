@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 
-import { Stock } from "graphql-utils";
+import { Product, Stock } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
 import { currencyFormat, getPriceUnitOrEach } from "@/lib/strings";
 import { metersToMiles, startOfNextSundayUTC } from "@/lib/utils";
@@ -9,19 +9,18 @@ import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 import Skeleton from "react-loading-skeleton";
 import Link from "@/components/ui/link";
+import usePricePerUnit from "@/hooks/usePricePerUnit";
 
 export type StockFullProps = {
+  product: Product;
   stock: Stock;
   approximatePrice?: number;
-  quantityValue?: number;
-  quantityType?: string;
 };
 
 export default function StockFull({
+  product,
   stock,
   approximatePrice,
-  quantityValue,
-  quantityType,
 }: StockFullProps) {
   if (!stock.store || !stock.branch)
     throw new Error("stock has no store or branch objects");
@@ -31,6 +30,7 @@ export default function StockFull({
     isExpired,
     latestPrice: stock.latestPrice,
   });
+  const pricePerUnit = usePricePerUnit(calculatedAmount, product);
 
   return (
     <div className="flex flex-row justify-between gap-5">
@@ -153,11 +153,11 @@ export default function StockFull({
             </div>
           )}
 
-          {stock.latestPrice?.amount && quantityValue && quantityValue > 1 && (
+          {stock.latestPrice?.amount && pricePerUnit && (
             <span className="text-right text-[10px] text-gray-500 leading-none">
               {`${currencyFormat(
-                calculatedAmount / quantityValue,
-              )}/${quantityType}`}
+                pricePerUnit.amount,
+              )} / ${pricePerUnit.unit}`}
             </span>
           )}
 

@@ -9,6 +9,7 @@ import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 import { useMemo } from "react";
 import { startOfNextSundayUTC } from "@/lib/utils";
+import usePricePerUnit from "@/hooks/usePricePerUnit";
 
 export type ProductItemHorizontalProps = {
   product: ProductSimple | Product;
@@ -28,6 +29,7 @@ export default function ProductItemHorizontal({
     isExpired,
     latestPrice: product.stock?.latestPrice,
   });
+  const pricePerUnit = usePricePerUnit(calculatedAmount, product);
   const href = useMemo(() => {
     return `/products/${product.id}${branchSlug ? `/${branchSlug}` : ""}`;
   }, [product.id, branchSlug]);
@@ -150,11 +152,11 @@ export default function ProductItemHorizontal({
                     {getPriceUnit(product.stock.latestPrice)}
                   </small>
                 </div>
-                {product.quantityValue > 1 && (
+                {pricePerUnit && (
                   <small className="text-[10px] text-gray-500 block leading-none">
                     {`${currencyFormat(
-                      calculatedAmount / product.quantityValue,
-                    )}/${product.quantityType}`}
+                      pricePerUnit.amount,
+                    )} / ${pricePerUnit.unit}`}
                   </small>
                 )}
               </div>

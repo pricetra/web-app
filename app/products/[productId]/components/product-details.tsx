@@ -238,10 +238,9 @@ export default function ProductDetails({
                       >
                         <StockItemMini
                           productId={product.id}
+                          product={product}
                           stock={s as Stock}
                           approximatePrice={approximatePrice ?? undefined}
-                          quantityValue={product.quantityValue}
-                          quantityType={product.quantityType}
                           disabled={s.id === 0 && !approximatePrice}
                         />
                       </div>
@@ -293,9 +292,8 @@ export default function ProductDetails({
                         >
                           <StockItemMini
                             productId={product.id}
+                            product={product}
                             stock={s as Stock}
-                            quantityValue={product.quantityValue}
-                            quantityType={product.quantityType}
                           />
                         </div>
                       ))}

@@ -1,5 +1,5 @@
 import dayjs from "dayjs";
-import { Stock } from "graphql-utils";
+import { Product, Stock } from "graphql-utils";
 import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import { createCloudinaryUrl } from "@/lib/files";
@@ -10,22 +10,21 @@ import { DetailedHTMLProps, HTMLAttributes, useMemo } from "react";
 import Link from "@/components/ui/link";
 import Skeleton from "react-loading-skeleton";
 import { useMediaQuery } from "react-responsive";
+import usePricePerUnit from "@/hooks/usePricePerUnit";
 
 export type StockItemMiniProps = {
   productId: number;
+  product: Product;
   stock: Stock;
   approximatePrice?: number;
-  quantityValue?: number;
-  quantityType?: string;
   disabled?: boolean;
 };
 
 export default function StockItemMini({
   productId,
+  product,
   stock,
   approximatePrice,
-  quantityValue,
-  quantityType,
   disabled = false,
 }: StockItemMiniProps) {
   if (!stock.store || !stock.branch)
@@ -40,6 +39,7 @@ export default function StockItemMini({
     () => stock.latestPrice?.sale && !isExpired,
     [isExpired, stock],
   );
+  const pricePerUnit = usePricePerUnit(calculatedAmount, product);
 
   return (
     <div
@@ -127,12 +127,11 @@ export default function StockItemMini({
             )}
 
             {stock.latestPrice?.amount &&
-              quantityValue &&
-              quantityValue > 1 && (
+              pricePerUnit && (
                 <span className="text-[10px] text-gray-500 leading-none">
                   {`${currencyFormat(
-                    calculatedAmount / quantityValue,
-                  )}/${quantityType}`}
+                    pricePerUnit.amount,
+                  )} / ${pricePerUnit.unit}`}
                 </span>
               )}
 
