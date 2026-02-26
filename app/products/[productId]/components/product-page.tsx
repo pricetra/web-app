@@ -200,8 +200,7 @@ export default function ProductPage({
                   <div className="rounded-xl bg-gray-50 p-5">
                     <SelectedStock
                       stock={stockData.stock as Stock}
-                      quantityType={productData.product.quantityType}
-                      quantityValue={productData.product.quantityValue}
+                      product={productData.product}
                     />
                   </div>
                 </div>

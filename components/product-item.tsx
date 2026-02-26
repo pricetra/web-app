@@ -11,6 +11,7 @@ import Skeleton from "react-loading-skeleton";
 import Link from "@/components/ui/link";
 import { useMemo } from "react";
 import ProductStockMini from "./product-stock-mini";
+import usePricePerUnit from "@/hooks/usePricePerUnit";
 
 export type ProductItemOptionalProps = {
   imgWidth?: number;
@@ -36,7 +37,7 @@ ProductItemProps) {
     latestPrice: product.stock?.latestPrice,
   });
   const weight = useProductWeightBuilder(product);
-
+  const pricePerUnit = usePricePerUnit(calculatedAmount, product);
   const href = useMemo(() => {
     return `/products/${product.id}${branchSlug ? `/${branchSlug}` : ""}`;
   }, [product.id, branchSlug]);
@@ -154,11 +155,11 @@ ProductItemProps) {
                     </span>
                   )}
                 </div>
-                {product.quantityValue > 1 && (
+                {pricePerUnit && (
                   <span className="text-right text-[10px] text-gray-500 leading-none">
                     {`${currencyFormat(
-                      calculatedAmount / product.quantityValue,
-                    )}/${product.quantityType}`}
+                      pricePerUnit.amount,
+                    )} / ${pricePerUnit.unit}`}
                   </span>
                 )}
               </div>

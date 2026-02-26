@@ -50,9 +50,8 @@ export default function ProductSocksPageClient({
                     >
                       <StockItemMini
                         productId={product.id}
+                        product={product}
                         stock={s as Stock}
-                        quantityValue={product.quantityValue}
-                        quantityType={product.quantityType}
                       />
                     </div>
                   ))}
