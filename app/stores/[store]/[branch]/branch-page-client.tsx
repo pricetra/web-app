@@ -95,6 +95,17 @@ export default function BranchPageClient({
 
     resetAll();
 
+    let subTitle = '';
+    let subTitleHref = ''
+    if (branch.address) {
+      subTitle = `${branch.address.street}, ${branch.address.city}`;
+      subTitleHref = branch.address.mapsLink
+    }
+    if (branch.onlineAddress) {
+      subTitle = branch.onlineAddress.url;
+      subTitleHref = branch.onlineAddress.url;
+    }
+    // TODO: branch online address
     setPageIndicator(
       <NavPageIndicator
         href={`/stores/${store.slug}`}
@@ -106,8 +117,8 @@ export default function BranchPageClient({
           100,
           startOfNextSundayUTC(),
         )}
-        subTitle={`${branch.address.street}, ${branch.address.city}`}
-        subTitleHref={branch.address.mapsLink}
+        subTitle={subTitle}
+        subTitleHref={subTitleHref}
         subTitleHrefTargetBlank
       />,
     );
