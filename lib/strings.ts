@@ -230,3 +230,11 @@ export function parseBase64StringToObject<T>(rawData: string): T {
     throw new Error("could not parse");
   }
 }
+
+export function cleanUrl(url: string): string {
+  // Regex explanation:
+  // /^https?:\/\/ (matches 'http://' or 'https://' at the start of the string)
+  // (www\.)?        (optionally matches 'www.')
+  // /i              (case-insensitive flag)
+  return url.replace(/^https?:\/\/(www\.)?/i, '');
+}

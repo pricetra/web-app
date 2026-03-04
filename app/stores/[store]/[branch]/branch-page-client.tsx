@@ -38,6 +38,7 @@ import HorizontalProductAd from "@/components/ads/horizontal-product-ad";
 import Skeleton from "react-loading-skeleton";
 import Link from "@/components/ui/link";
 import { FiChevronRight } from "react-icons/fi";
+import { cleanUrl } from "@/lib/strings";
 
 export default function BranchPageClient({
   store,
@@ -102,7 +103,7 @@ export default function BranchPageClient({
       subTitleHref = branch.address.mapsLink
     }
     if (branch.onlineAddress) {
-      subTitle = branch.onlineAddress.url;
+      subTitle = cleanUrl(branch.onlineAddress.url);
       subTitleHref = branch.onlineAddress.url;
     }
     // TODO: branch online address

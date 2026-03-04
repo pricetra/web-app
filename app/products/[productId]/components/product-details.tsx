@@ -179,7 +179,6 @@ export default function ProductDetails({
           },
           productLimit: 10,
           filters: {
-            location: locationInput.locationInput,
             category: product.category!.name,
             sortByPrice: "asc",
             branchIds: favoriteBranchIds,

@@ -6,6 +6,7 @@ import { useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 import { FiChevronRight } from "react-icons/fi";
 import { Branch } from "graphql-utils";
+import { cleanUrl } from "@/lib/strings";
 
 export type BranchItemWithLogoProps = {
   branch: Branch;
@@ -27,6 +28,11 @@ export default function BranchItemWithLogo({
     if (cityName && branch.address) return branch.address.city;
     return branch.store?.name ?? branch.name;
   }, [branch, cityName, branchName]);
+  const storeUrl = useMemo(
+    () =>
+      branch?.onlineAddress ? cleanUrl(branch.onlineAddress.url) : undefined,
+    [branch?.onlineAddress],
+  );
 
   return (
     <div className="flex flex-row justify-between items-center gap-2">
@@ -73,11 +79,23 @@ export default function BranchItemWithLogo({
                   </div>
                 </div>
               )}
+              {branch.onlineAddress && (
+                <div className="rounded-full bg-pricetraGreenDark/10 px-2 py-0.5">
+                  <div className="text-[10px] color-pricetraGreenHeavyDark text-nowrap">
+                    Online
+                  </div>
+                </div>
+              )}
             </div>
 
             {branch.address && (
               <span className="text-[10px] sm:text-xs w-full line-clamp-1 break-all">
                 {branch.address.fullAddress}
+              </span>
+            )}
+            {branch.onlineAddress && (
+              <span className="text-[10px] sm:text-xs w-full line-clamp-1 break-all">
+                {storeUrl}
               </span>
             )}
           </Link>

@@ -2,12 +2,22 @@ import { Stock } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
 import { metersToMiles, startOfNextSundayUTC } from "@/lib/utils";
 import Image from "next/image";
+import { useMemo } from "react";
+import { cleanUrl } from "@/lib/strings";
 
 export type ProductStockMiniProps = {
   stock: Stock;
 };
 
 export default function ProductStockMini({ stock }: ProductStockMiniProps) {
+  const storeUrl = useMemo(
+    () =>
+      stock.branch?.onlineAddress
+        ? cleanUrl(stock.branch.onlineAddress.url)
+        : undefined,
+    [stock.branch?.onlineAddress],
+  );
+
   return (
     <div className="flex flex-row items-center gap-2">
       <Image
@@ -33,13 +43,22 @@ export default function ProductStockMini({ stock }: ProductStockMiniProps) {
             </p>
             {stock.branch.address.distance && (
               <>
-                <span>●</span>
+                <span className="text-[4px]">●</span>
 
                 <span className="text-[9px]">
                   {metersToMiles(stock.branch.address.distance)} mi
                 </span>
               </>
             )}
+          </div>
+        )}
+        {stock.branch?.onlineAddress && (
+          <div className="flex flex-row flex-wrap items-center gap-1">
+            <p className="max-w-[70%] text-[9px] line-clamp-1 break-all">
+              {storeUrl}
+            </p>
+            <span className="text-[4px]">●</span>
+            <span className="text-[9px]">Online</span>
           </div>
         )}
       </div>
