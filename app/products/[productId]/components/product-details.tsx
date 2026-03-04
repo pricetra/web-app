@@ -186,10 +186,12 @@ export default function ProductDetails({
           },
         } as BranchesWithProductsQueryVariables;
         if (stock) {
-          const branchIdsWithStockBranchId = favoriteBranchIds.filter(
+          let branchIdsWithStockBranchId = favoriteBranchIds.filter(
             (id) => id !== stock?.branchId,
           );
-          branchIdsWithStockBranchId.push(stock?.branchId);
+          if (stock) {
+            branchIdsWithStockBranchId = [stock.branchId, ...branchIdsWithStockBranchId];
+          }
           variables.paginator.limit = branchIdsWithStockBranchId.length;
           variables.filters = {
             ...variables.filters,
