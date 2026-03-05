@@ -28,7 +28,7 @@ export default function SelectedStock(props: SelectedStockProps) {
 
         {stock.onlineItem && (
           <div className="flex-1 flex flex-row justify-end">
-            <Button href={stock.onlineItem.url} target="_blank" variant="pricetra" size="xs">View Online <FaArrowUpRightFromSquare className="size-2.5" /></Button>
+            <Button href={stock.onlineItem.url} target="_blank" variant="outline" size="xs">View Online <FaArrowUpRightFromSquare className="size-2.5" /></Button>
           </div>
         )}
       </div>
