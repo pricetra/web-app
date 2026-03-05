@@ -2,7 +2,7 @@ import dayjs from "dayjs";
 
 import { Product, Stock } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
-import { currencyFormat, getPriceUnitOrEach } from "@/lib/strings";
+import { cleanUrl, currencyFormat, getPriceUnitOrEach } from "@/lib/strings";
 import { metersToMiles, startOfNextSundayUTC } from "@/lib/utils";
 import Image from "next/image";
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
@@ -10,6 +10,7 @@ import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 import Skeleton from "react-loading-skeleton";
 import Link from "@/components/ui/link";
 import usePricePerUnit from "@/hooks/usePricePerUnit";
+import { useMemo } from "react";
 
 export type StockFullProps = {
   product: Product;
@@ -31,6 +32,13 @@ export default function StockFull({
     latestPrice: stock.latestPrice,
   });
   const pricePerUnit = usePricePerUnit(calculatedAmount, product);
+  const storeUrl = useMemo(
+    () =>
+      stock.branch?.onlineAddress
+        ? cleanUrl(stock.branch.onlineAddress.url)
+        : undefined,
+    [stock.branch?.onlineAddress],
+  );
 
   return (
     <div className="flex flex-row justify-between gap-5">
@@ -53,15 +61,7 @@ export default function StockFull({
             alt={stock.store.name}
           />
         </Link>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            gap: 4,
-            flexWrap: "wrap",
-            flex: 1,
-          }}
-        >
+        <div className="flex flex-row gap-1 flex-wrap flex-1">
           {stock.latestPrice?.sale && !isExpired && (
             <div className="w-[35px]">
               <span className="inline-block rounded-md bg-red-700 px-1.5 py-1 text-center text-[9px] font-bold text-white">
@@ -72,7 +72,7 @@ export default function StockFull({
 
           <div className="flex w-full flex-row items-center gap-2.5">
             <Link href={`/stores/${stock.store.slug}/${stock.branch.slug}`}>
-              <h3 className="flex-1 text-base xl:text-lg font-bold line-clamp-1">
+              <h3 className="flex-1 text-base xl:text-lg font-bold line-clamp-2 leading-none">
                 {stock.store.name}
               </h3>
             </Link>
@@ -84,11 +84,22 @@ export default function StockFull({
                 </span>
               </div>
             )}
+
+            {stock.branch.onlineAddress && (
+              <a
+                href={stock.onlineItem?.url ?? stock.branch.onlineAddress.url}
+                target="_blank"
+                className="rounded-full bg-pricetraGreenDark/10 px-2 py-0.5 hover:underline block text-pricetraGreenHeavyDark text-xs"
+                title="View online store in new tab"
+              >
+                <span>Online</span>
+              </a>
+            )}
           </div>
 
-          {stock.branch.address && (
-            <div className="w-full">
-              <h4 className="text-xs">
+          <div className="w-full">
+            <h4 className="text-xs">
+              {stock.branch.address && (
                 <a
                   href={stock.branch.address.mapsLink}
                   target="_blank"
@@ -97,9 +108,20 @@ export default function StockFull({
                 >
                   {stock.branch.address.street}, {stock.branch.address.city}
                 </a>
-              </h4>
-            </div>
-          )}
+              )}
+
+              {stock.branch.onlineAddress && (
+                <a
+                  href={stock.branch.onlineAddress.url}
+                  target="_blank"
+                  className="hover:underline"
+                  title="View online store in new tab"
+                >
+                  {storeUrl}
+                </a>
+              )}
+            </h4>
+          </div>
 
           <div className="mt-1 flex flex-col gap-1">
             {stock.latestPrice?.sale &&
@@ -155,9 +177,7 @@ export default function StockFull({
 
           {stock.latestPrice?.amount && pricePerUnit && (
             <span className="text-right text-[10px] text-gray-500 leading-none">
-              {`${currencyFormat(
-                pricePerUnit.amount,
-              )} / ${pricePerUnit.unit}`}
+              {`${currencyFormat(pricePerUnit.amount)} / ${pricePerUnit.unit}`}
             </span>
           )}
 

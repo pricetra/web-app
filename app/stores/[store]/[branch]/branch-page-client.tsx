@@ -38,6 +38,7 @@ import HorizontalProductAd from "@/components/ads/horizontal-product-ad";
 import Skeleton from "react-loading-skeleton";
 import Link from "@/components/ui/link";
 import { FiChevronRight } from "react-icons/fi";
+import { cleanUrl } from "@/lib/strings";
 
 export default function BranchPageClient({
   store,
@@ -95,6 +96,17 @@ export default function BranchPageClient({
 
     resetAll();
 
+    let subTitle = '';
+    let subTitleHref = ''
+    if (branch.address) {
+      subTitle = `${branch.address.street}, ${branch.address.city}`;
+      subTitleHref = branch.address.mapsLink
+    }
+    if (branch.onlineAddress) {
+      subTitle = cleanUrl(branch.onlineAddress.url);
+      subTitleHref = branch.onlineAddress.url;
+    }
+    // TODO: branch online address
     setPageIndicator(
       <NavPageIndicator
         href={`/stores/${store.slug}`}
@@ -106,8 +118,8 @@ export default function BranchPageClient({
           100,
           startOfNextSundayUTC(),
         )}
-        subTitle={`${branch.address.street}, ${branch.address.city}`}
-        subTitleHref={branch.address.mapsLink}
+        subTitle={subTitle}
+        subTitleHref={subTitleHref}
         subTitleHrefTargetBlank
       />,
     );
@@ -269,7 +281,7 @@ export default function BranchPageClient({
             </div>
 
             {categorizedProductsData?.categoriesWithProducts?.paginator &&
-              categorizedProductsData.categoriesWithProducts.paginator && (
+              categorizedProductsData.categoriesWithProducts.paginator.numPages > 1 && (
                 <div className="mt-20">
                   <SmartPagination
                     paginator={

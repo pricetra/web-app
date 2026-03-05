@@ -1,7 +1,9 @@
 import useLocationService from "@/hooks/useLocation";
 import {
+  AllBranchesDocument,
   Branch,
   BranchesWithProductsDocument,
+  BranchType,
   CreatePrice,
   CreatePriceDocument,
   FavoriteBranchesWithPricesDocument,
@@ -63,6 +65,10 @@ export default function AddPriceForm({
     findBranchesByDistance,
     { data: branchesData, loading: branchesLoading },
   ] = useLazyQuery(FindBranchesByDistanceDocument, { fetchPolicy: "no-cache" });
+  const [getOnlineBranches, { data: onlineBranchesData }] = useLazyQuery(
+    AllBranchesDocument,
+    { fetchPolicy: "no-cache" },
+  );
   const [getStock, { data: stockData }] = useLazyQuery(
     GetStockFromProductAndBranchIdDocument,
     {
@@ -88,8 +94,11 @@ export default function AddPriceForm({
   const stock = stockData?.getStockFromProductAndBranchId as Stock | undefined;
   const [branchId, setBranchId] = useState<number>();
   const selectedBranch = useMemo(
-    () => (branchId ? branches.find(({ id }) => branchId === id) : undefined),
-    [branchId, branches],
+    () => {
+      if (!branchId) return undefined;
+      return branches.find(({ id }) => branchId === id) ?? onlineBranchesData?.allBranches.branches.find(({ id }) => branchId === id);
+    },
+    [branchId, branches, onlineBranchesData],
   );
 
   useEffect(() => {
@@ -108,7 +117,18 @@ export default function AddPriceForm({
       if (data.findBranchesByDistance.length === 0) return;
       setBranchId(data.findBranchesByDistance.at(0)!.id);
     });
-  }, [findBranchesByDistance, location, user]);
+
+    getOnlineBranches({
+      variables: {
+        paginator: {
+          page: 1,
+          limit: 50,
+        },
+        branchType: BranchType.Online,
+      },
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location, user]);
 
   useEffect(() => {
     if (!branchId) return;
@@ -163,7 +183,7 @@ export default function AddPriceForm({
       </div>
 
       <div className="mb-7 flex flex-row items-center gap-2 w-full">
-        {branchId && selectedBranch && (
+        {branchId && selectedBranch && selectedBranch.store && (
           <Image
             src={createCloudinaryUrl(
               selectedBranch.store?.logo ?? "",
@@ -203,6 +223,23 @@ export default function AddPriceForm({
                 {branch.name}
               </NativeSelectOption>
             ))}
+            {onlineBranchesData &&
+              onlineBranchesData.allBranches.paginator.total > 0 && (
+                <>
+                  <NativeSelectOption value={undefined}>
+                    --- Online Branches ---
+                  </NativeSelectOption>
+
+                  {onlineBranchesData.allBranches.branches.map((branch, i) => (
+                    <NativeSelectOption
+                      value={branch.id}
+                      key={`online-branch-option-${branch.id}-${i}`}
+                    >
+                      {branch.name}
+                    </NativeSelectOption>
+                  ))}
+                </>
+              )}
           </NativeSelect>
         </div>
       </div>
@@ -327,7 +364,14 @@ function PriceForm({ stock, branch, latestPrice }: PriceFormProps) {
   const formikContext = useFormikContext<CreatePrice>();
   const nextWeek = dayjs(new Date()).add(7, "day").toDate();
   const [available, setAvailable] = useState(true);
-  const { myStoreUsers } = useAuth();
+  const { myStoreUsers, user } = useAuth();
+  const basePriceInput = {
+    productId: formikContext.values.productId,
+    branchId: formikContext.values.branchId,
+    amount: 0,
+    unitType: "item",
+    sale: false,
+  } as CreatePrice;
 
   const isStoreUser = useMemo(() => {
     const storeUser = myStoreUsers?.find((v) => {
@@ -341,7 +385,10 @@ function PriceForm({ stock, branch, latestPrice }: PriceFormProps) {
   }, [myStoreUsers, branch]);
 
   useEffect(() => {
-    if (!latestPrice) return;
+    if (!latestPrice) {
+      formikContext.setValues({ ...basePriceInput } as CreatePrice);
+      return;
+    }
 
     formikContext.setValues({
       ...formikContext.values,
@@ -352,6 +399,10 @@ function PriceForm({ stock, branch, latestPrice }: PriceFormProps) {
       condition: latestPrice.condition,
       unitType: latestPrice.unitType,
       expiresAt: latestPrice.expiresAt,
+      onlineItem: stock?.onlineItem ? {
+        url: stock.onlineItem.url,
+        itemId: stock.onlineItem.itemId,
+      } : undefined,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [latestPrice]);
@@ -496,6 +547,39 @@ function PriceForm({ stock, branch, latestPrice }: PriceFormProps) {
               />
             </div>
           </>
+        )}
+
+        {user && isRoleAuthorized(UserRole.Admin, user.role) && (
+          <div className="mt-5">
+            <h5 className="mb-2 font-semibold text-sm">
+              Online Product Details
+            </h5>
+
+            <div className="flex flex-row items-center gap-2">
+              <div className="flex-2">
+                <Input
+                  placeholder="Online product URL"
+                  value={formikContext.values.onlineItem?.url ?? ""}
+                  type="url"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    formikContext.setFieldValue("onlineItem.url", value);
+                  }}
+                />
+              </div>
+              <div className="flex-1">
+                <Input
+                  placeholder="Online product item ID"
+                  value={formikContext.values.onlineItem?.itemId ?? ""}
+                  type="text"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    formikContext.setFieldValue("onlineItem.itemId", value);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </>

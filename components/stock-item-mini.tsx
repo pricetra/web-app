@@ -3,7 +3,7 @@ import { Product, Stock } from "graphql-utils";
 import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import { createCloudinaryUrl } from "@/lib/files";
-import { currencyFormat, getPriceUnitOrEach } from "@/lib/strings";
+import { cleanUrl, currencyFormat, getPriceUnitOrEach } from "@/lib/strings";
 import { cn, metersToMiles, startOfNextSundayUTC } from "@/lib/utils";
 import Image from "next/image";
 import { DetailedHTMLProps, HTMLAttributes, useMemo } from "react";
@@ -40,6 +40,13 @@ export default function StockItemMini({
     [isExpired, stock],
   );
   const pricePerUnit = usePricePerUnit(calculatedAmount, product);
+  const storeUrl = useMemo(
+    () =>
+      stock.branch?.onlineAddress
+        ? cleanUrl(stock.branch.onlineAddress.url)
+        : undefined,
+    [stock.branch?.onlineAddress],
+  );
 
   return (
     <div
@@ -70,7 +77,9 @@ export default function StockItemMini({
         />
 
         <div className="flex flex-col gap-1 flex-1">
-          {(stock.branch.address?.distance || sale) && (
+          {(stock.branch.address?.distance ||
+            stock.branch.onlineAddress ||
+            sale) && (
             <div className="flex flex-row items-center gap-1 sm:gap-2">
               {sale && (
                 <div className="mb-1 rounded-full bg-red-700 px-1.5 py-2 sm:px-2 sm:py-2.5">
@@ -82,20 +91,33 @@ export default function StockItemMini({
 
               {stock.branch.address?.distance && (
                 <div className="mb-1 rounded-full bg-pricetraGreenDark/10 px-1.5 py-2 sm:px-2 sm:py-2.5">
-                  <span className="text-[8px] sm:text-[10px] text-pricetraGreenHeavyDark leading-0 block">
+                  <span className="text-[8px] sm:text-[10px] text-pricetra-green-heavy-dark leading-0 block">
                     {metersToMiles(stock.branch.address.distance)} mi
+                  </span>
+                </div>
+              )}
+
+              {stock.branch.onlineAddress && (
+                <div className="mb-1 rounded-full bg-pricetraGreenDark/10 px-1.5 py-2 sm:px-2 sm:py-2.5">
+                  <span className="text-[8px] sm:text-[10px] text-pricetra-green-heavy-dark leading-0 block">
+                    Online
                   </span>
                 </div>
               )}
             </div>
           )}
 
-          <h5 className="text-[13px] sm:text-sm line-clamp-2">
+          <h5 className="text-[13px] sm:text-sm line-clamp-2 leading-none">
             {stock.store.name}
           </h5>
 
-          <p className="text-[9px] sm:text-[12px] line-clamp-2 break-all">
-            {stock.branch.address?.street}, {stock.branch.address?.city}
+          <p className="text-[9px] sm:text-[11px] line-clamp-2 sm:break-all">
+            {stock.branch.address && (
+              <>
+                {stock.branch.address?.street}, {stock.branch.address?.city}
+              </>
+            )}
+            {stock.branch.onlineAddress && <>{storeUrl}</>}
           </p>
 
           <div
@@ -126,14 +148,13 @@ export default function StockItemMini({
               </div>
             )}
 
-            {stock.latestPrice?.amount &&
-              pricePerUnit && (
-                <span className="text-[10px] text-gray-500 leading-none">
-                  {`${currencyFormat(
-                    pricePerUnit.amount,
-                  )} / ${pricePerUnit.unit}`}
-                </span>
-              )}
+            {stock.latestPrice?.amount && pricePerUnit && (
+              <span className="text-[10px] text-gray-500 leading-none">
+                {`${currencyFormat(
+                  pricePerUnit.amount,
+                )} / ${pricePerUnit.unit}`}
+              </span>
+            )}
 
             {approximatePrice && (
               <span className="">
