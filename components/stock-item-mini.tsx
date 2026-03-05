@@ -107,11 +107,11 @@ export default function StockItemMini({
             </div>
           )}
 
-          <h5 className="text-[13px] sm:text-sm line-clamp-2">
+          <h5 className="text-[13px] sm:text-sm line-clamp-2 leading-none">
             {stock.store.name}
           </h5>
 
-          <p className="text-[9px] sm:text-[12px] line-clamp-2 break-all">
+          <p className="text-[9px] sm:text-[11px] line-clamp-2 sm:break-all">
             {stock.branch.address && (
               <>
                 {stock.branch.address?.street}, {stock.branch.address?.city}
