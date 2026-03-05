@@ -61,15 +61,7 @@ export default function StockFull({
             alt={stock.store.name}
           />
         </Link>
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            gap: 4,
-            flexWrap: "wrap",
-            flex: 1,
-          }}
-        >
+        <div className="flex flex-row gap-1 flex-wrap flex-1">
           {stock.latestPrice?.sale && !isExpired && (
             <div className="w-[35px]">
               <span className="inline-block rounded-md bg-red-700 px-1.5 py-1 text-center text-[9px] font-bold text-white">
@@ -80,7 +72,7 @@ export default function StockFull({
 
           <div className="flex w-full flex-row items-center gap-2.5">
             <Link href={`/stores/${stock.store.slug}/${stock.branch.slug}`}>
-              <h3 className="flex-1 text-base xl:text-lg font-bold line-clamp-1">
+              <h3 className="flex-1 text-base xl:text-lg font-bold line-clamp-2 leading-none">
                 {stock.store.name}
               </h3>
             </Link>
@@ -100,9 +92,7 @@ export default function StockFull({
                 className="rounded-full bg-pricetraGreenDark/10 px-2 py-0.5 hover:underline block text-pricetraGreenHeavyDark text-xs"
                 title="View online store in new tab"
               >
-                <span>
-                  Online
-                </span>
+                <span>Online</span>
               </a>
             )}
           </div>
