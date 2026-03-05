@@ -83,7 +83,7 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
 
   return (
     <>
-      <div className="w-full max-w-[1000px] mt-0 flex-1">
+      <div className="w-full max-w-[1000px] mt-0 flex-2">
         <section>
           <div className="px-5 mt-5 mb-16">
             <h1 className="font-bold text-xl sm:text-2xl">
@@ -159,7 +159,7 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
           )}
       </div>
 
-      <div className="w-full px-2 relative">
+      <div className="w-full px-2 relative flex-1">
         <div
           className="w-full h-screen hidden lg:block lg:sticky top-0"
           style={{

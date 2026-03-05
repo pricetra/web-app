@@ -281,7 +281,7 @@ export default function BranchPageClient({
             </div>
 
             {categorizedProductsData?.categoriesWithProducts?.paginator &&
-              categorizedProductsData.categoriesWithProducts.paginator && (
+              categorizedProductsData.categoriesWithProducts.paginator.numPages > 1 && (
                 <div className="mt-20">
                   <SmartPagination
                     paginator={
