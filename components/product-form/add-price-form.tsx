@@ -327,7 +327,7 @@ function PriceForm({ stock, branch, latestPrice }: PriceFormProps) {
   const formikContext = useFormikContext<CreatePrice>();
   const nextWeek = dayjs(new Date()).add(7, "day").toDate();
   const [available, setAvailable] = useState(true);
-  const { myStoreUsers } = useAuth();
+  const { myStoreUsers, user } = useAuth();
 
   const isStoreUser = useMemo(() => {
     const storeUser = myStoreUsers?.find((v) => {
@@ -352,6 +352,7 @@ function PriceForm({ stock, branch, latestPrice }: PriceFormProps) {
       condition: latestPrice.condition,
       unitType: latestPrice.unitType,
       expiresAt: latestPrice.expiresAt,
+      onlineItem: stock?.onlineItem,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [latestPrice]);
@@ -496,6 +497,39 @@ function PriceForm({ stock, branch, latestPrice }: PriceFormProps) {
               />
             </div>
           </>
+        )}
+
+        {user && isRoleAuthorized(UserRole.Admin, user.role) && (
+          <div className="mt-5">
+            <h5 className="mb-2 font-semibold text-sm">
+              Online Product Details
+            </h5>
+
+            <div className="flex flex-row items-center gap-2">
+              <div className="flex-2">
+                <Input
+                  placeholder="Online product URL"
+                  value={formikContext.values.onlineItem?.url ?? ""}
+                  type="url"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    formikContext.setFieldValue("onlineItem.url", value);
+                  }}
+                />
+              </div>
+              <div className="flex-1">
+                <Input
+                  placeholder="Online product item ID"
+                  value={formikContext.values.onlineItem?.itemId ?? ""}
+                  type="text"
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    formikContext.setFieldValue("onlineItem.itemId", value);
+                  }}
+                />
+              </div>
+            </div>
+          </div>
         )}
       </div>
     </>
