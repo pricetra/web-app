@@ -399,7 +399,10 @@ function PriceForm({ stock, branch, latestPrice }: PriceFormProps) {
       condition: latestPrice.condition,
       unitType: latestPrice.unitType,
       expiresAt: latestPrice.expiresAt,
-      onlineItem: stock?.onlineItem,
+      onlineItem: stock?.onlineItem ? {
+        url: stock.onlineItem.url,
+        itemId: stock.onlineItem.itemId,
+      } : undefined,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [latestPrice]);
