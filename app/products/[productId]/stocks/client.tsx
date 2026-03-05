@@ -5,7 +5,8 @@ import StockItemMini, { StockItemMiniLoading } from "@/components/stock-item-min
 import { SmartPagination } from "@/components/ui/smart-pagination";
 import useLocationInput from "@/hooks/useLocationInput";
 import { useQuery } from "@apollo/client/react";
-import { GetProductStocksDocument, Product, Stock } from "graphql-utils";
+import { BranchType, GetProductStocksDocument, Product, Stock } from "graphql-utils";
+import { useSearchParams } from "next/navigation";
 
 export type ProductSocksPageClientProps = {
   ipAddress: string;
@@ -19,6 +20,9 @@ export default function ProductSocksPageClient({
   page,
 }: ProductSocksPageClientProps) {
   const locationInput = useLocationInput(ipAddress);
+  const searchParams = useSearchParams();
+  const physicalBranchType = BranchType.Physical.toString();
+  const branchType = searchParams.get("branchType") ?? physicalBranchType;
   const { data: stocksData } = useQuery(GetProductStocksDocument, {
     variables: {
       paginator: {
@@ -26,7 +30,8 @@ export default function ProductSocksPageClient({
         limit: 50,
       },
       productId: product.id,
-      location: locationInput?.locationInput,
+      location: branchType === physicalBranchType ? locationInput?.locationInput : undefined,
+      branchType: branchType.toUpperCase() as BranchType,
     },
     fetchPolicy: "no-cache",
   });
