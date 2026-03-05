@@ -3,7 +3,7 @@
 import { useMutation } from "@apollo/client/react";
 import {
   BusinessForm,
-  CreateStoreDocument,
+  // CreateStoreDocument,
   CreateStoreWithBusinessFormDocument,
 } from "graphql-utils";
 import { useRouter } from "next/navigation";
@@ -22,7 +22,7 @@ export default function AddStoreClient({
   const router = useRouter();
   const [createStoreWithBusinessForm, { loading: creatingBusinessFormStore }] =
     useMutation(CreateStoreWithBusinessFormDocument);
-  const [createStore, {loading: creatingStore}] = useMutation(CreateStoreDocument);
+  // const [createStore, {loading: creatingStore}] = useMutation(CreateStoreDocument);
 
   useEffect(() => {
     if (!businessFormId) return;
