@@ -328,6 +328,12 @@ function PriceForm({ stock, branch, latestPrice }: PriceFormProps) {
   const nextWeek = dayjs(new Date()).add(7, "day").toDate();
   const [available, setAvailable] = useState(true);
   const { myStoreUsers, user } = useAuth();
+  const basePriceInput = {
+    productId: formikContext.values.productId,
+    branchId: formikContext.values.branchId,
+    amount: 0,
+    unitType: "item",
+  } as CreatePrice;
 
   const isStoreUser = useMemo(() => {
     const storeUser = myStoreUsers?.find((v) => {
@@ -341,7 +347,10 @@ function PriceForm({ stock, branch, latestPrice }: PriceFormProps) {
   }, [myStoreUsers, branch]);
 
   useEffect(() => {
-    if (!latestPrice) return;
+    if (!latestPrice) {
+      formikContext.setValues({ ...basePriceInput } as CreatePrice);
+      return;
+    }
 
     formikContext.setValues({
       ...formikContext.values,
