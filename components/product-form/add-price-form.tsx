@@ -93,13 +93,13 @@ export default function AddPriceForm({
   );
   const stock = stockData?.getStockFromProductAndBranchId as Stock | undefined;
   const [branchId, setBranchId] = useState<number>();
-  const selectedBranch = useMemo(
-    () => {
+  const selectedBranch = useMemo(() => {
     if (!branchId) return undefined;
-      return branches.find(({ id }) => branchId === id) ?? onlineBranchesData?.allBranches.branches.find(({ id }) => branchId === id);
-    },
-    [branchId, branches, onlineBranchesData],
-  );
+    return (
+      branches.find(({ id }) => branchId === id) ??
+      onlineBranchesData?.allBranches.branches.find(({ id }) => branchId === id)
+    );
+  }, [branchId, branches, onlineBranchesData]);
 
   useEffect(() => {
     if (!location || !user) return;
@@ -326,7 +326,18 @@ export default function AddPriceForm({
                   <Button
                     className="bg-pricetra-green-heavy-dark hover:bg-pricetra-green-heavy-dark-hover"
                     type="submit"
-                    onClick={formik.submitForm}
+                    onClick={() => {
+                      if (
+                        formik.values.onlineItem &&
+                        selectedBranch.type !== BranchType.Online
+                      ) {
+                        const confirm = window.confirm(
+                          `Are you sure you want to add an online price to an in-store branch (${selectedBranch.name})?`,
+                        );
+                        if (!confirm) return;
+                      }
+                      formik.submitForm();
+                    }}
                     disabled={loading || !formik.isValid}
                   >
                     {loading ? (
