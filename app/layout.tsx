@@ -6,10 +6,11 @@ import "react-loading-skeleton/dist/skeleton.css";
 import "aos/dist/aos.css";
 import "react-horizontal-scrolling-menu/dist/styles.css";
 import "@/public/globals.css";
-import 'react-photo-view/dist/react-photo-view.css';
+import "react-photo-view/dist/react-photo-view.css";
 import AppProvider from "@/providers/app-provider";
 import { GA_TRACKING_ID, GADS_PUB_ID } from "@/constants/google";
 import RouteProgress from "@/components/ui/route-progress";
+import RouteHistoryContextProvider from "@/context/route-history";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -69,10 +70,7 @@ export default function RootLayout({
             />
 
             {/* AdSense code */}
-            <meta
-              name="google-adsense-account"
-              content={`ca-${GADS_PUB_ID}`}
-            />
+            <meta name="google-adsense-account" content={`ca-${GADS_PUB_ID}`} />
             <Script
               async
               src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-${GADS_PUB_ID}`}
@@ -88,9 +86,11 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Suspense fallback={<SuspenseFallback />}>
-          <RouteProgress />
+          <RouteHistoryContextProvider>
+            <RouteProgress />
 
-          <AppProvider>{children}</AppProvider>
+            <AppProvider>{children}</AppProvider>
+          </RouteHistoryContextProvider>
         </Suspense>
       </body>
     </html>

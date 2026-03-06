@@ -39,6 +39,7 @@ import { useInView } from "react-intersection-observer";
 import Image from "next/image";
 import Link from "@/components/ui/link";
 import { startOfNextSundayUTC } from "@/lib/utils";
+import { useRouteHistory } from "@/context/route-history";
 
 export type ProductPageProps = {
   productId: number;
@@ -58,6 +59,7 @@ export default function ProductPage({
   productSummary,
 }: ProductPageProps) {
   const router = useRouter();
+  const { prevRoute } = useRouteHistory();
   const { navbarHeight, setSearchPlaceholder, setSearchQueryPath } =
     useNavbar();
   const { loggedIn, lists } = useAuth();
@@ -67,7 +69,10 @@ export default function ProductPage({
     ProductDocument,
     {
       fetchPolicy: "network-only",
-      variables: { productId, viewerTrail: { stockId, referrer, metadata } },
+      variables: {
+        productId,
+        viewerTrail: { stockId, referrer, metadata, origin: prevRoute },
+      },
     },
   );
   const [getStock, { data: stockData, error: stockError }] = useLazyQuery(
