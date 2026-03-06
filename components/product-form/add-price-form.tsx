@@ -95,7 +95,7 @@ export default function AddPriceForm({
   const [branchId, setBranchId] = useState<number>();
   const selectedBranch = useMemo(
     () => {
-      if (!branchId) return undefined;
+    if (!branchId) return undefined;
       return branches.find(({ id }) => branchId === id) ?? onlineBranchesData?.allBranches.branches.find(({ id }) => branchId === id);
     },
     [branchId, branches, onlineBranchesData],
@@ -399,10 +399,12 @@ function PriceForm({ stock, branch, latestPrice }: PriceFormProps) {
       condition: latestPrice.condition,
       unitType: latestPrice.unitType,
       expiresAt: latestPrice.expiresAt,
-      onlineItem: stock?.onlineItem ? {
-        url: stock.onlineItem.url,
-        itemId: stock.onlineItem.itemId,
-      } : undefined,
+      onlineItem: stock?.onlineItem
+        ? {
+            url: stock.onlineItem.url,
+            itemId: stock.onlineItem.itemId,
+          }
+        : undefined,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [latestPrice]);
@@ -575,6 +577,30 @@ function PriceForm({ stock, branch, latestPrice }: PriceFormProps) {
                   onChange={(e) => {
                     const value = e.target.value;
                     formikContext.setFieldValue("onlineItem.itemId", value);
+
+                    if (branch.onlineAddress?.itemUrlTemplate) {
+                      let generatedUrl =
+                        branch.onlineAddress.itemUrlTemplate.replaceAll(
+                          "[PRODUCT_ID]",
+                          value,
+                        );
+
+                      if (branch.onlineAddress.referralCode) {
+                        generatedUrl = generatedUrl.replace(
+                          "[REFERRAL_CODE]",
+                          branch.onlineAddress.referralCode,
+                        );
+                        formikContext.setFieldValue(
+                          "onlineItem.url",
+                          generatedUrl,
+                        );
+                      }
+
+                      formikContext.setFieldValue(
+                        "onlineItem.url",
+                        generatedUrl,
+                      );
+                    }
                   }}
                 />
               </div>
