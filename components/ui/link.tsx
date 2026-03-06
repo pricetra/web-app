@@ -18,7 +18,8 @@ export default function Link({ onClick, ...props }: CustomLinkType) {
           e.ctrlKey ||
           e.shiftKey ||
           e.altKey ||
-          e.button !== 0
+          e.button !== 0 ||
+          props.target === "_blank"
         ) {
           return;
         }
