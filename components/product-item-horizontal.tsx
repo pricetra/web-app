@@ -1,7 +1,12 @@
 import Image from "next/image";
 import { Product, ProductSimple } from "graphql-utils";
 import { createCloudinaryUrl, productImageUrlWithTimestamp } from "@/lib/files";
-import { currencyFormat, getPriceUnit, validBrand } from "@/lib/strings";
+import {
+  currencyFormat,
+  getPriceUnit,
+  slugifyProductName,
+  validBrand,
+} from "@/lib/strings";
 import Skeleton from "react-loading-skeleton";
 import ProductMetadataBadge from "./product-metadata-badge";
 import Link from "@/components/ui/link";
@@ -31,8 +36,8 @@ export default function ProductItemHorizontal({
   });
   const pricePerUnit = usePricePerUnit(calculatedAmount, product);
   const href = useMemo(() => {
-    return `/products/${product.id}${branchSlug ? `/${branchSlug}` : ""}`;
-  }, [product.id, branchSlug]);
+    return `/products/${product.code}-${slugifyProductName(product.name)}${branchSlug ? `/${branchSlug}` : ""}`;
+  }, [product.code, product.name, branchSlug]);
 
   return (
     <Link
@@ -116,7 +121,7 @@ export default function ProductItemHorizontal({
                       product.stock.store.logo ?? "",
                       100,
                       100,
-                      startOfNextSundayUTC()
+                      startOfNextSundayUTC(),
                     )}
                     className="size-[25px] rounded-sm"
                     width={100}

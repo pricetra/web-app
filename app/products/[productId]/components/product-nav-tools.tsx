@@ -37,6 +37,7 @@ import { FaHandSparkles } from "react-icons/fa6";
 import { FiEdit, FiPlus, FiShare } from "react-icons/fi";
 import { toast } from "sonner";
 import ShareDialog from "./share-dialog";
+import { slugifyProductName } from "@/lib/strings";
 
 export type ProductNavToolsProps = {
   product: Product;
@@ -259,8 +260,8 @@ export default function ProductNavTools({
                 <AddPriceForm
                   product={product}
                   onCancel={() => setPriceModalOpen(false)}
-                  onSuccess={(p) => {
-                    router.replace(`/products/${product.id}?stockId=${p.stockId}`);
+                  onSuccess={(_, branch) => {
+                    router.replace(`/products//${product.code}-${slugifyProductName(product.name)}/${branch.slug}`);
                     toast.success("Product price submitted");
                     setPriceModalOpen(false);
                   }}
