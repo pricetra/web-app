@@ -17,7 +17,7 @@ import { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/he
 import { userAgentFromString } from "next/server";
 import { cache } from "react";
 import { ProductPageSearchParams } from "./types";
-import { notFound, redirect, RedirectType } from "next/navigation";
+import { notFound, permanentRedirect, RedirectType } from "next/navigation";
 import { extractProductCodeFromUrlParam, slugifyProductName } from "@/lib/strings";
 
 export const cachedFetchProductDetails = cache(
@@ -149,7 +149,8 @@ export async function fetchAndHandleProduct(
   rawSlug: string,
   stockId?: number,
   branch?: ProductSummaryBranchInput,
-  searchParams?: Omit<ProductPageSearchParams, "stockId">,
+  searchParams?: Omit<unknown, "stockId">,
+  restPath: string = '',
 ) {
   const urlExtraction = extractProductCodeFromUrlParam(rawSlug);
   if (!urlExtraction) {
@@ -169,7 +170,7 @@ export async function fetchAndHandleProduct(
   const nameSlug = slugifyProductName(productSummary.name);
   const paramBuilder = new URLSearchParams(searchParams);
   const paramStr = paramBuilder.size > 0 ? `?${paramBuilder.toString()}` : ''
-  const fullPath = `/products/${productSummary.code}-${nameSlug}${productSummary.branchSlug ? `/${productSummary.branchSlug}` : ""}${paramStr}`;
+  const fullPath = `/products/${productSummary.code}-${nameSlug}${productSummary.branchSlug ? `/${productSummary.branchSlug}` : ""}${restPath}${paramStr}`;
   let redirectNeeded = false;
   if (code != productSummary.code) {
     redirectNeeded = true;
@@ -186,7 +187,7 @@ export async function fetchAndHandleProduct(
   }
 
   if (redirectNeeded) {
-    redirect(
+    permanentRedirect(
       fullPath,
       RedirectType.replace,
     );
