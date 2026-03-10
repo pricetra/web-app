@@ -8,7 +8,7 @@ import {
   User,
 } from "graphql-utils";
 import { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/headers";
-import { isDateExpired, toBoolean } from "./utils";
+import { isDateExpired, toBoolean } from './utils';
 import slugify from "slugify";
 
 export function titleCase(str: string) {
@@ -241,7 +241,7 @@ export function cleanUrl(url: string): string {
 }
 
 export function slugifyProductName(name: string): string {
-  return slugify(name, { lower: false });
+  return slugify(name, { lower: true, strict: true });
 }
 
 // Given: 028400516310-doritos-cool-ranch-tortilla-chips-925-oz
