@@ -155,10 +155,8 @@ export async function fetchAndHandleProduct(
   if (!urlExtraction) {
     notFound();
   }
+
   const { code, slug } = urlExtraction;
-
-  console.log(code, slug)
-
   const productSummary = await cachedFetchProductSummary(
     code,
     stockId,
@@ -172,26 +170,22 @@ export async function fetchAndHandleProduct(
   const paramBuilder = new URLSearchParams(searchParams);
   const paramStr = paramBuilder.size > 0 ? `?${paramBuilder.toString()}` : ''
   const fullPath = `/products/${productSummary.code}-${nameSlug}${productSummary.branchSlug ? `/${productSummary.branchSlug}` : ""}${paramStr}`;
+  let redirectNeeded = false;
   if (code != productSummary.code) {
-    redirect(
-      fullPath,
-      RedirectType.replace,
-    );
+    redirectNeeded = true;
   }
   if (slug !== nameSlug) {
-    redirect(
-      fullPath,
-      RedirectType.replace,
-    );
+    redirectNeeded = true;
   }
 
   if (branch && branch.branchSlug !== productSummary.branchSlug) {
-    redirect(
-      fullPath,
-      RedirectType.replace,
-    );
+    redirectNeeded = true;
   }
   if (stockId && productSummary.branchSlug) {
+    redirectNeeded = true;
+  }
+
+  if (redirectNeeded) {
     redirect(
       fullPath,
       RedirectType.replace,
