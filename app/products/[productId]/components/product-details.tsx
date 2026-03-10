@@ -48,6 +48,7 @@ import { getRandomIntInclusive } from "@/lib/utils";
 import HorizontalProductAd from "@/components/ads/horizontal-product-ad";
 import convert from "convert-units";
 import MultiplexAds from "@/components/ads/multiplex-ads";
+import { slugifyProductName } from "@/lib/strings";
 
 export type StockWithApproximatePrice = Stock & {
   approximatePrice?: number;
@@ -178,6 +179,11 @@ export default function ProductDetails({
     return branchIds.slice(0, BRANCH_LIMIT);
   }
 
+  const productUrlPath = useMemo(
+    () => `/products/${product.code}-${slugifyProductName(product.name)}`,
+    [product.code, product.name],
+  );
+
   useEffect(() => {
     if (!relatedProductsSectionInView) return;
     if (!product.category) return;
@@ -202,7 +208,10 @@ export default function ProductDetails({
             (id) => id !== stock?.branchId,
           );
           if (stock) {
-            branchIdsWithStockBranchId = [stock.branchId, ...branchIdsWithStockBranchId];
+            branchIdsWithStockBranchId = [
+              stock.branchId,
+              ...branchIdsWithStockBranchId,
+            ];
           }
           variables.paginator.limit = branchIdsWithStockBranchId.length;
           variables.filters = {
@@ -314,10 +323,11 @@ export default function ProductDetails({
                       ))}
                     </section>
 
-                    {inStoreStocksData.getProductStocks.paginator.numPages > 1 && (
+                    {inStoreStocksData.getProductStocks.paginator.numPages >
+                      1 && (
                       <div className="flex flex-row items-center justify-center mt-7 mb-10">
                         <Link
-                          href={`/products/${product.id}/stocks?branchType=${BranchType.Physical}`}
+                          href={`${productUrlPath}/stocks?branchType=${BranchType.Physical}`}
                           className="bg-gray-200 hover:bg-gray-300 text-gray-800 hover:text-black flex flex-row items-center justify-center gap-2 px-5 py-2 rounded-full font-bold"
                         >
                           Show All
@@ -371,10 +381,11 @@ export default function ProductDetails({
                       ))}
                     </section>
 
-                    {onlineStocksData.getProductStocks.paginator.numPages > 1 && (
+                    {onlineStocksData.getProductStocks.paginator.numPages >
+                      1 && (
                       <div className="flex flex-row items-center justify-center mt-7 mb-10">
                         <Link
-                          href={`/products/${product.id}/stocks?branchType=${BranchType.Online}`}
+                          href={`${productUrlPath}/stocks?branchType=${BranchType.Online}`}
                           className="bg-gray-200 hover:bg-gray-300 text-gray-800 hover:text-black flex flex-row items-center justify-center gap-2 px-5 py-2 rounded-full font-bold"
                         >
                           Show All

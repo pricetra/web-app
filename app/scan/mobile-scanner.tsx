@@ -22,6 +22,7 @@ import useAddProductPrompt from "@/hooks/useAddProductPrompt";
 import ExtractImageDialog from "./components/extract-image-dialog";
 import { handleInputFile } from "@/lib/files";
 import { toast } from "sonner";
+import { slugifyProductName } from "@/lib/strings";
 
 export default function MobileScanner() {
   const router = useRouter();
@@ -61,7 +62,7 @@ export default function MobileScanner() {
                 params.set("stockId", String(data.barcodeScan.stock.id));
               }
               router.push(
-                `/products/${data.barcodeScan.id}${params.size > 0 ? `?${params.toString()}` : ""}`,
+                `/products/${data.barcodeScan.code}-${slugifyProductName(data.barcodeScan.name)}${params.size > 0 ? `?${params.toString()}` : ""}`,
               );
             },
             onError: () => setOpenAddUpcModal(true),
@@ -92,7 +93,9 @@ export default function MobileScanner() {
 
               handleExtractionImage(file, scannedCode, {
                 onSuccess: (data) => {
-                  router.push(`/products/${data.extractAndCreateProduct.id}`);
+                  router.push(
+                    `/products/${data.extractAndCreateProduct.code}-${slugifyProductName(data.extractAndCreateProduct.name)}`,
+                  );
                 },
                 onError: (err) => {
                   toast.error(

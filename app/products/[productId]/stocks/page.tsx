@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import LayoutProvider from "@/providers/layout-provider";
 import { headers } from "next/headers";
-import { serverSideIpAddress } from "@/lib/strings";
-import { cachedFetchProductDetails } from "../utils";
+import { serverSideIpAddress, slugifyProductName } from "@/lib/strings";
+import { cachedFetchProductDetails, fetchAndHandleProduct } from "../utils";
 import ProductSocksPageClient from "./client";
 import { parsePage } from "@/lib/utils";
 
@@ -12,18 +12,25 @@ type Props = {
   searchParams: Promise<{ page?: string }>;
 };
 
-export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: Props): Promise<Metadata> {
   const { productId } = await params;
-  const parsedProductId = parseInt(productId, 10);
-
-  const productDetails = await cachedFetchProductDetails(parsedProductId);
-  if (!productDetails) return { title: "Product not found - Pricetra" };
-
-  const { page } = await searchParams;
+  const sp = await searchParams;
+  const productSummary = await fetchAndHandleProduct(
+    productId,
+    undefined,
+    undefined,
+    sp,
+    '/stocks',
+  );
+  const { page } = sp;
   const parsedPage = parsePage(page);
 
-  const title = `Available stocks for ${productDetails.name} page ${parsedPage}`;
-  const description = `View all product availability for ${productDetails.name}, sorted by your location.`;
+  const title = `Available stocks for ${productSummary.name} page ${parsedPage}`;
+  const description = `View all product availability for ${productSummary.name}, sorted by your location.`;
+  const url = `https://pricetra.com/products/${productSummary.code}-${slugifyProductName(productSummary.name)}/stocks`
   return {
     title: `${title} on Pricetra`,
     description,
@@ -32,22 +39,34 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
       siteName: "Pricetra",
       title,
       description,
-      images: productDetails.image,
-      url: `https://pricetra.com/products/${parsedProductId}/stocks`,
+      images: productSummary.image,
+      url,
+    },
+    alternates: {
+      canonical: url,
     },
   };
 }
 
-export default async function ProductSocksPageServer({ params, searchParams }: Props) {
+export default async function ProductSocksPageServer({
+  params,
+  searchParams,
+}: Props) {
   const { productId } = await params;
-  const parsedProductId = parseInt(productId, 10);
-
-  const productDetails = await cachedFetchProductDetails(parsedProductId);
+  const sp = await searchParams;
+  const productSummary = await fetchAndHandleProduct(
+    productId,
+    undefined,
+    undefined,
+    sp,
+    '/stocks',
+  );
+  const productDetails = await cachedFetchProductDetails(productSummary.id);
   if (!productDetails) {
     notFound();
   }
 
-  const { page } = await searchParams;
+  const { page } = sp;
   const parsedPage = parsePage(page);
 
   const headerList = await headers();
@@ -55,7 +74,11 @@ export default async function ProductSocksPageServer({ params, searchParams }: P
 
   return (
     <LayoutProvider>
-      <ProductSocksPageClient product={productDetails} ipAddress={ipAddress} page={parsedPage} />
+      <ProductSocksPageClient
+        product={productDetails}
+        ipAddress={ipAddress}
+        page={parsedPage}
+      />
     </LayoutProvider>
   );
 }

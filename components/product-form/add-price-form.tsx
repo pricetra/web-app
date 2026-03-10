@@ -47,7 +47,7 @@ import { toBoolean } from "@/lib/utils";
 export type AddPriceFormProps = {
   product: Product;
   onCancel: () => void;
-  onSuccess: (p: Price) => void;
+  onSuccess: (price: Price, branch: Branch) => void;
   onError: (e: ErrorLike) => void;
 };
 
@@ -288,7 +288,7 @@ export default function AddPriceForm({
             })
               .then(({ data }) => {
                 if (!data) return;
-                onSuccess(data.createPrice as Price);
+                onSuccess(data.createPrice as Price, selectedBranch as Branch);
               })
               .catch((e) => onError(e));
           }}

@@ -3,7 +3,7 @@ import { Product, Stock } from "graphql-utils";
 import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import { createCloudinaryUrl } from "@/lib/files";
-import { cleanUrl, currencyFormat, getPriceUnitOrEach } from "@/lib/strings";
+import { cleanUrl, currencyFormat, getPriceUnitOrEach, slugifyProductName } from "@/lib/strings";
 import { cn, metersToMiles, startOfNextSundayUTC } from "@/lib/utils";
 import Image from "next/image";
 import { DetailedHTMLProps, HTMLAttributes, useMemo } from "react";
@@ -21,7 +21,6 @@ export type StockItemMiniProps = {
 };
 
 export default function StockItemMini({
-  productId,
   product,
   stock,
   approximatePrice,
@@ -58,7 +57,7 @@ export default function StockItemMini({
       <LinkOrDiv
         href={
           stock.branch && !disabled
-            ? `/products/${productId}/${stock.branch.slug}`
+            ? `/products/${product.code}-${slugifyProductName(product.name)}/${stock.branch.slug}`
             : undefined
         }
         className="flex gap-2 flex-row"

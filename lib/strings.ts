@@ -8,7 +8,8 @@ import {
   User,
 } from "graphql-utils";
 import { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/headers";
-import { isDateExpired, toBoolean } from "./utils";
+import { isDateExpired, toBoolean } from './utils';
+import slugify from "slugify";
 
 export function titleCase(str: string) {
   return str
@@ -107,7 +108,7 @@ export function validBrand(brand?: string | null): boolean {
 
 export function searchParamsTitleBuilder(
   sp: SearchRouteParams,
-  prefix?: string
+  prefix?: string,
 ): string {
   const parsedSearchParams = new URLSearchParams(sp);
   let title = prefix ?? "";
@@ -152,7 +153,7 @@ export function objectToBase64<T>(ob: T): string {
 export function buildProductBaseUrl(product: Product, stock?: Stock): string {
   return `https://pricetra.com/products/${product.id}${
     stock?.branch ? `/${stock.branch.slug}` : ""
-  }`
+  }`;
 }
 
 export type SocialMediaType =
@@ -166,7 +167,7 @@ export function generateProductShareLink(
   socialMedia: SocialMediaType,
   product: Product,
   stock?: Stock,
-  user?: User
+  user?: User,
 ) {
   const paramBuilder = new URLSearchParams();
   const referrer: ProductReferrer = {
@@ -198,7 +199,7 @@ export function generateProductShareDescription(
       description += " on sale";
     }
     description += ` for ${currencyFormat(
-      saleExpired ? price.originalPrice ?? price.amount : price.amount
+      saleExpired ? (price.originalPrice ?? price.amount) : price.amount,
     )}`;
 
     if (price.originalPrice && price.expiresAt && !saleExpired) {
@@ -214,7 +215,7 @@ export function generateProductShareDescription(
   description += ". #BeatInflation";
   if (showUrl) {
     description += "\n";
-    description += generateProductShareLink('other', product, stock, user);
+    description += generateProductShareLink("other", product, stock, user);
   }
   return description;
 }
@@ -236,5 +237,21 @@ export function cleanUrl(url: string): string {
   // /^https?:\/\/ (matches 'http://' or 'https://' at the start of the string)
   // (www\.)?        (optionally matches 'www.')
   // /i              (case-insensitive flag)
-  return url.replace(/^https?:\/\/(www\.)?/i, '');
+  return url.replace(/^https?:\/\/(www\.)?/i, "");
+}
+
+export function slugifyProductName(name: string): string {
+  return slugify(name, { lower: true, strict: true });
+}
+
+// Given: 028400516310-doritos-cool-ranch-tortilla-chips-925-oz
+// Return: 028400516310, doritos-cool-ranch-tortilla-chips-925-oz
+export function extractProductCodeFromUrlParam(
+  param: string,
+): { code: string; slug?: string } | undefined {
+  const splitParam = param.split("-");
+  if (splitParam.length === 0) return undefined;
+
+  const slug = splitParam.slice(1).join("-");
+  return { code: splitParam[0], slug: slug.length > 0 ? slug : undefined };
 }

@@ -17,33 +17,41 @@ import { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/he
 import { userAgentFromString } from "next/server";
 import { cache } from "react";
 import { ProductPageSearchParams } from "./types";
+import { notFound, permanentRedirect, RedirectType } from "next/navigation";
+import { extractProductCodeFromUrlParam, slugifyProductName } from "@/lib/strings";
 
 export const cachedFetchProductDetails = cache(
   async (productId: number, jwt?: string) => {
-    const { data } = await fetchGraphql<
-      ProductQueryVariables,
-      ProductQuery
-    >(ProductDocument, "query", { productId }, jwt);
+    const { data } = await fetchGraphql<ProductQueryVariables, ProductQuery>(
+      ProductDocument,
+      "query",
+      { productId },
+      jwt,
+    );
     if (!data || !data.product) return null;
 
     return data.product;
-  }
+  },
 );
 
 export const cachedFetchProductSummary = cache(
   async (
-    productId: number,
+    productId: string,
     stockId?: number,
-    branch?: ProductSummaryBranchInput
+    branch?: ProductSummaryBranchInput,
   ) => {
     const { data } = await fetchGraphql<
       ProductSummaryQueryVariables,
       ProductSummaryQuery
-    >(ProductSummaryDocument, "query", { productId, stockId, branch });
+    >(ProductSummaryDocument, "query", {
+      sid: productId,
+      stockId,
+      branch,
+    });
     if (!data || !data.productSummary) return null;
 
     return data.productSummary;
-  }
+  },
 );
 
 const DATE_FORMAT = "MMM D, YYYY";
@@ -68,7 +76,7 @@ export function productSeoTitleAndDescription(p: ProductSummary) {
     description += ` (${p.address})`;
   }
   if (p.price) {
-    description += ` for ${saleExpired ? p.originalPrice ?? "N/A" : p.price}`;
+    description += ` for ${saleExpired ? (p.originalPrice ?? "N/A") : p.price}`;
     if (p.priceCurrencyCode) description += ` ${p.priceCurrencyCode}`;
   }
   if (p.sale && p.sale === true && p.saleExpiresAt && !saleExpired) {
@@ -77,12 +85,12 @@ export function productSeoTitleAndDescription(p: ProductSummary) {
       description += ` (Was ${p.originalPrice})`;
     }
     description += `, sale expires on ${dayjs(p.saleExpiresAt).format(
-      DATE_FORMAT
+      DATE_FORMAT,
     )}`;
   }
   if (p.priceCreatedAt) {
     description += `. Price reported on ${dayjs(p.priceCreatedAt).format(
-      DATE_FORMAT
+      DATE_FORMAT,
     )}`;
   }
   if (p.description && p.description.length > 0) {
@@ -91,7 +99,11 @@ export function productSeoTitleAndDescription(p: ProductSummary) {
   return { title, description };
 }
 
-export function pageProductMetrics(headerList: ReadonlyHeaders, ipAddress: string, sp: ProductPageSearchParams) {
+export function pageProductMetrics(
+  headerList: ReadonlyHeaders,
+  ipAddress: string,
+  sp: ProductPageSearchParams,
+) {
   let referrer: ProductReferrer | undefined;
   if (sp.sharedBy) {
     if (!referrer) referrer = {};
@@ -108,8 +120,8 @@ export function pageProductMetrics(headerList: ReadonlyHeaders, ipAddress: strin
     } catch {}
   }
 
-  const userAgent = headerList.get('user-agent');
-  const { device: deviceOb } = userAgentFromString(userAgent ?? '');
+  const userAgent = headerList.get("user-agent");
+  const { device: deviceOb } = userAgentFromString(userAgent ?? "");
   const deviceComponents: string[] = [];
   if (deviceOb) {
     if (deviceOb.vendor) {
@@ -119,15 +131,67 @@ export function pageProductMetrics(headerList: ReadonlyHeaders, ipAddress: strin
       deviceComponents.push(deviceOb.model);
     }
   }
-  const device = deviceComponents.length > 0 ? deviceComponents.join(" ") : undefined;
+  const device =
+    deviceComponents.length > 0 ? deviceComponents.join(" ") : undefined;
   const metadata: ProductViewerMetadata = {
     ipAddress,
     userAgent,
     device,
-  }
+  };
 
   return {
     referrer,
     metadata,
+  };
+}
+
+export async function fetchAndHandleProduct(
+  rawSlug: string,
+  stockId?: number,
+  branch?: ProductSummaryBranchInput,
+  searchParams?: Omit<unknown, "stockId">,
+  restPath: string = '',
+) {
+  const urlExtraction = extractProductCodeFromUrlParam(rawSlug);
+  if (!urlExtraction) {
+    notFound();
   }
+
+  const { code, slug } = urlExtraction;
+  const productSummary = await cachedFetchProductSummary(
+    code,
+    stockId,
+    branch ?? undefined,
+  );
+  if (!productSummary) {
+    notFound();
+  }
+
+  const nameSlug = slugifyProductName(productSummary.name);
+  const paramBuilder = new URLSearchParams(searchParams);
+  const paramStr = paramBuilder.size > 0 ? `?${paramBuilder.toString()}` : ''
+  const fullPath = `/products/${productSummary.code}-${nameSlug}${productSummary.branchSlug ? `/${productSummary.branchSlug}` : ""}${restPath}${paramStr}`;
+  let redirectNeeded = false;
+  if (code != productSummary.code) {
+    redirectNeeded = true;
+  }
+  if (slug !== nameSlug) {
+    redirectNeeded = true;
+  }
+
+  if (branch && branch.branchSlug !== productSummary.branchSlug) {
+    redirectNeeded = true;
+  }
+  if (stockId && productSummary.branchSlug) {
+    redirectNeeded = true;
+  }
+
+  if (redirectNeeded) {
+    permanentRedirect(
+      fullPath,
+      RedirectType.replace,
+    );
+  }
+
+  return productSummary;
 }

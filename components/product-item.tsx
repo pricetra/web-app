@@ -3,7 +3,7 @@ import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import useProductWeightBuilder from "@/hooks/useProductWeightBuilder";
 import { productImageUrlWithTimestamp } from "@/lib/files";
-import { currencyFormat, getPriceUnit, validBrand } from "@/lib/strings";
+import { currencyFormat, getPriceUnit, slugifyProductName, validBrand } from "@/lib/strings";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import ProductMetadataBadge from "./product-metadata-badge";
@@ -39,8 +39,8 @@ ProductItemProps) {
   const weight = useProductWeightBuilder(product);
   const pricePerUnit = usePricePerUnit(calculatedAmount, product);
   const href = useMemo(() => {
-    return `/products/${product.id}${branchSlug ? `/${branchSlug}` : ""}`;
-  }, [product.id, branchSlug]);
+      return `/products/${product.code}-${slugifyProductName(product.name)}${branchSlug ? `/${branchSlug}` : ""}`;
+    }, [product.code, product.name, branchSlug]);
 
   return (
     <Link href={href} className="flex max-w-full flex-row gap-2 relative group">

@@ -15,6 +15,7 @@ import ExtractImageDialog from "./extract-image-dialog";
 import { handleInputFile } from "@/lib/files";
 import { toast } from "sonner";
 import { CgSpinner } from "react-icons/cg";
+import { slugifyProductName } from "@/lib/strings";
 
 const LIMIT = 10;
 
@@ -28,8 +29,12 @@ export default function ManualBarcodeForm() {
     },
   );
 
-  const { handleBarcodeScan, handleExtractionImage, processingBarcode, extractingProduct } =
-    useAddProductPrompt();
+  const {
+    handleBarcodeScan,
+    handleExtractionImage,
+    processingBarcode,
+    extractingProduct,
+  } = useAddProductPrompt();
   const [openAddUpcModal, setOpenAddUpcModal] = useState(false);
 
   function fetchProducts(page = 1) {
@@ -58,7 +63,9 @@ export default function ManualBarcodeForm() {
 
             handleExtractionImage(file, text, {
               onSuccess: (data) => {
-                router.push(`/products/${data.extractAndCreateProduct.id}`);
+                router.push(
+                  `/products/${data.extractAndCreateProduct.code}-${slugifyProductName(data.extractAndCreateProduct.name)}`,
+                );
               },
               onError: (err) => {
                 toast.error(`Error extracting data from image: ${err.message}`);
@@ -168,7 +175,7 @@ export default function ManualBarcodeForm() {
                           );
                         }
                         router.push(
-                          `/products/${data.barcodeScan.id}${params.size > 0 ? `?${params.toString()}` : ""}`,
+                          `/products/${data.barcodeScan.code}-${slugifyProductName(data.barcodeScan.name)}${params.size > 0 ? `?${params.toString()}` : ""}`,
                         );
                       },
                       onError: () => setOpenAddUpcModal(true),
@@ -176,10 +183,14 @@ export default function ManualBarcodeForm() {
                   }}
                   className="text-blue-500 hover:underline hover:text-blue-600 cursor-pointer font-bold inline-block ml-1"
                 >
-                  {processingBarcode ? (<span className="flex flex-row gap-1 items-center">
-                    <CgSpinner className="animate-spin" />
-                    Adding product
-                  </span>) : (<>Add product</>)}
+                  {processingBarcode ? (
+                    <span className="flex flex-row gap-1 items-center">
+                      <CgSpinner className="animate-spin" />
+                      Adding product
+                    </span>
+                  ) : (
+                    <>Add product</>
+                  )}
                 </span>
               </p>
             </div>

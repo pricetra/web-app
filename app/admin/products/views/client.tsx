@@ -24,6 +24,7 @@ import { useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FiRefreshCcw } from "react-icons/fi";
 import Skeleton from "react-loading-skeleton";
+import { slugifyProductName } from "@/lib/strings";
 
 export default function ProductViewClient() {
   const searchParams = useSearchParams();
@@ -145,7 +146,7 @@ export default function ProductViewClient() {
                 <TableCell className="min-w-[300px]">
                   {p.product && (
                     <Link
-                      href={`/products/${p.productId}${p.stockId ? `?stockId=${p.stockId}` : ""}`}
+                      href={`/products/${p.product.code}-${slugifyProductName(p.product.name)}${p.stockId ? `?stockId=${p.stockId}` : ""}`}
                       className="flex flex-row gap-3"
                     >
                       <Image
