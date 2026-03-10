@@ -146,7 +146,7 @@ export default function ProductViewClient() {
                 <TableCell className="min-w-[300px]">
                   {p.product && (
                     <Link
-                      href={`/products/${p.product.code}-${slugifyProductName(p.product.name)}${p.stockId ? `?stockId=${p.stockId}` : ""}`}
+                      href={`/products/${p.product.id}-${slugifyProductName(p.product.name)}${p.stockId ? `?stockId=${p.stockId}` : ""}`}
                       className="flex flex-row gap-3"
                     >
                       <Image

@@ -36,8 +36,8 @@ export default function ProductItemHorizontal({
   });
   const pricePerUnit = usePricePerUnit(calculatedAmount, product);
   const href = useMemo(() => {
-    return `/products/${product.code}-${slugifyProductName(product.name)}${branchSlug ? `/${branchSlug}` : ""}`;
-  }, [product.code, product.name, branchSlug]);
+    return `/products/${product.id}-${slugifyProductName(product.name)}${branchSlug ? `/${branchSlug}` : ""}`;
+  }, [product.id, product.name, branchSlug]);
 
   return (
     <Link

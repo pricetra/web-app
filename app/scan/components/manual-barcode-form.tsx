@@ -64,7 +64,7 @@ export default function ManualBarcodeForm() {
             handleExtractionImage(file, text, {
               onSuccess: (data) => {
                 router.push(
-                  `/products/${data.extractAndCreateProduct.code}-${slugifyProductName(data.extractAndCreateProduct.name)}`,
+                  `/products/${data.extractAndCreateProduct.id}-${slugifyProductName(data.extractAndCreateProduct.name)}`,
                 );
               },
               onError: (err) => {
@@ -175,7 +175,7 @@ export default function ManualBarcodeForm() {
                           );
                         }
                         router.push(
-                          `/products/${data.barcodeScan.code}-${slugifyProductName(data.barcodeScan.name)}${params.size > 0 ? `?${params.toString()}` : ""}`,
+                          `/products/${data.barcodeScan.id}-${slugifyProductName(data.barcodeScan.name)}${params.size > 0 ? `?${params.toString()}` : ""}`,
                         );
                       },
                       onError: () => setOpenAddUpcModal(true),
