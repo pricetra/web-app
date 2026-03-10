@@ -39,16 +39,23 @@ export const cachedFetchProductSummary = cache(
     productId: string,
     stockId?: number,
     branch?: ProductSummaryBranchInput,
-  ) => {
+    code = false,
+  ): Promise<ProductSummary | null> => {
     const { data } = await fetchGraphql<
       ProductSummaryQueryVariables,
       ProductSummaryQuery
     >(ProductSummaryDocument, "query", {
-      sid: productId,
+      productId: !code ? +productId : undefined,
+      sid: code ? productId : undefined,
       stockId,
       branch,
     });
-    if (!data || !data.productSummary) return null;
+    if (!data || !data.productSummary) {
+      if (!code) {
+        return cachedFetchProductSummary(productId, stockId, branch, true);
+      }
+      return null;
+    }
 
     return data.productSummary;
   },
@@ -157,9 +164,9 @@ export async function fetchAndHandleProduct(
     notFound();
   }
 
-  const { code, slug } = urlExtraction;
+  const { code: id, slug } = urlExtraction;
   const productSummary = await cachedFetchProductSummary(
-    code,
+    id,
     stockId,
     branch ?? undefined,
   );
@@ -170,9 +177,9 @@ export async function fetchAndHandleProduct(
   const nameSlug = slugifyProductName(productSummary.name);
   const paramBuilder = new URLSearchParams(searchParams);
   const paramStr = paramBuilder.size > 0 ? `?${paramBuilder.toString()}` : ''
-  const fullPath = `/products/${productSummary.code}-${nameSlug}${productSummary.branchSlug ? `/${productSummary.branchSlug}` : ""}${restPath}${paramStr}`;
+  const fullPath = `/products/${productSummary.id}-${nameSlug}${productSummary.branchSlug ? `/${productSummary.branchSlug}` : ""}${restPath}${paramStr}`;
   let redirectNeeded = false;
-  if (code != productSummary.code) {
+  if (id !== productSummary.id.toString()) {
     redirectNeeded = true;
   }
   if (slug !== nameSlug) {

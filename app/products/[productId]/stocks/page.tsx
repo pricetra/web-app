@@ -30,7 +30,7 @@ export async function generateMetadata({
 
   const title = `Available stocks for ${productSummary.name} page ${parsedPage}`;
   const description = `View all product availability for ${productSummary.name}, sorted by your location.`;
-  const url = `https://pricetra.com/products/${productSummary.code}-${slugifyProductName(productSummary.name)}/stocks`
+  const url = `https://pricetra.com/products/${productSummary.id}-${slugifyProductName(productSummary.name)}/stocks`
   return {
     title: `${title} on Pricetra`,
     description,

@@ -38,7 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!productSummary) return { title: "Product not found - Pricetra" };
 
   const { title, description } = productSeoTitleAndDescription(productSummary);
-  const url = `https://pricetra.com/products/${productSummary.code}-${slugifyProductName(productSummary.name)}/${productSummary.branchSlug}`;
+  const url = `https://pricetra.com/products/${productSummary.id}-${slugifyProductName(productSummary.name)}/${productSummary.branchSlug}`;
   return {
     title: `${title} | Pricetra`,
     description,
