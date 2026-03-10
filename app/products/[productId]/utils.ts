@@ -144,4 +144,59 @@ export function pageProductMetrics(
     metadata,
   };
 }
+
+export async function fetchAndHandleProduct(
+  rawSlug: string,
+  stockId?: number,
+  branch?: ProductSummaryBranchInput,
+  searchParams?: Omit<ProductPageSearchParams, "stockId">,
+) {
+  const urlExtraction = extractProductCodeFromUrlParam(rawSlug);
+  if (!urlExtraction) {
+    notFound();
+  }
+  const { code, slug } = urlExtraction;
+
+  console.log(code, slug)
+
+  const productSummary = await cachedFetchProductSummary(
+    code,
+    stockId,
+    branch ?? undefined,
+  );
+  if (!productSummary) {
+    notFound();
+  }
+
+  const nameSlug = slugifyProductName(productSummary.name);
+  const paramBuilder = new URLSearchParams(searchParams);
+  const paramStr = paramBuilder.size > 0 ? `?${paramBuilder.toString()}` : ''
+  const fullPath = `/products/${productSummary.code}-${nameSlug}${productSummary.branchSlug ? `/${productSummary.branchSlug}` : ""}${paramStr}`;
+  if (code != productSummary.code) {
+    redirect(
+      fullPath,
+      RedirectType.replace,
+    );
+  }
+  if (slug !== nameSlug) {
+    redirect(
+      fullPath,
+      RedirectType.replace,
+    );
+  }
+
+  if (branch && branch.branchSlug !== productSummary.branchSlug) {
+    redirect(
+      fullPath,
+      RedirectType.replace,
+    );
+  }
+  if (stockId && productSummary.branchSlug) {
+    redirect(
+      fullPath,
+      RedirectType.replace,
+    );
+  }
+
+  return productSummary;
 }

@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
-import { notFound, redirect, RedirectType } from "next/navigation";
+import { notFound } from "next/navigation";
 import LayoutProvider from "@/providers/layout-provider";
 import { headers } from "next/headers";
 import { serverSideIpAddress } from "@/lib/strings";
 import {
   cachedFetchProductSummary,
+  fetchAndHandleProduct,
   pageProductMetrics,
   productSeoTitleAndDescription,
 } from "../utils";
@@ -18,10 +19,9 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { productId, branch } = await params;
-  const parsedProductId = parseInt(productId, 10);
 
   const productSummary = await cachedFetchProductSummary(
-    parsedProductId,
+    productId,
     undefined,
     {
       branchSlug: branch,
@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       publishedTime: productSummary.priceCreatedAt,
       images: productSummary.image,
-      url: `https://pricetra.com/products/${parsedProductId}/${branch}`,
+      url: `https://pricetra.com/products/${productId}/${branch}`,
     },
   };
 }
@@ -54,21 +54,9 @@ export default async function ProductBranchPageServer({
     notFound();
   }
 
-  const parsedProductId = parseInt(productId, 10);
   const sp = await searchParams;
-  const productSummary = await cachedFetchProductSummary(
-    parsedProductId,
-    undefined,
-    {
-      branchSlug: branch,
-    },
-  );
-  if (!productSummary) {
-    notFound();
-  }
-  if (productSummary.branchSlug !== branch) {
-    redirect(`/products/${productId}`, RedirectType.replace);
-  }
+  delete sp.stockId;
+  const productSummary = await fetchAndHandleProduct(productId, undefined, { branchSlug: branch }, sp);
 
   const headerList = await headers();
   const ipAddress = serverSideIpAddress(headerList);
@@ -76,7 +64,7 @@ export default async function ProductBranchPageServer({
   return (
     <LayoutProvider>
       <ProductPage
-        productId={parsedProductId}
+        productId={productSummary.id}
         stockId={productSummary.stockId ?? undefined}
         metadata={metadata}
         referrer={referrer}
