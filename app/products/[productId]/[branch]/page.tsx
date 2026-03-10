@@ -2,7 +2,11 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import LayoutProvider from "@/providers/layout-provider";
 import { headers } from "next/headers";
-import { serverSideIpAddress } from "@/lib/strings";
+import {
+  extractProductCodeFromUrlParam,
+  serverSideIpAddress,
+  slugifyProductName,
+} from "@/lib/strings";
 import {
   cachedFetchProductSummary,
   fetchAndHandleProduct,
@@ -19,9 +23,13 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { productId, branch } = await params;
+  const parsedPath = extractProductCodeFromUrlParam(productId);
+  if (!parsedPath) {
+    return { title: "Product not found - Pricetra" };
+  }
 
   const productSummary = await cachedFetchProductSummary(
-    productId,
+    parsedPath.code,
     undefined,
     {
       branchSlug: branch,
@@ -30,6 +38,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!productSummary) return { title: "Product not found - Pricetra" };
 
   const { title, description } = productSeoTitleAndDescription(productSummary);
+  const url = `https://pricetra.com/products/${productSummary.code}-${slugifyProductName(productSummary.name)}/${productSummary.branchSlug}`;
   return {
     title: `${title} | Pricetra`,
     description,
@@ -40,8 +49,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description,
       publishedTime: productSummary.priceCreatedAt,
       images: productSummary.image,
-      url: `https://pricetra.com/products/${productId}/${branch}`,
+      url,
     },
+    alternates: {
+      canonical: url,
+    }
   };
 }
 
@@ -56,7 +68,12 @@ export default async function ProductBranchPageServer({
 
   const sp = await searchParams;
   delete sp.stockId;
-  const productSummary = await fetchAndHandleProduct(productId, undefined, { branchSlug: branch }, sp);
+  const productSummary = await fetchAndHandleProduct(
+    productId,
+    undefined,
+    { branchSlug: branch },
+    sp,
+  );
 
   const headerList = await headers();
   const ipAddress = serverSideIpAddress(headerList);
