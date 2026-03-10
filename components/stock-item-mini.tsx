@@ -57,7 +57,7 @@ export default function StockItemMini({
       <LinkOrDiv
         href={
           stock.branch && !disabled
-            ? `/products/${product.code}-${slugifyProductName(product.name)}/${stock.branch.slug}`
+            ? `/products/${product.id}-${slugifyProductName(product.name)}/${stock.branch.slug}`
             : undefined
         }
         className="flex gap-2 flex-row"

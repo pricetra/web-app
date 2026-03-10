@@ -261,7 +261,7 @@ export default function ProductNavTools({
                   product={product}
                   onCancel={() => setPriceModalOpen(false)}
                   onSuccess={(_, branch) => {
-                    router.replace(`/products//${product.code}-${slugifyProductName(product.name)}/${branch.slug}`);
+                    router.replace(`/products//${product.id}-${slugifyProductName(product.name)}/${branch.slug}`);
                     toast.success("Product price submitted");
                     setPriceModalOpen(false);
                   }}

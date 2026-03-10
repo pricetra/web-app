@@ -32,7 +32,7 @@ export async function generateMetadata({
   if (!productSummary) return { title: "Product not found - Pricetra" };
 
   const { title, description } = productSeoTitleAndDescription(productSummary);
-  const url = `https://pricetra.com/products/${productSummary.code}-${slugifyProductName(productSummary.name)}`
+  const url = `https://pricetra.com/products/${productSummary.id}-${slugifyProductName(productSummary.name)}`
   return {
     title: `${title} | Pricetra`,
     description,

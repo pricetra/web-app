@@ -180,8 +180,8 @@ export default function ProductDetails({
   }
 
   const productUrlPath = useMemo(
-    () => `/products/${product.code}-${slugifyProductName(product.name)}`,
-    [product.code, product.name],
+    () => `/products/${product.id}-${slugifyProductName(product.name)}`,
+    [product.id, product.name],
   );
 
   useEffect(() => {

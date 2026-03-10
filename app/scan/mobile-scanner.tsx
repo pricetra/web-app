@@ -62,7 +62,7 @@ export default function MobileScanner() {
                 params.set("stockId", String(data.barcodeScan.stock.id));
               }
               router.push(
-                `/products/${data.barcodeScan.code}-${slugifyProductName(data.barcodeScan.name)}${params.size > 0 ? `?${params.toString()}` : ""}`,
+                `/products/${data.barcodeScan.id}-${slugifyProductName(data.barcodeScan.name)}${params.size > 0 ? `?${params.toString()}` : ""}`,
               );
             },
             onError: () => setOpenAddUpcModal(true),
@@ -94,7 +94,7 @@ export default function MobileScanner() {
               handleExtractionImage(file, scannedCode, {
                 onSuccess: (data) => {
                   router.push(
-                    `/products/${data.extractAndCreateProduct.code}-${slugifyProductName(data.extractAndCreateProduct.name)}`,
+                    `/products/${data.extractAndCreateProduct.id}-${slugifyProductName(data.extractAndCreateProduct.name)}`,
                   );
                 },
                 onError: (err) => {
