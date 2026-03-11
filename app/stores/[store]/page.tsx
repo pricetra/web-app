@@ -12,7 +12,7 @@ import SelectedStorePageClient from "./selected-store-page-client";
 import LayoutProvider from "@/providers/layout-provider";
 
 const cachedStore = cache(async (store: string) => {
-  const storeId = parseInt(store, 10);
+  const storeId = +store;
   const queryVars: FindStoreQueryVariables = {};
   if (isNaN(storeId)) {
     // store might be a slug
@@ -55,6 +55,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function SelectedStorePageServer({ params }: Props) {
   const { store } = await params;
+  console.log("Store param:", store);
   const storeData = await cachedStore(store);
   if (!storeData) notFound();
 
