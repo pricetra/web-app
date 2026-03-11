@@ -18,9 +18,10 @@ export type NavbarContextType = {
   hideLogotype: boolean;
   setHideLogotype: (v: boolean) => void;
 
+  searchBadge?: string;
+  setSearchBadge: (elem?: string) => void;
   searchPlaceholder: string;
   setSearchPlaceholder: (p?: string) => void;
-
   searchQueryPath?: string;
   setSearchQueryPath: (p?: string) => void;
 
@@ -47,6 +48,7 @@ const DEFAULT_SEARCH_QUERY_PATH = "/search";
 export const NavbarProvider = ({ children }: { children: ReactNode }) => {
   const [navbarHeight, setNavbarHeight] = useState(NAVBAR_HEIGHT);
   const [hideLogotype, setHideLogotype] = useState(false);
+  const [searchBadge, setSearchBadge] = useState<string>();
   const [searchPlaceholder, setSearchPlaceholder] = useState(
     DEFAULT_SEARCH_PLACEHOLDER
   );
@@ -67,13 +69,15 @@ export const NavbarProvider = ({ children }: { children: ReactNode }) => {
         hideLogotype,
         setHideLogotype,
 
+        searchBadge,
+        setSearchBadge,
         searchPlaceholder,
         setSearchPlaceholder: (p) => {
           setSearchPlaceholder(p ?? searchTaglines[3]);
         },
         searchQueryPath,
         setSearchQueryPath: (p) => {
-          setSearchQueryPath(p ?? "/search");
+          setSearchQueryPath(p ?? DEFAULT_SEARCH_QUERY_PATH);
         },
 
         pageIndicator,
@@ -92,6 +96,7 @@ export const NavbarProvider = ({ children }: { children: ReactNode }) => {
         resetAll: () => {
           setNavbarHeight(NAVBAR_HEIGHT);
           setHideLogotype(false);
+          setSearchBadge(undefined);
           setSearchPlaceholder(DEFAULT_SEARCH_PLACEHOLDER);
           setSearchQueryPath(DEFAULT_SEARCH_QUERY_PATH);
           setPageIndicator(undefined);

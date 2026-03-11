@@ -3,7 +3,7 @@ import Image from "next/image";
 import { createCloudinaryUrl } from "@/lib/files";
 import { useAuth } from "@/context/user-context";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "./input-group";
-import { IoIosSearch } from "react-icons/io";
+import { IoIosSearch, IoMdCloseCircleOutline } from "react-icons/io";
 import { useNavbar } from "@/context/navbar-context";
 import { Button } from "./button";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -43,8 +43,12 @@ export default function NavbarMain() {
     navTools,
     subHeader,
     subHeaderHeight,
+    searchBadge,
     searchPlaceholder,
     searchQueryPath,
+    setSearchQueryPath,
+    setSearchBadge,
+    setSearchPlaceholder,
   } = useNavbar();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -80,6 +84,29 @@ export default function NavbarMain() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [searchQueryPath],
   );
+
+  const searchBadgeComponent = useMemo(() => {
+    if (!searchBadge) return <></>;
+    return (
+      <div className="flex flex-row items-center gap-1 text-xs rounded-full bg-white border border-gray-300 text-zinc-700 -ml-2 sm:ml-0">
+        <div className="flex flex-row items-center gap-1 pl-2 py-1 max-w-[50px] sm:max-w-[100px]">
+          <span className="line-clamp-1 break-all">{searchBadge}</span>
+        </div>
+
+        <button
+          onClick={() => {
+            setSearchQueryPath(undefined);
+            setSearchPlaceholder(undefined);
+            setSearchBadge(undefined);
+          }}
+          className="p-1 cursor-pointer text-sm"
+        >
+          <IoMdCloseCircleOutline />
+        </button>
+      </div>
+    );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchBadge]);
 
   useEffect(() => {
     if (searchPanelOpen) {
@@ -160,6 +187,8 @@ export default function NavbarMain() {
                 >
                   <InputGroupAddon>
                     <IoIosSearch className="size-[17px] sm:size-5" />
+
+                    {searchBadgeComponent}
                   </InputGroupAddon>
 
                   <DesktopSearchbar
@@ -239,7 +268,7 @@ export default function NavbarMain() {
                   <div
                     className="flex flex-row items-center gap-2 py-3 cursor-pointer"
                     onClick={() => {
-                    if (!isMobileOnly) return;
+                      if (!isMobileOnly) return;
                       router.push("/profile");
                     }}
                   >
@@ -314,6 +343,8 @@ export default function NavbarMain() {
               >
                 <IoArrowBack className="size-5" />
               </Button>
+
+              {searchBadgeComponent}
 
               <div className="flex-1">
                 <MobileSearchbar
