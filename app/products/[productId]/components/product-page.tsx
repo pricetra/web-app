@@ -310,7 +310,7 @@ export default function ProductPage({
           <div ref={extraFromStoreRef}>
             {extraFromStoreInView && (
               <>
-                <div className="px-5 max-w-full w-lg">
+                <div className="px-5 max-w-full w-lg mb-5">
                   <h3 className="text-base sm:text-lg mb-2">
                     Browse more from
                   </h3>
