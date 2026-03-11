@@ -31,7 +31,7 @@ import {
 } from "./dropdown-menu";
 import { BiCaretDown } from "react-icons/bi";
 import { FiPower } from "react-icons/fi";
-import NProgress from 'nprogress';
+import NProgress from "nprogress";
 
 export default function NavbarMain() {
   const router = useRouter();
@@ -53,7 +53,7 @@ export default function NavbarMain() {
 
   const fullNavHeight = useMemo(
     () => navbarHeight + (subHeader && !searchPanelOpen ? subHeaderHeight : 0),
-    [navbarHeight, subHeader, searchPanelOpen, subHeaderHeight]
+    [navbarHeight, subHeader, searchPanelOpen, subHeaderHeight],
   );
   const isMobile = useMediaQuery({
     query: "(max-width: 767px)",
@@ -73,12 +73,12 @@ export default function NavbarMain() {
         const eventInputValue = e.currentTarget.value.trim();
         NProgress.start();
         router.push(
-          `${searchQueryPath}?query=${encodeURIComponent(eventInputValue)}`
+          `${searchQueryPath}?query=${encodeURIComponent(eventInputValue)}`,
         );
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [searchQueryPath]
+    [searchQueryPath],
   );
 
   useEffect(() => {
@@ -96,13 +96,13 @@ export default function NavbarMain() {
         style={{ minHeight: navbarHeight }}
       >
         <div
-          className="w-full lg:container mx-auto flex items-center justify-between gap-1 sm:gap-2 md:gap-5"
+          className="w-full lg:max-w-384 mx-auto flex items-center justify-between gap-1 sm:gap-2 md:gap-5"
           style={{ height: navbarHeight }}
         >
           <div
             className={cn(
               "flex flex-row gap-1 sm:gap-3 lg:gap-6 items-center justify-start flex-1 w-full pl-5 pr-0",
-              searchPanelOpen ? "max-w-full" : "max-w-5xl"
+              searchPanelOpen ? "max-w-full" : "max-w-5xl",
             )}
           >
             <div className="page-indicator flex flex-row items-center justify-start">
@@ -236,15 +236,18 @@ export default function NavbarMain() {
             ) : (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild disabled={isMobileOnly}>
-                  <div className="flex flex-row items-center gap-2 py-3 cursor-pointer" onClick={() => {
+                  <div
+                    className="flex flex-row items-center gap-2 py-3 cursor-pointer"
+                    onClick={() => {
                     if (!isMobileOnly) return;
-                    router.push('/profile')
-                  }}>
+                      router.push("/profile");
+                    }}
+                  >
                     <Image
                       src={createCloudinaryUrl(
                         user.avatar ?? "f89a1553-b74e-426c-a82a-359787168a53",
                         100,
-                        100
+                        100,
                       )}
                       alt="Avatar"
                       className="rounded-full size-7"
@@ -253,7 +256,7 @@ export default function NavbarMain() {
                       quality={100}
                     />
 
-                    <div className="flex-1 flex-col hidden max-w-[130px] lg:flex">
+                    <div className="flex-1 flex-col hidden max-w-[130px] xl:flex">
                       <h4 className="font-semibold text-xs line-clamp-1">
                         {user.name}
                       </h4>
