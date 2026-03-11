@@ -39,7 +39,7 @@ import { FiEdit } from "react-icons/fi";
 import { IoRefresh } from "react-icons/io5";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
 import { useAuth, UserListsType } from "@/context/user-context";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { LocationInputWithFullAddress } from "@/context/location-context";
 import { useInView } from "react-intersection-observer";
 import Link from "@/components/ui/link";
@@ -232,19 +232,30 @@ export default function ProductDetails({
     stock,
   ]);
 
+  const [accordionValues, setAccordionValues] = useState<string[]>(["favorite-stores", "description"]);
+  useEffect(() => {
+    const defaults: string[] = [];
+    if (inStoreStocksData && inStoreStocksData.getProductStocks.paginator.total > 0) {
+      defaults.push("available-in-stores");
+    }
+    if (onlineStocksData && onlineStocksData.getProductStocks.paginator.total > 0) {
+      defaults.push("available-online");
+    }
+    if (productNutritionData) {
+      defaults.push("nutrition-facts");
+    }
+    
+    setAccordionValues((v) => [...v, ...defaults]);
+  }, [inStoreStocksData, onlineStocksData, productNutritionData]);
+
   return (
     <div>
       <Accordion
         type="multiple"
         defaultChecked
         className="w-full px-5"
-        defaultValue={[
-          "favorite-stores",
-          "available-in-stores",
-          "available-online",
-          "nutrition-facts",
-          "description",
-        ]}
+        value={accordionValues}
+        onValueChange={setAccordionValues}
       >
         <AccordionItem value="favorite-stores">
           <AccordionTrigger badge={availableFavoriteBranches?.length}>
@@ -299,7 +310,7 @@ export default function ProductDetails({
 
         <AccordionItem value="available-in-stores">
           <AccordionTrigger
-            badge={inStoreStocksData?.getProductStocks?.paginator?.total}
+            badge={inStoreStocksData?.getProductStocks?.paginator?.total ?? 0}
           >
             Available in Stores
           </AccordionTrigger>
@@ -357,7 +368,7 @@ export default function ProductDetails({
 
         <AccordionItem value="available-online">
           <AccordionTrigger
-            badge={onlineStocksData?.getProductStocks?.paginator?.total}
+            badge={onlineStocksData?.getProductStocks?.paginator?.total ?? 0}
           >
             Available Online
           </AccordionTrigger>
@@ -413,7 +424,7 @@ export default function ProductDetails({
           </AccordionContent>
         </AccordionItem>
 
-        <div className="my-10 flex flex-row items-center justify-center py-5">
+        <div className="my-5 flex flex-row items-center justify-center py-5 bg-gray-100">
           <MultiplexAds id="product-details-multiplex-1" />
         </div>
 

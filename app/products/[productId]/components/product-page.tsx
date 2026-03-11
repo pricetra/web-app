@@ -60,7 +60,7 @@ export default function ProductPage({
 }: ProductPageProps) {
   const router = useRouter();
   const { prevRoute } = useRouteHistory();
-  const { navbarHeight, setSearchPlaceholder, setSearchQueryPath } =
+  const { navbarHeight, setSearchBadge, setSearchPlaceholder, setSearchQueryPath } =
     useNavbar();
   const { loggedIn, lists } = useAuth();
   const { setPageIndicator, resetAll, setNavTools, setSubHeader } = useNavbar();
@@ -118,6 +118,7 @@ export default function ProductPage({
       />,
     );
 
+    setSearchBadge(productSummary.branch ?? undefined);
     setSearchPlaceholder(`Search ${productSummary.branch}`);
     setSearchQueryPath(
       `/stores/${productSummary.storeSlug}/${productSummary.branchSlug}`,
@@ -309,7 +310,7 @@ export default function ProductPage({
           <div ref={extraFromStoreRef}>
             {extraFromStoreInView && (
               <>
-                <div className="px-5 max-w-full w-lg">
+                <div className="px-5 max-w-full w-lg mb-5">
                   <h3 className="text-base sm:text-lg mb-2">
                     Browse more from
                   </h3>

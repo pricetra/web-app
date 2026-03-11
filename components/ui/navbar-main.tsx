@@ -3,7 +3,7 @@ import Image from "next/image";
 import { createCloudinaryUrl } from "@/lib/files";
 import { useAuth } from "@/context/user-context";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "./input-group";
-import { IoIosSearch } from "react-icons/io";
+import { IoIosSearch, IoMdCloseCircleOutline } from "react-icons/io";
 import { useNavbar } from "@/context/navbar-context";
 import { Button } from "./button";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -31,7 +31,7 @@ import {
 } from "./dropdown-menu";
 import { BiCaretDown } from "react-icons/bi";
 import { FiPower } from "react-icons/fi";
-import NProgress from 'nprogress';
+import NProgress from "nprogress";
 
 export default function NavbarMain() {
   const router = useRouter();
@@ -43,8 +43,12 @@ export default function NavbarMain() {
     navTools,
     subHeader,
     subHeaderHeight,
+    searchBadge,
     searchPlaceholder,
     searchQueryPath,
+    setSearchQueryPath,
+    setSearchBadge,
+    setSearchPlaceholder,
   } = useNavbar();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -53,7 +57,7 @@ export default function NavbarMain() {
 
   const fullNavHeight = useMemo(
     () => navbarHeight + (subHeader && !searchPanelOpen ? subHeaderHeight : 0),
-    [navbarHeight, subHeader, searchPanelOpen, subHeaderHeight]
+    [navbarHeight, subHeader, searchPanelOpen, subHeaderHeight],
   );
   const isMobile = useMediaQuery({
     query: "(max-width: 767px)",
@@ -73,13 +77,36 @@ export default function NavbarMain() {
         const eventInputValue = e.currentTarget.value.trim();
         NProgress.start();
         router.push(
-          `${searchQueryPath}?query=${encodeURIComponent(eventInputValue)}`
+          `${searchQueryPath}?query=${encodeURIComponent(eventInputValue)}`,
         );
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [searchQueryPath]
+    [searchQueryPath],
   );
+
+  const searchBadgeComponent = useMemo(() => {
+    if (!searchBadge) return <></>;
+    return (
+      <div className="flex flex-row items-center gap-1 text-xs rounded-full bg-white border border-gray-300 text-zinc-700 -ml-2 sm:ml-0">
+        <div className="flex flex-row items-center gap-1 pl-2 py-1 max-w-[50px] sm:max-w-[100px]">
+          <span className="line-clamp-1 break-all">{searchBadge}</span>
+        </div>
+
+        <button
+          onClick={() => {
+            setSearchQueryPath(undefined);
+            setSearchPlaceholder(undefined);
+            setSearchBadge(undefined);
+          }}
+          className="p-1 cursor-pointer text-sm"
+        >
+          <IoMdCloseCircleOutline />
+        </button>
+      </div>
+    );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [searchBadge]);
 
   useEffect(() => {
     if (searchPanelOpen) {
@@ -96,13 +123,13 @@ export default function NavbarMain() {
         style={{ minHeight: navbarHeight }}
       >
         <div
-          className="w-full lg:container mx-auto flex items-center justify-between gap-1 sm:gap-2 md:gap-5"
+          className="w-full lg:max-w-384 mx-auto flex items-center justify-between gap-1 sm:gap-2 md:gap-5"
           style={{ height: navbarHeight }}
         >
           <div
             className={cn(
               "flex flex-row gap-1 sm:gap-3 lg:gap-6 items-center justify-start flex-1 w-full pl-5 pr-0",
-              searchPanelOpen ? "max-w-full" : "max-w-5xl"
+              searchPanelOpen ? "max-w-full" : "max-w-5xl",
             )}
           >
             <div className="page-indicator flex flex-row items-center justify-start">
@@ -160,6 +187,8 @@ export default function NavbarMain() {
                 >
                   <InputGroupAddon>
                     <IoIosSearch className="size-[17px] sm:size-5" />
+
+                    {searchBadgeComponent}
                   </InputGroupAddon>
 
                   <DesktopSearchbar
@@ -236,15 +265,18 @@ export default function NavbarMain() {
             ) : (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild disabled={isMobileOnly}>
-                  <div className="flex flex-row items-center gap-2 py-3 cursor-pointer" onClick={() => {
-                    if (!isMobileOnly) return;
-                    router.push('/profile')
-                  }}>
+                  <div
+                    className="flex flex-row items-center gap-2 py-3 cursor-pointer"
+                    onClick={() => {
+                      if (!isMobileOnly) return;
+                      router.push("/profile");
+                    }}
+                  >
                     <Image
                       src={createCloudinaryUrl(
                         user.avatar ?? "f89a1553-b74e-426c-a82a-359787168a53",
                         100,
-                        100
+                        100,
                       )}
                       alt="Avatar"
                       className="rounded-full size-7"
@@ -253,7 +285,7 @@ export default function NavbarMain() {
                       quality={100}
                     />
 
-                    <div className="flex-1 flex-col hidden max-w-[130px] lg:flex">
+                    <div className="flex-1 flex-col hidden max-w-[130px] xl:flex">
                       <h4 className="font-semibold text-xs line-clamp-1">
                         {user.name}
                       </h4>
@@ -311,6 +343,8 @@ export default function NavbarMain() {
               >
                 <IoArrowBack className="size-5" />
               </Button>
+
+              {searchBadgeComponent}
 
               <div className="flex-1">
                 <MobileSearchbar
