@@ -15,9 +15,8 @@ import { SearchRouteParams } from "@/app/search/search-page-client";
 import { searchParamsTitleBuilder } from "@/lib/strings";
 
 const cachedStoreAndBranch = cache(async (store: string, branch: string) => {
-  const storeId = parseInt(store, 10);
-  const branchId = parseInt(branch, 10);
-
+  const storeId = +store;
+  const branchId = +branch;
   const queryVars: BranchQueryVariables = {};
   if (isNaN(storeId)) {
     // store might be a slug
