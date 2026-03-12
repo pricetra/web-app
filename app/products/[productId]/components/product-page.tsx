@@ -40,6 +40,7 @@ import Image from "next/image";
 import Link from "@/components/ui/link";
 import { startOfNextSundayUTC } from "@/lib/utils";
 import { useRouteHistory } from "@/context/route-history";
+import HorizontalBannerAd from "@/components/ads/horizontal-banner-ad";
 
 export type ProductPageProps = {
   productId: number;
@@ -60,8 +61,12 @@ export default function ProductPage({
 }: ProductPageProps) {
   const router = useRouter();
   const { prevRoute } = useRouteHistory();
-  const { navbarHeight, setSearchBadge, setSearchPlaceholder, setSearchQueryPath } =
-    useNavbar();
+  const {
+    navbarHeight,
+    setSearchBadge,
+    setSearchPlaceholder,
+    setSearchQueryPath,
+  } = useNavbar();
   const { loggedIn, lists } = useAuth();
   const { setPageIndicator, resetAll, setNavTools, setSubHeader } = useNavbar();
   const locationInput = useLocationInput(!loggedIn ? ipAddress : undefined);
@@ -285,7 +290,9 @@ export default function ProductPage({
         </section>
       </div>
 
-      <div className="h-[10vh]" />
+      <div className="bg-gray-50 w-full my-10">
+        <HorizontalBannerAd id={productId} />
+      </div>
 
       <div>
         <div>

@@ -15,14 +15,14 @@ export default function HorizontalBannerAd({ id }: HorizontalBannerAdProps) {
   return (
     <div
       className={cn(
-        "flex items-center justify-center h-full",
-        visible ? "block" : "hidden",
+        "flex-row items-center justify-center h-full",
+        visible ? "flex" : "hidden",
       )}
     >
       <div
         ref={adRef}
         className="relative"
-        style={{ width: 250 }}
+        style={{ maxWidth: 720, minWidth: 250, maxHeight: 350 }}
         id={`horizontal-product-ad-${id}`}
       >
         <ins

@@ -18,16 +18,21 @@ export default function MultiplexAds({ id }: MultiplexAdsProps) {
         "flex-row items-center justify-center w-full h-full relative",
         visible ? "flex" : "hidden",
       )}
-      ref={adRef}
-      id={`multiplex-ads-${id}`}
     >
-      <ins
-        className="adsbygoogle"
-        style={{ display: "block" }}
-        data-ad-format="autorelaxed"
-        data-ad-client={GADS_PUB_ID}
-        data-ad-slot="2475046405"
-      />
+      <div
+        className="relative"
+        style={{ minWidth: 250, maxWidth: 720 }}
+        ref={adRef}
+        id={`multiplex-ad-${id}`}
+      >
+        <ins
+          className="adsbygoogle"
+          style={{ display: "block" }}
+          data-ad-format="autorelaxed"
+          data-ad-client={GADS_PUB_ID}
+          data-ad-slot="2475046405"
+        />
+      </div>
     </div>
   );
 }
