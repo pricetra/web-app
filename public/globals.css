@@ -227,3 +227,12 @@
 .PhotoView-Slider__toolbarIcon {
   fill: #000!important;
 }
+
+/* Prevent auto-zoom on mobile devices */
+@media (max-width: 768px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px;
+  }
+}
