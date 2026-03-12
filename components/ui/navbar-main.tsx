@@ -88,8 +88,8 @@ export default function NavbarMain() {
   const searchBadgeComponent = useMemo(() => {
     if (!searchBadge) return <></>;
     return (
-      <div className="flex flex-row items-center gap-1 text-xs rounded-full bg-white border border-gray-300 text-zinc-700 -ml-2 sm:ml-0">
-        <div className="flex flex-row items-center gap-1 pl-2 py-1 max-w-[50px] sm:max-w-[100px]">
+      <div className="flex flex-row items-center gap-1 text-xs rounded-full bg-gray-50 border border-gray-300 text-zinc-700 -ml-2 sm:ml-0">
+        <div className="flex flex-row items-center gap-0 sm:gap-1 pl-2 py-1 max-w-[70px] sm:max-w-[100px]">
           <span className="line-clamp-1 break-all">{searchBadge}</span>
         </div>
 
@@ -429,7 +429,7 @@ function MobileSearchbar({ placeholder, value, onKeyDown }: SearchbarProps) {
     <input
       autoFocus
       placeholder={placeholder}
-      className="block w-full outline-none py-3 fade-mask-placeholder"
+      className="block w-full outline-none py-3 fade-mask-placeholder text-sm"
       value={searchText}
       onChange={(e) => setSearchText(e.target.value)}
       onKeyDown={(e) => onKeyDown(e)}

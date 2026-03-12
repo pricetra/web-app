@@ -15,24 +15,19 @@ export default function MultiplexAds({ id }: MultiplexAdsProps) {
   return (
     <div
       className={cn(
-        "flex items-center justify-center h-full",
-        visible ? "block" : "hidden",
+        "flex-row items-center justify-center w-full h-full relative",
+        visible ? "flex" : "hidden",
       )}
+      ref={adRef}
+      id={`multiplex-ads-${id}`}
     >
-      <div
-        ref={adRef}
-        className="relative"
-        style={{ width: 250 }}
-        id={`horizontal-product-ad-${id}`}
-      >
-        <ins
-          className="adsbygoogle"
-          style={{ display: "block" }}
-          data-ad-format="autorelaxed"
-          data-ad-client={GADS_PUB_ID}
-          data-ad-slot="2475046405"
-        />
-      </div>
+      <ins
+        className="adsbygoogle"
+        style={{ display: "block" }}
+        data-ad-format="autorelaxed"
+        data-ad-client={GADS_PUB_ID}
+        data-ad-slot="2475046405"
+      />
     </div>
   );
 }

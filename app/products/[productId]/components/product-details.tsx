@@ -424,7 +424,7 @@ export default function ProductDetails({
           </AccordionContent>
         </AccordionItem>
 
-        <div className="my-5 flex flex-row items-center justify-center py-5 bg-gray-100">
+        <div className="my-5 flex flex-row items-center justify-center bg-gray-50">
           <MultiplexAds id="product-details-multiplex-1" />
         </div>
 
