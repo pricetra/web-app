@@ -11,14 +11,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { allowedImageTypes } from "@/constants/uploads";
-import { useLazyQuery, useMutation } from "@apollo/client/react";
+import { useMutation } from "@apollo/client/react";
 import { Formik, FormikErrors } from "formik";
-import {
-  BusinessFormInput,
-  BusinessSingUpFormDocument,
-  StoreSlugAvailabilityDocument,
-} from "graphql-utils";
-import { useCallback, useRef, useState } from "react";
+import { BusinessFormInput, BusinessSingUpFormDocument } from "graphql-utils";
+import { useRef, useState } from "react";
 import { CgCheckO, CgCloseO, CgSpinner } from "react-icons/cg";
 import { RiImageCircleFill } from "react-icons/ri";
 import Image from "next/image";
@@ -39,9 +35,9 @@ import {
   InputGroupAddon,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import _ from "lodash";
 import slugify from "slugify";
 import { HiMiniInformationCircle } from "react-icons/hi2";
+import useStoreNameAvailability from "@/hooks/useStoreNameAvailability";
 
 export type BusinessFormProps = {
   onCancel: () => void;
@@ -53,18 +49,11 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
   const [businessSignUpForm, { data, loading, error }] = useMutation(
     BusinessSingUpFormDocument,
   );
-  const [
-    storeSlugAvailability,
-    { data: storeAvailabilityData, loading: storeAvailabilityLoading },
-  ] = useLazyQuery(StoreSlugAvailabilityDocument);
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedStoreAvailability = useCallback(
-    _.debounce((store: string) => {
-      storeSlugAvailability({ variables: { store } });
-    }, 300),
-    [],
-  );
+  const {
+    debouncedCheckStoreNameAvailability,
+    storeNameAvailable,
+    storeNameAvailabilityLoading,
+  } = useStoreNameAvailability();
 
   if (data) {
     return (
@@ -126,10 +115,7 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
               "Store logo is required. Must be an 1:1 square image";
           if (v.storeUrl === undefined || v.storeUrl.length === 0)
             errors.storeUrl = "URL is required";
-          if (
-            storeAvailabilityData &&
-            !storeAvailabilityData.storeSlugAvailability
-          )
+          if (!storeNameAvailable)
             errors.storeName = "Store name is unavailable";
           return errors;
         }}
@@ -250,17 +236,18 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                         value={formik.values.storeName}
                         onChange={(v) => {
                           formik.setFieldValue("storeName", v.target.value);
-                          debouncedStoreAvailability(v.target.value);
+                          debouncedCheckStoreNameAvailability(v.target.value);
                         }}
                         required
                       />
                       <InputGroupAddon align="inline-end">
-                        {storeAvailabilityLoading && (
+                        {storeNameAvailabilityLoading && (
                           <CgSpinner className="animate-spin" />
                         )}
-                        {storeAvailabilityData && (
+                        {storeNameAvailable !== undefined && (
                           <>
-                            {storeAvailabilityData.storeSlugAvailability ? (
+                            {storeNameAvailable &&
+                            formik.values.storeName.length > 0 ? (
                               <CgCheckO className="text-green-700" />
                             ) : (
                               <CgCloseO className="text-red-700" />
@@ -307,7 +294,11 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                   </Field>
 
                   <Field>
-                    <FieldLabel htmlFor="storeLogo" className="items-end">
+                    <FieldLabel
+                      htmlFor="storeLogo"
+                      className="items-end"
+                      onClick={() => logoUploadInputRef.current?.click()}
+                    >
                       Logo <small className="text-gray-500">(1:1)</small>
                     </FieldLabel>
 
@@ -360,7 +351,9 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                     <FieldDescription className="flex flex-row gap-2">
                       <HiMiniInformationCircle className="text-2xl inline-block" />{" "}
                       <span className="text-sm">
-                        This will be your primary store identifier. Make sure it&apos;s clean and easy to spot. Preferably with a white or transparent background.
+                        This will be your primary store identifier. Make sure
+                        it&apos;s clean and easy to spot. Preferably with a
+                        white or transparent background.
                       </span>
                     </FieldDescription>
                   </Field>
