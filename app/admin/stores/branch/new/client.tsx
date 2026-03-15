@@ -31,10 +31,20 @@ export default function AddAdminBranchClient({ storeId }: AddStoreClientProps) {
   const router = useRouter();
   const [
     createBranchWithFullAddress,
-    { data: createBranchWithFullAddressData, loading: creatingBranchWithFullAddress },
+    {
+      data: createBranchWithFullAddressData,
+      loading: creatingBranchWithFullAddress,
+      error: createBranchWithFullAddressError,
+    },
   ] = useMutation(CreateBranchFromFullAddressDocument);
-  const [createBranch, { data: createBranchData, loading: creatingBranch }] =
-    useMutation(CreateBranchDocument);
+  const [
+    createBranch,
+    {
+      data: createBranchData,
+      loading: creatingBranch,
+      error: createBranchError,
+    },
+  ] = useMutation(CreateBranchDocument);
   const [findStore, { data: selectedStore }] = useLazyQuery(FindStoreDocument);
 
   useEffect(() => {
@@ -45,20 +55,29 @@ export default function AddAdminBranchClient({ storeId }: AddStoreClientProps) {
   }, [storeId]);
   const [formType, setFormType] = useState<FormType>("fullAddress");
   const loading = creatingBranchWithFullAddress || creatingBranch;
-  const createdBranch = createBranchData?.createBranch || createBranchWithFullAddressData?.createBranchWithFullAddress
+  const createdBranch =
+    createBranchData?.createBranch ||
+    createBranchWithFullAddressData?.createBranchWithFullAddress;
+  const errors = createBranchError || createBranchWithFullAddressError;
 
   useEffect(() => {
     if (!selectedStore) return;
     if (!createdBranch) return;
 
-    router.push(`/stores/${selectedStore.findStore.slug}/${createdBranch.id}`)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedStore, createdBranch])
+    router.push(`/stores/${selectedStore.findStore.slug}/${createdBranch.id}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedStore, createdBranch]);
 
   if (!storeId || !selectedStore) {
-    return <div className="flex flex-col flex-1 justify-center">
-      <SelectStore onSelectStore={(store) => router.push(`/admin/stores/branch/new?storeId=${store.id}`)} />
-    </div>
+    return (
+      <div className="flex-1 max-w-lg mx-auto py-10">
+        <SelectStore
+          onSelectStore={(store) =>
+            router.push(`/admin/stores/branch/new?storeId=${store.id}`)
+          }
+        />
+      </div>
+    );
   }
 
   return (
@@ -104,9 +123,15 @@ export default function AddAdminBranchClient({ storeId }: AddStoreClientProps) {
               }}
               className="w-full"
             >
-              <NativeSelectOption value="fullAddress">Full Address</NativeSelectOption>
-              <NativeSelectOption value="rawAddress">Raw Address</NativeSelectOption>
-              <NativeSelectOption value="onlineAddress">Online Address</NativeSelectOption>
+              <NativeSelectOption value="fullAddress">
+                Full Address
+              </NativeSelectOption>
+              <NativeSelectOption value="rawAddress">
+                Raw Address
+              </NativeSelectOption>
+              <NativeSelectOption value="onlineAddress">
+                Online Address
+              </NativeSelectOption>
             </NativeSelect>
 
             {formType === "fullAddress" && (
@@ -133,6 +158,12 @@ export default function AddAdminBranchClient({ storeId }: AddStoreClientProps) {
             {formType === "rawAddress" && <></>}
             {formType === "onlineAddress" && <></>}
 
+            {errors && (
+              <p className="text-red-700">
+                {errors.name}: {errors.message}
+              </p>
+            )}
+
             <Field orientation="horizontal" className="gap-5 justify-end">
               <Button
                 onClick={() => formik.handleSubmit()}
@@ -147,6 +178,15 @@ export default function AddAdminBranchClient({ storeId }: AddStoreClientProps) {
                 ) : (
                   <>Submit</>
                 )}
+              </Button>
+
+              <Button
+                variant="outline"
+                type="button"
+                disabled={loading}
+                onClick={() => router.push(`/admin/stores/branch/new`)}
+              >
+                Cancel
               </Button>
             </Field>
           </form>
