@@ -33,6 +33,13 @@ export default function AdminClient() {
           />
 
           <AdminListItem
+            href="/admin/stores/branch/new"
+            icon={<MdStorefront />}
+            title="Add New Branch"
+            content="Create a new branch for a selected store"
+          />
+
+          <AdminListItem
             href="/admin/stores/store-users/add"
             icon={<BsPersonFillAdd />}
             title="Add Store User"

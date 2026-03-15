@@ -31,9 +31,9 @@ export default function AddAdminBranchClient({ storeId }: AddStoreClientProps) {
   const router = useRouter();
   const [
     createBranchWithFullAddress,
-    { loading: creatingBranchWithFullAddress },
+    { data: createBranchWithFullAddressData, loading: creatingBranchWithFullAddress },
   ] = useMutation(CreateBranchFromFullAddressDocument);
-  const [createBranch, { loading: creatingBranch }] =
+  const [createBranch, { data: createBranchData, loading: creatingBranch }] =
     useMutation(CreateBranchDocument);
   const [findStore, { data: selectedStore }] = useLazyQuery(FindStoreDocument);
 
@@ -45,6 +45,15 @@ export default function AddAdminBranchClient({ storeId }: AddStoreClientProps) {
   }, [storeId]);
   const [formType, setFormType] = useState<FormType>("fullAddress");
   const loading = creatingBranchWithFullAddress || creatingBranch;
+  const createdBranch = createBranchData?.createBranch || createBranchWithFullAddressData?.createBranchWithFullAddress
+
+  useEffect(() => {
+    if (!selectedStore) return;
+    if (!createdBranch) return;
+
+    router.push(`/stores/${selectedStore.findStore.slug}/${createdBranch.id}`)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedStore, createdBranch])
 
   if (!storeId || !selectedStore) {
     return <div className="flex flex-col flex-1 justify-center">
