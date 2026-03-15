@@ -83,7 +83,9 @@ export default function AddAdminBranchClient({ storeId }: AddStoreClientProps) {
   return (
     <div className="flex-1">
       <Formik
-        initialValues={{} as CreateBranch}
+        initialValues={
+          { onlineAddress: {}, address: {}, storeId } as CreateBranch
+        }
         onSubmit={(values) => {
           if (!storeId) return;
 
@@ -96,7 +98,13 @@ export default function AddAdminBranchClient({ storeId }: AddStoreClientProps) {
                 },
               });
               break;
-            case "rawAddress":
+            default:
+              if (formType === 'onlineAddress') {
+                delete values.address;
+              }
+              if (formType === 'rawAddress') {
+                delete values.onlineAddress;
+              }
               createBranch({
                 variables: {
                   input: {
@@ -156,7 +164,101 @@ export default function AddAdminBranchClient({ storeId }: AddStoreClientProps) {
               </>
             )}
             {formType === "rawAddress" && <></>}
-            {formType === "onlineAddress" && <></>}
+            {formType === "onlineAddress" && (
+              <>
+                <FieldGroup>
+                  <Field>
+                    <FieldLabel htmlFor="name">Branch Name</FieldLabel>
+
+                    <InputGroup>
+                      <InputGroupInput
+                        id="name"
+                        placeholder="Amazon Online"
+                        value={formik.values.name}
+                        onChange={(v) =>
+                          formik.setFieldValue("name", v.target.value)
+                        }
+                        required
+                      />
+                    </InputGroup>
+                  </Field>
+                </FieldGroup>
+
+                <FieldGroup>
+                  <Field>
+                    <FieldLabel htmlFor="url">URL</FieldLabel>
+
+                    <InputGroup>
+                      <InputGroupInput
+                        id="url"
+                        placeholder="https://www.amazon.com"
+                        value={formik.values.onlineAddress?.url ?? ''}
+                        onChange={(v) => {
+                          const value = v.target.value;
+                          formik.setFieldValue("onlineAddress.url", value);
+                          formik.setFieldValue("onlineAddress.itemUrlTemplate", `${value ?? ''}/[PRODUCT_ID]`);
+                        }}
+                        required
+                      />
+                    </InputGroup>
+                  </Field>
+                </FieldGroup>
+
+                <FieldGroup>
+                  <Field>
+                    <FieldLabel htmlFor="itemUrlTemplate">Product Item URL Template</FieldLabel>
+
+                    <InputGroup>
+                      <InputGroupInput
+                        id="itemUrlTemplate"
+                        placeholder="https://www.amazon.com/dp/[PRODUCT_ID]"
+                        value={formik.values.onlineAddress?.itemUrlTemplate ?? ''}
+                        onChange={(v) =>
+                          formik.setFieldValue("onlineAddress.itemUrlTemplate", v.target.value)
+                        }
+                        required
+                      />
+                    </InputGroup>
+                  </Field>
+                </FieldGroup>
+
+                <FieldGroup>
+                  <Field>
+                    <FieldLabel htmlFor="referralCode">Referral Code (optional)</FieldLabel>
+
+                    <InputGroup>
+                      <InputGroupInput
+                        id="referralCode"
+                        placeholder="pricetra-20"
+                        value={formik.values.onlineAddress?.referralCode ?? ''}
+                        onChange={(v) =>
+                          formik.setFieldValue("onlineAddress.referralCode", v.target.value)
+                        }
+                        required
+                      />
+                    </InputGroup>
+                  </Field>
+                </FieldGroup>
+
+                <FieldGroup>
+                  <Field>
+                    <FieldLabel htmlFor="referralQueryParam">Referral Query Param (optional)</FieldLabel>
+
+                    <InputGroup>
+                      <InputGroupInput
+                        id="referralQueryParam"
+                        placeholder="tag=pricetra-20"
+                        value={formik.values.onlineAddress?.referralQueryParam ?? ''}
+                        onChange={(v) =>
+                          formik.setFieldValue("onlineAddress.referralQueryParam", v.target.value)
+                        }
+                        required
+                      />
+                    </InputGroup>
+                  </Field>
+                </FieldGroup>
+              </>
+            )}
 
             {errors && (
               <p className="text-red-700">
