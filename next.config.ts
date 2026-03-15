@@ -9,7 +9,11 @@ const nextConfig: NextConfig = {
         hostname: "res.cloudinary.com",
         pathname: "/**",
       },
-      new URL("https://cdn.pricetra.com/**"),
+      {
+        protocol: "https",
+        hostname: "cdn.pricetra.com",
+        pathname: "/**",
+      },
     ],
   },
 };
