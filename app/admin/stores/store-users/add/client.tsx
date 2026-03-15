@@ -9,17 +9,11 @@ import { useLazyQuery, useMutation } from "@apollo/client/react";
 import { Formik, FormikHelpers, FormikErrors } from "formik";
 import {
   AllBranchesDocument,
-  AllStoresDocument,
   CreateStoreUserAdmin,
   CreateStoreUserAdminDocument,
   StoreUserRole,
 } from "graphql-utils";
-import { useEffect, useState } from "react";
-import { IoIosSearch } from "react-icons/io";
-import Image from "next/image";
-import { createCloudinaryUrl } from "@/lib/files";
 import { CgSpinner } from "react-icons/cg";
-import { cn } from "@/lib/utils";
 import { MdEmail } from "react-icons/md";
 import {
   NativeSelect,
@@ -27,11 +21,9 @@ import {
 } from "@/components/ui/native-select";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import SelectStore from "@/app/admin/components/select-store";
 
 export default function AddStoreUserClient() {
-  const [searchStoreValue, setSearchStoreValue] = useState("");
-  const [getAllStores, { data: storesData, loading: storesLoading }] =
-    useLazyQuery(AllStoresDocument);
   const [
     getAllStoreBranches,
     { data: storeBranchesData, loading: storeBranchesLoading },
@@ -40,19 +32,6 @@ export default function AddStoreUserClient() {
     createStoreUser,
     { loading: creatingStoreUser, error: createStoreError },
   ] = useMutation(CreateStoreUserAdminDocument);
-
-  useEffect(() => {
-    getAllStores({
-      variables: {
-        search: searchStoreValue,
-        paginator: {
-          limit: 11,
-          page: 1,
-        },
-      },
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchStoreValue]);
 
   return (
     <>
@@ -80,7 +59,7 @@ export default function AddStoreUserClient() {
             }}
             onSubmit={async (
               input: CreateStoreUserAdmin,
-              formikHelpers: FormikHelpers<CreateStoreUserAdmin>
+              formikHelpers: FormikHelpers<CreateStoreUserAdmin>,
             ) => {
               const { data, error } = await createStoreUser({
                 variables: {
@@ -90,77 +69,26 @@ export default function AddStoreUserClient() {
               if (error || !data) return;
 
               formikHelpers.resetForm();
-              setSearchStoreValue("");
               toast.success("Store user was created successfully!");
             }}
           >
             {(formik) => (
               <div className="flex flex-col gap-5">
-                <div>
-                  <InputGroup>
-                    <InputGroupInput
-                      placeholder="Search Store"
-                      value={searchStoreValue}
-                      onChange={(v) => setSearchStoreValue(v.target.value)}
-                    />
-                    <InputGroupAddon>
-                      {!storesLoading ? (
-                        <IoIosSearch />
-                      ) : (
-                        <CgSpinner className="animate-spin" />
-                      )}
-                    </InputGroupAddon>
-                    <InputGroupAddon align="inline-end">
-                      {storesData?.allStores.paginator?.total}
-                    </InputGroupAddon>
-                  </InputGroup>
-
-                  <h4 className="mt-3 font-bold">Select store</h4>
-                  <div className="mt-3 flex flex-row flex-wrap gap-3 items-center">
-                    {storesData &&
-                      storesData.allStores.stores.map((store) => (
-                        <div
-                          onClick={(e) => {
-                            e.preventDefault();
-                            formik.setFieldValue("storeId", store.id);
-                            getAllStoreBranches({
-                              variables: {
-                                storeId: store.id,
-                                paginator: {
-                                  page: 1,
-                                  limit: 50,
-                                },
-                              },
-                            });
-                          }}
-                          key={store.id}
-                        >
-                          <div
-                            onClick={() => {
-                              formik.setFieldValue("storeId", store.id);
-                            }}
-                            className={cn(
-                              "flex flex-col items-center gap-2 cursor-pointer p-2 rounded-sm",
-                              store.id === formik.values.storeId
-                                ? "bg-gray-100"
-                                : "bg-white"
-                            )}
-                          >
-                            <Image
-                              src={createCloudinaryUrl(store.logo, 300, 300)}
-                              className="size-10 rounded-md"
-                              alt={store.logo}
-                              width={300}
-                              height={300}
-                            />
-                            <h3 className="text-xs max-w-14 sm:max-w-20 truncate">
-                              {store.name}
-                            </h3>
-                          </div>
-                        </div>
-                      ))}
-                  </div>
-                </div>
+                <SelectStore
+                  onSelectStore={(store) => {
+                    formik.setFieldValue("storeId", store.id);
+                    getAllStoreBranches({
+                      variables: {
+                        storeId: store.id,
+                        paginator: {
+                          page: 1,
+                          limit: 50,
+                        },
+                      },
+                    });
+                  }}
+                  selectedStoreId={formik.values.storeId}
+                />
 
                 {formik.values.storeId &&
                   storeBranchesData &&
@@ -171,11 +99,13 @@ export default function AddStoreUserClient() {
                         onChange={(e) => {
                           formik.setFieldValue(
                             "branchId",
-                            parseInt(e.target.value)
+                            parseInt(e.target.value),
                           );
                         }}
                       >
-                        <NativeSelectOption value={undefined}>All Branches (Super user)</NativeSelectOption>
+                        <NativeSelectOption value={undefined}>
+                          All Branches (Super user)
+                        </NativeSelectOption>
                         {storeBranchesData.allBranches.branches.map(
                           (branch) => (
                             <NativeSelectOption
@@ -184,7 +114,7 @@ export default function AddStoreUserClient() {
                             >
                               {branch.name}
                             </NativeSelectOption>
-                          )
+                          ),
                         )}
                       </NativeSelect>
                     </div>

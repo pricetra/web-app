@@ -379,7 +379,7 @@ export default function NavbarMain() {
 
         {subHeader && !searchPanelOpen && (
           <div
-            className="w-full lg:container mx-auto"
+            className="w-full lg:max-w-384 mx-auto"
             style={{ height: subHeaderHeight }}
           >
             <div className="flex items-center justify-evenly xs:justify-end gap-2 w-full h-full">
