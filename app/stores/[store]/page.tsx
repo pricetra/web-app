@@ -55,7 +55,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function SelectedStorePageServer({ params }: Props) {
   const { store } = await params;
-  console.log("Store param:", store);
   const storeData = await cachedStore(store);
   if (!storeData) notFound();
 
