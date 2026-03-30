@@ -31,9 +31,11 @@ import { adify } from "@/lib/ads";
 import { getRandomIntInclusive } from "@/lib/utils";
 import VerticalSidebarAd from "@/components/ads/vertical-sidebar-ad";
 import { uniqueId } from "lodash";
+import NavPageIndicator from "@/components/ui/nav-page-indicator";
+import { FaRegCompass } from "react-icons/fa6";
 
 export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
-  const { setSubHeader, resetAll, navbarHeight } = useNavbar();
+  const { setSubHeader, setPageIndicator, resetAll, navbarHeight } = useNavbar();
   const searchParams = useSearchParams();
   const pageString = searchParams.get("page");
   const { loggedIn, myStoreUsers } = useAuth();
@@ -63,6 +65,7 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
     resetAll();
 
     setSubHeader(<ProductFilterNavToolbar baseUrl="/search" />);
+    setPageIndicator(<NavPageIndicator title="Browse" icon={FaRegCompass} />)
 
     return () => {
       resetAll();

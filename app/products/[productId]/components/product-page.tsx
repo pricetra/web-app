@@ -41,6 +41,7 @@ import Link from "@/components/ui/link";
 import { startOfNextSundayUTC } from "@/lib/utils";
 import { useRouteHistory } from "@/context/route-history";
 import HorizontalBannerAd from "@/components/ads/horizontal-banner-ad";
+import { AiOutlineProduct } from "react-icons/ai";
 
 export type ProductPageProps = {
   productId: number;
@@ -107,7 +108,10 @@ export default function ProductPage({
   }, [stockId, productData, getStock]);
 
   useLayoutEffect(() => {
-    if (!stockId) return;
+    if (!stockId) {
+      setPageIndicator(<NavPageIndicator title="Product" icon={AiOutlineProduct} />)
+      return;
+    }
     if (
       !productSummary.store ||
       !productSummary.storeLogo ||

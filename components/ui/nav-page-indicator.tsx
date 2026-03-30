@@ -6,7 +6,7 @@ import Skeleton from "react-loading-skeleton";
 
 export type NavPageIndicatorProps = {
   href?: string;
-  title: string;
+  title?: string;
   titleHref?: string;
   icon?: IconType;
   imgSrc?: string;
@@ -27,10 +27,10 @@ export default function NavPageIndicator({
 }: NavPageIndicatorProps) {
   return (
     <div className="flex flex-row items-center gap-2 justify-start">
-      <Link href={href} className="block min-w-[35px]">
+      {(imgSrc || Icon) && <Link href={href} className="block min-w-[35px]">
         {imgSrc && (
           <Image
-            alt={title}
+            alt={title ?? 'Page indicator image'}
             src={imgSrc}
             width={200}
             height={200}
@@ -44,10 +44,10 @@ export default function NavPageIndicator({
             <Icon size={20} color="#396a12" />
           </div>
         )}
-      </Link>
+      </Link>}
 
       <div className="flex flex-col w-full md:max-w-[130px] lg:max-w-[200px] flex-1">
-        <Link href={titleHref ?? href}>
+        {title && <Link href={titleHref ?? href}>
           <h2
             className={cn(
               "font-bold text-xs lg:text-sm",
@@ -56,7 +56,7 @@ export default function NavPageIndicator({
           >
             {title}
           </h2>
-        </Link>
+        </Link>}
 
         {subTitle && (
           <a

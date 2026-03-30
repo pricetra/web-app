@@ -2,11 +2,15 @@
 
 import ProductItem from "@/components/product-item";
 import StockItemMini, { StockItemMiniLoading } from "@/components/stock-item-mini";
+import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { SmartPagination } from "@/components/ui/smart-pagination";
+import { useNavbar } from "@/context/navbar-context";
 import useLocationInput from "@/hooks/useLocationInput";
 import { useQuery } from "@apollo/client/react";
 import { BranchType, GetProductStocksDocument, Product, Stock } from "graphql-utils";
 import { useSearchParams } from "next/navigation";
+import { useLayoutEffect } from "react";
+import { MdOutlineListAlt } from "react-icons/md";
 
 export type ProductSocksPageClientProps = {
   ipAddress: string;
@@ -19,6 +23,7 @@ export default function ProductSocksPageClient({
   ipAddress,
   page,
 }: ProductSocksPageClientProps) {
+  const { setPageIndicator, resetAll } = useNavbar();
   const locationInput = useLocationInput(ipAddress);
   const searchParams = useSearchParams();
   const physicalBranchType = BranchType.Physical.toString();
@@ -35,6 +40,14 @@ export default function ProductSocksPageClient({
     },
     fetchPolicy: "no-cache",
   });
+
+  useLayoutEffect(() => {
+    setPageIndicator(<NavPageIndicator title="Stocks" icon={MdOutlineListAlt} />)
+
+    return () => {
+      resetAll();
+    }
+  }, []);
 
   return (
     <>
