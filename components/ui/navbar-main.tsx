@@ -56,7 +56,7 @@ export default function NavbarMain() {
   const [searchPanelOpen, setSearchPanelOpen] = useState(false);
 
   const fullNavHeight = useMemo(
-    () => navbarHeight + (subHeader && !searchPanelOpen ? subHeaderHeight : 0),
+    () => navbarHeight + (subHeader ? subHeaderHeight : 0),
     [navbarHeight, subHeader, searchPanelOpen, subHeaderHeight],
   );
   const isMobile = useMediaQuery({

@@ -22,7 +22,9 @@ export default function SearchResultItem({
     >
       <div className="flex flex-row items-center gap-5">
         <IoIosSearch className="size-4" />
-        <span>{searchTerm}</span>
+        <div className="flex-2">
+          <span>{searchTerm}</span>
+        </div>
       </div>
     </Link>
   );
