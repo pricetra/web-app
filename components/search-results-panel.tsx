@@ -19,6 +19,7 @@ import { useAuth } from "@/context/user-context";
 import { useSearchContext } from "@/context/search-context";
 import SearchResultItem from "./search-result-item";
 import { MobileView } from "react-device-detect";
+import { Button } from "./ui/button";
 
 export type SearchResultsPanelProps = {
   onClickResult: () => void;
@@ -120,9 +121,13 @@ export default function SearchResultsPanel({
               {productViewHistory &&
                 productViewHistory.myProductViewHistory.paginator.total > 0 && (
                   <div className="flex flex-col gap-5 mb-5">
-                    <h3 className="font-bold text-lg md:text-xl px-5">
-                      Recently viewed
-                    </h3>
+                    <div className="flex flex-row items-center justify-between gap-5 px-5">
+                      <h3 className="font-bold text-lg md:text-xl">
+                        Recently viewed
+                      </h3>
+
+                      <Button href={`/profile/lists/history?tab=products`} variant="ghost" size="xs">View all</Button>
+                    </div>
 
                     <ScrollContainer>
                       {productViewHistory.myProductViewHistory.products.map(
@@ -143,9 +148,13 @@ export default function SearchResultsPanel({
               {searchHistoryData &&
                 searchHistoryData.mySearchHistory.paginator.total > 0 && (
                   <div className="flex flex-col gap-5 mb-10">
-                    <h3 className="font-bold text-lg md:text-xl px-5">
-                      Recent searches
-                    </h3>
+                    <div className="flex flex-row items-center justify-between gap-5 px-5">
+                      <h3 className="font-bold text-lg md:text-xl">
+                        Recent searches
+                      </h3>
+
+                      <Button href={`/profile/lists/history?tab=searches`} variant="ghost" size="xs">View all</Button>
+                    </div>
 
                     <div className="flex flex-col gap-2 px-0 xs:px-5">
                       {searchHistoryData.mySearchHistory.searches.map(
