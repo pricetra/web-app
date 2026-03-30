@@ -7,7 +7,7 @@ export async function fetchGraphql<V, R>(DOCUMENT: DocumentNode, type: 'query' |
   if (token) headers['authorization'] = `Bearer ${token}`;
 
   const body: { [key: string]: unknown } = {}
-  body[type] = print(DOCUMENT);
+  body["query"] = print(DOCUMENT);
   if (variables) {
     body['variables'] = variables
   }

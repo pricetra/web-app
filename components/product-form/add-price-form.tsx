@@ -158,7 +158,10 @@ export default function AddPriceForm({
     );
   }
 
-  if (!branches || branches.length === 0) {
+  if (
+    branches.length === 0 ||
+    (onlineBranchesData?.allBranches?.branches?.length ?? 0) === 0
+  ) {
     return (
       <div className="flex flex-col items-center justify-center gap-5 py-10">
         <h3 className="text-lg">No branches found near you</h3>

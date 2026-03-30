@@ -377,7 +377,7 @@ export default function NavbarMain() {
           />
         )}
 
-        {subHeader && !searchPanelOpen && (
+        {subHeader && (
           <div
             className="w-full lg:max-w-384 mx-auto"
             style={{ height: subHeaderHeight }}
