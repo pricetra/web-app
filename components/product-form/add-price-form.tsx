@@ -385,6 +385,7 @@ function PriceForm({ stock, branch, latestPrice }: PriceFormProps) {
     amount: 0,
     unitType: "item",
     sale: false,
+    expiresAt: nextWeek,
   } as CreatePrice;
 
   const isStoreUser = useMemo(() => {
@@ -399,8 +400,29 @@ function PriceForm({ stock, branch, latestPrice }: PriceFormProps) {
   }, [myStoreUsers, branch]);
 
   useEffect(() => {
+    formikContext.setFieldValue(
+      "onlineItem",
+      stock && stock.onlineItem
+        ? {
+            url: stock.onlineItem.url,
+            itemId: stock.onlineItem.itemId,
+          }
+        : undefined,
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [stock]);
+
+  useEffect(() => {
     if (!latestPrice) {
-      formikContext.setValues({ ...basePriceInput } as CreatePrice);
+      formikContext.setValues({
+        ...basePriceInput,
+        onlineItem: stock?.onlineItem
+          ? {
+              url: stock.onlineItem.url,
+              itemId: stock.onlineItem.itemId,
+            }
+          : undefined,
+      } as CreatePrice);
       return;
     }
 
