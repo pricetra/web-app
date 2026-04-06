@@ -1,7 +1,6 @@
 import NextLink, { LinkProps } from "next/link";
 import NProgress from "nprogress";
 import { AnchorHTMLAttributes, ReactNode } from 'react';
-import { isDesktop } from "react-device-detect";
 
 export type CustomLinkType = AnchorHTMLAttributes<HTMLAnchorElement> &
   LinkProps & {
@@ -11,7 +10,6 @@ export type CustomLinkType = AnchorHTMLAttributes<HTMLAnchorElement> &
 export default function Link({ onClick, ...props }: CustomLinkType) {
   return (
     <NextLink
-      prefetch={isDesktop}
       onClick={(e) => {
         if (
           e.metaKey ||
@@ -24,7 +22,8 @@ export default function Link({ onClick, ...props }: CustomLinkType) {
           return;
         }
 
-        NProgress.start();
+        // Only start when the route is different from the current route
+        if (window.location.pathname !== props.href) NProgress.start();
         if (onClick) onClick(e);
       }}
       {...props}

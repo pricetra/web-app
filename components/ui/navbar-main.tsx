@@ -204,14 +204,14 @@ export default function NavbarMain() {
                 <div
                   className="z-1 absolute left-0 w-full md:py-1"
                   style={{
-                    top: fullNavHeight,
+                    top: navbarHeight,
                   }}
                 >
                   <div
                     className="overflow-y-scroll w-full h-full bg-white md:rounded-lg border-t border-gray-200 md:border-none md:shadow-lg py-5"
                     style={{
                       maxHeight: `calc(95vh - ${
-                        isMobile ? "0px" : `${fullNavHeight}px`
+                        isMobile ? "0px" : `${navbarHeight}px`
                       })`,
                     }}
                   >
@@ -372,7 +372,7 @@ export default function NavbarMain() {
         {searchPanelOpen && (
           <div
             className="absolute left-0 w-full h-screen bg-white md:bg-black/30"
-            style={{ top: fullNavHeight }}
+            style={{ top: navbarHeight }}
             onClick={() => setSearchPanelOpen(false)}
           />
         )}

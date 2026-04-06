@@ -4,7 +4,7 @@ import { useNavbar } from "@/context/navbar-context";
 import {
   Branch,
   BranchesWithProductsDocument,
-  Product,
+  ProductSimple,
   Store,
 } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
@@ -13,7 +13,7 @@ import { useQuery } from "@apollo/client/react";
 import BranchItemWithLogo, {
   BranchItemWithLogoLoading,
 } from "@/components/branch-item-with-logo";
-import ProductItemHorizontal, {
+import {
   ProductLoadingItemHorizontal,
 } from "@/components/product-item-horizontal";
 import useLocationInput from "@/hooks/useLocationInput";
@@ -23,9 +23,8 @@ import { SmartPagination } from "@/components/ui/smart-pagination";
 import { useSearchParams } from "next/navigation";
 import VerticalSidebarAd from "@/components/ads/vertical-sidebar-ad";
 import { uniqueId } from "lodash";
-import { adify } from "@/lib/ads";
-import { getRandomIntInclusive, startOfNextSundayUTC } from "@/lib/utils";
-import HorizontalProductAd from "@/components/ads/horizontal-product-ad";
+import { startOfNextSundayUTC } from "@/lib/utils";
+import ProductsContainer from "@/components/ui/products-container";
 
 export default function SelectedStorePageClient({ store }: { store: Store }) {
   const { navbarHeight } = useNavbar();
@@ -68,7 +67,12 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
     setPageIndicator(
       <NavPageIndicator
         title={store.name}
-        imgSrc={createCloudinaryUrl(store.logo, 100, 100, startOfNextSundayUTC())}
+        imgSrc={createCloudinaryUrl(
+          store.logo,
+          100,
+          100,
+          startOfNextSundayUTC(),
+        )}
         href={`/stores/${store.slug}`}
       />,
     );
@@ -124,25 +128,13 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
                       <BranchItemWithLogo branch={branch as Branch} cityName />
                     </div>
 
-                    <ScrollContainer>
-                      {adify(
-                        branch.products ?? [],
-                        getRandomIntInclusive(3, 6),
-                      ).map((product, i) =>
-                        typeof product === "object" ? (
-                          <ProductItemHorizontal
-                            product={product as Product}
-                            branchSlug={branch.slug}
-                            key={`branch-product-${branch.id}-${product.id}`}
-                          />
-                        ) : (
-                          <HorizontalProductAd
-                            id={i}
-                            key={`horizontal-product-ad-${branch.id}-${product}-${i}`}
-                          />
-                        ),
-                      )}
-                    </ScrollContainer>
+                    {branch.products && (
+                      <ProductsContainer
+                        products={branch.products as ProductSimple[]}
+                        branch={branch as Branch}
+                        itemKeyPrefix={`store-branch-product-${branch.id}`}
+                      />
+                    )}
                   </article>
                 ),
               )}

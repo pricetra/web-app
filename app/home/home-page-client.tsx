@@ -2,7 +2,7 @@
 import BranchItemWithLogo, {
   BranchItemWithLogoLoading,
 } from "@/components/branch-item-with-logo";
-import ProductItemHorizontal, {
+import {
   ProductLoadingItemHorizontal,
 } from "@/components/product-item-horizontal";
 import ScrollContainer from "@/components/scroll-container";
@@ -16,7 +16,7 @@ import {
   AllStoresDocument,
   Branch,
   BranchesWithProductsDocument,
-  Product,
+  ProductSimple,
 } from "graphql-utils";
 import useLocationInput from "@/hooks/useLocationInput";
 import { useQuery } from "@apollo/client/react";
@@ -26,16 +26,15 @@ import { useLayoutEffect, useMemo } from "react";
 import { useNavbar } from "@/context/navbar-context";
 import ProductFilterNavToolbar from "@/components/product-filters-nav-toolbar";
 import MyBranchPanel from "@/components/my-branches-panel";
-import HorizontalProductAd from "@/components/ads/horizontal-product-ad";
-import { adify } from "@/lib/ads";
-import { getRandomIntInclusive } from "@/lib/utils";
 import VerticalSidebarAd from "@/components/ads/vertical-sidebar-ad";
 import { uniqueId } from "lodash";
 import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { FaRegCompass } from "react-icons/fa6";
+import ProductsContainer from "@/components/ui/products-container";
 
 export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
-  const { setSubHeader, setPageIndicator, resetAll, navbarHeight } = useNavbar();
+  const { setSubHeader, setPageIndicator, resetAll, navbarHeight } =
+    useNavbar();
   const searchParams = useSearchParams();
   const pageString = searchParams.get("page");
   const { loggedIn, myStoreUsers } = useAuth();
@@ -65,7 +64,7 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
     resetAll();
 
     setSubHeader(<ProductFilterNavToolbar baseUrl="/search" />);
-    setPageIndicator(<NavPageIndicator title="Browse" icon={FaRegCompass} />)
+    setPageIndicator(<NavPageIndicator title="Browse" icon={FaRegCompass} />);
 
     return () => {
       resetAll();
@@ -135,25 +134,13 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
                       <BranchItemWithLogo branch={branch as Branch} />
                     </div>
 
-                    <ScrollContainer>
-                      {adify(
-                        branch.products ?? [],
-                        getRandomIntInclusive(3, 6),
-                      ).map((product, i) =>
-                        typeof product === "object" ? (
-                          <ProductItemHorizontal
-                            product={product as Product}
-                            branchSlug={branch.slug}
-                            key={`branch-product-${branch.id}-${product.id}`}
-                          />
-                        ) : (
-                          <HorizontalProductAd
-                            id={i}
-                            key={`horizontal-product-ad-${branch.id}-${product}-${i}`}
-                          />
-                        ),
-                      )}
-                    </ScrollContainer>
+                    {branch.products && (
+                      <ProductsContainer
+                        products={branch.products as ProductSimple[]}
+                        branch={branch as Branch}
+                        itemKeyPrefix="branch-product-home"
+                      />
+                    )}
                   </article>
                 ),
               )}
