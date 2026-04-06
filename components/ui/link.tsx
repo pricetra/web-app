@@ -10,7 +10,6 @@ export type CustomLinkType = AnchorHTMLAttributes<HTMLAnchorElement> &
 export default function Link({ onClick, ...props }: CustomLinkType) {
   return (
     <NextLink
-      prefetch={isDesktop}
       onClick={(e) => {
         if (
           e.metaKey ||
