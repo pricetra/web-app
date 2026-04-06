@@ -8,6 +8,7 @@ import {
   Category,
   Product,
   ProductSearch,
+  ProductSimple,
   Store,
 } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
@@ -31,14 +32,14 @@ import { uniqueId } from "lodash";
 import BranchPageNavTools from "./components/branch-page-nav-tools";
 import ProductFilterNavToolbar from "@/components/product-filters-nav-toolbar";
 import ScrollContainer from "@/components/scroll-container";
-import ProductItemHorizontal, {
+import {
   ProductLoadingItemHorizontal,
 } from "@/components/product-item-horizontal";
-import HorizontalProductAd from "@/components/ads/horizontal-product-ad";
 import Skeleton from "react-loading-skeleton";
 import Link from "@/components/ui/link";
 import { FiChevronRight } from "react-icons/fi";
 import { cleanUrl } from "@/lib/strings";
+import ProductsContainer from "@/components/ui/products-container";
 
 export default function BranchPageClient({
   store,
@@ -96,11 +97,11 @@ export default function BranchPageClient({
 
     resetAll();
 
-    let subTitle = '';
-    let subTitleHref = ''
+    let subTitle = "";
+    let subTitleHref = "";
     if (branch.address) {
       subTitle = `${branch.address.street}, ${branch.address.city}`;
-      subTitleHref = branch.address.mapsLink
+      subTitleHref = branch.address.mapsLink;
     }
     if (branch.onlineAddress) {
       subTitle = cleanUrl(branch.onlineAddress.url);
@@ -255,25 +256,13 @@ export default function BranchPageClient({
                             </Link>
                           </div>
 
-                          <ScrollContainer>
-                            {adify(
-                              category.products ?? [],
-                              getRandomIntInclusive(3, 6),
-                            ).map((product, i) =>
-                              typeof product === "object" ? (
-                                <ProductItemHorizontal
-                                  product={product as Product}
-                                  branchSlug={branch.slug}
-                                  key={`branch-product-${category.id}-${product.id}`}
-                                />
-                              ) : (
-                                <HorizontalProductAd
-                                  id={i}
-                                  key={`horizontal-product-ad-${category.id}-${product}-${i}`}
-                                />
-                              ),
-                            )}
-                          </ScrollContainer>
+                          {category.products && (
+                            <ProductsContainer
+                              products={category.products as ProductSimple[]}
+                              branch={branch as Branch}
+                              itemKeyPrefix={`branch-category-product-${category.id}`}
+                            />
+                          )}
                         </article>
                       );
                     },
@@ -281,7 +270,8 @@ export default function BranchPageClient({
             </div>
 
             {categorizedProductsData?.categoriesWithProducts?.paginator &&
-              categorizedProductsData.categoriesWithProducts.paginator.numPages > 1 && (
+              categorizedProductsData.categoriesWithProducts.paginator
+                .numPages > 1 && (
                 <div className="mt-20">
                   <SmartPagination
                     paginator={

@@ -27,11 +27,13 @@ import {
   PopularSearchKeywordsDocument,
   Product,
   ProductSearch,
+  ProductSimple,
 } from "graphql-utils";
 import Link from "@/components/ui/link";
 import { useEffect, useLayoutEffect, useMemo } from "react";
 import { IoIosSearch } from "react-icons/io";
 import Skeleton from "react-loading-skeleton";
+import ProductsContainer from "@/components/ui/products-container";
 
 export type SearchRouteParams = {
   query?: string;
@@ -293,25 +295,13 @@ export default function SearchPageClient({
                       <BranchItemWithLogo branch={branch as Branch} />
                     </div>
 
-                    <ScrollContainer>
-                      {adify(
-                        branch.products ?? [],
-                        getRandomIntInclusive(3, 6),
-                      ).map((product, i) =>
-                        typeof product === "object" ? (
-                          <ProductItemHorizontal
-                            product={product as Product}
-                            branchSlug={branch.slug}
-                            key={`branch-product-${branch.id}-${product.id}`}
-                          />
-                        ) : (
-                          <HorizontalProductAd
-                            id={i}
-                            key={`horizontal-product-ad-${branch.id}-${product}-${i}`}
-                          />
-                        ),
-                      )}
-                    </ScrollContainer>
+                    {branch.products && (
+                      <ProductsContainer
+                        products={branch.products as ProductSimple[]}
+                        branch={branch as Branch}
+                        itemKeyPrefix="branch-product-search"
+                      />
+                    )}
                   </article>
                 ),
               )

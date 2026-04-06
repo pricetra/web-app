@@ -11,6 +11,7 @@ import {
   LocationInput,
   Product,
   ProductNutrition,
+  ProductSimple,
   Stock,
   UpdateProductNutritionDataDocument,
 } from "graphql-utils";
@@ -25,9 +26,7 @@ import ProductSpecs from "@/components/product-specs";
 import BranchItemWithLogo, {
   BranchItemWithLogoLoading,
 } from "@/components/branch-item-with-logo";
-import ProductItemHorizontal, {
-  ProductLoadingItemHorizontal,
-} from "@/components/product-item-horizontal";
+import { ProductLoadingItemHorizontal } from "@/components/product-item-horizontal";
 import NutritionFacts from "@/components/nutrition-facts";
 import { Button } from "@/components/ui/button";
 import StockItemMini, {
@@ -43,12 +42,10 @@ import { useEffect, useMemo, useState } from "react";
 import { LocationInputWithFullAddress } from "@/context/location-context";
 import { useInView } from "react-intersection-observer";
 import Link from "@/components/ui/link";
-import { adify } from "@/lib/ads";
-import { getRandomIntInclusive } from "@/lib/utils";
-import HorizontalProductAd from "@/components/ads/horizontal-product-ad";
 import convert from "convert-units";
 import MultiplexAds from "@/components/ads/multiplex-ads";
 import { slugifyProductName } from "@/lib/strings";
+import ProductsContainer from "@/components/ui/products-container";
 
 export type StockWithApproximatePrice = Stock & {
   approximatePrice?: number;
@@ -232,19 +229,28 @@ export default function ProductDetails({
     stock,
   ]);
 
-  const [accordionValues, setAccordionValues] = useState<string[]>(["favorite-stores", "description"]);
+  const [accordionValues, setAccordionValues] = useState<string[]>([
+    "favorite-stores",
+    "description",
+  ]);
   useEffect(() => {
     const defaults: string[] = [];
-    if (inStoreStocksData && inStoreStocksData.getProductStocks.paginator.total > 0) {
+    if (
+      inStoreStocksData &&
+      inStoreStocksData.getProductStocks.paginator.total > 0
+    ) {
       defaults.push("available-in-stores");
     }
-    if (onlineStocksData && onlineStocksData.getProductStocks.paginator.total > 0) {
+    if (
+      onlineStocksData &&
+      onlineStocksData.getProductStocks.paginator.total > 0
+    ) {
       defaults.push("available-online");
     }
     if (productNutritionData) {
       defaults.push("nutrition-facts");
     }
-    
+
     setAccordionValues((v) => [...v, ...defaults]);
   }, [inStoreStocksData, onlineStocksData, productNutritionData]);
 
@@ -529,41 +535,25 @@ export default function ProductDetails({
                   </ScrollContainer>
                 </article>
               ))
-          : branchesWithProducts.branchesWithProducts.branches.map(
-              (branch, i) => (
-                <article
-                  className="my-7"
-                  key={`branch-with-product-${branch.id}`}
-                >
-                  <div className="mb-5 px-5">
-                    <BranchItemWithLogo
-                      branch={branch as Branch}
-                      branchTagline="Similar products in"
-                    />
-                  </div>
+          : branchesWithProducts.branchesWithProducts.branches.map((branch) => (
+              <article
+                className="my-7"
+                key={`branch-with-product-${branch.id}`}
+              >
+                <div className="mb-5 px-5">
+                  <BranchItemWithLogo
+                    branch={branch as Branch}
+                    branchTagline="Similar products in"
+                  />
+                </div>
 
-                  <ScrollContainer>
-                    {adify(
-                      branch.products ?? [],
-                      getRandomIntInclusive(3, 6),
-                    ).map((product) =>
-                      typeof product === "object" ? (
-                        <ProductItemHorizontal
-                          product={product as Product}
-                          branchSlug={branch.slug}
-                          key={`related-branch-product-${branch.id}-${product.id}-${i}`}
-                        />
-                      ) : (
-                        <HorizontalProductAd
-                          id={i}
-                          key={`horizontal-product-ad-${branch.id}-${product}-${i}`}
-                        />
-                      ),
-                    )}
-                  </ScrollContainer>
-                </article>
-              ),
-            )}
+                <ProductsContainer
+                  products={branch.products as ProductSimple[]}
+                  branch={branch as Branch}
+                  itemKeyPrefix={`related-branch-product-${branch.id}`}
+                />
+              </article>
+            ))}
       </section>
     </div>
   );
