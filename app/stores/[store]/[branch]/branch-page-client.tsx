@@ -6,6 +6,7 @@ import {
   Branch,
   CategoriesWithProductsDocument,
   Category,
+  GetStorefrontBannerDocument,
   Product,
   ProductSearch,
   ProductSimple,
@@ -13,7 +14,7 @@ import {
 } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
 import { useEffect, useLayoutEffect, useMemo } from "react";
-import { useLazyQuery } from "@apollo/client/react";
+import { useLazyQuery, useQuery } from "@apollo/client/react";
 import ProductItem, { ProductItemLoading } from "@/components/product-item";
 import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { SmartPagination } from "@/components/ui/smart-pagination";
@@ -40,6 +41,13 @@ import Link from "@/components/ui/link";
 import { FiChevronRight } from "react-icons/fi";
 import { cleanUrl } from "@/lib/strings";
 import ProductsContainer from "@/components/ui/products-container";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselPrevious,
+  CarouselNext,
+} from "@/components/ui/carousel";
+import StorefrontBannerItem from "@/components/storefront-banner-item";
 
 export default function BranchPageClient({
   store,
@@ -73,6 +81,21 @@ export default function BranchPageClient({
     delete sp.sortByPrice;
     return new URLSearchParams(sp);
   }, [searchParams]);
+
+  const { data: bannerData } = useQuery(GetStorefrontBannerDocument, {
+    variables: {
+      storeId: store.id,
+      branchId: branch.id,
+    },
+  });
+
+  const bannerItems = useMemo(
+    () =>
+      bannerData?.getStorefrontBanner?.bannerItems
+        ?.slice()
+        .sort((a, b) => a.sortOrder - b.sortOrder) ?? [],
+    [bannerData],
+  );
 
   const [getCategorizedProducts, { data: categorizedProductsData }] =
     useLazyQuery(CategoriesWithProductsDocument, {
@@ -196,6 +219,27 @@ export default function BranchPageClient({
         {paramsBuilder.size === 0 ? (
           <div>
             <div className="flex flex-col">
+              {bannerItems.length > 0 && (
+                <div className="px-5 pt-5">
+                  <Carousel
+                    opts={{ loop: true }}
+                    className="w-full"
+                  >
+                    <CarouselContent>
+                      {bannerItems.map((item) => (
+                        <StorefrontBannerItem key={item.id} item={item} />
+                      ))}
+                    </CarouselContent>
+                    {bannerItems.length > 1 && (
+                      <>
+                        <CarouselPrevious />
+                        <CarouselNext />
+                      </>
+                    )}
+                  </Carousel>
+                </div>
+              )}
+
               {!categorizedProductsData
                 ? Array(3)
                     .fill(0)
