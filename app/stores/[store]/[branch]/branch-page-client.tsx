@@ -51,7 +51,8 @@ import { useAuth } from "@/context/user-context";
 import useStoreUser from "@/hooks/useStoreUser";
 import { Button } from "@/components/ui/button";
 import { isRoleAuthorized } from "@/lib/roles";
-import { Dialog } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import CreateStorefrontBannerForm from "@/components/create-storefront-banner-form";
 
 export default function BranchPageClient({
   store,
@@ -238,7 +239,16 @@ export default function BranchPageClient({
           defaultOpen={showAddBannerDialog}
           onOpenChange={(o) => setShowAddBannerDialog(o)}
         >
-          {/** TODO: Add banner form */}
+          <DialogContent size="lg">
+            <DialogHeader>
+              <DialogTitle>Add Storefront Banner</DialogTitle>
+            </DialogHeader>
+            <CreateStorefrontBannerForm
+              storeId={store.id}
+              branchId={branch.id}
+              onSuccess={() => setShowAddBannerDialog(false)}
+            />
+          </DialogContent>
         </Dialog>
 
       <div className="w-full max-w-[1000px] flex-2">
@@ -246,7 +256,7 @@ export default function BranchPageClient({
           <div>
             <div className="flex flex-col">
               {bannerItems.length > 0 ? (
-                <div className="px-5 pt-5">
+                <div className="px-5 pt-5 mb-10">
                   <Carousel opts={{ loop: true }} className="w-full">
                     <CarouselContent>
                       {bannerItems.map((item) => (
