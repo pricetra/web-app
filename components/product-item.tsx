@@ -9,7 +9,7 @@ import Image from "next/image";
 import ProductMetadataBadge from "./product-metadata-badge";
 import Skeleton from "react-loading-skeleton";
 import Link from "@/components/ui/link";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import ProductStockMini from "./product-stock-mini";
 import usePricePerUnit from "@/hooks/usePricePerUnit";
 
@@ -41,6 +41,7 @@ ProductItemProps) {
   const href = useMemo(() => {
       return `/products/${product.id}-${slugifyProductName(product.name)}${branchSlug ? `/${branchSlug}` : ""}`;
     }, [product.id, product.name, branchSlug]);
+  const [image, setImage] = useState(productImageUrlWithTimestamp(product, 500));
 
   return (
     <Link href={href} className="flex max-w-full flex-row gap-2 relative group">
@@ -59,11 +60,12 @@ ProductItemProps) {
         )}
 
         <Image
-          src={productImageUrlWithTimestamp(product, 500)}
+          src={image}
           alt={product.code}
           className="h-full w-full object-cover rounded-xl"
           width={500}
           height={500}
+          onError={() => setImage('/no_img.jpg')}
         />
       </div>
       <div className="flex max-w-full flex-1 flex-col gap-3 px-2">

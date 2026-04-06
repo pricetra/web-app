@@ -12,7 +12,7 @@ import ProductMetadataBadge from "./product-metadata-badge";
 import Link from "@/components/ui/link";
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import useCalculatedPrice from "@/hooks/useCalculatedPrice";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { startOfNextSundayUTC } from "@/lib/utils";
 import usePricePerUnit from "@/hooks/usePricePerUnit";
 
@@ -38,6 +38,7 @@ export default function ProductItemHorizontal({
   const href = useMemo(() => {
     return `/products/${product.id}-${slugifyProductName(product.name)}${branchSlug ? `/${branchSlug}` : ""}`;
   }, [product.id, product.name, branchSlug]);
+  const [image, setImage] = useState(productImageUrlWithTimestamp(product, 500));
 
   return (
     <Link
@@ -60,11 +61,12 @@ export default function ProductItemHorizontal({
         )}
 
         <Image
-          src={productImageUrlWithTimestamp(product, 500)}
+          src={image}
           className="h-full w-full object-cover"
           width={500}
           height={500}
           alt={product.name}
+          onError={() => setImage('/no_img.jpg')}
         />
       </div>
       <div className="flex flex-col justify-between gap-2 w-full pb-2.5">
