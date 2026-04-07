@@ -19,7 +19,7 @@ export default function StorefrontBannerItem({
   const imgUrl = createCloudinaryUrl(item.imageId, 1920);
 
   const content = (
-    <div className="relative w-full aspect-5/2 rounded-xl overflow-hidden">
+    <div className="relative w-full aspect-5/2 sm:rounded-xl overflow-hidden">
       <Image
         src={imgUrl}
         alt={item.title ?? ""}
@@ -27,44 +27,48 @@ export default function StorefrontBannerItem({
         className="object-cover"
         sizes="(max-width: 1920px) 100vw, 1920px"
       />
-      {(item.title || item.description) && (
-        <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/60 to-transparent p-4">
-          {item.title && (
-            <h3 className="text-white font-semibold text-base sm:text-xl md:text-2xl text-shadow-lg">{item.title}</h3>
-          )}
-          {item.description && (
-            <p className="text-white text-xs sm:text-sm line-clamp-2 text-shadow-lg">
-              {item.description}
-            </p>
-          )}
-        </div>
-      )}
-      {isStoreUser && (
-        <div className="absolute top-2 right-2 flex gap-1">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onEdit?.();
-            }}
-            className="p-2 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors cursor-pointer"
-          >
-            <FiEdit2 className="size-3.5" />
-          </button>
-          <button
-            type="button"
-            onClick={(e) => {
-              e.preventDefault();
-              e.stopPropagation();
-              onDelete?.();
-            }}
-            className="p-2 rounded-full bg-black/50 hover:bg-red-600 text-white transition-colors cursor-pointer"
-          >
-            <FiTrash2 className="size-3.5" />
-          </button>
-        </div>
-      )}
+      <div className="relative w-full h-full">
+        {(item.title || item.description) && (
+          <div className="absolute bottom-0 left-0 sm:left-0 w-full bg-linear-to-t from-black/60 to-transparent p-4">
+            {item.title && (
+              <h3 className="text-white font-semibold text-base xs:text-lg sm:text-2xl md:text-3xl text-shadow-lg">
+                {item.title}
+              </h3>
+            )}
+            {item.description && (
+              <p className="text-white text-xs sm:text-sm md:text-base line-clamp-2 text-shadow-lg hidden xs:block">
+                {item.description}
+              </p>
+            )}
+          </div>
+        )}
+        {isStoreUser && (
+          <div className="absolute top-2 right-2 flex gap-1">
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onEdit?.();
+              }}
+              className="p-2 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors cursor-pointer"
+            >
+              <FiEdit2 className="size-3.5" />
+            </button>
+            <button
+              type="button"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onDelete?.();
+              }}
+              className="p-2 rounded-full bg-black/50 hover:bg-red-600 text-white transition-colors cursor-pointer"
+            >
+              <FiTrash2 className="size-3.5" />
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 

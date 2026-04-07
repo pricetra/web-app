@@ -37,10 +37,10 @@ import EditStorefrontBannerItemForm from "@/components/edit-storefront-banner-it
 import { useAuth } from "@/context/user-context";
 import useStoreUser from "@/hooks/useStoreUser";
 import { isRoleAuthorized } from "@/lib/roles";
-import { useMediaQuery } from "react-responsive";
 import { toast } from "sonner";
 import { FiPlus, FiTrash2 } from "react-icons/fi";
 import { IoIosSettings } from "react-icons/io";
+import { isMobile } from "react-device-detect";
 
 type BannerDialog =
   | { type: "create" }
@@ -68,10 +68,6 @@ export default function StorefrontBanner({
       ? storeUserBranches.some((b) => b.id === branch.id)
       : storeUserBranches.some((b) => b.storeId === store.id);
   }, [user, storeUserBranches, branch, store.id]);
-
-  const isMobile = useMediaQuery({
-    query: "(max-width: 640px)",
-  });
 
   const [dialog, setDialog] = useState<BannerDialog>(null);
 
@@ -166,7 +162,7 @@ export default function StorefrontBanner({
       </Dialog>
 
       {bannerItems.length > 0 ? (
-        <div className="px-5 sm:mt-5 mb-5 sm:mb-10">
+        <div className="sm:px-5 -mt-5 sm:mt-5 mb-5 sm:mb-10">
           <Carousel opts={{ loop: true }} className="w-full">
             <CarouselContent>
               {bannerItems.map((item) => (
@@ -187,7 +183,7 @@ export default function StorefrontBanner({
             )}
           </Carousel>
           {isStoreUser && (
-            <div className="flex justify-end mt-2 gap-2">
+            <div className="flex justify-end mt-2 gap-2 px-4 sm:px-0">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="sm">
@@ -196,7 +192,9 @@ export default function StorefrontBanner({
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
-                  <DropdownMenuItem onClick={() => setDialog({ type: "append" })}>
+                  <DropdownMenuItem
+                    onClick={() => setDialog({ type: "append" })}
+                  >
                     <FiPlus className="size-4 mr-1" />
                     Add slides
                   </DropdownMenuItem>
@@ -215,15 +213,19 @@ export default function StorefrontBanner({
         </div>
       ) : (
         isStoreUser && (
-          <div className="border border-gray-100 bg-gray-50 rounded-lg px-5 py-2 flex flex-row gap-5 items-center justify-between mb-10">
-            <span className="flex-2 font-semibold">Add storefront banner</span>
-            <Button
-              onClick={() => setDialog({ type: "create" })}
-              variant="pricetra"
-              size="sm"
-            >
-              Add Banner
-            </Button>
+          <div className="px-5">
+            <div className="border border-gray-100 bg-gray-50 rounded-lg px-5 py-2 flex flex-row gap-5 items-center justify-between mb-10">
+              <span className="flex-2 font-semibold">
+                Add storefront banner
+              </span>
+              <Button
+                onClick={() => setDialog({ type: "create" })}
+                variant="pricetra"
+                size="sm"
+              >
+                Add Banner
+              </Button>
+            </div>
           </div>
         )
       )}
