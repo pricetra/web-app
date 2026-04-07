@@ -88,7 +88,7 @@ export default function EditStorefrontBannerItemForm({
     });
   };
 
-  const currentImageUrl = createCloudinaryUrl(item.imageId, 1000, 400);
+  const currentImageUrl = createCloudinaryUrl(item.imageId, 1920);
 
   return (
     <div className="flex flex-col gap-4">
@@ -118,6 +118,9 @@ export default function EditStorefrontBannerItemForm({
             <FiCamera className="size-6 text-white" />
           </div>
         </div>
+        <p className="text-xs text-muted-foreground mt-1">
+          Recommended: 1920 × 768 px (5:2 ratio)
+        </p>
       </div>
 
       <div>

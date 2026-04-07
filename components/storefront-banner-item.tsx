@@ -16,7 +16,7 @@ export default function StorefrontBannerItem({
   onEdit?: () => void;
   onDelete?: () => void;
 }) {
-  const imgUrl = createCloudinaryUrl(item.imageId, 1000, 400);
+  const imgUrl = createCloudinaryUrl(item.imageId, 1920);
 
   const content = (
     <div className="relative w-full aspect-5/2 rounded-xl overflow-hidden">
@@ -25,7 +25,7 @@ export default function StorefrontBannerItem({
         alt={item.title ?? ""}
         fill
         className="object-cover"
-        sizes="(max-width: 1000px) 100vw, 1000px"
+        sizes="(max-width: 1920px) 100vw, 1920px"
       />
       {(item.title || item.description) && (
         <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/60 to-transparent p-4">

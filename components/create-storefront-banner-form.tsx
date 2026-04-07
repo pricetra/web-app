@@ -52,7 +52,9 @@ export default function CreateStorefrontBannerForm({
   const imageRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const [createBannerItems, { loading }] = useMutation(
-    append ? AppendStorefrontBannerItemsDocument : CreateStorefrontBannerItemsDocument,
+    append
+      ? AppendStorefrontBannerItemsDocument
+      : CreateStorefrontBannerItemsDocument,
     {
       refetchQueries: [
         {
@@ -63,10 +65,7 @@ export default function CreateStorefrontBannerForm({
     },
   );
 
-  const updateItem = (
-    index: number,
-    updates: Partial<BannerItemField>,
-  ) => {
+  const updateItem = (index: number, updates: Partial<BannerItemField>) => {
     setItems((prev) =>
       prev.map((item, i) => (i === index ? { ...item, ...updates } : item)),
     );
@@ -118,7 +117,9 @@ export default function CreateStorefrontBannerForm({
       },
     }).then(({ data }) => {
       if (!data) return;
-      toast.success(append ? "Slides added successfully" : "Banner created successfully");
+      toast.success(
+        append ? "Slides added successfully" : "Banner created successfully",
+      );
       onSuccess?.();
     });
   };
@@ -177,6 +178,10 @@ export default function CreateStorefrontBannerForm({
                 </div>
               </div>
             )}
+
+            <p className="text-xs text-muted-foreground mt-1">
+              Recommended: 1920 x 768 px (5:2 ratio)
+            </p>
           </div>
 
           <div>
@@ -235,11 +240,7 @@ export default function CreateStorefrontBannerForm({
         Add another slide
       </Button>
 
-      <Button
-        variant="pricetra"
-        disabled={loading}
-        onClick={handleSubmit}
-      >
+      <Button variant="pricetra" disabled={loading} onClick={handleSubmit}>
         {loading ? "Saving..." : append ? "Add Slides" : "Create Banner"}
       </Button>
     </div>
