@@ -39,7 +39,8 @@ import useStoreUser from "@/hooks/useStoreUser";
 import { isRoleAuthorized } from "@/lib/roles";
 import { useMediaQuery } from "react-responsive";
 import { toast } from "sonner";
-import { FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
+import { FiPlus, FiTrash2 } from "react-icons/fi";
+import { IoIosSettings } from "react-icons/io";
 
 type BannerDialog =
   | { type: "create" }
@@ -190,13 +191,13 @@ export default function StorefrontBanner({
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button variant="outline" size="sm">
-                    <FiMoreHorizontal className="size-4 mr-2" />
-                    Manage Banner
+                    <IoIosSettings className="size-4 mr-1" />
+                    Manage Banners
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
                   <DropdownMenuItem onClick={() => setDialog({ type: "append" })}>
-                    <FiPlus className="size-4 mr-2" />
+                    <FiPlus className="size-4 mr-1" />
                     Add slides
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -204,7 +205,7 @@ export default function StorefrontBanner({
                     onClick={handleDeleteAll}
                     className="text-red-600 focus:text-red-600"
                   >
-                    <FiTrash2 className="size-4 mr-2" />
+                    <FiTrash2 className="size-4 mr-1" />
                     Delete all slides
                   </DropdownMenuItem>
                 </DropdownMenuContent>

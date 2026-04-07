@@ -114,7 +114,7 @@ export default function EditStorefrontBannerItemForm({
             fill
             className="object-cover"
           />
-          <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 hover:opacity-100 transition-opacity">
+          <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 hover:opacity-100 transition-opacity">
             <FiCamera className="size-6 text-white" />
           </div>
         </div>
