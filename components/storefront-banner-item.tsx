@@ -48,7 +48,7 @@ export default function StorefrontBannerItem({
               e.stopPropagation();
               onEdit?.();
             }}
-            className="p-2 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors"
+            className="p-2 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors cursor-pointer"
           >
             <FiEdit2 className="size-3.5" />
           </button>
@@ -59,7 +59,7 @@ export default function StorefrontBannerItem({
               e.stopPropagation();
               onDelete?.();
             }}
-            className="p-2 rounded-full bg-black/50 hover:bg-red-600 text-white transition-colors"
+            className="p-2 rounded-full bg-black/50 hover:bg-red-600 text-white transition-colors cursor-pointer"
           >
             <FiTrash2 className="size-3.5" />
           </button>
