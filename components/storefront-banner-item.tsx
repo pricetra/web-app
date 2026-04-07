@@ -30,10 +30,10 @@ export default function StorefrontBannerItem({
       {(item.title || item.description) && (
         <div className="absolute bottom-0 left-0 right-0 bg-linear-to-t from-black/60 to-transparent p-4">
           {item.title && (
-            <h3 className="text-white font-semibold text-lg">{item.title}</h3>
+            <h3 className="text-white font-semibold text-base sm:text-xl md:text-2xl text-shadow-lg">{item.title}</h3>
           )}
           {item.description && (
-            <p className="text-white/80 text-sm line-clamp-2">
+            <p className="text-white text-xs sm:text-sm line-clamp-2 text-shadow-lg">
               {item.description}
             </p>
           )}
