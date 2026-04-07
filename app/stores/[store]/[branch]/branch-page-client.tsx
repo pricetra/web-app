@@ -32,14 +32,13 @@ import { uniqueId } from "lodash";
 import BranchPageNavTools from "./components/branch-page-nav-tools";
 import ProductFilterNavToolbar from "@/components/product-filters-nav-toolbar";
 import ScrollContainer from "@/components/scroll-container";
-import {
-  ProductLoadingItemHorizontal,
-} from "@/components/product-item-horizontal";
+import { ProductLoadingItemHorizontal } from "@/components/product-item-horizontal";
 import Skeleton from "react-loading-skeleton";
 import Link from "@/components/ui/link";
 import { FiChevronRight } from "react-icons/fi";
 import { cleanUrl } from "@/lib/strings";
 import ProductsContainer from "@/components/ui/products-container";
+import StorefrontBanner from "@/components/storefront-banner";
 
 export default function BranchPageClient({
   store,
@@ -196,6 +195,10 @@ export default function BranchPageClient({
         {paramsBuilder.size === 0 ? (
           <div>
             <div className="flex flex-col">
+              {(!searchParams.page || searchParams.page === "1") && (
+                <StorefrontBanner store={store} branch={branch} />
+              )}
+
               {!categorizedProductsData
                 ? Array(3)
                     .fill(0)

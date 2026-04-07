@@ -13,9 +13,7 @@ import { useQuery } from "@apollo/client/react";
 import BranchItemWithLogo, {
   BranchItemWithLogoLoading,
 } from "@/components/branch-item-with-logo";
-import {
-  ProductLoadingItemHorizontal,
-} from "@/components/product-item-horizontal";
+import { ProductLoadingItemHorizontal } from "@/components/product-item-horizontal";
 import useLocationInput from "@/hooks/useLocationInput";
 import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import ScrollContainer from "@/components/scroll-container";
@@ -25,6 +23,7 @@ import VerticalSidebarAd from "@/components/ads/vertical-sidebar-ad";
 import { uniqueId } from "lodash";
 import { startOfNextSundayUTC } from "@/lib/utils";
 import ProductsContainer from "@/components/ui/products-container";
+import StorefrontBanner from "@/components/storefront-banner";
 
 export default function SelectedStorePageClient({ store }: { store: Store }) {
   const { navbarHeight } = useNavbar();
@@ -89,6 +88,10 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
     <>
       <div className="w-full max-w-[1000px] mt-0 flex-2">
         <section>
+          {(!pageString || pageString === "1") && (
+            <StorefrontBanner store={store} />
+          )}
+
           <div className="px-5 mt-5 mb-16">
             <h1 className="font-bold text-xl sm:text-2xl">
               Locations for {store.name}
