@@ -4,6 +4,7 @@ import { useRef, useState } from "react";
 import { useMutation } from "@apollo/client/react";
 import {
   CreateStorefrontBannerItemsDocument,
+  AppendStorefrontBannerItemsDocument,
   GetStorefrontBannerDocument,
 } from "graphql-utils";
 import { convertFileToBase64 } from "@/lib/files";
@@ -40,16 +41,18 @@ export default function CreateStorefrontBannerForm({
   storeId,
   branchId,
   onSuccess,
+  append = false,
 }: {
   storeId: number;
   branchId?: number;
   onSuccess?: () => void;
+  append?: boolean;
 }) {
   const [items, setItems] = useState<BannerItemField[]>([emptyItem()]);
   const imageRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const [createBannerItems, { loading }] = useMutation(
-    CreateStorefrontBannerItemsDocument,
+    append ? AppendStorefrontBannerItemsDocument : CreateStorefrontBannerItemsDocument,
     {
       refetchQueries: [
         {
@@ -115,7 +118,7 @@ export default function CreateStorefrontBannerForm({
       },
     }).then(({ data }) => {
       if (!data) return;
-      toast.success("Banner created successfully");
+      toast.success(append ? "Slides added successfully" : "Banner created successfully");
       onSuccess?.();
     });
   };
@@ -237,7 +240,7 @@ export default function CreateStorefrontBannerForm({
         disabled={loading}
         onClick={handleSubmit}
       >
-        {loading ? "Creating..." : "Create Banner"}
+        {loading ? "Saving..." : append ? "Add Slides" : "Create Banner"}
       </Button>
     </div>
   );

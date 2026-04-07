@@ -1,8 +1,16 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useQuery } from "@apollo/client/react";
-import { GetStorefrontBannerDocument, Store, Branch, UserRole } from "graphql-utils";
+import { useMutation, useQuery } from "@apollo/client/react";
+import {
+  GetStorefrontBannerDocument,
+  DeleteStorefrontBannerItemDocument,
+  DeleteAllStorefrontBannerItemsDocument,
+  Store,
+  Branch,
+  UserRole,
+  StorefrontBannerItem as StorefrontBannerItemType,
+} from "graphql-utils";
 import {
   Carousel,
   CarouselContent,
@@ -17,11 +25,27 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import CreateStorefrontBannerForm from "@/components/create-storefront-banner-form";
+import EditStorefrontBannerItemForm from "@/components/edit-storefront-banner-item-form";
 import { useAuth } from "@/context/user-context";
 import useStoreUser from "@/hooks/useStoreUser";
 import { isRoleAuthorized } from "@/lib/roles";
 import { useMediaQuery } from "react-responsive";
+import { toast } from "sonner";
+import { FiMoreHorizontal, FiPlus, FiTrash2 } from "react-icons/fi";
+
+type BannerDialog =
+  | { type: "create" }
+  | { type: "append" }
+  | { type: "edit"; item: StorefrontBannerItemType }
+  | null;
 
 export default function StorefrontBanner({
   store,
@@ -41,14 +65,21 @@ export default function StorefrontBanner({
     if (!storeUserBranches) return false;
     return branch
       ? storeUserBranches.some((b) => b.id === branch.id)
-      : storeUserBranches.some((b) => b.storeId === store.id); // Admin user with access to store level permissions
+      : storeUserBranches.some((b) => b.storeId === store.id);
   }, [user, storeUserBranches, branch, store.id]);
 
   const isMobile = useMediaQuery({
     query: "(max-width: 640px)",
   });
 
-  const [showAddBannerDialog, setShowAddBannerDialog] = useState(false);
+  const [dialog, setDialog] = useState<BannerDialog>(null);
+
+  const refetchQueries = [
+    {
+      query: GetStorefrontBannerDocument,
+      variables: { storeId: store.id, branchId: branch?.id },
+    },
+  ];
 
   const { data: bannerData } = useQuery(GetStorefrontBannerDocument, {
     variables: {
@@ -65,23 +96,71 @@ export default function StorefrontBanner({
     [bannerData],
   );
 
+  const bannerId = bannerData?.getStorefrontBanner?.id;
+
+  const [deleteBannerItem] = useMutation(DeleteStorefrontBannerItemDocument, {
+    refetchQueries,
+  });
+
+  const [deleteAllBannerItems] = useMutation(
+    DeleteAllStorefrontBannerItemsDocument,
+    { refetchQueries },
+  );
+
+  const handleDeleteItem = (item: StorefrontBannerItemType) => {
+    if (!confirm(`Delete banner slide "${item.title || `#${item.id}`}"?`))
+      return;
+
+    deleteBannerItem({
+      variables: { bannerItemId: item.id },
+    }).then(({ data }) => {
+      if (data) toast.success("Banner slide deleted");
+    });
+  };
+
+  const handleDeleteAll = () => {
+    if (!bannerId) return;
+    if (!confirm("Delete all banner slides? This cannot be undone.")) return;
+
+    deleteAllBannerItems({
+      variables: { storefrontBannerId: bannerId },
+    }).then(({ data }) => {
+      if (data) toast.success("All banner slides deleted");
+    });
+  };
+
   return (
     <>
       <Dialog
         modal
-        open={showAddBannerDialog}
-        defaultOpen={showAddBannerDialog}
-        onOpenChange={(o) => setShowAddBannerDialog(o)}
+        open={dialog !== null}
+        onOpenChange={(o) => !o && setDialog(null)}
       >
         <DialogContent size="lg">
           <DialogHeader>
-            <DialogTitle>Add Storefront Banner</DialogTitle>
+            <DialogTitle>
+              {dialog?.type === "edit"
+                ? "Edit Banner Slide"
+                : dialog?.type === "append"
+                  ? "Add Banner Slides"
+                  : "Create Storefront Banner"}
+            </DialogTitle>
           </DialogHeader>
-          <CreateStorefrontBannerForm
-            storeId={store.id}
-            branchId={branch?.id}
-            onSuccess={() => setShowAddBannerDialog(false)}
-          />
+          {dialog?.type === "edit" ? (
+            <EditStorefrontBannerItemForm
+              item={dialog.item}
+              storeId={store.id}
+              branchId={branch?.id}
+              onSuccess={() => setDialog(null)}
+            />
+          ) : (
+            <CreateStorefrontBannerForm
+              storeId={store.id}
+              branchId={branch?.id}
+              onSuccess={() => setDialog(null)}
+              append={dialog?.type === "append"}
+            />
+          )}
         </DialogContent>
       </Dialog>
 
@@ -90,7 +169,13 @@ export default function StorefrontBanner({
           <Carousel opts={{ loop: true }} className="w-full">
             <CarouselContent>
               {bannerItems.map((item) => (
-                <StorefrontBannerItem key={item.id} item={item} />
+                <StorefrontBannerItem
+                  key={item.id}
+                  item={item}
+                  isStoreUser={isStoreUser}
+                  onEdit={() => setDialog({ type: "edit", item })}
+                  onDelete={() => handleDeleteItem(item)}
+                />
               ))}
             </CarouselContent>
             {bannerItems.length > 1 && !isMobile && (
@@ -100,13 +185,39 @@ export default function StorefrontBanner({
               </>
             )}
           </Carousel>
+          {isStoreUser && (
+            <div className="flex justify-end mt-2 gap-2">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm">
+                    <FiMoreHorizontal className="size-4 mr-2" />
+                    Manage Banner
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end">
+                  <DropdownMenuItem onClick={() => setDialog({ type: "append" })}>
+                    <FiPlus className="size-4 mr-2" />
+                    Add slides
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    onClick={handleDeleteAll}
+                    className="text-red-600 focus:text-red-600"
+                  >
+                    <FiTrash2 className="size-4 mr-2" />
+                    Delete all slides
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
+          )}
         </div>
       ) : (
         isStoreUser && (
           <div className="border border-gray-100 bg-gray-50 rounded-lg px-5 py-2 flex flex-row gap-5 items-center justify-between mb-10">
             <span className="flex-2 font-semibold">Add storefront banner</span>
             <Button
-              onClick={() => setShowAddBannerDialog(true)}
+              onClick={() => setDialog({ type: "create" })}
               variant="pricetra"
               size="sm"
             >
