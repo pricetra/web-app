@@ -49,8 +49,7 @@ export default function StoreDetailClient({ slug }: StoreDetailClientProps) {
       paginator: { limit: 5, page: 1 },
     },
   });
-  const [updateStore, { loading: updating }] =
-    useMutation(UpdateStoreDocument);
+  const [updateStore, { loading: updating }] = useMutation(UpdateStoreDocument);
   const {
     debouncedCheckStoreNameAvailability,
     storeNameAvailable,
@@ -116,132 +115,142 @@ export default function StoreDetailClient({ slug }: StoreDetailClientProps) {
       <div className="flex flex-col gap-5 mb-10">
         <h2 className="text-lg font-bold">Store Details</h2>
 
-        {/* Name */}
-        <FieldGroup>
-          <Field>
-            <FieldLabel>Name</FieldLabel>
-            {editName !== null ? (
-              <>
-                <InputGroup>
-                  <InputGroupInput
-                    value={editName}
-                    onChange={(v) => {
-                      setEditName(v.target.value);
-                      debouncedCheckStoreNameAvailability(v.target.value);
-                    }}
-                  />
-                  <InputGroupAddon align="inline-end">
-                    {storeNameAvailabilityLoading ? (
-                      <CgSpinner className="animate-spin" />
-                    ) : storeNameAvailable === undefined ? null : storeNameAvailable ? (
-                      <CgCheckO className="text-green-600" />
-                    ) : (
-                      <CgCloseO className="text-red-600" />
-                    )}
-                  </InputGroupAddon>
-                </InputGroup>
-                {editName.length > 0 && (
+        <div className="flex flex-row">
+          {/* Name */}
+          <FieldGroup>
+            <Field>
+              <FieldLabel>Name</FieldLabel>
+              {editName !== null ? (
+                <>
+                  <InputGroup>
+                    <InputGroupInput
+                      value={editName}
+                      onChange={(v) => {
+                        setEditName(v.target.value);
+                        debouncedCheckStoreNameAvailability(v.target.value);
+                      }}
+                    />
+                    <InputGroupAddon align="inline-end">
+                      {storeNameAvailabilityLoading ? (
+                        <CgSpinner className="animate-spin" />
+                      ) : storeNameAvailable ===
+                        undefined ? null : storeNameAvailable ? (
+                        <CgCheckO className="text-green-600" />
+                      ) : (
+                        <CgCloseO className="text-red-600" />
+                      )}
+                    </InputGroupAddon>
+                  </InputGroup>
+                  {editName.length > 0 && (
+                    <FieldDescription>
+                      pricetra.com/stores/
+                      {slugify(editName, { lower: true, strict: true })}
+                    </FieldDescription>
+                  )}
+                  <div className="flex flex-row gap-2 mt-2">
+                    <Button
+                      variant="pricetra"
+                      size="sm"
+                      disabled={updating || !storeNameAvailable}
+                      onClick={() => handleUpdate({ name: editName })}
+                    >
+                      {updating && <CgSpinner className="animate-spin" />}
+                      Save
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setEditName(null)}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <div className="flex flex-row items-center gap-3">
+                  <span>{store.name}</span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setEditName(store.name)}
+                  >
+                    Edit
+                  </Button>
+                </div>
+              )}
+            </Field>
+          </FieldGroup>
+
+          {/* Slug */}
+          <FieldGroup>
+            <Field>
+              <FieldLabel>Slug</FieldLabel>
+              {editSlug !== null ? (
+                <>
+                  <InputGroup>
+                    <InputGroupInput
+                      value={editSlug}
+                      onChange={(v) => setEditSlug(v.target.value)}
+                    />
+                  </InputGroup>
                   <FieldDescription>
                     pricetra.com/stores/
-                    {slugify(editName, { lower: true, strict: true })}
+                    {slugify(editSlug || "", { lower: true, strict: true })}
                   </FieldDescription>
-                )}
-                <div className="flex flex-row gap-2 mt-2">
-                  <Button
-                    variant="pricetra"
-                    size="sm"
-                    disabled={updating || !storeNameAvailable}
-                    onClick={() => handleUpdate({ name: editName })}
-                  >
-                    {updating && <CgSpinner className="animate-spin" />}
-                    Save
-                  </Button>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => setEditName(null)}
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </>
-            ) : (
-              <div className="flex flex-row items-center gap-3">
-                <span>{store.name}</span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setEditName(store.name)}
-                >
-                  Edit
-                </Button>
-              </div>
-            )}
-          </Field>
-        </FieldGroup>
-
-        {/* Slug */}
-        <FieldGroup>
-          <Field>
-            <FieldLabel>Slug</FieldLabel>
-            {editSlug !== null ? (
-              <>
-                <InputGroup>
-                  <InputGroupInput
-                    value={editSlug}
-                    onChange={(v) => setEditSlug(v.target.value)}
-                  />
-                </InputGroup>
-                <FieldDescription>
-                  pricetra.com/stores/{slugify(editSlug || "", { lower: true, strict: true })}
-                </FieldDescription>
-                <div className="flex flex-row gap-2 mt-2">
-                  <Button
-                    variant="pricetra"
-                    size="sm"
-                    disabled={updating || editSlug.length === 0}
-                    onClick={async () => {
-                      const newSlug = slugify(editSlug, { lower: true, strict: true });
-                      try {
-                        const { data } = await updateStore({
-                          variables: { storeId: store.id, input: { slug: newSlug } },
+                  <div className="flex flex-row gap-2 mt-2">
+                    <Button
+                      variant="pricetra"
+                      size="sm"
+                      disabled={updating || editSlug.length === 0}
+                      onClick={async () => {
+                        const newSlug = slugify(editSlug, {
+                          lower: true,
+                          strict: true,
                         });
-                        if (data) {
-                          toast.success("Store slug updated successfully");
-                          setEditSlug(null);
-                          router.push(`/admin/stores/${newSlug}`);
+                        try {
+                          const { data } = await updateStore({
+                            variables: {
+                              storeId: store.id,
+                              input: { slug: newSlug },
+                            },
+                          });
+                          if (data) {
+                            toast.success("Store slug updated successfully");
+                            setEditSlug(null);
+                            router.push(`/admin/stores/${newSlug}`);
+                          }
+                        } catch (err) {
+                          if (err instanceof Error) toast.error(err.message);
                         }
-                      } catch (err) {
-                        if (err instanceof Error) toast.error(err.message);
-                      }
-                    }}
-                  >
-                    {updating && <CgSpinner className="animate-spin" />}
-                    Save
-                  </Button>
+                      }}
+                    >
+                      {updating && <CgSpinner className="animate-spin" />}
+                      Save
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setEditSlug(null)}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <div className="flex flex-row items-center gap-3">
+                  <span className="text-sm">{store.slug}</span>
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setEditSlug(null)}
+                    onClick={() => setEditSlug(store.slug)}
                   >
-                    Cancel
+                    Edit
                   </Button>
                 </div>
-              </>
-            ) : (
-              <div className="flex flex-row items-center gap-3">
-                <span className="text-sm">{store.slug}</span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setEditSlug(store.slug)}
-                >
-                  Edit
-                </Button>
-              </div>
-            )}
-          </Field>
-        </FieldGroup>
+              )}
+            </Field>
+          </FieldGroup>
+        </div>
 
         {/* Logo */}
         <FieldGroup>
@@ -366,9 +375,18 @@ export default function StoreDetailClient({ slug }: StoreDetailClientProps) {
       <div className="flex flex-col gap-5">
         <div className="flex flex-row items-center justify-between">
           <h2 className="text-lg font-bold">
-            Branches {branchCount > 0 && <span className="text-sm text-gray-500 font-normal">({branchCount})</span>}
+            Branches{" "}
+            {branchCount > 0 && (
+              <span className="text-sm text-gray-500 font-normal">
+                ({branchCount})
+              </span>
+            )}
           </h2>
-          <Button variant="pricetra" size="sm" href={`/admin/stores/${slug}/branches/new`}>
+          <Button
+            variant="pricetra"
+            size="sm"
+            href={`/admin/stores/${slug}/branches/new`}
+          >
             <MdAdd /> New Branch
           </Button>
         </div>
@@ -385,7 +403,9 @@ export default function StoreDetailClient({ slug }: StoreDetailClientProps) {
                 <div className="flex-1 min-w-0">
                   <h3 className="font-medium truncate">{branch.name}</h3>
                   <p className="text-sm text-gray-500 truncate">
-                    {branch.address?.fullAddress ?? branch.onlineAddress?.url ?? branch.type}
+                    {branch.address?.fullAddress ??
+                      branch.onlineAddress?.url ??
+                      branch.type}
                   </p>
                 </div>
                 <FaAngleRight className="size-4 text-gray-400" />

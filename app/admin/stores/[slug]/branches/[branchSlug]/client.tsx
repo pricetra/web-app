@@ -18,10 +18,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@/components/ui/field";
-import {
-  InputGroup,
-  InputGroupInput,
-} from "@/components/ui/input-group";
+import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import {
   NativeSelect,
   NativeSelectOption,
@@ -115,108 +112,110 @@ export default function BranchDetailClient({
       </div>
 
       <div className="flex flex-col gap-8">
-        {/* Name */}
-        <FieldGroup>
-          <Field>
-            <FieldLabel>Name</FieldLabel>
-            {editName !== null ? (
-              <>
-                <InputGroup>
-                  <InputGroupInput
-                    value={editName}
-                    onChange={(v) => setEditName(v.target.value)}
-                  />
-                </InputGroup>
-                <div className="flex flex-row gap-2 mt-2">
-                  <Button
-                    variant="pricetra"
-                    size="sm"
-                    disabled={updating || editName.length === 0}
-                    onClick={() => handleUpdate({ name: editName })}
-                  >
-                    {updating && <CgSpinner className="animate-spin" />}
-                    Save
-                  </Button>
+        <div className="flex flex-row">
+          {/* Name */}
+          <FieldGroup>
+            <Field>
+              <FieldLabel>Name</FieldLabel>
+              {editName !== null ? (
+                <>
+                  <InputGroup>
+                    <InputGroupInput
+                      value={editName}
+                      onChange={(v) => setEditName(v.target.value)}
+                    />
+                  </InputGroup>
+                  <div className="flex flex-row gap-2 mt-2">
+                    <Button
+                      variant="pricetra"
+                      size="sm"
+                      disabled={updating || editName.length === 0}
+                      onClick={() => handleUpdate({ name: editName })}
+                    >
+                      {updating && <CgSpinner className="animate-spin" />}
+                      Save
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setEditName(null)}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <div className="flex flex-row items-center gap-3">
+                  <span className="text-sm">{branch.name}</span>
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setEditName(null)}
+                    onClick={() => setEditName(branch.name)}
                   >
-                    Cancel
+                    Edit
                   </Button>
                 </div>
-              </>
-            ) : (
-              <div className="flex flex-row items-center gap-3">
-                <span className="text-sm">{branch.name}</span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setEditName(branch.name)}
-                >
-                  Edit
-                </Button>
-              </div>
-            )}
-          </Field>
-        </FieldGroup>
+              )}
+            </Field>
+          </FieldGroup>
 
-        {/* Slug */}
-        <FieldGroup>
-          <Field>
-            <FieldLabel>Slug</FieldLabel>
-            {editSlug !== null ? (
-              <>
-                <InputGroup>
-                  <InputGroupInput
-                    value={editSlug}
-                    onChange={(v) => setEditSlug(v.target.value)}
-                  />
-                </InputGroup>
-                <FieldDescription>
-                  pricetra.com/stores/{storeSlug}/
-                  {slugify(editSlug || "", { lower: true, strict: true })}
-                </FieldDescription>
-                <div className="flex flex-row gap-2 mt-2">
-                  <Button
-                    variant="pricetra"
-                    size="sm"
-                    disabled={updating || editSlug.length === 0}
-                    onClick={() =>
-                      handleUpdate({
-                        slug: slugify(editSlug, {
-                          lower: true,
-                          strict: true,
-                        }),
-                      })
-                    }
-                  >
-                    {updating && <CgSpinner className="animate-spin" />}
-                    Save
-                  </Button>
+          {/* Slug */}
+          <FieldGroup>
+            <Field>
+              <FieldLabel>Slug</FieldLabel>
+              {editSlug !== null ? (
+                <>
+                  <InputGroup>
+                    <InputGroupInput
+                      value={editSlug}
+                      onChange={(v) => setEditSlug(v.target.value)}
+                    />
+                  </InputGroup>
+                  <FieldDescription>
+                    pricetra.com/stores/{storeSlug}/
+                    {slugify(editSlug || "", { lower: true, strict: true })}
+                  </FieldDescription>
+                  <div className="flex flex-row gap-2 mt-2">
+                    <Button
+                      variant="pricetra"
+                      size="sm"
+                      disabled={updating || editSlug.length === 0}
+                      onClick={() =>
+                        handleUpdate({
+                          slug: slugify(editSlug, {
+                            lower: true,
+                            strict: true,
+                          }),
+                        })
+                      }
+                    >
+                      {updating && <CgSpinner className="animate-spin" />}
+                      Save
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setEditSlug(null)}
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <div className="flex flex-row items-center gap-3">
+                  <span className="text-sm">{branch.slug}</span>
                   <Button
                     variant="outline"
                     size="sm"
-                    onClick={() => setEditSlug(null)}
+                    onClick={() => setEditSlug(branch.slug)}
                   >
-                    Cancel
+                    Edit
                   </Button>
                 </div>
-              </>
-            ) : (
-              <div className="flex flex-row items-center gap-3">
-                <span className="text-sm">{branch.slug}</span>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setEditSlug(branch.slug)}
-                >
-                  Edit
-                </Button>
-              </div>
-            )}
-          </Field>
-        </FieldGroup>
+              )}
+            </Field>
+          </FieldGroup>
+        </div>
 
         {/* Type */}
         <FieldGroup>
