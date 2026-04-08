@@ -4,7 +4,6 @@ import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { useNavbar } from "@/context/navbar-context";
 import { useLayoutEffect } from "react";
 import { RiAdminLine } from "react-icons/ri";
-import { BsPersonFillAdd } from "react-icons/bs";
 import { MdStorefront } from "react-icons/md";
 import AdminListItem from "./components/admin-list-item";
 import { FaEye } from "react-icons/fa";
@@ -26,24 +25,10 @@ export default function AdminClient() {
       <div className="w-full max-w-[1000px] flex-1 px-5">
         <div className="flex flex-col gap-5">
           <AdminListItem
-            href="/admin/stores/new"
+            href="/admin/stores"
             icon={<MdStorefront />}
-            title="Add New Store"
-            content="Create a new store entry"
-          />
-
-          <AdminListItem
-            href="/admin/stores/branch/new"
-            icon={<MdStorefront />}
-            title="Add New Branch"
-            content="Create a new branch for a selected store"
-          />
-
-          <AdminListItem
-            href="/admin/stores/store-users/add"
-            icon={<BsPersonFillAdd />}
-            title="Add Store User"
-            content="Send a join request to a new user to an existing store"
+            title="Manage Stores"
+            content="View, edit, and manage stores and their branches"
           />
 
           <AdminListItem
