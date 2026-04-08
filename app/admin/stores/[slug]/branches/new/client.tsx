@@ -59,7 +59,7 @@ export default function NewBranchClient({ storeSlug }: NewBranchClientProps) {
   useEffect(() => {
     if (!storeData || !createdBranch) return;
     router.push(
-      `/stores/${storeData.findStore.slug}/${createdBranch.id}`,
+      `/admin/stores/${storeData.findStore.slug}/branches/${createdBranch.id}`,
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storeData, createdBranch]);

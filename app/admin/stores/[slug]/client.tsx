@@ -378,7 +378,7 @@ export default function StoreDetailClient({ slug }: StoreDetailClientProps) {
             {branches.map((branch) => (
               <Link
                 key={branch.id}
-                href={`/stores/${store.slug}/${branch.slug}`}
+                href={`/admin/stores/${store.slug}/branches/${branch.slug}`}
                 className="flex flex-row items-center gap-4 p-3 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors"
               >
                 <MdStorefront className="size-5 text-gray-500" />

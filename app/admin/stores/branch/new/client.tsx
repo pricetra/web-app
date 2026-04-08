@@ -64,7 +64,7 @@ export default function AddAdminBranchClient({ storeId }: AddStoreClientProps) {
     if (!selectedStore) return;
     if (!createdBranch) return;
 
-    router.push(`/stores/${selectedStore.findStore.slug}/${createdBranch.id}`);
+    router.push(`/admin/stores/${selectedStore.findStore.slug}/branches/${createdBranch.id}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedStore, createdBranch]);
 
