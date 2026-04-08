@@ -63,10 +63,8 @@ export default function BranchesClient({ storeSlug }: BranchesClientProps) {
           </p>
           <h1 className="text-xl font-bold">Branches</h1>
         </div>
-        <Button variant="pricetra" size="sm" asChild>
-          <Link href={`/admin/stores/${storeSlug}/branches/new`}>
-            <MdAdd /> New Branch
-          </Link>
+        <Button variant="pricetra" size="sm" href={`/admin/stores/${storeSlug}/branches/new`}>
+          <MdAdd /> New Branch
         </Button>
       </div>
 

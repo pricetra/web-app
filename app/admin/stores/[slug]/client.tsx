@@ -302,10 +302,8 @@ export default function StoreDetailClient({ slug }: StoreDetailClientProps) {
           <h2 className="text-lg font-bold">
             Branches {branchCount > 0 && <span className="text-sm text-gray-500 font-normal">({branchCount})</span>}
           </h2>
-          <Button variant="pricetra" size="sm" asChild>
-            <Link href={`/admin/stores/${slug}/branches/new`}>
-              <MdAdd /> New Branch
-            </Link>
+          <Button variant="pricetra" size="sm" href={`/admin/stores/${slug}/branches/new`}>
+            <MdAdd /> New Branch
           </Button>
         </div>
 

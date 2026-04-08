@@ -39,10 +39,8 @@ export default function StoresClient() {
     <div className="w-full max-w-[1000px] flex-1 px-5">
       <div className="flex flex-row items-center justify-between mb-5">
         <h1 className="text-xl font-bold">Stores</h1>
-        <Button variant="pricetra" size="sm" asChild>
-          <Link href="/admin/stores/new">
-            <MdAdd /> New Store
-          </Link>
+        <Button variant="pricetra" size="sm" href="/admin/stores/new">
+          <MdAdd /> New Store
         </Button>
       </div>
 
