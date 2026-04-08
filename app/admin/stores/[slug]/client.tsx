@@ -1,6 +1,7 @@
 "use client";
 
 import { useMutation, useQuery } from "@apollo/client/react";
+import { useRouter } from "next/navigation";
 import {
   FindStoreDocument,
   UpdateStoreDocument,
@@ -56,7 +57,9 @@ export default function StoreDetailClient({ slug }: StoreDetailClientProps) {
     storeNameAvailabilityLoading,
   } = useStoreNameAvailability();
 
+  const router = useRouter();
   const [editName, setEditName] = useState<string | null>(null);
+  const [editSlug, setEditSlug] = useState<string | null>(null);
   const [editWebsite, setEditWebsite] = useState<string | null>(null);
   const [selectedImage, setSelectedImage] = useState<string>();
   const logoUploadInputRef = useRef<HTMLInputElement>(null);
@@ -169,6 +172,69 @@ export default function StoreDetailClient({ slug }: StoreDetailClientProps) {
                   variant="outline"
                   size="sm"
                   onClick={() => setEditName(store.name)}
+                >
+                  Edit
+                </Button>
+              </div>
+            )}
+          </Field>
+        </FieldGroup>
+
+        {/* Slug */}
+        <FieldGroup>
+          <Field>
+            <FieldLabel>Slug</FieldLabel>
+            {editSlug !== null ? (
+              <>
+                <InputGroup>
+                  <InputGroupInput
+                    value={editSlug}
+                    onChange={(v) => setEditSlug(v.target.value)}
+                  />
+                </InputGroup>
+                <FieldDescription>
+                  pricetra.com/stores/{slugify(editSlug || "", { lower: true, strict: true })}
+                </FieldDescription>
+                <div className="flex flex-row gap-2 mt-2">
+                  <Button
+                    variant="pricetra"
+                    size="sm"
+                    disabled={updating || editSlug.length === 0}
+                    onClick={async () => {
+                      const newSlug = slugify(editSlug, { lower: true, strict: true });
+                      try {
+                        const { data } = await updateStore({
+                          variables: { storeId: store.id, input: { slug: newSlug } },
+                        });
+                        if (data) {
+                          toast.success("Store slug updated successfully");
+                          setEditSlug(null);
+                          router.push(`/admin/stores/${newSlug}`);
+                        }
+                      } catch (err) {
+                        if (err instanceof Error) toast.error(err.message);
+                      }
+                    }}
+                  >
+                    {updating && <CgSpinner className="animate-spin" />}
+                    Save
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setEditSlug(null)}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </>
+            ) : (
+              <div className="flex flex-row items-center gap-3">
+                <span className="text-sm">{store.slug}</span>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setEditSlug(store.slug)}
                 >
                   Edit
                 </Button>
