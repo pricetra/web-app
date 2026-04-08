@@ -1,6 +1,6 @@
 "use client";
 
-import { useLazyQuery, useMutation } from "@apollo/client/react";
+import { useMutation, useQuery } from "@apollo/client/react";
 import { Formik } from "formik";
 import {
   CreateBranch,
@@ -18,17 +18,20 @@ import {
   NativeSelect,
   NativeSelectOption,
 } from "@/components/ui/native-select";
-import SelectStore from "@/app/admin/components/select-store";
 import StoreMini from "@/components/store-mini";
 
 type FormType = "fullAddress" | "rawAddress" | "onlineAddress";
 
-export type AddStoreClientProps = {
-  storeId?: number;
+export type NewBranchClientProps = {
+  storeSlug: string;
 };
 
-export default function AddAdminBranchClient({ storeId }: AddStoreClientProps) {
+export default function NewBranchClient({ storeSlug }: NewBranchClientProps) {
   const router = useRouter();
+  const { data: storeData, loading: storeLoading } = useQuery(
+    FindStoreDocument,
+    { variables: { storeSlug } },
+  );
   const [
     createBranchWithFullAddress,
     {
@@ -45,14 +48,7 @@ export default function AddAdminBranchClient({ storeId }: AddStoreClientProps) {
       error: createBranchError,
     },
   ] = useMutation(CreateBranchDocument);
-  const [findStore, { data: selectedStore }] = useLazyQuery(FindStoreDocument);
 
-  useEffect(() => {
-    if (!storeId) return;
-
-    findStore({ variables: { storeId } });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [storeId]);
   const [formType, setFormType] = useState<FormType>("fullAddress");
   const loading = creatingBranchWithFullAddress || creatingBranch;
   const createdBranch =
@@ -61,55 +57,51 @@ export default function AddAdminBranchClient({ storeId }: AddStoreClientProps) {
   const errors = createBranchError || createBranchWithFullAddressError;
 
   useEffect(() => {
-    if (!selectedStore) return;
-    if (!createdBranch) return;
-
-    router.push(`/stores/${selectedStore.findStore.slug}/${createdBranch.id}`);
+    if (!storeData || !createdBranch) return;
+    router.push(
+      `/admin/stores/${storeData.findStore.slug}/branches/${createdBranch.id}`,
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedStore, createdBranch]);
+  }, [storeData, createdBranch]);
 
-  if (!storeId || !selectedStore) {
+  if (storeLoading || !storeData) {
     return (
-      <div className="flex-1 max-w-lg mx-auto py-10">
-        <SelectStore
-          onSelectStore={(store) =>
-            router.push(`/admin/stores/branch/new?storeId=${store.id}`)
-          }
-        />
+      <div className="w-full py-10 flex justify-center">
+        <CgSpinner className="animate-spin size-10" />
       </div>
     );
   }
+
+  const store = storeData.findStore;
 
   return (
     <div className="flex-1">
       <Formik
         initialValues={
-          { onlineAddress: {}, address: {}, storeId } as CreateBranch
+          { onlineAddress: {}, address: {}, storeId: store.id } as CreateBranch
         }
         onSubmit={(values) => {
-          if (!storeId) return;
-
           switch (formType) {
             case "fullAddress":
               createBranchWithFullAddress({
                 variables: {
-                  storeId,
+                  storeId: store.id,
                   fullAddress: values.name,
                 },
               });
               break;
             default:
-              if (formType === 'onlineAddress') {
+              if (formType === "onlineAddress") {
                 delete values.address;
               }
-              if (formType === 'rawAddress') {
+              if (formType === "rawAddress") {
                 delete values.onlineAddress;
               }
               createBranch({
                 variables: {
                   input: {
                     ...values,
-                    storeId,
+                    storeId: store.id,
                   },
                 },
               });
@@ -120,7 +112,7 @@ export default function AddAdminBranchClient({ storeId }: AddStoreClientProps) {
         {(formik) => (
           <form className="max-w-lg mx-auto flex flex-col gap-5 py-10">
             <div className="flex flex-row mb-5">
-              <StoreMini store={selectedStore.findStore} />
+              <StoreMini store={store} />
             </div>
 
             <NativeSelect
@@ -143,33 +135,31 @@ export default function AddAdminBranchClient({ storeId }: AddStoreClientProps) {
             </NativeSelect>
 
             {formType === "fullAddress" && (
-              <>
-                <FieldGroup>
-                  <Field>
-                    <FieldLabel htmlFor="fullAddress">Full Address</FieldLabel>
-
-                    <InputGroup>
-                      <InputGroupInput
-                        id="fullAddress"
-                        placeholder="https://www.walmart.com/"
-                        value={formik.values.name}
-                        onChange={(v) =>
-                          formik.setFieldValue("name", v.target.value)
-                        }
-                        required
-                      />
-                    </InputGroup>
-                  </Field>
-                </FieldGroup>
-              </>
+              <FieldGroup>
+                <Field>
+                  <FieldLabel htmlFor="fullAddress">Full Address</FieldLabel>
+                  <InputGroup>
+                    <InputGroupInput
+                      id="fullAddress"
+                      placeholder="123 Main St, City, State, Country"
+                      value={formik.values.name}
+                      onChange={(v) =>
+                        formik.setFieldValue("name", v.target.value)
+                      }
+                      required
+                    />
+                  </InputGroup>
+                </Field>
+              </FieldGroup>
             )}
+
             {formType === "rawAddress" && <></>}
+
             {formType === "onlineAddress" && (
               <>
                 <FieldGroup>
                   <Field>
                     <FieldLabel htmlFor="name">Branch Name</FieldLabel>
-
                     <InputGroup>
                       <InputGroupInput
                         id="name"
@@ -187,16 +177,18 @@ export default function AddAdminBranchClient({ storeId }: AddStoreClientProps) {
                 <FieldGroup>
                   <Field>
                     <FieldLabel htmlFor="url">URL</FieldLabel>
-
                     <InputGroup>
                       <InputGroupInput
                         id="url"
                         placeholder="https://www.amazon.com"
-                        value={formik.values.onlineAddress?.url ?? ''}
+                        value={formik.values.onlineAddress?.url ?? ""}
                         onChange={(v) => {
                           const value = v.target.value;
                           formik.setFieldValue("onlineAddress.url", value);
-                          formik.setFieldValue("onlineAddress.itemUrlTemplate", `${value ?? ''}/[PRODUCT_ID]`);
+                          formik.setFieldValue(
+                            "onlineAddress.itemUrlTemplate",
+                            `${value ?? ""}/[PRODUCT_ID]`,
+                          );
                         }}
                         required
                       />
@@ -206,15 +198,21 @@ export default function AddAdminBranchClient({ storeId }: AddStoreClientProps) {
 
                 <FieldGroup>
                   <Field>
-                    <FieldLabel htmlFor="itemUrlTemplate">Product Item URL Template</FieldLabel>
-
+                    <FieldLabel htmlFor="itemUrlTemplate">
+                      Product Item URL Template
+                    </FieldLabel>
                     <InputGroup>
                       <InputGroupInput
                         id="itemUrlTemplate"
                         placeholder="https://www.amazon.com/dp/[PRODUCT_ID]"
-                        value={formik.values.onlineAddress?.itemUrlTemplate ?? ''}
+                        value={
+                          formik.values.onlineAddress?.itemUrlTemplate ?? ""
+                        }
                         onChange={(v) =>
-                          formik.setFieldValue("onlineAddress.itemUrlTemplate", v.target.value)
+                          formik.setFieldValue(
+                            "onlineAddress.itemUrlTemplate",
+                            v.target.value,
+                          )
                         }
                         required
                       />
@@ -224,17 +222,22 @@ export default function AddAdminBranchClient({ storeId }: AddStoreClientProps) {
 
                 <FieldGroup>
                   <Field>
-                    <FieldLabel htmlFor="referralCode">Referral Code (optional)</FieldLabel>
-
+                    <FieldLabel htmlFor="referralCode">
+                      Referral Code (optional)
+                    </FieldLabel>
                     <InputGroup>
                       <InputGroupInput
                         id="referralCode"
                         placeholder="pricetra-20"
-                        value={formik.values.onlineAddress?.referralCode ?? ''}
-                        onChange={(v) =>
-                          formik.setFieldValue("onlineAddress.referralCode", v.target.value)
+                        value={
+                          formik.values.onlineAddress?.referralCode ?? ""
                         }
-                        required
+                        onChange={(v) =>
+                          formik.setFieldValue(
+                            "onlineAddress.referralCode",
+                            v.target.value,
+                          )
+                        }
                       />
                     </InputGroup>
                   </Field>
@@ -242,17 +245,22 @@ export default function AddAdminBranchClient({ storeId }: AddStoreClientProps) {
 
                 <FieldGroup>
                   <Field>
-                    <FieldLabel htmlFor="referralQueryParam">Referral Query Param (optional)</FieldLabel>
-
+                    <FieldLabel htmlFor="referralQueryParam">
+                      Referral Query Param (optional)
+                    </FieldLabel>
                     <InputGroup>
                       <InputGroupInput
                         id="referralQueryParam"
                         placeholder="tag=pricetra-20"
-                        value={formik.values.onlineAddress?.referralQueryParam ?? ''}
-                        onChange={(v) =>
-                          formik.setFieldValue("onlineAddress.referralQueryParam", v.target.value)
+                        value={
+                          formik.values.onlineAddress?.referralQueryParam ?? ""
                         }
-                        required
+                        onChange={(v) =>
+                          formik.setFieldValue(
+                            "onlineAddress.referralQueryParam",
+                            v.target.value,
+                          )
+                        }
                       />
                     </InputGroup>
                   </Field>
@@ -286,7 +294,9 @@ export default function AddAdminBranchClient({ storeId }: AddStoreClientProps) {
                 variant="outline"
                 type="button"
                 disabled={loading}
-                onClick={() => router.push(`/admin/stores/branch/new`)}
+                onClick={() =>
+                  router.push(`/admin/stores/${storeSlug}/branches`)
+                }
               >
                 Cancel
               </Button>
