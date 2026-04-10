@@ -128,7 +128,7 @@ export default function BranchDetailClient({
                   <div className="flex flex-row gap-2 mt-2">
                     <Button
                       variant="pricetra"
-                      size="sm"
+                      size="xs"
                       disabled={updating || editName.length === 0}
                       onClick={() => handleUpdate({ name: editName })}
                     >
@@ -137,7 +137,7 @@ export default function BranchDetailClient({
                     </Button>
                     <Button
                       variant="outline"
-                      size="sm"
+                      size="xs"
                       onClick={() => setEditName(null)}
                     >
                       Cancel
@@ -149,7 +149,7 @@ export default function BranchDetailClient({
                   <span className="text-sm">{branch.name}</span>
                   <Button
                     variant="outline"
-                    size="sm"
+                    size="xs"
                     onClick={() => setEditName(branch.name)}
                   >
                     Edit
@@ -178,7 +178,7 @@ export default function BranchDetailClient({
                   <div className="flex flex-row gap-2 mt-2">
                     <Button
                       variant="pricetra"
-                      size="sm"
+                      size="xs"
                       disabled={updating || editSlug.length === 0}
                       onClick={() =>
                         handleUpdate({
@@ -194,7 +194,7 @@ export default function BranchDetailClient({
                     </Button>
                     <Button
                       variant="outline"
-                      size="sm"
+                      size="xs"
                       onClick={() => setEditSlug(null)}
                     >
                       Cancel
@@ -206,7 +206,7 @@ export default function BranchDetailClient({
                   <span className="text-sm">{branch.slug}</span>
                   <Button
                     variant="outline"
-                    size="sm"
+                    size="xs"
                     onClick={() => setEditSlug(branch.slug)}
                   >
                     Edit
@@ -237,7 +237,7 @@ export default function BranchDetailClient({
                 <div className="flex flex-row gap-2 mt-2">
                   <Button
                     variant="pricetra"
-                    size="sm"
+                    size="xs"
                     disabled={updating}
                     onClick={() => handleUpdate({ type: editType })}
                   >
@@ -246,7 +246,7 @@ export default function BranchDetailClient({
                   </Button>
                   <Button
                     variant="outline"
-                    size="sm"
+                    size="xs"
                     onClick={() => setEditType(null)}
                   >
                     Cancel
@@ -260,7 +260,7 @@ export default function BranchDetailClient({
                 </span>
                 <Button
                   variant="outline"
-                  size="sm"
+                  size="xs"
                   onClick={() => setEditType(branch.type)}
                 >
                   Edit
@@ -308,7 +308,7 @@ export default function BranchDetailClient({
                   <div className="flex flex-row gap-2 mt-2">
                     <Button
                       variant="pricetra"
-                      size="sm"
+                      size="xs"
                       disabled={updating || editOnlineUrl.length === 0}
                       onClick={() =>
                         handleUpdate({
@@ -328,7 +328,7 @@ export default function BranchDetailClient({
                     </Button>
                     <Button
                       variant="outline"
-                      size="sm"
+                      size="xs"
                       onClick={() => setEditOnlineUrl(null)}
                     >
                       Cancel
@@ -347,7 +347,7 @@ export default function BranchDetailClient({
                   </a>
                   <Button
                     variant="outline"
-                    size="sm"
+                    size="xs"
                     onClick={() =>
                       setEditOnlineUrl(branch.onlineAddress?.url ?? "")
                     }

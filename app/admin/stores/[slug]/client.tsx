@@ -34,6 +34,7 @@ import useStoreNameAvailability from "@/hooks/useStoreNameAvailability";
 import { CgCheckO, CgCloseO } from "react-icons/cg";
 import slugify from "slugify";
 import AdminListItem from "../../components/admin-list-item";
+import { IoMdArrowBack } from "react-icons/io";
 
 export type StoreDetailClientProps = {
   slug: string;
@@ -97,6 +98,8 @@ export default function StoreDetailClient({ slug }: StoreDetailClientProps) {
 
   return (
     <div className="w-full max-w-[1000px] flex-1 px-5">
+      <Button href="/admin/stores" className="mb-5" size="xs" variant="outline"><IoMdArrowBack /> All Stores</Button>
+      
       <div className="flex flex-row items-center gap-4 mb-8">
         <Image
           src={createCloudinaryUrl(store.logo, 300, 300)}
@@ -150,7 +153,7 @@ export default function StoreDetailClient({ slug }: StoreDetailClientProps) {
                   <div className="flex flex-row gap-2 mt-2">
                     <Button
                       variant="pricetra"
-                      size="sm"
+                      size="xs"
                       disabled={updating || !storeNameAvailable}
                       onClick={() => handleUpdate({ name: editName })}
                     >
@@ -159,7 +162,7 @@ export default function StoreDetailClient({ slug }: StoreDetailClientProps) {
                     </Button>
                     <Button
                       variant="outline"
-                      size="sm"
+                      size="xs"
                       onClick={() => setEditName(null)}
                     >
                       Cancel
@@ -171,7 +174,7 @@ export default function StoreDetailClient({ slug }: StoreDetailClientProps) {
                   <span>{store.name}</span>
                   <Button
                     variant="outline"
-                    size="sm"
+                    size="xs"
                     onClick={() => setEditName(store.name)}
                   >
                     Edit
@@ -200,7 +203,7 @@ export default function StoreDetailClient({ slug }: StoreDetailClientProps) {
                   <div className="flex flex-row gap-2 mt-2">
                     <Button
                       variant="pricetra"
-                      size="sm"
+                      size="xs"
                       disabled={updating || editSlug.length === 0}
                       onClick={async () => {
                         const newSlug = slugify(editSlug, {
@@ -229,7 +232,7 @@ export default function StoreDetailClient({ slug }: StoreDetailClientProps) {
                     </Button>
                     <Button
                       variant="outline"
-                      size="sm"
+                      size="xs"
                       onClick={() => setEditSlug(null)}
                     >
                       Cancel
@@ -241,7 +244,7 @@ export default function StoreDetailClient({ slug }: StoreDetailClientProps) {
                   <span className="text-sm">{store.slug}</span>
                   <Button
                     variant="outline"
-                    size="sm"
+                    size="xs"
                     onClick={() => setEditSlug(store.slug)}
                   >
                     Edit
@@ -279,7 +282,7 @@ export default function StoreDetailClient({ slug }: StoreDetailClientProps) {
               <div className="flex flex-col gap-2">
                 <Button
                   variant="outline"
-                  size="sm"
+                  size="xs"
                   onClick={() => logoUploadInputRef.current?.click()}
                 >
                   Change Logo
@@ -287,7 +290,7 @@ export default function StoreDetailClient({ slug }: StoreDetailClientProps) {
                 {selectedImage && (
                   <Button
                     variant="pricetra"
-                    size="sm"
+                    size="xs"
                     disabled={updating}
                     onClick={() => {
                       // The base64 was stored when file was selected
@@ -339,7 +342,7 @@ export default function StoreDetailClient({ slug }: StoreDetailClientProps) {
                 <div className="flex flex-row gap-2 mt-2">
                   <Button
                     variant="pricetra"
-                    size="sm"
+                    size="xs"
                     disabled={updating || editWebsite.length === 0}
                     onClick={() => handleUpdate({ website: editWebsite })}
                   >
@@ -348,7 +351,7 @@ export default function StoreDetailClient({ slug }: StoreDetailClientProps) {
                   </Button>
                   <Button
                     variant="outline"
-                    size="sm"
+                    size="xs"
                     onClick={() => setEditWebsite(null)}
                   >
                     Cancel
@@ -360,7 +363,7 @@ export default function StoreDetailClient({ slug }: StoreDetailClientProps) {
                 <span className="text-sm">{store.website}</span>
                 <Button
                   variant="outline"
-                  size="sm"
+                  size="xs"
                   onClick={() => setEditWebsite(store.website)}
                 >
                   Edit
@@ -384,7 +387,7 @@ export default function StoreDetailClient({ slug }: StoreDetailClientProps) {
           </h2>
           <Button
             variant="pricetra"
-            size="sm"
+            size="xs"
             href={`/admin/stores/${slug}/branches/new`}
           >
             <MdAdd /> New Branch

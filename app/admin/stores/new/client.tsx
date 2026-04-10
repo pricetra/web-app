@@ -89,7 +89,7 @@ export default function AddStoreClient({
   }
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 px-5">
       <Formik
         initialValues={{ name: "", website: "" } as CreateStore}
         onSubmit={(values) => {
