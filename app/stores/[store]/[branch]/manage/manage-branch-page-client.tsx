@@ -8,8 +8,9 @@ import {
   Store,
 } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
-import { useLayoutEffect, useState } from "react";
+import { useCallback, useLayoutEffect, useMemo, useState } from "react";
 import { useQuery } from "@apollo/client/react";
+import { debounce } from "lodash";
 import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { Button } from "@/components/ui/button";
 import StorefrontBanner from "@/components/storefront-banner";
@@ -19,7 +20,6 @@ import { SmartPagination } from "@/components/ui/smart-pagination";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { startOfNextSundayUTC } from "@/lib/utils";
 import { cleanUrl } from "@/lib/strings";
-import { FiSearch } from "react-icons/fi";
 
 const PRODUCTS_PER_PAGE = 30;
 
@@ -38,8 +38,25 @@ export default function ManageBranchPageClient({
   } = useNavbar();
   const [showBranchDetails, setShowBranchDetails] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [activeSearch, setActiveSearch] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [page, setPage] = useState(1);
+
+  const debouncedSetQuery = useMemo(
+    () =>
+      debounce((query: string) => {
+        setDebouncedQuery(query);
+        setPage(1);
+      }, 400),
+    [],
+  );
+
+  const handleSearchChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setSearchQuery(e.target.value);
+      debouncedSetQuery(e.target.value);
+    },
+    [debouncedSetQuery],
+  );
 
   const { data: productsData, loading: productsLoading } = useQuery(
     AllProductsDocument,
@@ -49,7 +66,7 @@ export default function ManageBranchPageClient({
         search: {
           storeId: store.id,
           branchId: branch.id,
-          query: activeSearch || undefined,
+          query: debouncedQuery || undefined,
         },
       },
       fetchPolicy: "no-cache",
@@ -59,21 +76,10 @@ export default function ManageBranchPageClient({
   useLayoutEffect(() => {
     resetAll();
 
-    let subTitle = "";
-    let subTitleHref = "";
-    if (branch.address) {
-      subTitle = `${branch.address.street}, ${branch.address.city}`;
-      subTitleHref = branch.address.mapsLink;
-    }
-    if (branch.onlineAddress) {
-      subTitle = cleanUrl(branch.onlineAddress.url);
-      subTitleHref = branch.onlineAddress.url;
-    }
-
     setPageIndicator(
       <NavPageIndicator
-        title={store.name}
-        subTitle={subTitle || "Branch Management"}
+        title={branch.name}
+        subTitle="Branch Management"
         imgSrc={createCloudinaryUrl(
           store.logo,
           100,
@@ -82,8 +88,7 @@ export default function ManageBranchPageClient({
         )}
         href={`/stores/${store.slug}`}
         titleHref={`/stores/${store.slug}/${branch.slug}/manage`}
-        subTitleHref={subTitleHref || undefined}
-        subTitleHrefTargetBlank={!!subTitleHref}
+        subTitleHref={`/stores/${store.slug}/${branch.slug}/manage`}
       />,
     );
     setSearchPlaceholder(`Search ${branch.name}`);
@@ -94,12 +99,6 @@ export default function ManageBranchPageClient({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setActiveSearch(searchQuery);
-    setPage(1);
-  };
 
   return (
     <>
@@ -115,14 +114,16 @@ export default function ManageBranchPageClient({
                 </p>
               )}
               {branch.onlineAddress && (
-                <a
-                  href={branch.onlineAddress.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-xs text-blue-600 hover:underline"
-                >
+                <div>
+                  <a
+                    href={branch.onlineAddress.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-blue-600 hover:underline"
+                  >
                   {cleanUrl(branch.onlineAddress.url)}
                 </a>
+              </div>
               )}
               <Button
                 variant="outline"
@@ -149,7 +150,9 @@ export default function ManageBranchPageClient({
         {/* Banner */}
         <section className="mb-10">
           <h2 className="text-lg font-bold mb-4">Storefront Banner</h2>
-          <StorefrontBanner store={store} branch={branch} />
+          <div className="-mx-5">
+            <StorefrontBanner store={store} branch={branch} />
+          </div>
         </section>
 
         {/* Products */}
@@ -157,36 +160,33 @@ export default function ManageBranchPageClient({
           <h2 className="text-lg font-bold mb-4">Products</h2>
 
           {/* Search */}
-          <form onSubmit={handleSearch} className="flex flex-row gap-2 mb-6">
+          <div className="flex flex-row gap-2 mb-6">
             <InputGroup className="flex-1">
               <InputGroupInput
                 placeholder="Search products..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={handleSearchChange}
               />
             </InputGroup>
-            <Button type="submit" variant="pricetra" size="sm">
-              <FiSearch /> Search
-            </Button>
-            {activeSearch && (
+            {searchQuery && (
               <Button
-                type="button"
                 variant="outline"
                 size="sm"
                 onClick={() => {
                   setSearchQuery("");
-                  setActiveSearch("");
+                  setDebouncedQuery("");
                   setPage(1);
+                  debouncedSetQuery.cancel();
                 }}
               >
                 Clear
               </Button>
             )}
-          </form>
+          </div>
 
-          {activeSearch && (
+          {debouncedQuery && (
             <p className="text-sm text-gray-500 mb-4">
-              Results for &ldquo;{activeSearch}&rdquo;
+              Results for &ldquo;{debouncedQuery}&rdquo;
             </p>
           )}
 
