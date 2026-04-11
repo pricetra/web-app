@@ -40,6 +40,7 @@ export default function ManageBranchPageClient({
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [page, setPage] = useState(1);
+  const [saleOnly, setSaleOnly] = useState(false);
 
   const debouncedSetQuery = useMemo(
     () =>
@@ -67,6 +68,7 @@ export default function ManageBranchPageClient({
           storeId: store.id,
           branchId: branch.id,
           query: debouncedQuery || undefined,
+          sale: saleOnly || undefined,
         },
       },
       fetchPolicy: "no-cache",
@@ -159,7 +161,7 @@ export default function ManageBranchPageClient({
         <section className="mb-10">
           <h2 className="text-lg font-bold mb-4">Products</h2>
 
-          {/* Search */}
+          {/* Search & Filters */}
           <div className="flex flex-row gap-2 mb-6">
             <InputGroup className="flex-1">
               <InputGroupInput
@@ -168,6 +170,16 @@ export default function ManageBranchPageClient({
                 onChange={handleSearchChange}
               />
             </InputGroup>
+            <Button
+              variant={saleOnly ? "pricetra" : "outline"}
+              size="sm"
+              onClick={() => {
+                setSaleOnly(!saleOnly);
+                setPage(1);
+              }}
+            >
+              Sale
+            </Button>
             {searchQuery && (
               <Button
                 variant="outline"
