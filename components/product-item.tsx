@@ -3,7 +3,12 @@ import useCalculatedPrice from "@/hooks/useCalculatedPrice";
 import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import useProductWeightBuilder from "@/hooks/useProductWeightBuilder";
 import { productImageUrlWithTimestamp } from "@/lib/files";
-import { currencyFormat, getPriceUnit, slugifyProductName, validBrand } from "@/lib/strings";
+import {
+  currencyFormat,
+  getPriceUnit,
+  slugifyProductName,
+  validBrand,
+} from "@/lib/strings";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import ProductMetadataBadge from "./product-metadata-badge";
@@ -17,6 +22,8 @@ export type ProductItemOptionalProps = {
   imgWidth?: number;
   hideStoreInfo?: boolean;
   hideAddButton?: boolean;
+  preventHref?: boolean;
+  onClick?: () => void;
 };
 
 export type ProductItemProps = ProductItemOptionalProps & {
@@ -29,8 +36,9 @@ export default function ProductItem({
   branchSlug,
   hideStoreInfo = false,
   imgWidth = 130,
-}: // hideAddButton = false,
-ProductItemProps) {
+  preventHref = false,
+  onClick,
+}: ProductItemProps) {
   const isExpired = useIsSaleExpired(product.stock?.latestPrice);
   const calculatedAmount = useCalculatedPrice({
     isExpired,
@@ -39,12 +47,23 @@ ProductItemProps) {
   const weight = useProductWeightBuilder(product);
   const pricePerUnit = usePricePerUnit(calculatedAmount, product);
   const href = useMemo(() => {
-      return `/products/${product.id}-${slugifyProductName(product.name)}${branchSlug ? `/${branchSlug}` : ""}`;
-    }, [product.id, product.name, branchSlug]);
-  const [image, setImage] = useState(productImageUrlWithTimestamp(product, 500));
+    return `/products/${product.id}-${slugifyProductName(product.name)}${branchSlug ? `/${branchSlug}` : ""}`;
+  }, [product.id, product.name, branchSlug]);
+  const [image, setImage] = useState(
+    productImageUrlWithTimestamp(product, 500),
+  );
 
   return (
-    <Link href={href} className="flex max-w-full flex-row gap-2 relative group">
+    <Link
+      href={href}
+      className="flex max-w-full flex-row gap-2 relative group"
+      onClick={(e) => {
+        if (!onClick) return;
+        if (preventHref) e.preventDefault();
+        onClick();
+      }}
+      preventProgressBar={preventHref}
+    >
       <div
         className="absolute inset-0 rounded-xl bg-gray-50 opacity-0 scale-95 transition-all duration-200 group-hover:opacity-100 group-hover:scale-100 -z-10 -top-2.5 -left-2.5"
         style={{ width: "calc(100% + 10px)", height: "calc(100% + 20px)" }}
@@ -65,7 +84,7 @@ ProductItemProps) {
           className="h-full w-full object-cover rounded-xl"
           width={500}
           height={500}
-          onError={() => setImage('/no_img.jpg')}
+          onError={() => setImage("/no_img.jpg")}
         />
       </div>
       <div className="flex max-w-full flex-1 flex-col gap-3 px-2">

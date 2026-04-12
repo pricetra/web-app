@@ -20,14 +20,16 @@ export type ProductItemHorizontalProps = {
   product: ProductSimple | Product;
   branchSlug?: string;
   hideStoreInfo?: boolean | undefined;
-  handleOnClick?: () => void;
+  preventHref?: boolean;
+  onClick?: () => void;
 };
 
 export default function ProductItemHorizontal({
   product,
   branchSlug,
   hideStoreInfo = true,
-  handleOnClick,
+  preventHref = false,
+  onClick,
 }: ProductItemHorizontalProps) {
   const isExpired = useIsSaleExpired(product.stock?.latestPrice);
   const calculatedAmount = useCalculatedPrice({
@@ -44,7 +46,12 @@ export default function ProductItemHorizontal({
     <Link
       href={href}
       className="flex flex-col gap-2 max-w-[130px] md:max-w-[180px] relative group"
-      onClick={handleOnClick}
+      onClick={(e) => {
+        if (!onClick) return;
+        if (preventHref) e.preventDefault();
+        onClick();
+      }}
+      preventProgressBar={preventHref}
     >
       <div
         className="absolute inset-0 rounded-xl bg-gray-50 opacity-0 scale-95 transition-all duration-200 group-hover:opacity-100 group-hover:scale-100 -z-10 w-[150px] md:w-[200px] -top-2.5 -left-2.5"

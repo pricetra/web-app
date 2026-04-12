@@ -137,7 +137,7 @@ export default function SearchResultsPanel({
                             branchSlug={product.stock?.branch?.slug}
                             key={`recent-product-${product.id}-${i}`}
                             hideStoreInfo={false}
-                            handleOnClick={onClickResult}
+                            onClick={onClickResult}
                           />
                         )
                       )}
@@ -228,7 +228,7 @@ export default function SearchResultsPanel({
                               branchSlug={product.stock?.branch?.slug}
                               key={`popular-product-${product.id}-${product.id}`}
                               hideStoreInfo={false}
-                              handleOnClick={onClickResult}
+                              onClick={onClickResult}
                             />
                           )
                         )}
