@@ -20,6 +20,16 @@ import { SmartPagination } from "@/components/ui/smart-pagination";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { startOfNextSundayUTC } from "@/lib/utils";
 import { cleanUrl } from "@/lib/strings";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import BranchPriceForm from "@/components/product-form/branch-price-form";
+import ManualBarcodeForm from "@/app/scan/components/manual-barcode-form";
+import { toast } from "sonner";
+import { MdAdd } from "react-icons/md";
 
 const PRODUCTS_PER_PAGE = 30;
 
@@ -41,6 +51,8 @@ export default function ManageBranchPageClient({
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [page, setPage] = useState(1);
   const [saleOnly, setSaleOnly] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
 
   const debouncedSetQuery = useMemo(
     () =>
@@ -89,7 +101,7 @@ export default function ManageBranchPageClient({
           startOfNextSundayUTC(),
         )}
         href={`/stores/${store.slug}`}
-        titleHref={`/stores/${store.slug}/${branch.slug}/manage`}
+        titleHref={`/stores/${store.slug}/${branch.slug}`}
         subTitleHref={`/stores/${store.slug}/${branch.slug}/manage`}
       />,
     );
@@ -104,6 +116,44 @@ export default function ManageBranchPageClient({
 
   return (
     <>
+      <Dialog
+        open={dialogOpen}
+        onOpenChange={(open) => {
+          setDialogOpen(open);
+          if (!open) setSelectedProduct(null);
+        }}
+      >
+        <DialogContent size="lg">
+          <DialogHeader>
+            <DialogTitle>
+              {selectedProduct ? "Add Price" : "Search Product"}
+            </DialogTitle>
+          </DialogHeader>
+
+          {selectedProduct ? (
+            <BranchPriceForm
+              product={selectedProduct}
+              branch={branch}
+              onSuccess={() => {
+                toast.success(
+                  `Price added for ${selectedProduct.name}`,
+                );
+                setDialogOpen(false);
+                setSelectedProduct(null);
+              }}
+              onCancel={() => {
+                setDialogOpen(false);
+                setSelectedProduct(null);
+              }}
+            />
+          ) : (
+            <ManualBarcodeForm
+              onSelectProduct={(product) => setSelectedProduct(product)}
+            />
+          )}
+        </DialogContent>
+      </Dialog>
+
       <div className="w-full max-w-[1000px] flex-1 px-5">
         {/* Branch Header */}
         <div className="flex flex-row items-center gap-10 mb-8">
@@ -159,7 +209,19 @@ export default function ManageBranchPageClient({
 
         {/* Products */}
         <section className="mb-10">
-          <h2 className="text-lg font-bold mb-4">Products</h2>
+          <div className="flex flex-row items-center justify-between mb-4">
+            <h2 className="text-lg font-bold">Products</h2>
+            <Button
+              variant="pricetra"
+              size="xs"
+              onClick={() => {
+                setSelectedProduct(null);
+                setDialogOpen(true);
+              }}
+            >
+              <MdAdd /> Add Price
+            </Button>
+          </div>
 
           {/* Search & Filters */}
           <div className="flex flex-row gap-2 mb-6">
@@ -224,6 +286,11 @@ export default function ManageBranchPageClient({
                   imgWidth={130}
                   key={`product-${p.id}-${i}`}
                   hideStoreInfo
+                  preventHref
+                  onClick={() => {
+                    setSelectedProduct(p as Product);
+                    setDialogOpen(true);
+                  }}
                 />
               ))
             )}
