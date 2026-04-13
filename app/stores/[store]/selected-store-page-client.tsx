@@ -8,7 +8,7 @@ import {
   Store,
 } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
-import { useLayoutEffect, useMemo } from "react";
+import { useEffect, useLayoutEffect, useMemo } from "react";
 import { useQuery } from "@apollo/client/react";
 import BranchItemWithLogo, {
   BranchItemWithLogoLoading,
@@ -24,8 +24,13 @@ import { uniqueId } from "lodash";
 import { startOfNextSundayUTC } from "@/lib/utils";
 import ProductsContainer from "@/components/ui/products-container";
 import StorefrontBanner from "@/components/storefront-banner";
+import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/user-context";
+import { MdModeEditOutline } from "react-icons/md";
+import { useMediaQuery } from "react-responsive";
 
 export default function SelectedStorePageClient({ store }: { store: Store }) {
+  const { myStoreUsers } = useAuth();
   const { navbarHeight } = useNavbar();
   const searchParams = useSearchParams();
   const pageString = searchParams.get("page");
@@ -35,8 +40,10 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
     resetAll,
     setSearchPlaceholder,
     setSearchQueryPath,
+    setNavTools,
   } = useNavbar();
   const location = useLocationInput();
+  const isSmallScreen = useMediaQuery({ query: "(max-width: 640px)" });
 
   const { data: branchesWithProducts } = useQuery(
     BranchesWithProductsDocument,
@@ -83,6 +90,29 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (!myStoreUsers) return;
+
+    const isUserStoreManager = myStoreUsers.some(
+      (su) => su.storeId === store.id && su.branchId === null,
+    );
+    if (!isUserStoreManager) return;
+
+    setNavTools(
+      <>
+        <Button href={`/stores/${store.slug}/manage`} variant="pricetra" className="bg-transparent text-pricetra-green-heavy-dark hover:bg-green-50 font-bold border border-transparent hover:border-green-100 shadow-none" size={isSmallScreen ? 'xs' : 'default'}>
+          <MdModeEditOutline className="mr-1" />
+          {isSmallScreen ? "" : "Manage Store"}
+        </Button>
+      </>,
+    );
+
+    return () => {
+      setNavTools(null);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [myStoreUsers, store.id, store.slug, isSmallScreen]);
 
   return (
     <>
