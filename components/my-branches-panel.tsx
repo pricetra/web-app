@@ -32,7 +32,7 @@ type MyBranchPanelItemProps = {
 function MyBranchPanelItem({ branch }: MyBranchPanelItemProps) {
   return (
     <Link
-      href={`/stores/${branch.store?.slug}/${branch.slug}`}
+      href={`/stores/${branch.store?.slug}/${branch.slug}/manage`}
       className="min-h-28 w-62 sm:w-xs rounded-xl bg-gray-100 p-5 block"
     >
       <div className="flex flex-1 flex-row gap-4">
