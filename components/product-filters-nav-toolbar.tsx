@@ -6,6 +6,9 @@ import useLocationInput from "@/hooks/useLocationInput";
 import { useSearchParams } from "next/navigation";
 import { toBoolean } from "@/lib/utils";
 import { useMemo } from "react";
+import { useAuth } from "@/context/user-context";
+import { isRoleAuthorized } from "@/lib/roles";
+import { UserRole } from "graphql-utils";
 
 type ProductFilterNavToolbarProps = {
   baseUrl?: string;
@@ -14,6 +17,7 @@ type ProductFilterNavToolbarProps = {
 export default function ProductFilterNavToolbar({
   baseUrl = "/search",
 }: ProductFilterNavToolbarProps) {
+  const { user, myStoreUsers } = useAuth();
   const location = useLocationInput();
   const searchParams = useSearchParams();
   const searchParamsBuilder = useMemo(() => {
@@ -69,6 +73,35 @@ export default function ProductFilterNavToolbar({
       </div>
 
       <div className="flex flex-row items-center gap-2">
+        {user && isRoleAuthorized(UserRole.Admin, user.role) && (
+          <Button href="/admin" variant="default" size="xs" rounded>
+            Admin
+          </Button>
+        )}
+
+        {myStoreUsers &&
+          myStoreUsers.length > 0 &&
+          myStoreUsers.map((s) => {
+            let path = '';
+            if (s.store && s.branch) {
+              path = `${s.store.slug}/${s.branch.slug}`;
+            } else if (s.store) {
+              path = s.store.slug;
+            }
+
+            return (
+            <Button
+              href={`/stores/${path}/manage`}
+              variant="default"
+              size="xs"
+              rounded
+              key={`manage-${s.id}`}
+            >
+              Manage {s.branch?.name || s.store?.name}
+            </Button>
+          )
+          })}
+
         {COMMON_CATEGORIES.map(({ id, name }) => (
           <Button
             href={`${baseUrl}?categoryId=${id}&category=${encodeURIComponent(

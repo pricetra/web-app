@@ -3,6 +3,10 @@ import {
   MeDocument,
   MeQuery,
   MeQueryVariables,
+  StoreUser,
+  StoreUserAuthorizedDocument,
+  StoreUserAuthorizedQuery,
+  StoreUserAuthorizedQueryVariables,
   StoreUserRole,
   User,
   UserRole,
@@ -29,15 +33,15 @@ export function isRoleAuthorized(
 }
 
 export async function authorize(
-  auth_token?: string | null
+  authToken?: string | null
 ): Promise<User | undefined> {
-  if (!auth_token) return undefined;
+  if (!authToken) return undefined;
 
   const { data, errors } = await fetchGraphql<MeQueryVariables, MeQuery>(
     MeDocument,
     "query",
     undefined,
-    auth_token
+    authToken
   );
   if (errors || !data) return undefined;
 
@@ -56,24 +60,42 @@ export function storeUserRoleValue(role: StoreUserRole): number {
 }
 
 export function isStoreUserAuthorized(
-  minimum_required_role: StoreUserRole,
-  store_user_role: StoreUserRole
+  minimumRequiredRole: StoreUserRole,
+  storeUserRole: StoreUserRole
 ): boolean {
   return (
-    storeUserRoleValue(store_user_role) >=
-    storeUserRoleValue(minimum_required_role)
+    storeUserRoleValue(storeUserRole) >=
+    storeUserRoleValue(minimumRequiredRole)
   );
 }
 
 // Admin user authorization check
 export async function adminAuthorize(
-  auth_token?: string | null
+  authToken?: string | null
 ): Promise<User | undefined> {
-  const user = await authorize(auth_token);
+  const user = await authorize(authToken);
   if (!user) return undefined;
 
   if (!isRoleAuthorized(UserRole.Admin, user.role)) {
     return undefined;
   }
   return user;
+}
+
+export async function storeUserAuthorized(
+  authToken: string,
+  storeId: number,
+  branchId?: number,
+): Promise<StoreUser | undefined> {
+  if (!authToken) return undefined;
+
+  const { data, errors } = await fetchGraphql<StoreUserAuthorizedQueryVariables, StoreUserAuthorizedQuery>(
+    StoreUserAuthorizedDocument,
+    "query",
+    { storeId, branchId },
+    authToken
+  );
+  if (errors || !data) return undefined;
+
+  return data.storeUserAuthorized as StoreUser;
 }

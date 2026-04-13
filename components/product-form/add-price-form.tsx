@@ -374,7 +374,7 @@ type PriceFormProps = {
   latestPrice?: Price;
 };
 
-function PriceForm({ stock, branch, latestPrice }: PriceFormProps) {
+export function PriceForm({ stock, branch, latestPrice }: PriceFormProps) {
   const formikContext = useFormikContext<CreatePrice>();
   const nextWeek = dayjs(new Date()).add(7, "day").toDate();
   const [available, setAvailable] = useState(true);

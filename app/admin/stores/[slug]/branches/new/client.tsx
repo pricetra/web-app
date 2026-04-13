@@ -75,7 +75,7 @@ export default function NewBranchClient({ storeSlug }: NewBranchClientProps) {
   const store = storeData.findStore;
 
   return (
-    <div className="flex-1">
+    <div className="flex-1 px-5">
       <Formik
         initialValues={
           { onlineAddress: {}, address: {}, storeId: store.id } as CreateBranch

@@ -19,7 +19,11 @@ import { slugifyProductName } from "@/lib/strings";
 
 const LIMIT = 10;
 
-export default function ManualBarcodeForm() {
+export default function ManualBarcodeForm({
+  onSelectProduct,
+}: {
+  onSelectProduct?: (product: Product) => void;
+}) {
   const router = useRouter();
   const [text, setText] = useState("");
   const [productSearch, { data: searchResults, loading }] = useLazyQuery(
@@ -152,6 +156,12 @@ export default function ManualBarcodeForm() {
                   <ProductItemHorizontal
                     product={p as Product}
                     key={`product-${p.id}-${i}`}
+                    preventHref={!!onSelectProduct}
+                    onClick={
+                      onSelectProduct
+                        ? () => onSelectProduct(p as Product)
+                        : undefined
+                    }
                   />
                 ))}
               </ScrollContainer>

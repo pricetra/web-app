@@ -1,13 +1,18 @@
 import NextLink, { LinkProps } from "next/link";
 import NProgress from "nprogress";
-import { AnchorHTMLAttributes, ReactNode } from 'react';
+import { AnchorHTMLAttributes, ReactNode } from "react";
 
 export type CustomLinkType = AnchorHTMLAttributes<HTMLAnchorElement> &
   LinkProps & {
     children?: ReactNode | undefined;
+    preventProgressBar?: boolean;
   };
 
-export default function Link({ onClick, ...props }: CustomLinkType) {
+export default function Link({
+  onClick,
+  preventProgressBar = false,
+  ...props
+}: CustomLinkType) {
   return (
     <NextLink
       onClick={(e) => {
@@ -23,7 +28,8 @@ export default function Link({ onClick, ...props }: CustomLinkType) {
         }
 
         // Only start when the route is different from the current route
-        if (window.location.pathname !== props.href) NProgress.start();
+        if (!preventProgressBar && window.location.pathname !== props.href)
+          NProgress.start();
         if (onClick) onClick(e);
       }}
       {...props}
