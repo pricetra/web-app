@@ -11,7 +11,7 @@ import { cache } from "react";
 import SelectedStorePageClient from "./selected-store-page-client";
 import LayoutProvider from "@/providers/layout-provider";
 
-const cachedStore = cache(async (store: string) => {
+export const cachedStore = cache(async (store: string) => {
   const storeId = +store;
   const queryVars: FindStoreQueryVariables = {};
   if (isNaN(storeId)) {

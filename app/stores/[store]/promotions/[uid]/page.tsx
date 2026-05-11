@@ -9,7 +9,7 @@ import {
 } from "graphql-utils";
 import { cache } from "react";
 import { createCloudinaryUrl } from "@/lib/files";
-import { FlyerViewPageClient } from "./flyer-view-page-client";
+import FlyerViewPageClient from "./flyer-view-page-client";
 
 const cachedFlyerSimple = cache(async (uid: string) => {
   const queryVars: StorefrontFlyerSimpleQueryVariables = {
@@ -37,10 +37,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const flyerData = await cachedFlyerSimple(uid);
   if (!flyerData || !flyerData.store) return {};
 
-  const title = `${flyerData.title} - ${flyerData.store.name} | Pricetra`;
+  const title = `${flyerData.title} - ${flyerData.branch?.name ?? flyerData.store.name} | Pricetra`;
   const description =
     flyerData.description ??
-    "Discover the latest promotions and deals in this flyer.";
+    `Discover the latest promotions and deals in this flyer. Explore discounts on popular products at ${flyerData.branch?.name ?? flyerData.store.name}. Don't miss out on these exclusive offers!`;
   return {
     title,
     description,

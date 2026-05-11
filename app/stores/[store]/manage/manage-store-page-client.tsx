@@ -12,7 +12,10 @@ import StorefrontBanner from "@/components/storefront-banner";
 import ManageStoreInfo from "@/components/manage/manage-store-info";
 import ManageBranchList from "@/components/manage/manage-branch-list";
 import CreateBranchForm from "@/components/manage/create-branch-form";
+import { CreateFlyerForm } from "@/components/flyer/create-flyer-form";
+import { FlyerEditorClient } from "@/components/flyer/flyer-editor-client";
 import { startOfNextSundayUTC } from "@/lib/utils";
+import type { FlyerFormat } from "graphql-utils";
 
 export default function ManageStorePageClient({ store }: { store: Store }) {
   const {
@@ -23,6 +26,8 @@ export default function ManageStorePageClient({ store }: { store: Store }) {
   } = useNavbar();
   const [showCreateBranch, setShowCreateBranch] = useState(false);
   const [showStoreDetails, setShowStoreDetails] = useState(false);
+  const [showCreateFlyer, setShowCreateFlyer] = useState(false);
+  const [activeFlyer, setActiveFlyer] = useState<{ id: string; uid: string; format: FlyerFormat } | null>(null);
 
   useLayoutEffect(() => {
     resetAll();
@@ -123,6 +128,63 @@ export default function ManageStorePageClient({ store }: { store: Store }) {
               `/stores/${store.slug}/${branchSlug}/manage`
             }
           />
+        </section>
+
+        {/* Flyers */}
+        <section className="mb-10">
+          <div className="flex flex-row items-center justify-between mb-4">
+            <h2 className="text-lg font-bold">Flyers</h2>
+            <Button
+              variant="pricetra"
+              size="xs"
+              onClick={() => {
+                setShowCreateFlyer(!showCreateFlyer);
+                setActiveFlyer(null);
+              }}
+            >
+              <MdAdd /> Create Flyer
+            </Button>
+          </div>
+
+          {showCreateFlyer && !activeFlyer ? (
+            <div className="mb-6 p-4 border border-gray-200 rounded-lg">
+              <h3 className="font-medium mb-4">Create New Flyer</h3>
+              <CreateFlyerForm
+                storeId={store.id}
+                onFlyerCreated={(flyerId, flyerUID, format) => {
+                  setActiveFlyer({ id: flyerId, uid: flyerUID, format });
+                }}
+              />
+            </div>
+          ) : null}
+
+          {activeFlyer ? (
+            <div className="p-4 border border-gray-200 rounded-lg">
+              <div className="flex gap-2 mb-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setActiveFlyer(null)}
+                >
+                  ← Back to Create
+                </Button>
+              </div>
+              <FlyerEditorClient
+                flyerId={parseInt(activeFlyer.id)}
+                storeId={store.id}
+                branchId={null}
+                storeName={store.name}
+                format={activeFlyer.format}
+                flyerTitle="New Flyer"
+                onPageCreated={() => {
+                  // Refresh flyer data if needed
+                }}
+                onPublishReady={() => {
+                  // Handle publish ready
+                }}
+              />
+            </div>
+          ) : null}
         </section>
       </div>
     </>
