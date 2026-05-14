@@ -13,6 +13,7 @@ import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { createCloudinaryUrl } from "@/lib/files";
 import { MdModeEditOutline } from "react-icons/md";
 import { useMediaQuery } from "react-responsive";
+import { SmartPagination } from "@/components/ui/smart-pagination";
 
 type PromotionsPageClientProps = {
   storeSlug: string;
@@ -106,7 +107,9 @@ export default function PromotionsPageClient({
   return (
     <div className="p-6 w-full">
       <div className="mb-8">
-        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold">Promotions and Flyers</h1>
+        <h1 className="text-xl md:text-2xl lg:text-3xl font-bold">
+          Promotions and Flyers
+        </h1>
       </div>
 
       {flyersLoading ? (
@@ -116,78 +119,92 @@ export default function PromotionsPageClient({
           <p className="text-gray-600 mb-4">No flyers available</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {flyers.map((flyer) => (
-            <div
-              key={flyer.uid}
-              className="bg-white rounded-lg shadow hover:shadow-lg transition"
-            >
-              {/* Flyer Image */}
-              {flyer.flyerImageId && (
-                <Image
-                  src={flyer.flyerImageId}
-                  alt={flyer.title}
-                  className="w-full h-40 object-cover rounded-t-lg"
-                />
-              )}
-
-              {/* Content */}
-              <div className="p-4">
-                <h3 className="font-bold text-lg mb-2">{flyer.title}</h3>
-
-                {flyer.description && (
-                  <p className="text-sm text-gray-600 mb-2 line-clamp-2">
-                    {flyer.description}
-                  </p>
+        <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {flyers.map((flyer) => (
+              <div
+                key={flyer.uid}
+                className="bg-white rounded-lg shadow hover:shadow-lg transition"
+              >
+                {/* Flyer Image */}
+                {flyer.flyerImageId && (
+                  <Image
+                    src={flyer.flyerImageId}
+                    alt={flyer.title}
+                    className="w-full h-40 object-cover rounded-t-lg"
+                  />
                 )}
 
-                {/* Status and Dates */}
-                <div className="space-y-1 mb-4 text-xs text-gray-600">
-                  <div className="flex items-center justify-between">
-                    <span
-                      className={`px-2 py-1 rounded text-xs font-semibold ${getStatusBadgeColor(
-                        flyer.status,
-                      )}`}
-                    >
-                      {flyer.status}
-                    </span>
-                  </div>
-                  <p>
-                    <strong>Starts:</strong>{" "}
-                    {dayjs(flyer.startsAt).format("MMM D, YYYY")}
-                  </p>
-                  <p>
-                    <strong>Ends:</strong>{" "}
-                    {dayjs(flyer.expiresAt).format("MMM D, YYYY")}
-                  </p>
-                </div>
+                {/* Content */}
+                <div className="p-4">
+                  <h3 className="font-bold text-lg mb-2">{flyer.title}</h3>
 
-                {/* Actions */}
-                <div className="flex gap-2">
-                  {flyer.status === "DRAFT" && (
-                    <>
-                      <Link
-                        href={`/stores/${storeSlug}/promotions/${flyer.uid}/edit`}
-                        className="flex-1"
-                      >
-                        <Button className="w-full" size="sm">
-                          Edit
-                        </Button>
-                      </Link>
-                      <Link
-                        href={`/stores/${storeSlug}/promotions/${flyer.uid}`}
-                        className="flex-1"
-                      >
-                        <Button className="w-full" size="sm">
-                          View
-                        </Button>
-                      </Link>
-                    </>
+                  {flyer.description && (
+                    <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                      {flyer.description}
+                    </p>
                   )}
+
+                  {/* Status and Dates */}
+                  <div className="space-y-1 mb-4 text-xs text-gray-600">
+                    <div className="flex items-center justify-between">
+                      <span
+                        className={`px-2 py-1 rounded text-xs font-semibold ${getStatusBadgeColor(
+                          flyer.status,
+                        )}`}
+                      >
+                        {flyer.status}
+                      </span>
+                    </div>
+                    <p>
+                      <strong>Starts:</strong>{" "}
+                      {dayjs(flyer.startsAt).format("MMM D, YYYY")}
+                    </p>
+                    <p>
+                      <strong>Ends:</strong>{" "}
+                      {dayjs(flyer.expiresAt).format("MMM D, YYYY")}
+                    </p>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="flex gap-2">
+                    {flyer.status === "DRAFT" && (
+                      <>
+                        <Link
+                          href={`/stores/${storeSlug}/promotions/${flyer.uid}/edit`}
+                          className="flex-1"
+                        >
+                          <Button className="w-full" size="sm">
+                            Edit
+                          </Button>
+                        </Link>
+                        <Link
+                          href={`/stores/${storeSlug}/promotions/${flyer.uid}`}
+                          className="flex-1"
+                        >
+                          <Button className="w-full" size="sm">
+                            View
+                          </Button>
+                        </Link>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
+
+          {/* Pagination */}
+          {flyersData?.storefrontFlyers?.paginator &&
+            flyersData.storefrontFlyers.paginator.numPages > 1 && (
+              <div className="mt-6">
+                <SmartPagination
+                  paginator={flyersData.storefrontFlyers.paginator}
+                  disableHref
+                  onPageChange={(p) => setPage(p)}
+                />
+              </div>
+            )}
         </div>
       )}
     </div>
