@@ -18,6 +18,7 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { flyerFormats } from "@/lib/constants/flyer-formats";
 
 type FlyerFormValues = {
   branchId: string;
@@ -28,7 +29,7 @@ type FlyerFormValues = {
   expiresAt: string;
 };
 
-const formats = ["A4", "Letter", "Legal"];
+
 
 export default function CreateStorefrontFlyerForm({ store }: { store: Store }) {
   const router = useRouter();
@@ -148,7 +149,7 @@ export default function CreateStorefrontFlyerForm({ store }: { store: Store }) {
                   }
                   className="w-full"
                 >
-                  {formats.map((format) => (
+                  {flyerFormats.map((format) => (
                     <NativeSelectOption key={format} value={format}>
                       {format}
                     </NativeSelectOption>

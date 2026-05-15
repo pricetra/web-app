@@ -55,18 +55,29 @@ export default function FlyerEditorClient({ flyer }: FlyerEditorClientProps) {
       <section className="flex-3 bg-gray-50" style={{ ...minHeight }}>
         <div>
           {pagesInput.map((p, index) => (
-            <FlyerPage key={index} page={p} pageNumber={index + 1} />
+            <FlyerPage
+              key={index}
+              flyer={flyer}
+              page={p}
+              pageNumber={index + 1}
+            />
           ))}
         </div>
 
         <div className="flex flex-row items-center justify-center">
-          <button onClick={() => {
-            setPagesInput(p => ([...p, {
-              pageImage: "",
-              sections: [],
-              storefrontFlyerId: flyer.id,
-            }]))
-          }} className="flex flex-col gap-5 items-center py-5 px-10 border border-gray-300 hover:border-gray-400 text-gray-600 hover:text-gray-800 rounded-md mt-5 cursor-pointer">
+          <button
+            onClick={() => {
+              setPagesInput((p) => [
+                ...p,
+                {
+                  pageImage: "",
+                  sections: [],
+                  storefrontFlyerId: flyer.id,
+                },
+              ]);
+            }}
+            className="flex flex-col gap-5 items-center py-5 px-10 border border-gray-300 hover:border-gray-400 text-gray-600 hover:text-gray-800 rounded-md mt-5 cursor-pointer"
+          >
             <IoMdAddCircleOutline className="text-3xl" />
             <span className="text-sm font-bold">Add page</span>
           </button>

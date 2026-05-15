@@ -14,7 +14,7 @@ export interface FlyerFormatSpec {
 const DPI = 96;
 
 export const FLYER_FORMATS: Record<FlyerFormat, FlyerFormatSpec> = {
-  standard: {
+  'standard': {
     name: '8.5 x 11" Standard',
     widthInches: 8.5,
     heightInches: 11,
@@ -30,7 +30,7 @@ export const FLYER_FORMATS: Record<FlyerFormat, FlyerFormatSpec> = {
     heightPx: Math.round(8.5 * DPI),
     dpi: DPI,
   },
-  tabloid: {
+  'tabloid': {
     name: '11 x 17" Tabloid',
     widthInches: 11,
     heightInches: 17,
@@ -44,3 +44,10 @@ export const FLYER_FORMAT_OPTIONS = Object.entries(FLYER_FORMATS).map(([key, spe
   value: key as FlyerFormat,
   label: spec.name,
 }));
+
+export const flyerFormats = ["A4", "Letter", "Legal"];
+export const flyerFormatToFlyerSpec: Record<string, FlyerFormatSpec> = {
+  'A4': FLYER_FORMATS.standard,
+  'Letter': FLYER_FORMATS.standard,
+  'Legal': FLYER_FORMATS.tabloid,
+}
