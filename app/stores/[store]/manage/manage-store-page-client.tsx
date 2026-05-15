@@ -12,6 +12,7 @@ import StorefrontBanner from "@/components/storefront-banner";
 import ManageStoreInfo from "@/components/manage/manage-store-info";
 import ManageBranchList from "@/components/manage/manage-branch-list";
 import CreateBranchForm from "@/components/manage/create-branch-form";
+import CreateStorefrontFlyerForm from "@/components/manage/create-storefront-flyer-form";
 import { startOfNextSundayUTC } from "@/lib/utils";
 
 export default function ManageStorePageClient({ store }: { store: Store }) {
@@ -142,16 +143,7 @@ export default function ManageStorePageClient({ store }: { store: Store }) {
 
           {showCreateFlyer && (
             <div className="mb-10 p-4 border border-gray-200 rounded-lg">
-              {/* 
-                TODO: Show a component with a form to create a new flyer and once that is done redirect to /stores/[store]/promotions/[flyerUid]/edit where we can edit the flyer details and add sections and products to it. The form should have the following fields:
-                - Store ID (hidden, pre-filled with the current store)
-                - Branch ID (dropdown with the branches of the store, optional, if not selected the flyer will be for the whole store)
-                - Flyer Title (text input)
-                - Description (text area)
-                - Format (dropdown with options: A4, Letter, etc.)
-                - Start Date (date picker)
-                - End Date (date picker)
-              */}
+              <CreateStorefrontFlyerForm store={store} />
             </div>
           )}
         </section>

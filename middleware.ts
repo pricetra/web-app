@@ -24,6 +24,25 @@ export default async function middleware(req: NextRequest) {
     const authUser = await authorize(authToken);
     if (!authUser) return NextResponse.redirect(new URL(`/auth/login?return=${curPath}`, req.url));
   }
+
+  // Stores
+  if (curPath.startsWith("/stores")) {
+    if (curPath.includes("/promotions/")) {
+      if (curPath.includes("/edit")) {
+        // TODO: Parse store slug and flyer uid from the URL and check if the user has access to that store and flyer. If not, return a 403 response.
+        const authUser = await authorize(authToken);
+        if (!authUser) return NextResponse.redirect(new URL(`/auth/login?return=${curPath}`, req.url));
+
+        // Example of parsing the URL: /stores/:storeSlug/promotions/:flyerUid/edit
+        const pathParts = curPath.split("/");
+        const storeSlug = pathParts[2];
+        const flyerUid = pathParts[4];
+        if (pathParts[5] !== "edit") {
+          return new NextResponse("Invalid URL", { status: 400 });
+        }
+      }
+    }
+  }
 }
 
 export const config = {

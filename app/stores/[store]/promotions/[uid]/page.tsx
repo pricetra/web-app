@@ -10,8 +10,11 @@ import {
 import { cache } from "react";
 import { createCloudinaryUrl } from "@/lib/files";
 import FlyerViewPageClient from "./flyer-view-page-client";
+import { AUTH_TOKEN_KEY } from "@/lib/cookies";
+import { cookies } from "next/headers";
+import LayoutProvider from "@/providers/layout-provider";
 
-const cachedFlyerSimple = cache(async (uid: string) => {
+export const cachedFlyerSimple = cache(async (uid: string, authToken?: string) => {
   const queryVars: StorefrontFlyerSimpleQueryVariables = {
     uid,
   };
@@ -19,22 +22,24 @@ const cachedFlyerSimple = cache(async (uid: string) => {
   const { data } = await fetchGraphql<
     StorefrontFlyerSimpleQueryVariables,
     StorefrontFlyerSimpleQuery
-  >(StorefrontFlyerSimpleDocument, "query", queryVars);
+  >(StorefrontFlyerSimpleDocument, "query", queryVars, authToken);
   if (!data || !data.storefrontFlyerSimple) return null;
 
   return data.storefrontFlyerSimple;
 });
 
-interface Props {
+type Props = {
   params: Promise<{
     store: string;
     uid: string;
   }>;
-}
+};
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const cookieStore = await cookies();
+  const authToken = cookieStore.get(AUTH_TOKEN_KEY);
   const { store, uid } = await params;
-  const flyerData = await cachedFlyerSimple(uid);
+  const flyerData = await cachedFlyerSimple(uid, authToken?.value);
   if (!flyerData || !flyerData.store) return {};
 
   const title = `${flyerData.title} - ${flyerData.branch?.name ?? flyerData.store.name} | Pricetra`;
@@ -56,12 +61,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function FlyerViewPage({ params }: Props) {
+  const cookieStore = await cookies();
+  const authToken = cookieStore.get(AUTH_TOKEN_KEY);
   const { store, uid } = await params;
-  const flyerData = await cachedFlyerSimple(uid);
+  const flyerData = await cachedFlyerSimple(uid, authToken?.value);
   if (!flyerData || !flyerData.store) notFound();
   if (flyerData.store.slug !== store) {
     notFound();
   }
 
-  return <FlyerViewPageClient flyerBase={flyerData as StorefrontFlyer} />;
+  return <LayoutProvider>
+    <FlyerViewPageClient flyer={flyerData as StorefrontFlyer} />
+  </LayoutProvider>;
 }
