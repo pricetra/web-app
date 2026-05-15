@@ -64,7 +64,7 @@ export default function FlyerEditorClient({ flyer }: FlyerEditorClientProps) {
           ))}
         </div>
 
-        <div className="flex flex-row items-center justify-center">
+        <div className="flex flex-row items-center justify-center mt-5 mb-10">
           <button
             onClick={() => {
               setPagesInput((p) => [
@@ -76,9 +76,9 @@ export default function FlyerEditorClient({ flyer }: FlyerEditorClientProps) {
                 },
               ]);
             }}
-            className="flex flex-col gap-5 items-center py-5 px-10 border border-gray-300 hover:border-gray-400 text-gray-600 hover:text-gray-800 rounded-md mt-5 cursor-pointer"
+            className="flex flex-col gap-3 items-center py-5 px-10 border border-gray-300 hover:border-gray-400 text-gray-500 hover:text-gray-800 rounded-md cursor-pointer"
           >
-            <IoMdAddCircleOutline className="text-3xl" />
+            <IoMdAddCircleOutline className="text-4xl" />
             <span className="text-sm font-bold">Add page</span>
           </button>
         </div>

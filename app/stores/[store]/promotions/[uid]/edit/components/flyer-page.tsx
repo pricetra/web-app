@@ -1,8 +1,11 @@
+"use client";
+
 import {
   StorefrontFlyerPageInput,
   StorefrontFlyer,
 } from "graphql-utils";
-import { useMemo } from "react";
+import { useMemo, useEffect, useState } from "react";
+import { flyerFormatToFlyerSpec } from "@/lib/constants/flyer-formats";
 
 export type FlyerPageProps = {
   flyer: StorefrontFlyer;
@@ -10,19 +13,66 @@ export type FlyerPageProps = {
   pageNumber: number;
 };
 
-export default function FlyerPage({ flyer, page, pageNumber }: FlyerPageProps) {
+export default function FlyerPage({ flyer, page: _page, pageNumber }: FlyerPageProps) {
+  void _page;
   const flyerStyles = useMemo(() => {
-    return JSON.parse(flyer.flyerStyles || "{}");
+    try {
+      return JSON.parse(flyer.flyerStyles || "{}");
+    } catch {
+      return {};
+    }
   }, [flyer.flyerStyles]);
 
+  // Determine the spec for the requested format
+  const spec = useMemo(() => {
+    const format = flyerStyles?.format || "Letter";
+    return flyerFormatToFlyerSpec[format] || flyerFormatToFlyerSpec["Letter"];
+  }, [flyerStyles]);
+
+  const [size, setSize] = useState<{ width: number; height: number }>(() => ({
+    width: spec?.widthPx ?? 600,
+    height: spec?.heightPx ?? 800,
+  }));
+
+  useEffect(() => {
+    if (!spec) return;
+
+    const compute = () => {
+      const marginW = 48; // padding around the flyer container
+      const marginH = 120; // account for headers/controls
+      const maxW = Math.max(200, window.innerWidth - marginW);
+      const maxH = Math.max(200, window.innerHeight - marginH);
+
+      // use pixel dimensions from spec to preserve aspect ratio
+      const specW = spec.widthPx;
+      const specH = spec.heightPx;
+
+      const widthIfFitHeight = Math.round(maxH * (specW / specH));
+      if (widthIfFitHeight <= maxW) {
+        setSize({ width: widthIfFitHeight, height: Math.round(maxH) });
+      } else {
+        const heightIfFitWidth = Math.round(maxW * (specH / specW));
+        setSize({ width: Math.round(maxW), height: heightIfFitWidth });
+      }
+    };
+
+    compute();
+    window.addEventListener("resize", compute);
+    return () => window.removeEventListener("resize", compute);
+  }, [spec]);
+
   return (
-    <div className="my-5 p-4">
+    <div className="mb-5 p-4">
       <h2 className="text-xs mb-2">Page {pageNumber}</h2>
 
-      {/* TODO: This should be of size flyerStyles.format, and should fit with that aspect ratio scaled to fit the screen. For example if the format is A4 it should have an aspect ratio of 1:1.41 and should scale to fit the screen while maintaining that aspect ratio. */}
-      <article className="border border-gray-200 bg-white shadow-sm">
-        {/* This represents the inside of the flyer page. It will hold the sections, and products. */}
-      </article>
+      <div className="flex justify-center">
+        <article
+          className="border border-gray-200 bg-white shadow-sm overflow-hidden"
+          style={{ width: `${size.width}px`, height: `${size.height}px` }}
+        >
+          {/* This represents the inside of the flyer page. It will hold the sections, and products. */}
+        </article>
+      </div>
     </div>
   );
 }
