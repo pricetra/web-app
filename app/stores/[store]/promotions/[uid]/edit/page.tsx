@@ -37,7 +37,7 @@ export default async function FlyerEditorPage({ params }: Props) {
     notFound();
   }
 
-  return <LayoutProvider>
+  return <LayoutProvider fullScreen>
     <FlyerEditorClient flyer={flyerData as StorefrontFlyer} />
   </LayoutProvider>;
 }
