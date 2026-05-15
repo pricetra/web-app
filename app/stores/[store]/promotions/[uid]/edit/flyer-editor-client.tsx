@@ -25,13 +25,16 @@ export default function FlyerEditorClient({ flyer }: FlyerEditorClientProps) {
   useLayoutEffect(() => {
     if (!flyer.store) return;
 
+    const storeHref = `/stores/${flyer.store.slug}${flyer.branch ? `/${flyer.branch.slug}` : ""}`;
     resetAll();
     setPageIndicator(
       <NavPageIndicator
-        title={flyer.branch?.name ?? flyer.store.name}
-        subTitle="Flyer Editor"
+        title="Flyer Editor"
+        subTitle={flyer.branch?.name ?? flyer.store.name}
         imgSrc={createCloudinaryUrl(flyer.store.logo, 100, 100)}
-        href={`/stores/${flyer.store.slug}${flyer.branch ? `/${flyer.branch.slug}` : ""}`}
+        href={storeHref}
+        titleHref=""
+        subTitleHref={storeHref}
       />,
     );
     setSearchPlaceholder(`Search ${flyer.store.name}`);
@@ -76,7 +79,7 @@ export default function FlyerEditorClient({ flyer }: FlyerEditorClientProps) {
                 },
               ]);
             }}
-            className="flex flex-col gap-3 items-center py-5 px-10 border border-gray-300 hover:border-gray-400 text-gray-500 hover:text-gray-800 rounded-md cursor-pointer"
+            className="flex flex-col gap-3 items-center py-5 px-10 border-[3px] border-dashed border-gray-300 hover:border-gray-400 text-gray-500 hover:text-gray-700 rounded-md cursor-pointer"
           >
             <IoMdAddCircleOutline className="text-4xl" />
             <span className="text-sm font-bold">Add page</span>
