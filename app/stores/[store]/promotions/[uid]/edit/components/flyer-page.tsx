@@ -6,6 +6,7 @@ import {
 } from "graphql-utils";
 import { useMemo, useEffect, useState } from "react";
 import { flyerFormatToFlyerSpec } from "@/lib/constants/flyer-formats";
+import { useFlyerEditor } from "@/context/flyer-editor-context";
 
 export type FlyerPageProps = {
   flyer: StorefrontFlyer;
@@ -13,20 +14,13 @@ export type FlyerPageProps = {
   pageNumber: number;
 };
 
-export default function FlyerPage({ flyer, page: _page, pageNumber }: FlyerPageProps) {
-  void _page;
-  const flyerStyles = useMemo(() => {
-    try {
-      return JSON.parse(flyer.flyerStyles || "{}");
-    } catch {
-      return {};
-    }
-  }, [flyer.flyerStyles]);
+export default function FlyerPage({ pageNumber }: FlyerPageProps) {
+  const { flyerStyles } = useFlyerEditor();
 
   // Determine the spec for the requested format
   const spec = useMemo(() => {
-    const format = flyerStyles?.format || "Letter";
-    return flyerFormatToFlyerSpec[format] || flyerFormatToFlyerSpec["Letter"];
+    const format = flyerStyles.format as string;
+    return flyerFormatToFlyerSpec[format] ?? flyerFormatToFlyerSpec["Letter"];
   }, [flyerStyles]);
 
   const [size, setSize] = useState<{ width: number; height: number }>(() => ({
