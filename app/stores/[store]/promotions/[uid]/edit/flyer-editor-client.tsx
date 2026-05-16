@@ -30,13 +30,26 @@ export default function FlyerEditorClient({ flyer }: FlyerEditorClientProps) {
     getStorefrontFlyerWithPages,
     { data: flyerWithPagesData, loading: flyerWithPagesLoading },
   ] = useLazyQuery(StorefrontFlyerDocument);
-  const [pagesInput, setPagesInput] = useState<StorefrontFlyerPageInput[]>([]);
+  const [pagesInput, setPagesInput] = useState<StorefrontFlyerPageInput[]>([
+    {
+      storefrontFlyerId: flyer.id,
+      sections: [],
+      pageImage: "",
+    },
+  ]);
   const minHeight = useMemo(
     () => ({
       minHeight: `calc(100vh - ${navbarHeight}px)`,
     }),
     [navbarHeight],
   );
+  const flyerStyles = useMemo(() => {
+    try {
+      return JSON.parse(flyer.flyerStyles || "{}");
+    } catch {
+      return {};
+    }
+  }, [flyer.flyerStyles]);
 
   useLayoutEffect(() => {
     if (!flyer.store) return;
@@ -96,9 +109,12 @@ export default function FlyerEditorClient({ flyer }: FlyerEditorClientProps) {
     <>
       {/* Overlay */}
       {flyerWithPagesLoading && (
-        <div className="fixed inset-0 bg-white bg-opacity-70 z-50">
+        <div
+          className="fixed top-0 left-0 w-full h-full z-50"
+          style={{ background: "rgba(255, 255, 255, 0.7)" }}
+        >
           <div className="flex items-center justify-center h-full w-full">
-            <CgSpinner className="text-gray-500 text-4xl animate-spin" />
+            <CgSpinner className="text-gray-800 text-[4rem] animate-spin" />
           </div>
         </div>
       )}
@@ -136,9 +152,31 @@ export default function FlyerEditorClient({ flyer }: FlyerEditorClientProps) {
       </section>
 
       <section
-        className="flex-1 bg-gray-100 border-gray-200 border-l"
+        className="flex-1 bg-gray-100 border-gray-200 border-l relative"
         style={{ ...minHeight }}
-      ></section>
+      >
+        <div className="w-full h-full overflow-y-auto sticky top-0 left-0">
+          <div className="mb-4 text-gray-700">
+            <h2 className="text-lg font-bold px-4 py-4">Flyer Settings</h2>
+            <div className="flex flex-col gap-2 px-4 text-sm">
+              <div className="flex flex-row gap-2">
+                <h3 className="font-semibold">Title:</h3>
+                <p className="flex-1">{flyer.title}</p>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <h3 className="font-semibold">Description:</h3>
+                <p className="flex-1">{flyer.description}</p>
+              </div>
+
+              <div className="flex flex-row gap-2">
+                <h3 className="font-semibold">Format:</h3>
+                <p className="flex-1">{flyerStyles.format}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
     </>
   );
 }
