@@ -15,7 +15,13 @@ export type FlyerPageProps = {
 };
 
 export default function FlyerPage({ pageIndex }: FlyerPageProps) {
-  const { flyerStyles, currentSelection, pagesInput, appendSectionToPage } = useFlyerEditor();
+  const {
+    flyerStyles,
+    currentSelection,
+    pagesInput,
+    appendSectionToPage,
+    setCurrentSelection,
+  } = useFlyerEditor();
 
   const isCurrentSectionAction = useMemo(() => {
     if (!currentSelection) return false;
@@ -46,8 +52,23 @@ export default function FlyerPage({ pageIndex }: FlyerPageProps) {
             style={{ ...size }}
           >
             {pagesInput[pageIndex].sections.map((section, i) => (
-              <div className="mb-5" key={`page-${pageIndex}-section-${i}`}>
-                <FlyerSection pageIndex={pageIndex} sectionIndex={i} sectionInput={section} />
+              <div
+                onClick={() => {
+                  setCurrentSelection({
+                    type: "section",
+                    pageIndex,
+                    sectionIndex: i,
+                    sectionInput: section,
+                  });
+                }}
+                className="mb-5"
+                key={`page-${pageIndex}-section-${i}`}
+              >
+                <FlyerSection
+                  pageIndex={pageIndex}
+                  sectionIndex={i}
+                  sectionInput={section}
+                />
               </div>
             ))}
 

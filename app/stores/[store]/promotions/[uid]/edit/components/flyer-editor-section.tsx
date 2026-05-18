@@ -14,8 +14,14 @@ export type FlyerEditorSectionProps = object;
 
 export default function FlyerEditorSection({}: FlyerEditorSectionProps) {
   const { navbarHeight } = useNavbar();
-  const { flyer, flyerStyles, pagesInput, setPagesInput, appendPageInput } =
-    useFlyerEditor();
+  const {
+    flyer,
+    flyerStyles,
+    pagesInput,
+    setPagesInput,
+    appendPageInput,
+    setCurrentSelection,
+  } = useFlyerEditor();
   const [
     getStorefrontFlyerWithPages,
     { data: flyerWithPagesData, loading: flyerWithPagesLoading },
@@ -76,7 +82,17 @@ export default function FlyerEditorSection({}: FlyerEditorSectionProps) {
       <section className="flex-3 bg-gray-50" style={{ ...minHeight }}>
         <div className="mb-7">
           {pagesInput.map((p, i) => (
-            <div className="mb-5" key={i}>
+            <div
+              onClick={() => {
+                setCurrentSelection({
+                  type: "page",
+                  pageIndex: i,
+                  pageInput: p,
+                });
+              }}
+              className="mb-5"
+              key={i}
+            >
               <FlyerPage flyer={flyer} page={p} pageIndex={i} />
             </div>
           ))}
