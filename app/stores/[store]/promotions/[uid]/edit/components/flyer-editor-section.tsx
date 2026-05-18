@@ -3,7 +3,10 @@ import FlyerPage from "./flyer-page";
 import { useNavbar } from "@/context/navbar-context";
 import { useFlyerEditor } from "@/context/flyer-editor-context";
 import { IoMdAddCircleOutline } from "react-icons/io";
-import { StorefrontFlyerDocument, StorefrontFlyerPageInput } from "graphql-utils";
+import {
+  StorefrontFlyerDocument,
+  StorefrontFlyerPageInput,
+} from "graphql-utils";
 import { useLazyQuery } from "@apollo/client/react";
 import { CgSpinner } from "react-icons/cg";
 
@@ -11,7 +14,13 @@ export type FlyerEditorSectionProps = object;
 
 export default function FlyerEditorSection({}: FlyerEditorSectionProps) {
   const { navbarHeight } = useNavbar();
-  const { flyer, flyerStyles, pagesInput, setPagesInput, appendPageInput } = useFlyerEditor();
+  const {
+    flyer,
+    flyerStyles,
+    pagesInput,
+    setPagesInput,
+    appendPageInput,
+  } = useFlyerEditor();
   const [
     getStorefrontFlyerWithPages,
     { data: flyerWithPagesData, loading: flyerWithPagesLoading },
@@ -52,7 +61,7 @@ export default function FlyerEditorSection({}: FlyerEditorSectionProps) {
         }) as StorefrontFlyerPageInput,
     );
     setPagesInput([...pagesInput]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [flyerWithPagesData]);
 
   return (

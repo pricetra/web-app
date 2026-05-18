@@ -8,6 +8,29 @@ import {
 } from "graphql-utils";
 import { createContext, ReactNode, useContext, useMemo, useState } from "react";
 
+export type CurrentStorefrontFlyerPage = {
+  type: "page";
+  pageIndex: number;
+  pageInput: StorefrontFlyerPageInput;
+}
+
+export type CurrentStorefrontFlyerSection = {
+  type: "section";
+  pageIndex: number;
+  sectionIndex: number;
+  sectionInput: StorefrontFlyerSectionInput;
+}
+
+export type CurrentStorefrontFlyerItem = {
+  type: "item";
+  pageIndex: number;
+  sectionIndex: number;
+  itemIndex: number;
+  itemInput: StorefrontFlyerItem;
+}
+
+export type CurrentSelection = CurrentStorefrontFlyerPage | CurrentStorefrontFlyerSection | CurrentStorefrontFlyerItem;
+
 export type FlyerEditorContextType = {
   flyer: StorefrontFlyer;
   setFlyer: (flyer: StorefrontFlyer) => void;
@@ -18,14 +41,8 @@ export type FlyerEditorContextType = {
   appendPageInput: (page?: StorefrontFlyerPageInput) => void;
   removePageInput: (index?: number) => void;
 
-  currentPageInput?: StorefrontFlyerPageInput;
-  setCurrentPageInput: (page?: StorefrontFlyerPageInput) => void;
-
-  currentSectionInput?: StorefrontFlyerSectionInput;
-  setCurrentSectionInput: (section?: StorefrontFlyerSectionInput) => void;
-
-  currentSectionItemInput?: StorefrontFlyerItem;
-  setCurrentSectionItemInput: (item?: StorefrontFlyerItem) => void;
+  currentSelection: CurrentSelection;
+  setCurrentSelection: (selection: CurrentSelection) => void;
 };
 
 export const FlyerEditorContext = createContext({} as FlyerEditorContextType);
@@ -47,12 +64,11 @@ export default function FlyerEditorProvider({
   const [pagesInput, setPagesInput] = useState<StorefrontFlyerPageInput[]>([
     { ...defaultPageInput },
   ]);
-  const [currentPageInput, setCurrentPageInput] =
-    useState<StorefrontFlyerPageInput>();
-  const [currentSectionInput, setCurrentSectionInput] =
-    useState<StorefrontFlyerSectionInput>();
-  const [currentSectionItemInput, setCurrentSectionItemInput] =
-    useState<StorefrontFlyerItem>();
+  const [currentSelection, setCurrentSelection] = useState<CurrentSelection>({
+    type: "page",
+    pageIndex: 0,
+    pageInput: { ...defaultPageInput },
+  });
 
   const flyerStyles = useMemo(() => {
     try {
@@ -64,11 +80,21 @@ export default function FlyerEditorProvider({
 
   function appendPageInput(page?: StorefrontFlyerPageInput) {
     setPagesInput((prev) => [...prev, page ?? { ...defaultPageInput }]);
+    setCurrentSelection({
+      type: "page",
+      pageIndex: pagesInput.length,
+      pageInput: page ?? { ...defaultPageInput },
+    });
   }
 
   function removePageInput(index?: number) {
     if (!index) {
       setPagesInput((prev) => prev.slice(0, -1));
+      setCurrentSelection({
+        type: "page",
+        pageIndex: pagesInput.length - 1,
+        pageInput: pagesInput[pagesInput.length - 1],
+      });
       return;
     }
 
@@ -87,14 +113,8 @@ export default function FlyerEditorProvider({
         appendPageInput,
         removePageInput,
 
-        currentPageInput,
-        setCurrentPageInput,
-
-        currentSectionInput,
-        setCurrentSectionInput,
-
-        currentSectionItemInput,
-        setCurrentSectionItemInput,
+        currentSelection,
+        setCurrentSelection,
       }}
     >
       {children}

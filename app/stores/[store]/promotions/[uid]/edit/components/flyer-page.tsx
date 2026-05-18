@@ -1,12 +1,10 @@
 "use client";
 
-import {
-  StorefrontFlyerPageInput,
-  StorefrontFlyer,
-} from "graphql-utils";
+import { StorefrontFlyerPageInput, StorefrontFlyer } from "graphql-utils";
 import { useMemo, useEffect, useState } from "react";
 import { flyerFormatToFlyerSpec } from "@/lib/constants/flyer-formats";
 import { useFlyerEditor } from "@/context/flyer-editor-context";
+import { cn } from "@/lib/utils";
 
 export type FlyerPageProps = {
   flyer: StorefrontFlyer;
@@ -15,14 +13,18 @@ export type FlyerPageProps = {
 };
 
 export default function FlyerPage({ pageNumber }: FlyerPageProps) {
-  const { flyerStyles } = useFlyerEditor();
+  const { flyerStyles, currentSelection } = useFlyerEditor();
+
+  const isCurrentSectionAction = useMemo(() => {
+    if (!currentSelection) return false;
+    return currentSelection.pageIndex === pageNumber - 1;
+  }, [currentSelection, pageNumber]);
 
   // Determine the spec for the requested format
   const spec = useMemo(() => {
     const format = flyerStyles.format as string;
     return flyerFormatToFlyerSpec[format] ?? flyerFormatToFlyerSpec["Letter"];
   }, [flyerStyles]);
-
   const [size, setSize] = useState<{ width: number; height: number }>(() => ({
     width: spec?.widthPx ?? 600,
     height: spec?.heightPx ?? 800,
@@ -61,7 +63,10 @@ export default function FlyerPage({ pageNumber }: FlyerPageProps) {
 
       <div className="flex justify-center">
         <article
-          className="border border-gray-200 bg-white shadow-sm overflow-hidden"
+          className={cn(
+            "border border-gray-200 bg-white shadow-sm overflow-hidden",
+            isCurrentSectionAction ? "border-gray-400 shadow-lg" : "opacity-80",
+          )}
           style={{ width: `${size.width}px`, height: `${size.height}px` }}
         >
           {/* This represents the inside of the flyer page. It will hold the sections, and products. */}
