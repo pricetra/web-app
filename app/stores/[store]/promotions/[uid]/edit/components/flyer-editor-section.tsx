@@ -75,9 +75,9 @@ export default function FlyerEditorSection({}: FlyerEditorSectionProps) {
 
       <section className="flex-3 bg-gray-50" style={{ ...minHeight }}>
         <div className="mb-7">
-          {pagesInput.map((p, index) => (
-            <div className="mb-5" key={index}>
-              <FlyerPage flyer={flyer} page={p} pageNumber={index + 1} />
+          {pagesInput.map((p, i) => (
+            <div className="mb-5" key={i}>
+              <FlyerPage flyer={flyer} page={p} pageIndex={i} />
             </div>
           ))}
         </div>
