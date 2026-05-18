@@ -14,7 +14,7 @@ export type FlyerPageProps = {
 };
 
 export default function FlyerPage({ pageIndex }: FlyerPageProps) {
-  const { flyerStyles, currentSelection, pagesInput } = useFlyerEditor();
+  const { flyerStyles, currentSelection, pagesInput, appendSectionToPage } = useFlyerEditor();
 
   const isCurrentSectionAction = useMemo(() => {
     if (!currentSelection) return false;
@@ -51,12 +51,7 @@ export default function FlyerPage({ pageIndex }: FlyerPageProps) {
             ))}
 
             <button
-              onClick={() => {
-                pagesInput[pageIndex].sections.push({
-                  items: [],
-                  sortOrder: pagesInput[pageIndex].sections.length,
-                });
-              }}
+              onClick={() => appendSectionToPage(pageIndex)}
               className="flex flex-col gap-2 items-center py-5 px-10 border-[3px] border-dashed border-gray-300 hover:border-gray-400 text-gray-500 hover:text-gray-700 cursor-pointer w-full"
             >
               <IoMdAddCircleOutline className="text-4xl" />

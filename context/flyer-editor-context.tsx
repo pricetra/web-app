@@ -12,14 +12,14 @@ export type CurrentStorefrontFlyerPage = {
   type: "page";
   pageIndex: number;
   pageInput: StorefrontFlyerPageInput;
-}
+};
 
 export type CurrentStorefrontFlyerSection = {
   type: "section";
   pageIndex: number;
   sectionIndex: number;
   sectionInput: StorefrontFlyerSectionInput;
-}
+};
 
 export type CurrentStorefrontFlyerItem = {
   type: "item";
@@ -27,9 +27,12 @@ export type CurrentStorefrontFlyerItem = {
   sectionIndex: number;
   itemIndex: number;
   itemInput: StorefrontFlyerItem;
-}
+};
 
-export type CurrentSelection = CurrentStorefrontFlyerPage | CurrentStorefrontFlyerSection | CurrentStorefrontFlyerItem;
+export type CurrentSelection =
+  | CurrentStorefrontFlyerPage
+  | CurrentStorefrontFlyerSection
+  | CurrentStorefrontFlyerItem;
 
 export type FlyerEditorContextType = {
   flyer: StorefrontFlyer;
@@ -43,6 +46,13 @@ export type FlyerEditorContextType = {
 
   currentSelection: CurrentSelection;
   setCurrentSelection: (selection: CurrentSelection) => void;
+
+  appendSectionToPage: (pageIndex: number) => void;
+  setSectionInput: (
+    pageIndex: number,
+    sectionIndex: number,
+    sectionInput: StorefrontFlyerSectionInput,
+  ) => void;
 };
 
 export const FlyerEditorContext = createContext({} as FlyerEditorContextType);
@@ -101,6 +111,40 @@ export default function FlyerEditorProvider({
     setPagesInput((prev) => prev.filter((_, i) => i !== index));
   }
 
+  function appendSectionToPage(
+    pageIndex: number,
+    section?: StorefrontFlyerSectionInput,
+  ) {
+    const sectionInput = section ?? {
+      sortOrder: pagesInput[pageIndex].sections.length,
+      items: [],
+    }
+    const newPagesInput = [...pagesInput];
+    const newSection = [...newPagesInput[pageIndex].sections];
+    newSection.push(sectionInput);
+    newPagesInput[pageIndex].sections = newSection;
+    setPagesInput([...newPagesInput]);
+
+    setCurrentSelection({
+      type: "section",
+      pageIndex,
+      sectionIndex: 0,
+      sectionInput,
+    })
+  }
+
+  function setSectionInput(
+    pageIndex: number,
+    sectionIndex: number,
+    sectionInput: StorefrontFlyerSectionInput,
+  ) {
+    const newPagesInput = [...pagesInput];
+    const newSection = [...newPagesInput[pageIndex].sections];
+    newSection[sectionIndex] = sectionInput;
+    newPagesInput[pageIndex].sections = newSection;
+    setPagesInput([...newPagesInput]);
+  }
+
   return (
     <FlyerEditorContext.Provider
       value={{
@@ -115,6 +159,9 @@ export default function FlyerEditorProvider({
 
         currentSelection,
         setCurrentSelection,
+
+        appendSectionToPage,
+        setSectionInput,
       }}
     >
       {children}
