@@ -128,9 +128,9 @@ export default function FlyerEditorProvider({
     setCurrentSelection({
       type: "section",
       pageIndex,
-      sectionIndex: 0,
+      sectionIndex: newSection.length - 1,
       sectionInput,
-    })
+    });
   }
 
   function setSectionInput(
@@ -143,6 +143,13 @@ export default function FlyerEditorProvider({
     newSection[sectionIndex] = sectionInput;
     newPagesInput[pageIndex].sections = newSection;
     setPagesInput([...newPagesInput]);
+
+    setCurrentSelection({
+      type: "section",
+      pageIndex,
+      sectionIndex,
+      sectionInput,
+    });
   }
 
   return (

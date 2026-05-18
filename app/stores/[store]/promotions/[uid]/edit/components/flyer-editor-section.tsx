@@ -18,6 +18,7 @@ export default function FlyerEditorSection({}: FlyerEditorSectionProps) {
     flyer,
     flyerStyles,
     pagesInput,
+    currentSelection,
     setPagesInput,
     appendPageInput,
     setCurrentSelection,
@@ -84,6 +85,7 @@ export default function FlyerEditorSection({}: FlyerEditorSectionProps) {
           {pagesInput.map((p, i) => (
             <div
               onClick={() => {
+                if (currentSelection.pageIndex === i) return;
                 setCurrentSelection({
                   type: "page",
                   pageIndex: i,

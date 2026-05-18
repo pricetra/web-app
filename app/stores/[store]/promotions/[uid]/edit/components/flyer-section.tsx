@@ -100,9 +100,7 @@ export default function FlyerSection({
             placeholder="Section title"
             className="w-full bg-transparent text-lg font-semibold text-gray-900 placeholder:text-gray-500 outline-none ring-0 focus:ring-0"
           />
-        </div>
 
-        <div>
           <textarea
             value={sectionInput.description ?? ""}
             onChange={(event) =>
@@ -110,7 +108,7 @@ export default function FlyerSection({
             }
             onFocus={selectSection}
             placeholder="Section description"
-            rows={3}
+            rows={1}
             className="w-full resize-none bg-transparent text-sm leading-6 text-gray-700 placeholder:text-gray-500 outline-none ring-0 focus:ring-0"
           />
         </div>
