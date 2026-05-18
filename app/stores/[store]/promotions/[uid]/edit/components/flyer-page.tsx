@@ -58,19 +58,27 @@ export default function FlyerPage({ pageNumber }: FlyerPageProps) {
   }, [spec]);
 
   return (
-    <div className="mb-5 p-4">
-      <h2 className="text-xs mb-2">Page {pageNumber}</h2>
-
+    <div className="p-4">
       <div className="flex justify-center">
-        <article
-          className={cn(
-            "border border-gray-200 bg-white shadow-sm overflow-hidden",
-            isCurrentSectionAction ? "border-gray-400 shadow-lg" : "opacity-80",
-          )}
-          style={{ width: `${size.width}px`, height: `${size.height}px` }}
-        >
+        <div style={{ width: `${size.width}px`, height: `${size.height}px` }}>
+          <h2
+            className={cn(
+              "text-xs mb-2",
+              isCurrentSectionAction && "font-semibold",
+            )}
+          >
+            Page {pageNumber}
+          </h2>
+
           {/* This represents the inside of the flyer page. It will hold the sections, and products. */}
-        </article>
+          <article
+            className={cn(
+              "border border-gray-200 bg-white overflow-hidden",
+              isCurrentSectionAction && "border-gray-300 shadow-sm",
+            )}
+            style={{ width: `${size.width}px`, height: `${size.height}px` }}
+          ></article>
+        </div>
       </div>
     </div>
   );
