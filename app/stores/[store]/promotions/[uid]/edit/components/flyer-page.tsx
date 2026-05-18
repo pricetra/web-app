@@ -6,6 +6,7 @@ import { useFlyerEditor } from "@/context/flyer-editor-context";
 import { cn } from "@/lib/utils";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import useFlyerLayoutSize from "@/hooks/useFlyerLayoutSize";
+import FlyerSection from "./flyer-section";
 
 export type FlyerPageProps = {
   flyer: StorefrontFlyer;
@@ -46,7 +47,7 @@ export default function FlyerPage({ pageIndex }: FlyerPageProps) {
           >
             {pagesInput[pageIndex].sections.map((section, i) => (
               <div className="mb-5" key={`page-${pageIndex}-section-${i}`}>
-                <h3>Section {section.sortOrder}</h3>
+                <FlyerSection pageIndex={pageIndex} sectionIndex={i} sectionInput={section} />
               </div>
             ))}
 
