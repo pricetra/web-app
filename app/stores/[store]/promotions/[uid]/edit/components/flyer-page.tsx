@@ -42,7 +42,7 @@ export default function FlyerPage({ pageIndex }: FlyerPageProps) {
               "border border-gray-200 bg-white overflow-hidden p-4",
               isCurrentSectionAction && "border-gray-300 shadow-sm",
             )}
-            style={{ width: `${size.width}px`, height: `${size.height}px` }}
+            style={{ ...size }}
           >
             {pagesInput[pageIndex].sections.map((section, i) => (
               <div className="mb-5" key={`page-${pageIndex}-section-${i}`}>
