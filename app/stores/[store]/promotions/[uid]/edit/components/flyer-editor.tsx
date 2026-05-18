@@ -12,7 +12,7 @@ import { CgSpinner } from "react-icons/cg";
 
 export type FlyerEditorSectionProps = object;
 
-export default function FlyerEditorSection({}: FlyerEditorSectionProps) {
+export default function FlyerEditor({}: FlyerEditorSectionProps) {
   const { navbarHeight } = useNavbar();
   const {
     flyer,

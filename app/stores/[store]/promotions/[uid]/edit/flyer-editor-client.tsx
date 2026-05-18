@@ -8,7 +8,7 @@ import {
 } from "graphql-utils";
 import { useLayoutEffect } from "react";
 import FlyerEditorProvider from "@/context/flyer-editor-context";
-import FlyerEditorSection from "./components/flyer-editor-section";
+import FlyerEditor from "./components/flyer-editor";
 
 export type FlyerEditorClientProps = {
   flyer: StorefrontFlyer;
@@ -48,7 +48,7 @@ export default function FlyerEditorClient({ flyer }: FlyerEditorClientProps) {
 
   return (
     <FlyerEditorProvider flyer={flyer}>
-      <FlyerEditorSection />
+      <FlyerEditor />
     </FlyerEditorProvider>
   );
 }
