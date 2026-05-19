@@ -13,10 +13,11 @@ import { CgSpinner } from "react-icons/cg";
 import ProductItem from "@/components/product-item";
 
 export default function SectionPanelEditor() {
-  const { flyer } = useFlyerEditor();
+  const { flyer, currentSelection, addItemToPageSection } = useFlyerEditor();
   const [search, setSearch] = useState("");
   const [searchProducts, { data, loading }] = useLazyQuery(AllProductsDocument);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(
     debounce((search: string) => {
       if (search.length < 2) return;
@@ -67,13 +68,27 @@ export default function SectionPanelEditor() {
         {data && (
           <div>
             {data.allProducts.paginator.total > 0 ? (
-              <div className="grid grid-cols-1">
+              <div className="mt-5 grid grid-cols-1">
                 {data.allProducts.products.map((p, i) => (
-                  <div style={{transform: "scale(0.9)", position: "relative"}} key={`product-${p.id}-${i}-${p.stock?.id}`}>
+                  <div className="mb-5" key={`product-${p.id}-${i}-${p.stock?.id}`}>
                     <ProductItem
                       product={p as Product}
                       hideStoreInfo
                       preventHref
+                      onClick={() => {
+                        if (!currentSelection || currentSelection.type !== "section") return;
+
+                        addItemToPageSection(
+                          currentSelection.pageIndex,
+                          currentSelection.sectionIndex,
+                          p as Product,
+                          {
+                            productId: p.id,
+                            stockId: p.stock!.id,
+                            sortOrder: currentSelection.sectionInput.items.length,
+                          },
+                        );
+                      }}
                     />
                   </div>
                 ))}
