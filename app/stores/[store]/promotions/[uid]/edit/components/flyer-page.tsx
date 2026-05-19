@@ -1,7 +1,7 @@
 "use client";
 
 import { StorefrontFlyerPageInput, StorefrontFlyer } from "graphql-utils";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useFlyerEditor } from "@/context/flyer-editor-context";
 import { cn } from "@/lib/utils";
 import { IoMdAddCircleOutline } from "react-icons/io";
@@ -26,7 +26,7 @@ export default function FlyerPage({ flyer, pageIndex }: FlyerPageProps) {
     appendSectionToPage,
     setCurrentSelection,
   } = useFlyerEditor();
-
+  const [hidePlaceholder, setHidePlaceholder] = useState(false)
   const isCurrentSectionAction = useMemo(() => {
     if (!currentSelection) return false;
     return currentSelection.pageIndex === pageIndex;
@@ -44,23 +44,30 @@ export default function FlyerPage({ flyer, pageIndex }: FlyerPageProps) {
       link.click();
     },
     onError: (err) => {
-      toast.error(`Failed to generate image. ${err}`)
+      toast.error(`Failed to generate image. ${err}`);
     },
   });
+
+  function handlePageImageGeneration() {
+    setCurrentSelection({
+      type: "page",
+      pageIndex,
+      pageInput: pagesInput[pageIndex],
+    });
+    setHidePlaceholder(true);
+    pageToImage();
+
+    setTimeout(() => {
+      setHidePlaceholder(false);
+    }, 1000);
+  }
 
   return (
     <div className="p-4">
       <div className="flex justify-center">
         <div className="relative" style={{ ...size }}>
           <Button
-            onClick={() => {
-              setCurrentSelection({
-                type: "page",
-                pageIndex,
-                pageInput: pagesInput[pageIndex],
-              });
-              pageToImage();
-            }}
+            onClick={handlePageImageGeneration}
             className="absolute top-0 -right-2 z-20"
             variant="secondary"
             size="icon"
@@ -106,13 +113,15 @@ export default function FlyerPage({ flyer, pageIndex }: FlyerPageProps) {
               </div>
             ))}
 
-            <button
-              onClick={() => appendSectionToPage(pageIndex)}
-              className="flex flex-col gap-2 items-center py-5 px-10 border-[3px] border-dashed border-gray-300 hover:border-gray-400 text-gray-500 hover:text-gray-700 cursor-pointer w-full"
-            >
-              <IoMdAddCircleOutline className="text-4xl" />
-              <span className="text-base font-bold">Add section</span>
-            </button>
+            {!hidePlaceholder && <div className="p-4">
+              <button
+                onClick={() => appendSectionToPage(pageIndex)}
+                className="flex flex-col gap-2 items-center py-5 px-10 border-[3px] border-dashed border-gray-300 hover:border-gray-400 text-gray-500 hover:text-gray-700 cursor-pointer w-full"
+              >
+                <IoMdAddCircleOutline className="text-4xl" />
+                <span className="text-base font-bold">Add section</span>
+              </button>
+            </div>}
           </article>
         </div>
       </div>

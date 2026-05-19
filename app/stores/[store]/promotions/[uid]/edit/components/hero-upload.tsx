@@ -67,7 +67,16 @@ export default function HeroUpload({
         }}
         className="bg-gray-100 overflow-hidden cursor-pointer"
       >
-        {heroPreview ? (
+        {!heroPreview ? (
+          <div
+            className={cn(
+              "flex min-h-40 flex-col items-center justify-center gap-2 p-4 text-center text-sm text-gray-500",
+              !isSectionSelected && "hidden",
+            )}
+          >
+            <p>Drag or upload a Hero Image Banner to make this section pop.</p>
+          </div>
+        ) : (
           <div className="relative h-40 w-full">
             <Image
               src={heroPreview}
@@ -76,15 +85,6 @@ export default function HeroUpload({
               className="object-cover"
               unoptimized
             />
-          </div>
-        ) : (
-          <div
-            className={cn(
-              "flex min-h-40 flex-col items-center justify-center gap-2 p-4 text-center text-sm text-gray-500",
-              !isSectionSelected && "hidden",
-            )}
-          >
-            <p>Drag or upload a Hero Image Banner to make this section pop.</p>
           </div>
         )}
       </div>

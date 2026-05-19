@@ -66,11 +66,11 @@ export default function FlyerSection({
       )}
       onClick={selectSection}
     >
-      {!isSelected && (!hasTitle || !hasDescription) && (
+      {!isSelected && (!hasTitle || !hasDescription) ? (
         <p className="text-center text-gray-400 px-4 py-5">
           Click here to edit this section
         </p>
-      )}
+      ) : (
       <div>
         <div>
           <HeroUpload
@@ -106,6 +106,7 @@ export default function FlyerSection({
           )}
         </div>
       </div>
+      )}
     </section>
   );
 }
