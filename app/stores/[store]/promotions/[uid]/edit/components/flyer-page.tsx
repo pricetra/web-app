@@ -7,6 +7,10 @@ import { cn } from "@/lib/utils";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import useFlyerLayoutSize from "@/hooks/useFlyerLayoutSize";
 import FlyerSection from "./flyer-section";
+import { useToPng } from "@hugocxl/react-to-image";
+import { Button } from "@/components/ui/button";
+import { IoCheckmark } from "react-icons/io5";
+import { toast } from "sonner";
 
 export type FlyerPageProps = {
   flyer: StorefrontFlyer;
@@ -14,7 +18,7 @@ export type FlyerPageProps = {
   pageIndex: number;
 };
 
-export default function FlyerPage({ pageIndex }: FlyerPageProps) {
+export default function FlyerPage({ flyer, pageIndex }: FlyerPageProps) {
   const {
     flyerStyles,
     currentSelection,
@@ -30,10 +34,40 @@ export default function FlyerPage({ pageIndex }: FlyerPageProps) {
 
   const size = useFlyerLayoutSize(flyerStyles.format as string);
 
+  const [, pageToImage, pageRef] = useToPng<HTMLElement>({
+    skipFonts: true,
+    quality: 1,
+    onSuccess: (data) => {
+      const link = document.createElement("a");
+      link.download = `pricetra-flyer-${flyer.store!.slug}-${flyer.uid}-page-${pageIndex + 1}.png`;
+      link.href = data;
+      link.click();
+    },
+    onError: (err) => {
+      toast.error(`Failed to generate image. ${err}`)
+    },
+  });
+
   return (
     <div className="p-4">
       <div className="flex justify-center">
-        <div style={{ width: `${size.width}px`, height: `${size.height}px` }}>
+        <div className="relative" style={{ ...size }}>
+          <Button
+            onClick={() => {
+              setCurrentSelection({
+                type: "page",
+                pageIndex,
+                pageInput: pagesInput[pageIndex],
+              });
+              pageToImage();
+            }}
+            className="absolute top-0 -right-2 z-20"
+            variant="secondary"
+            size="icon"
+          >
+            <IoCheckmark />
+          </Button>
+
           <h2
             className={cn(
               "text-xs mb-2",
@@ -43,8 +77,8 @@ export default function FlyerPage({ pageIndex }: FlyerPageProps) {
             Page {pageIndex + 1}
           </h2>
 
-          {/* This represents the inside of the flyer page. It will hold the sections, and products. */}
           <article
+            ref={pageRef}
             className={cn(
               "border border-gray-200 bg-white overflow-hidden p-4",
               isCurrentSectionAction && "border-gray-300 shadow-sm",
