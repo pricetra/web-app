@@ -53,6 +53,7 @@ export type FlyerEditorContextType = {
     sectionIndex: number,
     sectionInput: StorefrontFlyerSectionInput,
   ) => void;
+  removeSection: (pageIndex: number, sectionIndex: number) => void;
 };
 
 export const FlyerEditorContext = createContext({} as FlyerEditorContextType);
@@ -139,9 +140,9 @@ export default function FlyerEditorProvider({
     sectionInput: StorefrontFlyerSectionInput,
   ) {
     const newPagesInput = [...pagesInput];
-    const newSection = [...newPagesInput[pageIndex].sections];
-    newSection[sectionIndex] = sectionInput;
-    newPagesInput[pageIndex].sections = newSection;
+    const newSections = [...newPagesInput[pageIndex].sections];
+    newSections[sectionIndex] = sectionInput;
+    newPagesInput[pageIndex].sections = newSections;
     setPagesInput([...newPagesInput]);
 
     setCurrentSelection({
@@ -149,6 +150,20 @@ export default function FlyerEditorProvider({
       pageIndex,
       sectionIndex,
       sectionInput,
+    });
+  }
+
+  function removeSection(pageIndex: number, sectionIndex: number) {
+    const newPagesInput = [...pagesInput];
+    const newSections = [...newPagesInput[pageIndex].sections];
+    newSections.splice(sectionIndex, 1);
+    newPagesInput[pageIndex].sections = newSections;
+    setPagesInput([...newPagesInput]);
+
+    setCurrentSelection({
+      type: "page",
+      pageIndex,
+      pageInput: newPagesInput[pageIndex],
     });
   }
 
@@ -169,6 +184,7 @@ export default function FlyerEditorProvider({
 
         appendSectionToPage,
         setSectionInput,
+        removeSection,
       }}
     >
       {children}
