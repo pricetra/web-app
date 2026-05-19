@@ -47,10 +47,14 @@ export default function FlyerSection({
     });
   };
 
-  const isTitleInputVisible =
-    isSelected || !sectionInput.title || sectionInput.title !== "";
-  const isDescriptionInputVisible =
-    isSelected || !sectionInput.description || sectionInput.description !== "";
+  const hasTitle =
+    typeof sectionInput.title === "string" && sectionInput.title.trim() !== "";
+  const hasDescription =
+    typeof sectionInput.description === "string" &&
+    sectionInput.description.trim() !== "";
+
+  const isTitleInputVisible = isSelected || hasTitle;
+  const isDescriptionInputVisible = isSelected || hasDescription;
 
   return (
     <section
@@ -62,6 +66,11 @@ export default function FlyerSection({
       )}
       onClick={selectSection}
     >
+      {!isSelected && (!hasTitle || !hasDescription) && (
+        <p className="text-center text-gray-400 px-4 py-5">
+          Click here to edit this section
+        </p>
+      )}
       <div>
         <div>
           <HeroUpload
