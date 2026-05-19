@@ -1,8 +1,10 @@
 "use client";
 
 import {
+  Product,
   StorefrontFlyer,
   StorefrontFlyerItem,
+  StorefrontFlyerItemInput,
   StorefrontFlyerPageInput,
   StorefrontFlyerSectionInput,
 } from "graphql-utils";
@@ -54,6 +56,15 @@ export type FlyerEditorContextType = {
     sectionInput: StorefrontFlyerSectionInput,
   ) => void;
   removeSection: (pageIndex: number, sectionIndex: number) => void;
+
+  addItemToPageSection: (
+    pageIndex: number,
+    sectionIndex: number,
+    product: Product,
+    itemInput: StorefrontFlyerItemInput,
+  ) => void;
+
+  productsMap: Map<string, Product>;
 };
 
 export const FlyerEditorContext = createContext({} as FlyerEditorContextType);
@@ -80,6 +91,7 @@ export default function FlyerEditorProvider({
     pageIndex: 0,
     pageInput: { ...defaultPageInput },
   });
+  const [productsMap, setProductsMap] = useState<Map<string, Product>>(new Map());
 
   const flyerStyles = useMemo(() => {
     try {
@@ -119,7 +131,7 @@ export default function FlyerEditorProvider({
     const sectionInput = section ?? {
       sortOrder: pagesInput[pageIndex].sections.length,
       items: [],
-    }
+    };
     const newPagesInput = [...pagesInput];
     const newSection = [...newPagesInput[pageIndex].sections];
     newSection.push(sectionInput);
@@ -167,6 +179,37 @@ export default function FlyerEditorProvider({
     });
   }
 
+  function addItemToPageSection(
+    pageIndex: number,
+    sectionIndex: number,
+    product: Product,
+    itemInput: StorefrontFlyerItemInput,
+  ) {
+    if (!product.stock) return;
+
+    const newPagesInput = [...pagesInput];
+    const newSections = [...newPagesInput[pageIndex].sections];
+    const newItems = [...newSections[sectionIndex].items];
+    newItems.push(itemInput);
+    newSections[sectionIndex].items = newItems;
+    newPagesInput[pageIndex].sections = newSections;
+    setPagesInput([...newPagesInput]);
+
+    setProductsMap((prev) => {
+      const newMap = new Map<string, Product>(prev); // Clone the existing map
+      newMap.set(`${product.id}-${product.stock!.id}`, { ...product }); // Update the clone
+      return newMap; // Return the new instance
+    });
+
+    // setCurrentSelection({
+    //   type: "item",
+    //   pageIndex,
+    //   sectionIndex,
+    //   itemIndex: newItems.length - 1,
+    //   itemInput,
+    // });
+  }
+
   return (
     <FlyerEditorContext.Provider
       value={{
@@ -185,6 +228,10 @@ export default function FlyerEditorProvider({
         appendSectionToPage,
         setSectionInput,
         removeSection,
+
+        addItemToPageSection,
+
+        productsMap,
       }}
     >
       {children}
