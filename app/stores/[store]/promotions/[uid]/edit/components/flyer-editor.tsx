@@ -9,6 +9,7 @@ import {
 } from "graphql-utils";
 import { useLazyQuery } from "@apollo/client/react";
 import { CgSpinner } from "react-icons/cg";
+import EditorPanel from "./editor-panel";
 
 export type FlyerEditorSectionProps = object;
 
@@ -16,7 +17,6 @@ export default function FlyerEditor({}: FlyerEditorSectionProps) {
   const { navbarHeight } = useNavbar();
   const {
     flyer,
-    flyerStyles,
     pagesInput,
     currentSelection,
     setPagesInput,
@@ -116,25 +116,7 @@ export default function FlyerEditor({}: FlyerEditorSectionProps) {
         style={{ ...minHeight }}
       >
         <div className="w-full h-full overflow-y-auto sticky top-0 left-0">
-          <div className="mb-4 text-gray-700">
-            <h2 className="text-lg font-bold px-4 py-4">Flyer Settings</h2>
-            <div className="flex flex-col gap-2 px-4 text-sm">
-              <div className="flex flex-row gap-2">
-                <h3 className="font-semibold">Title:</h3>
-                <p className="flex-1">{flyer.title}</p>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <h3 className="font-semibold">Description:</h3>
-                <p className="flex-1">{flyer.description}</p>
-              </div>
-
-              <div className="flex flex-row gap-2">
-                <h3 className="font-semibold">Format:</h3>
-                <p className="flex-1">{flyerStyles.format as string}</p>
-              </div>
-            </div>
-          </div>
+          <EditorPanel />
         </div>
       </section>
     </>
