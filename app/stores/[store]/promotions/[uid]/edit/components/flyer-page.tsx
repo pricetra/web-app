@@ -80,7 +80,7 @@ export default function FlyerPage({ flyer, pageIndex }: FlyerPageProps) {
           <article
             ref={pageRef}
             className={cn(
-              "border border-gray-200 bg-white overflow-hidden p-4",
+              "border border-gray-200 bg-white overflow-hidden",
               isCurrentSectionAction && "border-gray-300 shadow-sm",
             )}
             style={{ ...size }}
