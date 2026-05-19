@@ -112,7 +112,7 @@ export default function FlyerEditor({}: FlyerEditorSectionProps) {
       </section>
 
       <section
-        className="flex-1 bg-gray-100 border-gray-200 border-l relative"
+        className="flex-1 bg-gray-100 border-gray-200 border-l relative overflow-hidden"
         style={{ ...minHeight }}
       >
         <div className="w-full h-full overflow-y-auto sticky top-0 left-0">
