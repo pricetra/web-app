@@ -88,6 +88,7 @@ export default function SectionPanelEditor() {
                             sortOrder: currentSelection.sectionInput.items.length,
                           },
                         );
+                        setSearch("");
                       }}
                     />
                   </div>

@@ -3,6 +3,7 @@ import { StorefrontFlyerSectionInput } from "graphql-utils";
 import { useFlyerEditor } from "@/context/flyer-editor-context";
 import { cn } from "@/lib/utils";
 import HeroUpload from "./hero-upload";
+import ProductItemHorizontal from "@/components/product-item-horizontal";
 
 export type FlyerSectionProps = {
   pageIndex: number;
@@ -15,8 +16,12 @@ export default function FlyerSection({
   sectionIndex,
   sectionInput,
 }: FlyerSectionProps) {
-  const { currentSelection, setCurrentSelection, setSectionInput } =
-    useFlyerEditor();
+  const {
+    currentSelection,
+    setCurrentSelection,
+    setSectionInput,
+    productsMap,
+  } = useFlyerEditor();
 
   const isSelected = useMemo(() => {
     return (
@@ -66,46 +71,71 @@ export default function FlyerSection({
       )}
       onClick={selectSection}
     >
-      {!isSelected && (!hasTitle || !hasDescription) ? (
+      {!isSelected &&
+      (!hasTitle || !hasDescription) &&
+      sectionInput.items.length === 0 ? (
         <p className="text-center text-gray-400 px-4 py-5">
           Click here to edit this section
         </p>
       ) : (
-      <div>
         <div>
-          <HeroUpload
-            isSectionSelected={isSelected}
-            heroImage={sectionInput.heroImage}
-            onImageChange={(file) => updateSection({ heroImage: file })}
-            onImageRemove={() => updateSection({ heroImage: undefined })}
-          />
-        </div>
-
-        <div className="p-4">
-          {isTitleInputVisible && (
-            <input
-              value={sectionInput.title ?? ""}
-              onChange={(e) =>
-                updateSection({ title: e.target.value || undefined })
-              }
-              placeholder="Section title"
-              className="w-full bg-transparent text-lg font-semibold text-gray-900 placeholder:text-gray-500 outline-none ring-0 focus:ring-0"
+          <div>
+            <HeroUpload
+              isSectionSelected={isSelected}
+              heroImage={sectionInput.heroImage}
+              onImageChange={(file) => updateSection({ heroImage: file })}
+              onImageRemove={() => updateSection({ heroImage: undefined })}
             />
-          )}
+          </div>
 
-          {isDescriptionInputVisible && (
-            <textarea
-              value={sectionInput.description ?? ""}
-              onChange={(e) =>
-                updateSection({ description: e.target.value || undefined })
-              }
-              placeholder="Section description (optional)"
-              rows={1}
-              className="w-full resize-none bg-transparent text-sm leading-6 text-gray-700 placeholder:text-gray-500 outline-none ring-0 focus:ring-0"
-            />
+          <div className="p-4">
+            {isTitleInputVisible && (
+              <input
+                value={sectionInput.title ?? ""}
+                onChange={(e) =>
+                  updateSection({ title: e.target.value || undefined })
+                }
+                placeholder="Section title"
+                className="w-full bg-transparent text-lg font-semibold text-gray-900 placeholder:text-gray-500 outline-none ring-0 focus:ring-0"
+              />
+            )}
+
+            {isDescriptionInputVisible && (
+              <textarea
+                value={sectionInput.description ?? ""}
+                onChange={(e) =>
+                  updateSection({ description: e.target.value || undefined })
+                }
+                placeholder="Section description (optional)"
+                rows={1}
+                className="w-full resize-none bg-transparent text-sm leading-6 text-gray-700 placeholder:text-gray-500 outline-none ring-0 focus:ring-0"
+              />
+            )}
+          </div>
+
+          <div></div>
+          {sectionInput.items.length > 0 && (
+            <div className="p-2 flex flex-row flex-wrap gap-2">
+              {sectionInput.items.map((item, i) => (
+                <div
+                  key={`page-${pageIndex}-section-${sectionIndex}-item-${i}`}
+                  className="max-w-[130px] max-h-[250px]"
+                >
+                  <div style={{ transform: "scale(0.7)", transformOrigin: "top left" }}>
+                    <ProductItemHorizontal
+                      product={
+                        productsMap.get(`${item.productId}-${item.stockId}`)!
+                      }
+                      hideStoreInfo
+                      preventHref
+                      onClick={() => {}}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
         </div>
-      </div>
       )}
     </section>
   );
