@@ -12,6 +12,7 @@ import { useCallback, useEffect, useState } from "react";
 import { useFlyerEditor } from "@/context/flyer-editor-context";
 import { CgSpinner } from "react-icons/cg";
 import ProductItem from "@/components/product-item";
+import { NativeSelect } from "@/components/ui/native-select";
 
 export default function SectionPanelEditor() {
   const { flyer, currentSelection, addItemToPageSection, setSectionLayout } =
@@ -46,36 +47,40 @@ export default function SectionPanelEditor() {
     debouncedSearch(search);
   }, [search, debouncedSearch]);
 
-  useEffect(() => {
-    if (!currentSelection || currentSelection.type !== "section") return;
-    if (numberOfColumns < 1) setNumberOfColumns(1);
-    if (numberOfColumns > 10) setNumberOfColumns(10);
-
-    const layoutRaw = currentSelection.sectionInput.layout;
-    const layout = JSON.parse(layoutRaw ?? "{}");
-    layout.itemColumnsCount = numberOfColumns;
-    setSectionLayout(
-      currentSelection.pageIndex,
-      currentSelection.sectionIndex,
-      layout,
-    );
-  }, [numberOfColumns, currentSelection, setSectionLayout]);
-
   return (
     <>
       <h2 className="text-lg font-bold mb-4">Selected Section Details</h2>
       <div className="mb-10">
-        <InputGroup className="h-auto bg-white">
-          <InputGroupInput
-            placeholder="Enter number of columns"
-            value={numberOfColumns.toString()}
-            onChange={(e) => setNumberOfColumns(parseInt(e.target.value) || 5)}
-            type="number"
-          />
-          <InputGroupAddon align="block-start">
-            <InputGroupText>Number of columns</InputGroupText>
-          </InputGroupAddon>
-        </InputGroup>
+        <NativeSelect
+          value={numberOfColumns}
+          onChange={(e) => {
+            if (!currentSelection || currentSelection.type !== "section")
+              return;
+
+            const value = e.target.value;
+            const parsedValue = parseInt(value);
+            if (isNaN(parsedValue)) return;
+
+            setNumberOfColumns(parsedValue);
+            const layoutRaw = currentSelection.sectionInput.layout;
+            const layout = JSON.parse(layoutRaw ?? "{}");
+            layout.itemColumnsCount = parsedValue;
+            setSectionLayout(
+              currentSelection.pageIndex,
+              currentSelection.sectionIndex,
+              layout,
+            );
+          }}
+          className="bg-white"
+        >
+          {Array(10)
+            .fill(0)
+            .map((_, i) => (
+              <option key={i + 1} value={i + 1}>
+                {i + 1} Columns
+              </option>
+            ))}
+        </NativeSelect>
       </div>
       <div>
         {/* <h3 className="text-base font-semibold mb-1">Search products</h3> */}
