@@ -2,7 +2,7 @@ import { cn } from '@/lib/utils';
 
 export type ProductMetadataBadgeType = {
   type?: 'weight' | 'quantity';
-  size?: 'sm' | 'md';
+  size?: 'xs' | 'sm' | 'md';
   text: string;
 };
 
@@ -18,14 +18,16 @@ export default function ProductMetadataBadge({
         type === "weight" ? "bg-green-100" : "",
         type === "quantity" ? "bg-blue-100" : "",
         size === "md" ? "px-2.5 py-1" : "",
-        size === "sm" ? "px-2 py-2" : ""
+        size === "sm" ? "px-2 py-2" : "",
+        size === "xs" ? "px-1.5 py-1.5" : "",
       )}
     >
       <span
         className={cn(
           "color-black leading-0 block",
           size === "md" ? "text-xs" : "",
-          size === "sm" ? "text-[10px]" : ""
+          size === "sm" ? "text-[10px]" : "",
+          size === "xs" ? "text-[8px]" : "",
         )}
       >
         {text}

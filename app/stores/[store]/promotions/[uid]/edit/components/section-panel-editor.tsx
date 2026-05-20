@@ -3,7 +3,6 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
-  InputGroupText,
 } from "@/components/ui/input-group";
 import { useLazyQuery } from "@apollo/client/react";
 import { AllProductsDocument, Product } from "graphql-utils";

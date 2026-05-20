@@ -1,10 +1,13 @@
 import { useMemo } from "react";
-import { StorefrontFlyerSectionInput } from "graphql-utils";
+import {
+  StorefrontFlyerItem,
+  StorefrontFlyerSectionInput,
+} from "graphql-utils";
 import { useFlyerEditor } from "@/context/flyer-editor-context";
 import { cn } from "@/lib/utils";
 import HeroUpload from "./hero-upload";
-import ProductItemHorizontal from "@/components/product-item-horizontal";
 import useFlyerLayoutSize from "@/hooks/useFlyerLayoutSize";
+import FlyerSectionItem from "./flyer-section-item";
 
 export type FlyerSectionProps = {
   pageIndex: number;
@@ -24,7 +27,9 @@ export default function FlyerSection({
     productsMap,
     flyerStyles,
   } = useFlyerEditor();
-  const { width: flyerWidth } = useFlyerLayoutSize(flyerStyles.format as string);
+  const { width: flyerWidth } = useFlyerLayoutSize(
+    flyerStyles.format as string,
+  );
 
   const isSelected = useMemo(() => {
     return (
@@ -130,22 +135,29 @@ export default function FlyerSection({
           </div>
 
           {sectionInput.items.length > 0 && (
-            <div className="p-2 flex flex-row flex-wrap gap-3">
-              {sectionInput.items.map((item, i) => (
-                <div
-                  key={`page-${pageIndex}-section-${sectionIndex}-item-${i}`}
-                  style={{ width: sectionItemWidth - 16 }}
-                >
-                    <ProductItemHorizontal
-                      product={
-                        productsMap.get(`${item.productId}-${item.stockId}`)!
+            <div className="p-2 flex flex-row flex-wrap gap-x-3 gap-y-5">
+              {sectionInput.items.map((item, i) => {
+                const productWithStock = productsMap.get(
+                  `${item.productId}-${item.stockId}`,
+                )!;
+                return (
+                  <div
+                    key={`page-${pageIndex}-section-${sectionIndex}-item-${i}`}
+                    style={{ width: sectionItemWidth - 16 }}
+                  >
+                    <FlyerSectionItem
+                      item={
+                        {
+                          ...item,
+                          product: productWithStock,
+                          stock: productWithStock.stock,
+                        } as StorefrontFlyerItem
                       }
-                      hideStoreInfo
-                      preventHref
-                      onClick={() => {}}
+                      type="horizontal"
                     />
-                </div>
-              ))}
+                  </div>
+                );
+              })}
             </div>
           )}
         </div>
