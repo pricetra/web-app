@@ -58,18 +58,9 @@ export default function ItemProductHorizontal({
           ) : (
             <></>
           )}
-          {product.quantityValue && product.quantityType ? (
-            <ProductMetadataBadge
-              type="quantity"
-              size="xs"
-              text={`${product.quantityValue} ${product.quantityType}`}
-            />
-          ) : (
-            <></>
-          )}
         </div>
 
-        <h3 className="text-xs line-clamp-2 leading-5" title={product.name}>
+        <h3 className="text-xs line-clamp-2 leading-4" title={product.name}>
           {product.name}
         </h3>
       </div>
@@ -96,7 +87,7 @@ export default function ItemProductHorizontal({
                     </small>
                   )}
                 <div className="flex flex-row items-center justify-start gap-1 leading-none">
-                  <h5 className="text-sm md:text-lg font-black">
+                  <h5 className="text-lg font-bold">
                     {currencyFormat(calculatedAmount)}
                   </h5>
                   <small className="text-xs text-gray-500">
