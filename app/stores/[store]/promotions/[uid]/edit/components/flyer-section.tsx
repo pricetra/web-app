@@ -4,6 +4,7 @@ import { useFlyerEditor } from "@/context/flyer-editor-context";
 import { cn } from "@/lib/utils";
 import HeroUpload from "./hero-upload";
 import ProductItemHorizontal from "@/components/product-item-horizontal";
+import useFlyerLayoutSize from "@/hooks/useFlyerLayoutSize";
 
 export type FlyerSectionProps = {
   pageIndex: number;
@@ -21,7 +22,9 @@ export default function FlyerSection({
     setCurrentSelection,
     setSectionInput,
     productsMap,
+    flyerStyles,
   } = useFlyerEditor();
+  const { width: flyerWidth } = useFlyerLayoutSize(flyerStyles.format as string);
 
   const isSelected = useMemo(() => {
     return (
@@ -31,6 +34,19 @@ export default function FlyerSection({
       currentSelection.sectionIndex === sectionIndex
     );
   }, [currentSelection, pageIndex, sectionIndex]);
+  const sectionLayout = useMemo(() => {
+    try {
+      return JSON.parse(sectionInput.layout || "{}");
+    } catch (err) {
+      console.error("Failed to parse section layout", err);
+      return {};
+    }
+  }, [sectionInput.layout]);
+  const sectionItemWidth = useMemo(() => {
+    const { itemColumnsCount } = sectionLayout;
+    const count = itemColumnsCount ?? 5;
+    return flyerWidth / count;
+  }, [flyerWidth, sectionLayout]);
 
   const updateSection = (changes: Partial<StorefrontFlyerSectionInput>) => {
     const updatedSection = { ...sectionInput, ...changes };
@@ -113,15 +129,13 @@ export default function FlyerSection({
             )}
           </div>
 
-          <div></div>
           {sectionInput.items.length > 0 && (
-            <div className="p-2 flex flex-row flex-wrap gap-2">
+            <div className="p-2 flex flex-row flex-wrap gap-3">
               {sectionInput.items.map((item, i) => (
                 <div
                   key={`page-${pageIndex}-section-${sectionIndex}-item-${i}`}
-                  className="max-w-[130px] max-h-[250px]"
+                  style={{ width: sectionItemWidth - 16 }}
                 >
-                  <div style={{ transform: "scale(0.7)", transformOrigin: "top left" }}>
                     <ProductItemHorizontal
                       product={
                         productsMap.get(`${item.productId}-${item.stockId}`)!
@@ -130,7 +144,6 @@ export default function FlyerSection({
                       preventHref
                       onClick={() => {}}
                     />
-                  </div>
                 </div>
               ))}
             </div>

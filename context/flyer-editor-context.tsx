@@ -56,6 +56,11 @@ export type FlyerEditorContextType = {
     sectionInput: StorefrontFlyerSectionInput,
   ) => void;
   removeSection: (pageIndex: number, sectionIndex: number) => void;
+  setSectionLayout: (
+    pageIndex: number,
+    sectionIndex: number,
+    layout: object,
+  ) => void;
 
   addItemToPageSection: (
     pageIndex: number,
@@ -165,6 +170,27 @@ export default function FlyerEditorProvider({
     });
   }
 
+  function setSectionLayout(
+    pageIndex: number,
+    sectionIndex: number,
+    layout: object,
+  ) {
+    const newPagesInput = [...pagesInput];
+    const newSections = [...newPagesInput[pageIndex].sections];
+    const newSectionInput = {...newSections[sectionIndex]};
+    newSectionInput.layout = JSON.stringify(layout);
+    newSections[sectionIndex] = newSectionInput;
+    newPagesInput[pageIndex].sections = newSections;
+    setPagesInput([...newPagesInput]);
+
+    setCurrentSelection({
+      type: "section",
+      pageIndex,
+      sectionIndex,
+      sectionInput: newSectionInput,
+    });
+  }
+
   function removeSection(pageIndex: number, sectionIndex: number) {
     const newPagesInput = [...pagesInput];
     const newSections = [...newPagesInput[pageIndex].sections];
@@ -228,6 +254,7 @@ export default function FlyerEditorProvider({
         appendSectionToPage,
         setSectionInput,
         removeSection,
+        setSectionLayout,
 
         addItemToPageSection,
 
