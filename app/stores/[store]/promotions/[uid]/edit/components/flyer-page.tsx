@@ -37,6 +37,8 @@ export default function FlyerPage({ flyer, pageIndex }: FlyerPageProps) {
   const [, pageToImage, pageRef] = useToPng<HTMLElement>({
     skipFonts: true,
     quality: 1,
+    skipAutoScale: true,
+    pixelRatio: 2,
     onSuccess: (data) => {
       const link = document.createElement("a");
       link.download = `pricetra-flyer-${flyer.store!.slug}-${flyer.uid}-page-${pageIndex + 1}.png`;
