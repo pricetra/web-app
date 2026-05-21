@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import HeroUpload from "./hero-upload";
 import useFlyerLayoutSize from "@/hooks/useFlyerLayoutSize";
 import FlyerSectionItem from "./flyer-section-item";
+import { IoMdRemove } from "react-icons/io";
 
 export type FlyerSectionProps = {
   pageIndex: number;
@@ -26,6 +27,7 @@ export default function FlyerSection({
     setSectionInput,
     productsMap,
     flyerStyles,
+    removeSection,
   } = useFlyerEditor();
   const { width: flyerWidth } = useFlyerLayoutSize(
     flyerStyles.format as string,
@@ -78,23 +80,42 @@ export default function FlyerSection({
   const hasDescription =
     typeof sectionInput.description === "string" &&
     sectionInput.description.trim() !== "";
+  const hasItems = sectionInput.items.length !== 0;
+  const hasHeroBanner = sectionInput.heroImage;
 
   const isTitleInputVisible = isSelected || hasTitle;
   const isDescriptionInputVisible = isSelected || hasDescription;
 
+  const showEmptyPlaceHolder = useMemo(() => {
+    if (hasTitle || hasDescription || hasItems || hasHeroBanner) return false;
+    return !isSelected;
+  }, [isSelected, hasTitle, hasDescription, hasItems, hasHeroBanner])
+
   return (
     <section
       className={cn(
-        "bg-white transition duration-200",
+        "bg-white transition duration-200 relative",
         isSelected
           ? "ring ring-gray-300 shadow-sm"
           : "hover:ring hover:ring-gray-200",
       )}
       onClick={selectSection}
+      onMouseEnter={selectSection}
     >
-      {!isSelected &&
-      (!hasTitle || !hasDescription) &&
-      sectionInput.items.length === 0 ? (
+      {isSelected && (
+        <div className="absolute top-2 right-2 z-10">
+          <button
+            onClick={() => {
+              removeSection(pageIndex, sectionIndex);
+            }}
+            className="cursor-pointer border border-red-600 bg-white text-red-600 rounded-full p-1 text-sm"
+          >
+            <IoMdRemove />
+          </button>
+        </div>
+      )}
+
+      {showEmptyPlaceHolder ? (
         <p className="text-center text-gray-400 px-4 py-5">
           Click here to edit this section
         </p>
