@@ -135,7 +135,7 @@ export default function FlyerSection({
           </div>
 
           {sectionInput.items.length > 0 && (
-            <div className="p-2 flex flex-row flex-wrap gap-x-3 gap-y-5">
+            <div className="p-4 flex flex-row flex-wrap gap-x-3 gap-y-5">
               {sectionInput.items.map((item, i) => {
                 const productWithStock = productsMap.get(
                   `${item.productId}-${item.stockId}`,
@@ -143,9 +143,12 @@ export default function FlyerSection({
                 return (
                   <div
                     key={`page-${pageIndex}-section-${sectionIndex}-item-${i}`}
-                    style={{ width: sectionItemWidth - 16 }}
+                    style={{ width: sectionItemWidth - 18 }}
                   >
                     <FlyerSectionItem
+                      pageIndex={pageIndex}
+                      sectionIndex={sectionIndex}
+                      itemIndex={i}
                       item={
                         {
                           ...item,

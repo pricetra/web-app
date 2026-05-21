@@ -74,7 +74,7 @@ export default function HeroUpload({
               !isSectionSelected && "hidden",
             )}
           >
-            <p>Drag or upload a Hero Image Banner to make this section pop.</p>
+            <p>Click to upload a Banner Image to make this section pop</p>
           </div>
         ) : (
           <div className="relative h-40 w-full">

@@ -68,6 +68,11 @@ export type FlyerEditorContextType = {
     product: Product,
     itemInput: StorefrontFlyerItemInput,
   ) => void;
+  removeItemFromPageSection: (
+    pageIndex: number,
+    sectionIndex: number,
+    itemIndex: number,
+  ) => void;
 
   productsMap: Map<string, Product>;
 };
@@ -96,7 +101,9 @@ export default function FlyerEditorProvider({
     pageIndex: 0,
     pageInput: { ...defaultPageInput },
   });
-  const [productsMap, setProductsMap] = useState<Map<string, Product>>(new Map());
+  const [productsMap, setProductsMap] = useState<Map<string, Product>>(
+    new Map(),
+  );
 
   const flyerStyles = useMemo(() => {
     try {
@@ -177,7 +184,7 @@ export default function FlyerEditorProvider({
   ) {
     const newPagesInput = [...pagesInput];
     const newSections = [...newPagesInput[pageIndex].sections];
-    const newSectionInput = {...newSections[sectionIndex]};
+    const newSectionInput = { ...newSections[sectionIndex] };
     newSectionInput.layout = JSON.stringify(layout);
     newSections[sectionIndex] = newSectionInput;
     newPagesInput[pageIndex].sections = newSections;
@@ -227,13 +234,27 @@ export default function FlyerEditorProvider({
       return newMap; // Return the new instance
     });
 
-    // setCurrentSelection({
-    //   type: "item",
-    //   pageIndex,
-    //   sectionIndex,
-    //   itemIndex: newItems.length - 1,
-    //   itemInput,
-    // });
+    setCurrentSelection({
+      type: "section",
+      pageIndex,
+      sectionIndex,
+      sectionInput: newSections[sectionIndex],
+    });
+  }
+
+  function removeItemFromPageSection(
+    pageIndex: number,
+    sectionIndex: number,
+    itemIndex: number,
+  ) {
+    const newPagesInput = [...pagesInput];
+    const newSectionsInput = [...newPagesInput[pageIndex].sections];
+    const items = [...newSectionsInput[sectionIndex].items]
+    const newItemsInput = items.filter(
+      (_, i) => i !== itemIndex,
+    );
+    newSectionsInput[sectionIndex].items = newItemsInput;
+    newPagesInput[pageIndex].sections = newSectionsInput;
   }
 
   return (
@@ -257,6 +278,7 @@ export default function FlyerEditorProvider({
         setSectionLayout,
 
         addItemToPageSection,
+        removeItemFromPageSection,
 
         productsMap,
       }}
