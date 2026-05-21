@@ -3,19 +3,32 @@ import {
   InputGroup,
   InputGroupAddon,
   InputGroupInput,
+  InputGroupTextarea,
 } from "@/components/ui/input-group";
 import { useLazyQuery } from "@apollo/client/react";
-import { AllProductsDocument, Product } from "graphql-utils";
+import {
+  AllProductsDocument,
+  Product,
+  StorefrontFlyerSectionInput,
+} from "graphql-utils";
 import { IoSearch } from "react-icons/io5";
 import { useCallback, useEffect, useState } from "react";
 import { useFlyerEditor } from "@/context/flyer-editor-context";
 import { CgSpinner } from "react-icons/cg";
 import ProductItem from "@/components/product-item";
 import { NativeSelect } from "@/components/ui/native-select";
+import { Field, FieldLabel } from "@/components/ui/field";
+import HeroUpload from "./hero-upload";
 
 export default function SectionPanelEditor() {
-  const { flyer, currentSelection, addItemToPageSection, setSectionLayout } =
-    useFlyerEditor();
+  const {
+    flyer,
+    currentSelection,
+    addItemToPageSection,
+    setSectionLayout,
+    setSectionInput,
+    setCurrentSelection,
+  } = useFlyerEditor();
   const [search, setSearch] = useState("");
   const [numberOfColumns, setNumberOfColumns] = useState(5);
   const [searchProducts, { data, loading }] = useLazyQuery(AllProductsDocument);
@@ -46,16 +59,72 @@ export default function SectionPanelEditor() {
     debouncedSearch(search);
   }, [search, debouncedSearch]);
 
+  const updateSection = (changes: Partial<StorefrontFlyerSectionInput>) => {
+    if (currentSelection.type !== "section") return;
+
+    const sectionInput = currentSelection.sectionInput;
+    const pageIndex = currentSelection.pageIndex;
+    const sectionIndex = currentSelection.sectionIndex;
+
+    const updatedSection = { ...sectionInput, ...changes };
+    setSectionInput(pageIndex, sectionIndex, updatedSection);
+    setCurrentSelection({
+      type: "section",
+      pageIndex,
+      sectionIndex,
+      sectionInput: updatedSection,
+    });
+  };
+
+  if (currentSelection.type !== "section") return <></>;
+
   return (
     <>
       <h2 className="text-lg font-bold mb-4">Selected Section Details</h2>
+
+      <div className="flex flex-col gap-5 mb-7 p-4 bg-white border border-gray-200 rounded-lg">
+        <HeroUpload
+          isSectionSelected={true}
+          heroImage={currentSelection.sectionInput.heroImage}
+          onImageChange={(file) => updateSection({ heroImage: file })}
+          onImageRemove={() => updateSection({ heroImage: undefined })}
+        />
+
+        <Field className="max-w-sm">
+          <FieldLabel htmlFor="inline-end-input">
+            Section Title <small>(optional)</small>
+          </FieldLabel>
+          <InputGroup>
+            <InputGroupInput
+              value={currentSelection.sectionInput.title ?? ""}
+              onChange={(e) =>
+                updateSection({ title: e.target.value || undefined })
+              }
+              placeholder="Section title"
+            />
+          </InputGroup>
+        </Field>
+
+        <Field className="max-w-sm">
+          <FieldLabel htmlFor="inline-end-input">
+            Section Description <small>(optional)</small>
+          </FieldLabel>
+          <InputGroup>
+            <InputGroupTextarea
+              value={currentSelection.sectionInput.description ?? ""}
+              onChange={(e) =>
+                updateSection({ description: e.target.value || undefined })
+              }
+              placeholder="Section description"
+            />
+          </InputGroup>
+        </Field>
+      </div>
+
       <div className="mb-10">
         <NativeSelect
           value={numberOfColumns}
           onChange={(e) => {
-            if (!currentSelection || currentSelection.type !== "section")
-              return;
-
             const value = e.target.value;
             const parsedValue = parseInt(value);
             if (isNaN(parsedValue)) return;
@@ -114,12 +183,6 @@ export default function SectionPanelEditor() {
                       hideStoreInfo
                       preventHref
                       onClick={() => {
-                        if (
-                          !currentSelection ||
-                          currentSelection.type !== "section"
-                        )
-                          return;
-
                         addItemToPageSection(
                           currentSelection.pageIndex,
                           currentSelection.sectionIndex,
