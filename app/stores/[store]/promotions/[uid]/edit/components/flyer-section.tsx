@@ -86,10 +86,12 @@ export default function FlyerSection({
   const isTitleInputVisible = isSelected || hasTitle;
   const isDescriptionInputVisible = isSelected || hasDescription;
 
+  const hasAnyInput = hasTitle || hasDescription || hasItems || hasHeroBanner;
+
   const showEmptyPlaceHolder = useMemo(() => {
-    if (hasTitle || hasDescription || hasItems || hasHeroBanner) return false;
+    if (hasAnyInput) return false;
     return !isSelected;
-  }, [isSelected, hasTitle, hasDescription, hasItems, hasHeroBanner])
+  }, [isSelected, hasAnyInput])
 
   return (
     <section
