@@ -13,7 +13,7 @@ export default function LayoutProvider({ children, fullScreen }: LayoutProviderP
   return (
     <main className="min-h-screen flex flex-col">
       <div className="grow">
-        <NavbarMain />
+        <NavbarMain fullScreen={fullScreen} />
 
         {fullScreen ? (
           <div className="max-w-full relative flex flex-col lg:flex-row gap-0">
