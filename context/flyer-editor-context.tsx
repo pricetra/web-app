@@ -128,12 +128,22 @@ export default function FlyerEditorProvider({
       setCurrentSelection({
         type: "page",
         pageIndex: pagesInput.length - 1,
-        pageInput: pagesInput[pagesInput.length - 1],
+        pageInput: {...pagesInput[pagesInput.length - 1]},
       });
       return;
     }
 
-    setPagesInput((prev) => prev.filter((_, i) => i !== index));
+    const newPagesInput = pagesInput.filter((_, i) => i !== index);
+    setPagesInput(newPagesInput);
+    let newPageIndex = index - 1;
+    if (index < 0) {
+      newPageIndex = index + 1;
+    }
+    setCurrentSelection({
+      type: "page",
+      pageIndex: newPageIndex,
+      pageInput: {...newPagesInput[newPageIndex]},
+    })
   }
 
   function appendSectionToPage(

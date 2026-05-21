@@ -9,8 +9,9 @@ import useFlyerLayoutSize from "@/hooks/useFlyerLayoutSize";
 import FlyerSection from "./flyer-section";
 import { useToPng } from "@hugocxl/react-to-image";
 import { Button } from "@/components/ui/button";
-import { IoCheckmark } from "react-icons/io5";
 import { toast } from "sonner";
+import { RiDeleteBin2Line } from "react-icons/ri";
+import { LuDownload } from "react-icons/lu";
 
 export type FlyerPageProps = {
   flyer: StorefrontFlyer;
@@ -25,8 +26,9 @@ export default function FlyerPage({ flyer, pageIndex }: FlyerPageProps) {
     pagesInput,
     appendSectionToPage,
     setCurrentSelection,
+    removePageInput,
   } = useFlyerEditor();
-  const [hidePlaceholder, setHidePlaceholder] = useState(false)
+  const [hidePlaceholder, setHidePlaceholder] = useState(false);
   const isCurrentSectionAction = useMemo(() => {
     if (!currentSelection) return false;
     return currentSelection.pageIndex === pageIndex;
@@ -68,24 +70,38 @@ export default function FlyerPage({ flyer, pageIndex }: FlyerPageProps) {
     <div className="p-4">
       <div className="flex justify-center">
         <div className="relative" style={{ ...size }}>
-          <Button
-            onClick={handlePageImageGeneration}
-            className="absolute top-0 -right-2 z-20"
-            variant="secondary"
-            size="icon"
-          >
-            <IoCheckmark />
-          </Button>
+          <div className="flex flex-row flex-wrap gap-5 items-center py-2">
+            <div className="flex-1">
+              <h2
+                className={cn(
+                  "text-xs",
+                  isCurrentSectionAction && "font-semibold",
+                )}
+              >
+                Page {pageIndex + 1}
+              </h2>
+            </div>
 
-          <h2
-            className={cn(
-              "text-xs mb-2",
-              isCurrentSectionAction && "font-semibold",
-            )}
-          >
-            Page {pageIndex + 1}
-          </h2>
+            <div className="flex-2 flex flex-row gap-3 items-center justify-end">
+                <Button
+                  onClick={handlePageImageGeneration}
+                  variant="secondary"
+                  size="xs"
+                >
+                  <LuDownload />
+                  Download
+                </Button>
 
+                <Button
+                  onClick={() => removePageInput(pageIndex)}
+                  variant="destructive"
+                  size="xs"
+                >
+                  <RiDeleteBin2Line />
+                  Delete
+                </Button>
+            </div>
+          </div>
           <article
             ref={pageRef}
             className={cn(
@@ -115,15 +131,17 @@ export default function FlyerPage({ flyer, pageIndex }: FlyerPageProps) {
               </div>
             ))}
 
-            {!hidePlaceholder && <div className="p-4">
-              <button
-                onClick={() => appendSectionToPage(pageIndex)}
-                className="flex flex-col gap-2 items-center py-5 px-10 border-[3px] border-dashed border-gray-300 hover:border-gray-400 text-gray-500 hover:text-gray-700 cursor-pointer w-full"
-              >
-                <IoMdAddCircleOutline className="text-4xl" />
-                <span className="text-base font-bold">Add section</span>
-              </button>
-            </div>}
+            {!hidePlaceholder && (
+              <div className="p-4">
+                <button
+                  onClick={() => appendSectionToPage(pageIndex)}
+                  className="flex flex-col gap-2 items-center py-5 px-10 border-[3px] border-dashed border-gray-300 hover:border-gray-400 text-gray-500 hover:text-gray-700 cursor-pointer w-full"
+                >
+                  <IoMdAddCircleOutline className="text-4xl" />
+                  <span className="text-base font-bold">Add section</span>
+                </button>
+              </div>
+            )}
           </article>
         </div>
       </div>
