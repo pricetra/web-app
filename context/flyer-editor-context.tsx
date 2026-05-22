@@ -123,27 +123,31 @@ export default function FlyerEditorProvider({
   }
 
   function removePageInput(index?: number) {
-    if (!index) {
+    if (index === undefined) {
       setPagesInput((prev) => prev.slice(0, -1));
       setCurrentSelection({
         type: "page",
         pageIndex: pagesInput.length - 1,
-        pageInput: {...pagesInput[pagesInput.length - 1]},
+        pageInput: { ...pagesInput[pagesInput.length - 1] },
       });
       return;
     }
 
-    const newPagesInput = pagesInput.filter((_, i) => i !== index);
-    setPagesInput(newPagesInput);
-    let newPageIndex = index - 1;
-    if (index < 0) {
-      newPageIndex = index + 1;
-    }
-    setCurrentSelection({
-      type: "page",
-      pageIndex: newPageIndex,
-      pageInput: {...newPagesInput[newPageIndex]},
-    })
+    setPagesInput((pagesInput) => {
+      const newPagesInput = pagesInput.filter((_, i) => i !== index);
+
+      let newPageIndex = index;
+      if (newPageIndex === newPagesInput.length) {
+        newPageIndex--;
+      }
+
+      setCurrentSelection({
+        type: "page",
+        pageIndex: newPageIndex,
+        pageInput: { ...newPagesInput[newPageIndex] },
+      });
+      return pagesInput;
+    });
   }
 
   function appendSectionToPage(
@@ -259,12 +263,18 @@ export default function FlyerEditorProvider({
   ) {
     const newPagesInput = [...pagesInput];
     const newSectionsInput = [...newPagesInput[pageIndex].sections];
-    const items = [...newSectionsInput[sectionIndex].items]
-    const newItemsInput = items.filter(
-      (_, i) => i !== itemIndex,
-    );
+    const items = [...newSectionsInput[sectionIndex].items];
+    const newItemsInput = items.filter((_, i) => i !== itemIndex);
     newSectionsInput[sectionIndex].items = newItemsInput;
     newPagesInput[pageIndex].sections = newSectionsInput;
+    setPagesInput(newPagesInput);
+    setProductsMap((prev) => {
+      const newMap = new Map<string, Product>(prev); // Clone the existing map
+      newMap.delete(
+        `${items[itemIndex].productId}-${items[itemIndex].stockId}`,
+      );
+      return newMap; // Return the new instance
+    });
   }
 
   return (
