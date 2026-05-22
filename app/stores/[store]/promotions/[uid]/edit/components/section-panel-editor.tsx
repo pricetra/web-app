@@ -15,10 +15,10 @@ import { IoSearch } from "react-icons/io5";
 import { useCallback, useEffect, useState } from "react";
 import { useFlyerEditor } from "@/context/flyer-editor-context";
 import { CgSpinner } from "react-icons/cg";
-import ProductItem from "@/components/product-item";
 import { NativeSelect } from "@/components/ui/native-select";
 import { Field, FieldLabel } from "@/components/ui/field";
 import HeroUpload from "./hero-upload";
+import ItemProductHorizontal from "./item-product-horizontal";
 
 export default function SectionPanelEditor() {
   const {
@@ -172,31 +172,26 @@ export default function SectionPanelEditor() {
         {data && (
           <div>
             {data.allProducts.paginator.total > 0 ? (
-              <div className="mt-5 grid grid-cols-1">
+              <div className="mt-5 grid grid-cols-3">
                 {data.allProducts.products.map((p, i) => (
                   <div
-                    className="mb-5"
+                    className="cursor-pointer mb-5 hover:bg-white p-2"
                     key={`product-${p.id}-${i}-${p.stock?.id}`}
+                    onClick={() => {
+                      addItemToPageSection(
+                        currentSelection.pageIndex,
+                        currentSelection.sectionIndex,
+                        p as Product,
+                        {
+                          productId: p.id,
+                          stockId: p.stock!.id,
+                          sortOrder: currentSelection.sectionInput.items.length,
+                        },
+                      );
+                      setSearch("");
+                    }}
                   >
-                    <ProductItem
-                      product={p as Product}
-                      hideStoreInfo
-                      preventHref
-                      onClick={() => {
-                        addItemToPageSection(
-                          currentSelection.pageIndex,
-                          currentSelection.sectionIndex,
-                          p as Product,
-                          {
-                            productId: p.id,
-                            stockId: p.stock!.id,
-                            sortOrder:
-                              currentSelection.sectionInput.items.length,
-                          },
-                        );
-                        setSearch("");
-                      }}
-                    />
+                    <ItemProductHorizontal product={p as Product} />
                   </div>
                 ))}
               </div>
