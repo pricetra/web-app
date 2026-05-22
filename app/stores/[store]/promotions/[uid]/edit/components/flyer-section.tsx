@@ -162,7 +162,9 @@ export default function FlyerSection({
               {sectionInput.items.map((item, i) => {
                 const productWithStock = productsMap.get(
                   `${item.productId}-${item.stockId}`,
-                )!;
+                );
+                if (!productWithStock) return <></>
+
                 return (
                   <div
                     key={`page-${pageIndex}-section-${sectionIndex}-item-${i}`}

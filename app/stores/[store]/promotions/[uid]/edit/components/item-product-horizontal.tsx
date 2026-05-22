@@ -3,7 +3,7 @@ import useIsSaleExpired from "@/hooks/useIsSaleExpired";
 import usePricePerUnit from "@/hooks/usePricePerUnit";
 import { productImageUrlWithTimestamp } from "@/lib/files";
 import { Product } from "graphql-utils";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import ProductMetadataBadge from "@/components/product-metadata-badge";
@@ -22,9 +22,11 @@ export default function ItemProductHorizontal({
     latestPrice: product.stock?.latestPrice,
   });
   const pricePerUnit = usePricePerUnit(calculatedAmount, product);
-  const [image, setImage] = useState(
-    productImageUrlWithTimestamp(product, 500),
-  );
+  const [image, setImage] = useState('');
+
+  useEffect(() => {
+    setImage(productImageUrlWithTimestamp(product, 500))
+  }, [product])
 
   return (
     <div>
