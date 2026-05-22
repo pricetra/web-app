@@ -214,8 +214,9 @@ export default function FlyerEditorProvider({
 
   function removeSection(pageIndex: number, sectionIndex: number) {
     const newPagesInput = [...pagesInput];
-    const newSections = [...newPagesInput[pageIndex].sections];
-    newSections.splice(sectionIndex, 1);
+    const newSections = newPagesInput[pageIndex].sections.filter(
+      (_, i) => sectionIndex != i,
+    );
     newPagesInput[pageIndex].sections = newSections;
     setPagesInput([...newPagesInput]);
 
