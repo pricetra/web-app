@@ -9,6 +9,8 @@ import {
 import { useLazyQuery } from "@apollo/client/react";
 import { CgSpinner } from "react-icons/cg";
 import EditorPanel from "./editor-panel";
+import { IoMdAddCircleOutline } from "react-icons/io";
+import useFlyerLayoutSize from "@/hooks/useFlyerLayoutSize";
 
 export type FlyerEditorSectionProps = object;
 
@@ -16,11 +18,14 @@ export default function FlyerEditor({}: FlyerEditorSectionProps) {
   const { navbarHeight } = useNavbar();
   const {
     flyer,
+    flyerStyles,
     pagesInput,
     currentSelection,
     setPagesInput,
     setCurrentSelection,
+    appendPageInput,
   } = useFlyerEditor();
+  const size = useFlyerLayoutSize(flyerStyles.format as string);
   const [
     getStorefrontFlyerWithPages,
     { data: flyerWithPagesData, loading: flyerWithPagesLoading },
@@ -96,6 +101,21 @@ export default function FlyerEditor({}: FlyerEditorSectionProps) {
               <FlyerPage flyer={flyer} page={p} pageIndex={i} />
             </div>
           ))}
+
+          {pagesInput.length === 0 && <div
+            className="flex flex-col items-center justify-center mt-10 mb-16 mx-auto"
+            style={{ width: size.width }}
+          >
+            <button
+              onClick={() => {
+                appendPageInput();
+              }}
+              className="flex flex-col gap-3 items-center py-5 px-10 border-[3px] border-dashed border-gray-300 hover:border-gray-400 text-gray-500 hover:text-gray-700 rounded-md cursor-pointer w-full"
+            >
+              <IoMdAddCircleOutline className="text-4xl" />
+              <span className="text-sm font-bold">Add page</span>
+            </button>
+          </div>}
         </div>
       </section>
 

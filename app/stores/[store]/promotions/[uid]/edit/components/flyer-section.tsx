@@ -9,6 +9,7 @@ import HeroUpload from "./hero-upload";
 import useFlyerLayoutSize from "@/hooks/useFlyerLayoutSize";
 import FlyerSectionItem from "./flyer-section-item";
 import { IoMdRemove } from "react-icons/io";
+import { convertFileToBase64 } from "@/lib/files";
 
 export type FlyerSectionProps = {
   pageIndex: number;
@@ -91,7 +92,7 @@ export default function FlyerSection({
   const showEmptyPlaceHolder = useMemo(() => {
     if (hasAnyInput) return false;
     return !isSelected;
-  }, [isSelected, hasAnyInput])
+  }, [isSelected, hasAnyInput]);
 
   return (
     <section
@@ -127,7 +128,10 @@ export default function FlyerSection({
             <HeroUpload
               isSectionSelected={isSelected}
               heroImage={sectionInput.heroImage}
-              onImageChange={(file) => updateSection({ heroImage: file })}
+              onImageChange={async (file) => {
+                const base64File = await convertFileToBase64(file);
+                updateSection({ heroImage: base64File });
+              }}
               onImageRemove={() => updateSection({ heroImage: undefined })}
             />
           </div>
@@ -163,7 +167,7 @@ export default function FlyerSection({
                 const productWithStock = productsMap.get(
                   `${item.productId}-${item.stockId}`,
                 );
-                if (!productWithStock) return <></>
+                if (!productWithStock) return <></>;
 
                 return (
                   <div

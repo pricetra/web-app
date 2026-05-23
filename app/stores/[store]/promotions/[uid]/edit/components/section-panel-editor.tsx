@@ -19,6 +19,7 @@ import { NativeSelect } from "@/components/ui/native-select";
 import { Field, FieldLabel } from "@/components/ui/field";
 import HeroUpload from "./hero-upload";
 import ItemProductHorizontal from "./item-product-horizontal";
+import { convertFileToBase64 } from "@/lib/files";
 
 export default function SectionPanelEditor() {
   const {
@@ -86,7 +87,10 @@ export default function SectionPanelEditor() {
         <HeroUpload
           isSectionSelected={true}
           heroImage={currentSelection.sectionInput.heroImage}
-          onImageChange={(file) => updateSection({ heroImage: file })}
+          onImageChange={async (file) => {
+            const base64File = await convertFileToBase64(file);
+            updateSection({ heroImage: base64File });
+          }}
           onImageRemove={() => updateSection({ heroImage: undefined })}
         />
 
