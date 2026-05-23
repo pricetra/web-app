@@ -146,7 +146,7 @@ export default function FlyerEditorProvider({
         pageIndex: newPageIndex,
         pageInput: { ...newPagesInput[newPageIndex] },
       });
-      return pagesInput;
+      return newPagesInput;
     });
   }
 
