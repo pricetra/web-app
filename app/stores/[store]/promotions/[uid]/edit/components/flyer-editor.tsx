@@ -2,7 +2,6 @@ import { useEffect, useMemo } from "react";
 import FlyerPage from "./flyer-page";
 import { useNavbar } from "@/context/navbar-context";
 import { useFlyerEditor } from "@/context/flyer-editor-context";
-import { IoMdAddCircleOutline } from "react-icons/io";
 import {
   StorefrontFlyerDocument,
   StorefrontFlyerPageInput,
@@ -20,7 +19,6 @@ export default function FlyerEditor({}: FlyerEditorSectionProps) {
     pagesInput,
     currentSelection,
     setPagesInput,
-    appendPageInput,
     setCurrentSelection,
   } = useFlyerEditor();
   const [
@@ -98,16 +96,6 @@ export default function FlyerEditor({}: FlyerEditorSectionProps) {
               <FlyerPage flyer={flyer} page={p} pageIndex={i} />
             </div>
           ))}
-        </div>
-
-        <div className="flex flex-row items-center justify-center mt-10 mb-16">
-          <button
-            onClick={() => appendPageInput()}
-            className="flex flex-col gap-3 items-center py-5 px-10 border-[3px] border-dashed border-gray-300 hover:border-gray-400 text-gray-500 hover:text-gray-700 rounded-md cursor-pointer"
-          >
-            <IoMdAddCircleOutline className="text-4xl" />
-            <span className="text-sm font-bold">Add page</span>
-          </button>
         </div>
       </section>
 
