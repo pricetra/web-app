@@ -282,7 +282,9 @@ export default function FlyerEditorProvider({
     <FlyerEditorContext.Provider
       value={{
         flyer: internalFlyer,
-        setFlyer: setInternalFlyer,
+        setFlyer: (value) => {
+          setInternalFlyer((f) => ({ ...f, value }));
+        },
         flyerStyles,
 
         pagesInput,

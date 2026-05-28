@@ -1,3 +1,5 @@
+import { StorefrontFlyerFormat } from "graphql-utils";
+
 // Flyer format constants and types
 export type FlyerFormat = 'standard' | 'half-sheet' | 'tabloid';
 
@@ -46,7 +48,7 @@ export const FLYER_FORMAT_OPTIONS = Object.entries(FLYER_FORMATS).map(([key, spe
 }));
 
 export const flyerFormats = ["A4", "Letter", "Legal"];
-export const flyerFormatToFlyerSpec: Record<string, FlyerFormatSpec> = {
+export const flyerFormatToFlyerSpec: Record<StorefrontFlyerFormat, FlyerFormatSpec> = {
   'A4': FLYER_FORMATS.standard,
   'Letter': FLYER_FORMATS.standard,
   'Legal': FLYER_FORMATS.tabloid,
