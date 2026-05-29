@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import {
+  StorefrontFlyerFormat,
   StorefrontFlyerItem,
   StorefrontFlyerSectionInput,
 } from "graphql-utils";
@@ -31,7 +32,7 @@ export default function FlyerSection({
     removeSection,
   } = useFlyerEditor();
   const { width: flyerWidth } = useFlyerLayoutSize(
-    flyerStyles.format as string,
+    flyerStyles.format as StorefrontFlyerFormat,
   );
 
   const isSelected = useMemo(() => {
@@ -127,16 +128,16 @@ export default function FlyerSection({
           <div>
             <HeroUpload
               isSectionSelected={isSelected}
-              heroImage={sectionInput.heroImage}
+              heroImage={sectionInput.heroImage ?? undefined}
               onImageChange={async (file) => {
                 const base64File = await convertFileToBase64(file);
-                updateSection({ heroImage: base64File });
+                updateSection({ heroImage: base64File?.toString() ?? undefined });
               }}
               onImageRemove={() => updateSection({ heroImage: undefined })}
             />
           </div>
 
-          <div className="p-4">
+          <div className="px-4 py-2">
             {isTitleInputVisible && (
               <input
                 value={sectionInput.title ?? ""}
@@ -162,7 +163,7 @@ export default function FlyerSection({
           </div>
 
           {sectionInput.items.length > 0 && (
-            <div className="p-4 flex flex-row flex-wrap gap-x-3 gap-y-5">
+            <div className="px-4 py-2 flex flex-row flex-wrap gap-x-3 gap-y-5">
               {sectionInput.items.map((item, i) => {
                 const productWithStock = productsMap.get(
                   `${item.productId}-${item.stockId}`,

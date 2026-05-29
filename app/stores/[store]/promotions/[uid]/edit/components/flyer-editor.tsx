@@ -4,6 +4,7 @@ import { useNavbar } from "@/context/navbar-context";
 import { useFlyerEditor } from "@/context/flyer-editor-context";
 import {
   StorefrontFlyerDocument,
+  StorefrontFlyerFormat,
   StorefrontFlyerPageInput,
 } from "graphql-utils";
 import { useLazyQuery } from "@apollo/client/react";
@@ -25,7 +26,7 @@ export default function FlyerEditor({}: FlyerEditorSectionProps) {
     setCurrentSelection,
     appendPageInput,
   } = useFlyerEditor();
-  const size = useFlyerLayoutSize(flyerStyles.format as string);
+  const size = useFlyerLayoutSize(flyerStyles.format as StorefrontFlyerFormat);
   const [
     getStorefrontFlyerWithPages,
     { data: flyerWithPagesData, loading: flyerWithPagesLoading },

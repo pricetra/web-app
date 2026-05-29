@@ -4,6 +4,7 @@ import {
   StorefrontFlyerPageInput,
   StorefrontFlyer,
   CreateStorefrontFlyerPageDocument,
+  StorefrontFlyerFormat,
 } from "graphql-utils";
 import { useEffect, useMemo, useState } from "react";
 import { useFlyerEditor } from "@/context/flyer-editor-context";
@@ -42,7 +43,7 @@ export default function FlyerPage({ flyer, pageIndex }: FlyerPageProps) {
     return currentSelection.pageIndex === pageIndex;
   }, [currentSelection, pageIndex]);
 
-  const size = useFlyerLayoutSize(flyerStyles.format as string);
+  const size = useFlyerLayoutSize(flyerStyles.format as StorefrontFlyerFormat);
 
   function handlePageInputSubmit(pageImageData: string) {
     const currentPage = { ...pagesInput[pageIndex] };
@@ -142,7 +143,7 @@ export default function FlyerPage({ flyer, pageIndex }: FlyerPageProps) {
                     sectionInput: section,
                   });
                 }}
-                className="mb-5"
+                className="mb-4"
                 key={`page-${pageIndex}-section-${i}`}
               >
                 <FlyerSection

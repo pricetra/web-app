@@ -34,10 +34,10 @@ export default function FlyerDetailsEditor() {
   useEffect(() => {
     if (!storefrontFlyerUpdatedData?.updateStorefrontFlyer) return;
 
-    setFlyer(
-      storefrontFlyerUpdatedData.updateStorefrontFlyer as StorefrontFlyer,
-    );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    setFlyer({
+      flyerStyles: storefrontFlyerUpdatedData.updateStorefrontFlyer.flyerStyles,
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [storefrontFlyerUpdatedData]);
 
   return (
@@ -68,7 +68,7 @@ export default function FlyerDetailsEditor() {
             id="format"
             value={format}
             onChange={(e) => setFormat(e.target.value as StorefrontFlyerFormat)}
-            className="w-full border-transparent hover:border-input focus:bg-white shadow-none"
+            className="w-full border-transparent hover:border-input hover:bg-white focus:bg-white shadow-none"
           >
             {flyerFormats.map((format) => (
               <NativeSelectOption key={format} value={format}>

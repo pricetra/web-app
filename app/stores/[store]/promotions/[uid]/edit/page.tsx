@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const flyerData = await cachedFlyerSimple(uid, authToken?.value);
   if (!flyerData || !flyerData.store) return {};
 
-  const title = `Flyer editor -${flyerData.title} - ${flyerData.branch?.name ?? flyerData.store.name} | Pricetra`;
+  const title = `Flyer editor - ${flyerData.title} - ${flyerData.branch?.name ?? flyerData.store.name} | Pricetra`;
   return {
     title,
   };

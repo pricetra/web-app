@@ -1,7 +1,8 @@
 import { flyerFormatToFlyerSpec } from "@/lib/constants/flyer-formats";
+import { StorefrontFlyerFormat } from "graphql-utils";
 import { useEffect, useMemo, useState } from "react";
 
-export default function useFlyerLayoutSize(format: string) {
+export default function useFlyerLayoutSize(format: StorefrontFlyerFormat) {
   const spec = useMemo(
     () => flyerFormatToFlyerSpec[format] ?? flyerFormatToFlyerSpec["Letter"],
     [format],
