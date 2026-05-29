@@ -38,7 +38,7 @@ export type CurrentSelection =
 
 export type FlyerEditorContextType = {
   flyer: StorefrontFlyer;
-  setFlyer: (flyer: StorefrontFlyer) => void;
+  setFlyer: (flyer: Partial<StorefrontFlyer>) => void;
   flyerStyles: Record<string, object | string | number | boolean>;
 
   pagesInput: StorefrontFlyerPageInput[];
@@ -80,19 +80,19 @@ export type FlyerEditorContextType = {
 export const FlyerEditorContext = createContext({} as FlyerEditorContextType);
 
 export default function FlyerEditorProvider({
-  flyer,
+  flyer: _flyer,
   children,
 }: {
   flyer: StorefrontFlyer;
   children: ReactNode;
 }) {
   const defaultPageInput: StorefrontFlyerPageInput = {
-    storefrontFlyerId: flyer.id,
+    storefrontFlyerId: _flyer.id,
     sections: [],
     pageImage: "",
   };
 
-  const [internalFlyer, setInternalFlyer] = useState<StorefrontFlyer>(flyer);
+  const [internalFlyer, setInternalFlyer] = useState<StorefrontFlyer>(_flyer);
   const [pagesInput, setPagesInput] = useState<StorefrontFlyerPageInput[]>([
     { ...defaultPageInput },
   ]);
@@ -107,11 +107,11 @@ export default function FlyerEditorProvider({
 
   const flyerStyles = useMemo(() => {
     try {
-      return JSON.parse(flyer.flyerStyles ?? "{}");
+      return JSON.parse(internalFlyer.flyerStyles ?? "{}");
     } catch {
       return {};
     }
-  }, [flyer.flyerStyles]);
+  }, [internalFlyer.flyerStyles]);
 
   function appendPageInput(page?: StorefrontFlyerPageInput) {
     setPagesInput((prev) => [...prev, page ?? { ...defaultPageInput }]);
@@ -283,7 +283,7 @@ export default function FlyerEditorProvider({
       value={{
         flyer: internalFlyer,
         setFlyer: (value) => {
-          setInternalFlyer((f) => ({ ...f, value }));
+          setInternalFlyer((f) => ({...f, ...value}));
         },
         flyerStyles,
 
