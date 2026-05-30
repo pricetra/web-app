@@ -1,10 +1,20 @@
 "use client";
-import { StorefrontFlyer, StorefrontFlyerDocument } from "graphql-utils";
+import {
+  Product,
+  StorefrontFlyer,
+  StorefrontFlyerDocument,
+} from "graphql-utils";
 import { useQuery } from "@apollo/client/react";
 import { useNavbar } from "@/context/navbar-context";
 import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { createCloudinaryUrl } from "@/lib/files";
 import { useLayoutEffect } from "react";
+import Image from "next/image";
+import ScrollContainer from "@/components/scroll-container";
+import { adify } from "@/lib/ads";
+import { getRandomIntInclusive } from "@/lib/utils";
+import ProductItemHorizontal from "@/components/product-item-horizontal";
+import HorizontalProductAd from "@/components/ads/horizontal-product-ad";
 
 type FlyerViewPageClientProps = {
   flyer: StorefrontFlyer;
@@ -50,5 +60,52 @@ export default function FlyerViewPageClient({
 
   // TODO: Show products with their stock and price info similar to app/stores/[store]/[branch]/branch-page-client.tsx[202:272]. With the name of the section as the title of the product list.
   // If sections have hero images we can display those as well within the section header with a rounded border.
-  return <></>;
+  return (
+    <div className="w-full">
+      <h1 className="text-2xl font-bold">{data.storefrontFlyer.title}</h1>
+      <p>{data.storefrontFlyer.description}</p>
+      {data.storefrontFlyer.pages.map((page) => (
+        <div key={`page-${page.id}`}>
+          <h3 className="text-xl font-bold">{page.title}</h3>
+          <p>{page.description}</p>
+
+          <div>
+            {page.sections.map((section) => (
+              <div key={`section-${section.id}`}>
+                {/* <Image src={createCloudinaryUrl(section.)} /> */}
+
+                <article className="my-7">
+                  <div className="mb-5">
+                    <h3 className="text-base xs:text-lg sm:text-xl font-bold">
+                      {section.title}
+                    </h3>
+                    <p>{section.description}</p>
+                  </div>
+
+                  {section.items && section.items.length > 0 && (
+                    <ScrollContainer>
+                      {adify(section.items, getRandomIntInclusive(3, 6)).map(
+                        (item, i) =>
+                          typeof item === "object" ? (
+                            <ProductItemHorizontal
+                              product={item.product as Product}
+                              key={`brand-product-${item.product.id}-${i}`}
+                            />
+                          ) : (
+                            <HorizontalProductAd
+                              id={i}
+                              key={`horizontal-product-ad-${i}`}
+                            />
+                          ),
+                      )}
+                    </ScrollContainer>
+                  )}
+                </article>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
 }

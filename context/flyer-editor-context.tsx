@@ -75,6 +75,7 @@ export type FlyerEditorContextType = {
   ) => void;
 
   productsMap: Map<string, Product>;
+  addToProductsMap: (p: Product) => void;
 };
 
 export const FlyerEditorContext = createContext({} as FlyerEditorContextType);
@@ -227,6 +228,24 @@ export default function FlyerEditorProvider({
     });
   }
 
+  function _addProductToMap(product: Product) {
+    setProductsMap((prev) => {
+      const newMap = new Map<string, Product>(prev); // Clone the existing map
+      newMap.set(`${product.id}-${product.stock!.id}`, { ...product }); // Update the clone
+      return newMap; // Return the new instance
+    });
+  }
+
+  function _removeProductFromMap(item: StorefrontFlyerItemInput) {
+    setProductsMap((prev) => {
+      const newMap = new Map<string, Product>(prev); // Clone the existing map
+      newMap.delete(
+        `${item.productId}-${item.stockId}`,
+      );
+      return newMap; // Return the new instance
+    });
+  }
+
   function addItemToPageSection(
     pageIndex: number,
     sectionIndex: number,
@@ -243,11 +262,7 @@ export default function FlyerEditorProvider({
     newPagesInput[pageIndex].sections = newSections;
     setPagesInput([...newPagesInput]);
 
-    setProductsMap((prev) => {
-      const newMap = new Map<string, Product>(prev); // Clone the existing map
-      newMap.set(`${product.id}-${product.stock!.id}`, { ...product }); // Update the clone
-      return newMap; // Return the new instance
-    });
+    _addProductToMap(product);
 
     setCurrentSelection({
       type: "section",
@@ -269,13 +284,7 @@ export default function FlyerEditorProvider({
     newSectionsInput[sectionIndex].items = newItemsInput;
     newPagesInput[pageIndex].sections = newSectionsInput;
     setPagesInput(newPagesInput);
-    setProductsMap((prev) => {
-      const newMap = new Map<string, Product>(prev); // Clone the existing map
-      newMap.delete(
-        `${items[itemIndex].productId}-${items[itemIndex].stockId}`,
-      );
-      return newMap; // Return the new instance
-    });
+    _removeProductFromMap(items[itemIndex]);
   }
 
   return (
@@ -304,6 +313,7 @@ export default function FlyerEditorProvider({
         removeItemFromPageSection,
 
         productsMap,
+        addToProductsMap: (p: Product) => _addProductToMap(p),
       }}
     >
       {children}

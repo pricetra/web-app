@@ -1,6 +1,5 @@
 import { useFlyerEditor } from "@/context/flyer-editor-context";
 import {
-  StorefrontFlyer,
   StorefrontFlyerFormat,
   UpdateStorefrontFlyerDocument,
 } from "graphql-utils";

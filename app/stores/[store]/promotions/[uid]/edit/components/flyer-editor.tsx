@@ -3,9 +3,13 @@ import FlyerPage from "./flyer-page";
 import { useNavbar } from "@/context/navbar-context";
 import { useFlyerEditor } from "@/context/flyer-editor-context";
 import {
+  Product,
+  Stock,
   StorefrontFlyerDocument,
   StorefrontFlyerFormat,
+  StorefrontFlyerItemInput,
   StorefrontFlyerPageInput,
+  StorefrontFlyerSectionInput,
 } from "graphql-utils";
 import { useLazyQuery } from "@apollo/client/react";
 import { CgSpinner } from "react-icons/cg";
@@ -25,6 +29,7 @@ export default function FlyerEditor({}: FlyerEditorSectionProps) {
     setPagesInput,
     setCurrentSelection,
     appendPageInput,
+    addToProductsMap,
   } = useFlyerEditor();
   const size = useFlyerLayoutSize(flyerStyles.format as StorefrontFlyerFormat);
   const [
@@ -60,7 +65,31 @@ export default function FlyerEditor({}: FlyerEditorSectionProps) {
           heroImage: p.heroImageId, // TODO: add cloudinary URL
           layout: p.layout,
           pageImage: p.pageImageId, // TODO: add cloudinary URL
-          sections: p.sections,
+          sections: p.sections.map(
+            (s) =>
+              ({
+                // bgImage: s.bgImageId,
+                description: s.description,
+                // heroImage: s.heroImage,
+                items: s.items.map((i) => {
+                  const product = {...i.product,} as Product;
+                  product.stock = {...i.stock} as Stock;
+                  addToProductsMap(product);
+                  return {
+                    // label: i.label,
+                    // layout: i.layout,
+                    productId: i.productId,
+                    sortOrder: i.sortOrder,
+                    stockId: i.stockId,
+                    // styles: i.styles,
+                  } as StorefrontFlyerItemInput;
+                }),
+                layout: s.layout,
+                sortOrder: s.sortOrder,
+                styles: s.styles,
+                title: s.title,
+              }) as StorefrontFlyerSectionInput,
+          ),
           storefrontFlyerId: p.storefrontFlyerId,
           styles: p.styles,
           title: p.title,
@@ -103,20 +132,22 @@ export default function FlyerEditor({}: FlyerEditorSectionProps) {
             </div>
           ))}
 
-          {pagesInput.length === 0 && <div
-            className="flex flex-col items-center justify-center mt-10 mb-16 mx-auto"
-            style={{ width: size.width }}
-          >
-            <button
-              onClick={() => {
-                appendPageInput();
-              }}
-              className="flex flex-col gap-3 items-center py-5 px-10 border-[3px] border-dashed border-gray-300 hover:border-gray-400 text-gray-500 hover:text-gray-700 rounded-md cursor-pointer w-full"
+          {pagesInput.length === 0 && (
+            <div
+              className="flex flex-col items-center justify-center mt-10 mb-16 mx-auto"
+              style={{ width: size.width }}
             >
-              <IoMdAddCircleOutline className="text-4xl" />
-              <span className="text-sm font-bold">Add page</span>
-            </button>
-          </div>}
+              <button
+                onClick={() => {
+                  appendPageInput();
+                }}
+                className="flex flex-col gap-3 items-center py-5 px-10 border-[3px] border-dashed border-gray-300 hover:border-gray-400 text-gray-500 hover:text-gray-700 rounded-md cursor-pointer w-full"
+              >
+                <IoMdAddCircleOutline className="text-4xl" />
+                <span className="text-sm font-bold">Add page</span>
+              </button>
+            </div>
+          )}
         </div>
       </section>
 
@@ -124,11 +155,14 @@ export default function FlyerEditor({}: FlyerEditorSectionProps) {
         className="flex-1 bg-gray-100 border-gray-200 border-l relative"
         style={{ ...minHeight }}
       >
-        <div className="sticky top-0 h-full" style={{height: minHeight.minHeight}}>
+        <div
+          className="sticky top-0 h-full"
+          style={{ height: minHeight.minHeight }}
+        >
           <div className="w-full h-full overflow-y-auto">
             <EditorPanel />
 
-            <div style={{height: '10vh'}} />
+            <div style={{ height: "10vh" }} />
           </div>
         </div>
       </section>
