@@ -30,6 +30,7 @@ export default function FlyerEditor({}: FlyerEditorSectionProps) {
     setCurrentSelection,
     appendPageInput,
     addToProductsMap,
+    addToSubmittedPages,
   } = useFlyerEditor();
   const size = useFlyerLayoutSize(flyerStyles.format as StorefrontFlyerFormat);
   const [
@@ -57,44 +58,45 @@ export default function FlyerEditor({}: FlyerEditorSectionProps) {
     if (!flyerWithPagesData) return;
 
     const pages = flyerWithPagesData.storefrontFlyer.pages;
-    const pagesInput = pages.map(
-      (p) =>
-        ({
-          bgImage: p.bgImageId, // TODO: add cloudinary URL
-          description: p.description,
-          heroImage: p.heroImageId, // TODO: add cloudinary URL
-          layout: p.layout,
-          pageImage: p.pageImageId, // TODO: add cloudinary URL
-          sections: p.sections.map(
-            (s) =>
-              ({
-                // bgImage: s.bgImageId,
-                description: s.description,
-                // heroImage: s.heroImage,
-                items: s.items.map((i) => {
-                  const product = {...i.product,} as Product;
-                  product.stock = {...i.stock} as Stock;
-                  addToProductsMap(product);
-                  return {
-                    // label: i.label,
-                    // layout: i.layout,
-                    productId: i.productId,
-                    sortOrder: i.sortOrder,
-                    stockId: i.stockId,
-                    // styles: i.styles,
-                  } as StorefrontFlyerItemInput;
-                }),
-                layout: s.layout,
-                sortOrder: s.sortOrder,
-                styles: s.styles,
-                title: s.title,
-              }) as StorefrontFlyerSectionInput,
-          ),
-          storefrontFlyerId: p.storefrontFlyerId,
-          styles: p.styles,
-          title: p.title,
-        }) as StorefrontFlyerPageInput,
-    );
+    const pagesInput = pages.map((p) => {
+      addToSubmittedPages(p.pageNumber);
+
+      return {
+        bgImage: p.bgImageId, // TODO: add cloudinary URL
+        description: p.description,
+        heroImage: p.heroImageId, // TODO: add cloudinary URL
+        layout: p.layout,
+        pageImage: p.pageImageId, // TODO: add cloudinary URL
+        sections: p.sections.map(
+          (s) =>
+            ({
+              bgImage: (s.bgImageId),
+              description: s.description,
+              // heroImage: s.heroImage,
+              items: s.items.map((i) => {
+                const product = { ...i.product } as Product;
+                product.stock = { ...i.stock } as Stock;
+                addToProductsMap(product);
+                return {
+                  // label: i.label,
+                  // layout: i.layout,
+                  productId: i.productId,
+                  sortOrder: i.sortOrder,
+                  stockId: i.stockId,
+                  // styles: i.styles,
+                } as StorefrontFlyerItemInput;
+              }),
+              layout: s.layout,
+              sortOrder: s.sortOrder,
+              styles: s.styles,
+              title: s.title,
+            }) as StorefrontFlyerSectionInput,
+        ),
+        storefrontFlyerId: p.storefrontFlyerId,
+        styles: p.styles,
+        title: p.title,
+      } as StorefrontFlyerPageInput;
+    });
     setPagesInput([...pagesInput]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [flyerWithPagesData]);

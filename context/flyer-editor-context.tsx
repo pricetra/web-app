@@ -76,6 +76,9 @@ export type FlyerEditorContextType = {
 
   productsMap: Map<string, Product>;
   addToProductsMap: (p: Product) => void;
+
+  submittedPages: Set<number>;
+  addToSubmittedPages: (pageNumber: number) => void;
 };
 
 export const FlyerEditorContext = createContext({} as FlyerEditorContextType);
@@ -105,6 +108,7 @@ export default function FlyerEditorProvider({
   const [productsMap, setProductsMap] = useState<Map<string, Product>>(
     new Map(),
   );
+  const [submittedPages, setSubmittedPages] = useState<Set<number>>(new Set());
 
   const flyerStyles = useMemo(() => {
     try {
@@ -239,9 +243,7 @@ export default function FlyerEditorProvider({
   function _removeProductFromMap(item: StorefrontFlyerItemInput) {
     setProductsMap((prev) => {
       const newMap = new Map<string, Product>(prev); // Clone the existing map
-      newMap.delete(
-        `${item.productId}-${item.stockId}`,
-      );
+      newMap.delete(`${item.productId}-${item.stockId}`);
       return newMap; // Return the new instance
     });
   }
@@ -292,7 +294,7 @@ export default function FlyerEditorProvider({
       value={{
         flyer: internalFlyer,
         setFlyer: (value) => {
-          setInternalFlyer((f) => ({...f, ...value}));
+          setInternalFlyer((f) => ({ ...f, ...value }));
         },
         flyerStyles,
 
@@ -314,6 +316,15 @@ export default function FlyerEditorProvider({
 
         productsMap,
         addToProductsMap: (p: Product) => _addProductToMap(p),
+
+        submittedPages,
+        addToSubmittedPages: (pageNumber: number) => {
+          setSubmittedPages((sp) => {
+            const newSet = new Set(sp);
+            newSet.add(pageNumber);
+            return newSet;
+          });
+        },
       }}
     >
       {children}

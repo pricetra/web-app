@@ -33,6 +33,8 @@ export default function FlyerPage({ flyer, pageIndex }: FlyerPageProps) {
     appendSectionToPage,
     setCurrentSelection,
     removePageInput,
+    submittedPages,
+    addToSubmittedPages,
   } = useFlyerEditor();
   const [submitPage, { error }] = useMutation(
     CreateStorefrontFlyerPageDocument,
@@ -66,6 +68,7 @@ export default function FlyerPage({ flyer, pageIndex }: FlyerPageProps) {
       handlePageInputSubmit(imageData).then(({ data }) => {
         if (!data) return;
 
+        addToSubmittedPages(data.createStorefrontFlyerPage.pageNumber);
         const link = document.createElement("a");
         link.download = `pricetra-flyer-${flyer.store!.slug}-${flyer.uid}-page-${pageIndex + 1}.png`;
         link.href = imageData;
@@ -174,7 +177,7 @@ export default function FlyerPage({ flyer, pageIndex }: FlyerPageProps) {
             >
               <button
                 onClick={() => {
-                  handlePageImageGeneration();
+                  if (!submittedPages.has(pageIndex + 1)) handlePageImageGeneration();
                   // TODO: Submit current page (pagesInput[pageIndex]) to API
                   appendPageInput();
                 }}
