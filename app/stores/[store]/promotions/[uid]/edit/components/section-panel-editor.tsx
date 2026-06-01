@@ -12,7 +12,7 @@ import {
   StorefrontFlyerSectionInput,
 } from "graphql-utils";
 import { IoSearch } from "react-icons/io5";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useFlyerEditor } from "@/context/flyer-editor-context";
 import { CgSpinner } from "react-icons/cg";
 import { NativeSelect } from "@/components/ui/native-select";
@@ -25,6 +25,7 @@ export default function SectionPanelEditor() {
   const {
     flyer,
     currentSelection,
+    submittedPages,
     addItemToPageSection,
     setSectionLayout,
     setSectionInput,
@@ -33,6 +34,10 @@ export default function SectionPanelEditor() {
   const [search, setSearch] = useState("");
   const [numberOfColumns, setNumberOfColumns] = useState(5);
   const [searchProducts, { data, loading }] = useLazyQuery(AllProductsDocument);
+
+  const pageEditingDisabled = useMemo(() => {
+    return submittedPages.has(currentSelection.pageIndex);
+  }, [submittedPages, currentSelection]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(
@@ -86,12 +91,14 @@ export default function SectionPanelEditor() {
       <div className="flex flex-col gap-5 mb-7 p-4 bg-white border border-gray-200 rounded-lg">
         <HeroUpload
           isSectionSelected={true}
-          heroImage={currentSelection.sectionInput.heroImage}
+          heroImage={currentSelection.sectionInput.heroImage ?? undefined}
           onImageChange={async (file) => {
             const base64File = await convertFileToBase64(file);
-            updateSection({ heroImage: base64File });
+            updateSection({ heroImage: base64File?.toString() ?? undefined });
           }}
           onImageRemove={() => updateSection({ heroImage: undefined })}
+          hideRemoveButton={pageEditingDisabled}
+          disabled={pageEditingDisabled}
         />
 
         <Field className="max-w-sm">
@@ -105,6 +112,7 @@ export default function SectionPanelEditor() {
                 updateSection({ title: e.target.value || undefined })
               }
               placeholder="Section title"
+              disabled={pageEditingDisabled}
             />
           </InputGroup>
         </Field>
@@ -120,6 +128,7 @@ export default function SectionPanelEditor() {
                 updateSection({ description: e.target.value || undefined })
               }
               placeholder="Section description"
+              disabled={pageEditingDisabled}
             />
           </InputGroup>
         </Field>
@@ -143,6 +152,7 @@ export default function SectionPanelEditor() {
               layout,
             );
           }}
+          disabled={pageEditingDisabled}
           className="bg-white"
         >
           {Array(10)
@@ -162,6 +172,7 @@ export default function SectionPanelEditor() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search products to add to this section"
+            disabled={pageEditingDisabled}
           />
           <InputGroupAddon>
             {loading ? <CgSpinner className="animate-spin" /> : <IoSearch />}

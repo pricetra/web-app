@@ -22,9 +22,10 @@ export type FlyerPageProps = {
   flyer: StorefrontFlyer;
   page: StorefrontFlyerPageInput;
   pageIndex: number;
+  disableEditing?: boolean;
 };
 
-export default function FlyerPage({ flyer, pageIndex }: FlyerPageProps) {
+export default function FlyerPage({ flyer, pageIndex, disableEditing }: FlyerPageProps) {
   const {
     flyerStyles,
     currentSelection,
@@ -153,11 +154,12 @@ export default function FlyerPage({ flyer, pageIndex }: FlyerPageProps) {
                   pageIndex={pageIndex}
                   sectionIndex={i}
                   sectionInput={section}
+                  disableEditing={disableEditing}
                 />
               </div>
             ))}
 
-            {!hidePlaceholder && (
+            {!hidePlaceholder && !disableEditing && (
               <div className="p-4">
                 <button
                   onClick={() => appendSectionToPage(pageIndex)}

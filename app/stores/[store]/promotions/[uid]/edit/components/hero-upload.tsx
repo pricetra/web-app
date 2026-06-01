@@ -9,11 +9,16 @@ export type HeroUploadProps = {
 
   onImageChange: (file: File) => void;
   onImageRemove: () => void;
+
+  disabled?: boolean;
+  hideRemoveButton?: boolean;
 };
 
 export default function HeroUpload({
   isSectionSelected,
   heroImage,
+  disabled,
+  hideRemoveButton,
   onImageChange,
   onImageRemove,
 }: HeroUploadProps) {
@@ -53,7 +58,7 @@ export default function HeroUpload({
   return (
     <div className="relative">
       <div className="absolute top-2 right-2 z-10">
-        {heroPreview && isSectionSelected && (
+        {heroPreview && isSectionSelected && !hideRemoveButton && (
           <Button onClick={clearHeroImage} variant="destructive" size="xs">
             Remove
           </Button>
@@ -62,6 +67,7 @@ export default function HeroUpload({
 
       <div
         onClick={() => {
+          if (disabled) return;
           if (!heroUploadInputRef.current) return;
           heroUploadInputRef.current.click();
         }}

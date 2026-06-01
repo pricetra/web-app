@@ -27,6 +27,7 @@ export default function FlyerEditor({}: FlyerEditorSectionProps) {
     flyerStyles,
     pagesInput,
     currentSelection,
+    submittedPages,
     setPagesInput,
     setCurrentSelection,
     appendPageInput,
@@ -131,7 +132,7 @@ export default function FlyerEditor({}: FlyerEditorSectionProps) {
               className="mb-5"
               key={i}
             >
-              <FlyerPage flyer={flyer} page={p} pageIndex={i} />
+              <FlyerPage flyer={flyer} page={p} pageIndex={i} disableEditing={submittedPages.has(i + 1)} />
             </div>
           ))}
 

@@ -16,12 +16,14 @@ export type FlyerSectionProps = {
   pageIndex: number;
   sectionIndex: number;
   sectionInput: StorefrontFlyerSectionInput;
+  disableEditing?: boolean;
 };
 
 export default function FlyerSection({
   pageIndex,
   sectionIndex,
   sectionInput,
+  disableEditing,
 }: FlyerSectionProps) {
   const {
     currentSelection,
@@ -104,9 +106,11 @@ export default function FlyerSection({
           : "hover:ring hover:ring-gray-200",
       )}
       onClick={selectSection}
-      onMouseEnter={selectSection}
+      onMouseEnter={() => {
+        if (!disableEditing) selectSection();
+      }}
     >
-      {isSelected && (
+      {isSelected && !disableEditing && (
         <div className="absolute top-2 right-2 z-10">
           <button
             onClick={() => {
@@ -134,6 +138,8 @@ export default function FlyerSection({
                 updateSection({ heroImage: base64File?.toString() ?? undefined });
               }}
               onImageRemove={() => updateSection({ heroImage: undefined })}
+              hideRemoveButton={disableEditing}
+              disabled={disableEditing}
             />
           </div>
 
@@ -146,6 +152,7 @@ export default function FlyerSection({
                 }
                 placeholder="Section title"
                 className="w-full bg-transparent text-lg font-semibold text-gray-900 placeholder:text-gray-500 outline-none ring-0 focus:ring-0"
+                disabled={disableEditing}
               />
             )}
 
@@ -158,6 +165,7 @@ export default function FlyerSection({
                 placeholder="Section description (optional)"
                 rows={1}
                 className="w-full resize-none bg-transparent text-sm leading-6 text-gray-700 placeholder:text-gray-500 outline-none ring-0 focus:ring-0"
+                disabled={disableEditing}
               />
             )}
           </div>
