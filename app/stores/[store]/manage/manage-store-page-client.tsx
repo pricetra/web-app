@@ -12,6 +12,7 @@ import StorefrontBanner from "@/components/storefront-banner";
 import ManageStoreInfo from "@/components/manage/manage-store-info";
 import ManageBranchList from "@/components/manage/manage-branch-list";
 import CreateBranchForm from "@/components/manage/create-branch-form";
+import CreateStorefrontFlyerForm from "@/components/manage/create-storefront-flyer-form";
 import { startOfNextSundayUTC } from "@/lib/utils";
 
 export default function ManageStorePageClient({ store }: { store: Store }) {
@@ -23,6 +24,7 @@ export default function ManageStorePageClient({ store }: { store: Store }) {
   } = useNavbar();
   const [showCreateBranch, setShowCreateBranch] = useState(false);
   const [showStoreDetails, setShowStoreDetails] = useState(false);
+  const [showCreateFlyer, setShowCreateFlyer] = useState(false);
 
   useLayoutEffect(() => {
     resetAll();
@@ -123,6 +125,27 @@ export default function ManageStorePageClient({ store }: { store: Store }) {
               `/stores/${store.slug}/${branchSlug}/manage`
             }
           />
+        </section>
+
+        {/* Flyers */}
+        <section className="mb-10">
+          <div className="flex flex-row items-center justify-between mb-4">
+            <h2 className="text-lg font-bold">Flyers</h2>
+            <Button
+              variant="pricetra"
+              size="xs"
+              onClick={() => setShowCreateFlyer(true)}
+            >
+              <MdAdd /> Create Flyer
+            </Button>
+
+          </div>
+
+          {showCreateFlyer && (
+            <div className="mb-10 p-4 border border-gray-200 rounded-lg">
+              <CreateStorefrontFlyerForm store={store} />
+            </div>
+          )}
         </section>
       </div>
     </>

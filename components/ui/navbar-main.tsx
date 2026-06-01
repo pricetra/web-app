@@ -33,7 +33,11 @@ import { BiCaretDown } from "react-icons/bi";
 import { FiPower } from "react-icons/fi";
 import NProgress from "nprogress";
 
-export default function NavbarMain() {
+export type NavbarMainProps = {
+  fullScreen?: boolean;
+};
+
+export default function NavbarMain({ fullScreen }: NavbarMainProps) {
   const router = useRouter();
   const { loggedIn, user } = useAuth();
   const {
@@ -89,7 +93,7 @@ export default function NavbarMain() {
     if (!searchBadge) return <></>;
     return (
       <div className="flex flex-row items-center gap-1 text-xs rounded-full bg-gray-50 border border-gray-300 text-zinc-700 -ml-2 sm:ml-0">
-        <div className="flex flex-row items-center gap-0 sm:gap-1 pl-2 py-1 max-w-[70px] sm:max-w-[100px]">
+        <div className="flex flex-row items-center gap-0 sm:gap-1 pl-2 py-1">
           <span className="line-clamp-1 break-all">{searchBadge}</span>
         </div>
 
@@ -105,7 +109,7 @@ export default function NavbarMain() {
         </button>
       </div>
     );
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchBadge]);
 
   useEffect(() => {
@@ -123,7 +127,10 @@ export default function NavbarMain() {
         style={{ minHeight: navbarHeight }}
       >
         <div
-          className="w-full lg:max-w-384 mx-auto flex items-center justify-between gap-1 sm:gap-2 md:gap-5"
+          className={cn(
+            "w-full mx-auto flex items-center justify-between gap-1 sm:gap-2 md:gap-5",
+            !fullScreen && "lg:max-w-384",
+          )}
           style={{ height: navbarHeight }}
         >
           <div
