@@ -35,9 +35,10 @@ export default function SectionPanelEditor() {
   const [numberOfColumns, setNumberOfColumns] = useState(5);
   const [searchProducts, { data, loading }] = useLazyQuery(AllProductsDocument);
 
-  const pageEditingDisabled = useMemo(() => {
-    return submittedPages.has(currentSelection.pageIndex);
-  }, [submittedPages, currentSelection]);
+  const pageEditingDisabled = useMemo(
+    () => submittedPages.has(currentSelection.pageIndex + 1),
+    [submittedPages, currentSelection],
+  );
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedSearch = useCallback(
@@ -86,20 +87,30 @@ export default function SectionPanelEditor() {
 
   return (
     <>
-      <h2 className="text-lg font-bold mb-4">Selected Section Details</h2>
+      <div className="mb-4">
+        <h2 className="text-lg font-bold">Selected Section Details</h2>
+
+        {submittedPages.has(currentSelection.pageIndex + 1) && (
+          <p className="text-xs text-muted-foreground italic text-red-500">
+            This page has been submitted and cannot be edited.
+          </p>
+        )}
+      </div>
 
       <div className="flex flex-col gap-5 mb-7 p-4 bg-white border border-gray-200 rounded-lg">
-        <HeroUpload
-          isSectionSelected={true}
-          heroImage={currentSelection.sectionInput.heroImage ?? undefined}
-          onImageChange={async (file) => {
-            const base64File = await convertFileToBase64(file);
-            updateSection({ heroImage: base64File?.toString() ?? undefined });
-          }}
-          onImageRemove={() => updateSection({ heroImage: undefined })}
-          hideRemoveButton={pageEditingDisabled}
-          disabled={pageEditingDisabled}
-        />
+        <div style={{ opacity: pageEditingDisabled ? 0.7 : 1 }}>
+          <HeroUpload
+            isSectionSelected={true}
+            heroImage={currentSelection.sectionInput.heroImage ?? undefined}
+            onImageChange={async (file) => {
+              const base64File = await convertFileToBase64(file);
+              updateSection({ heroImage: base64File?.toString() ?? undefined });
+            }}
+            onImageRemove={() => updateSection({ heroImage: undefined })}
+            hideRemoveButton={pageEditingDisabled}
+            disabled={pageEditingDisabled}
+          />
+        </div>
 
         <Field className="max-w-sm">
           <FieldLabel htmlFor="inline-end-input">
