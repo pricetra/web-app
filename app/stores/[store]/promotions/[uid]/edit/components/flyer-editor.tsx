@@ -16,6 +16,7 @@ import { CgSpinner } from "react-icons/cg";
 import EditorPanel from "./editor-panel";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import useFlyerLayoutSize from "@/hooks/useFlyerLayoutSize";
+import { createCloudinaryUrl } from "@/lib/files";
 
 export type FlyerEditorSectionProps = object;
 
@@ -62,28 +63,28 @@ export default function FlyerEditor({}: FlyerEditorSectionProps) {
       addToSubmittedPages(p.pageNumber);
 
       return {
-        bgImage: p.bgImageId, // TODO: add cloudinary URL
+        bgImage: p.bgImageId ? createCloudinaryUrl(p.bgImageId) : undefined,
         description: p.description,
-        heroImage: p.heroImageId, // TODO: add cloudinary URL
+        heroImage: p.heroImageId ? createCloudinaryUrl(p.heroImageId) : undefined,
         layout: p.layout,
-        pageImage: p.pageImageId, // TODO: add cloudinary URL
+        pageImage: p.pageImageId ? createCloudinaryUrl(p.pageImageId) : undefined,
         sections: p.sections.map(
           (s) =>
             ({
-              bgImage: (s.bgImageId),
+              bgImage: s.bgImageId ? createCloudinaryUrl(s.bgImageId) : undefined,
               description: s.description,
-              // heroImage: s.heroImage,
-              items: s.items.map((i) => {
+              heroImage: s.heroImageId ? createCloudinaryUrl(s.heroImageId) : undefined,
+              items: s.items?.map((i) => {
                 const product = { ...i.product } as Product;
                 product.stock = { ...i.stock } as Stock;
                 addToProductsMap(product);
                 return {
-                  // label: i.label,
-                  // layout: i.layout,
+                  label: i.label,
+                  layout: i.layout,
                   productId: i.productId,
                   sortOrder: i.sortOrder,
                   stockId: i.stockId,
-                  // styles: i.styles,
+                  styles: i.styles,
                 } as StorefrontFlyerItemInput;
               }),
               layout: s.layout,

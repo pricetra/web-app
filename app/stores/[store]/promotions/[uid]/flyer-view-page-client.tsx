@@ -72,7 +72,15 @@ export default function FlyerViewPageClient({
           <div>
             {page.sections.map((section) => (
               <div key={`section-${section.id}`}>
-                {/* <Image src={createCloudinaryUrl(section.)} /> */}
+                {section.heroImageId && (
+                  <Image
+                    src={createCloudinaryUrl(section.heroImageId)}
+                    alt={section.title ?? "Banner"}
+                    width={100}
+                    height={100}
+                    quality={1}
+                  />
+                )}
 
                 <article className="my-7">
                   <div className="mb-5">
@@ -87,10 +95,14 @@ export default function FlyerViewPageClient({
                       {adify(section.items, getRandomIntInclusive(3, 6)).map(
                         (item, i) =>
                           typeof item === "object" ? (
-                            <ProductItemHorizontal
-                              product={item.product as Product}
-                              key={`brand-product-${item.product.id}-${i}`}
-                            />
+                            item.product ? (
+                              <ProductItemHorizontal
+                                product={item.product as Product}
+                                key={`brand-product-${item.product.id}-${i}`}
+                              />
+                            ) : (
+                              <></>
+                            )
                           ) : (
                             <HorizontalProductAd
                               id={i}
