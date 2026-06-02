@@ -66,18 +66,30 @@ export default function FlyerEditor({}: FlyerEditorSectionProps) {
       return {
         bgImage: p.bgImageId ? createCloudinaryUrl(p.bgImageId) : undefined,
         description: p.description,
-        heroImage: p.heroImageId ? createCloudinaryUrl(p.heroImageId) : undefined,
+        heroImage: p.heroImageId
+          ? createCloudinaryUrl(p.heroImageId)
+          : undefined,
         layout: p.layout,
-        pageImage: p.pageImageId ? createCloudinaryUrl(p.pageImageId) : undefined,
+        pageImage: p.pageImageId
+          ? createCloudinaryUrl(p.pageImageId)
+          : undefined,
         sections: p.sections.map(
           (s) =>
             ({
-              bgImage: s.bgImageId ? createCloudinaryUrl(s.bgImageId) : undefined,
+              bgImage: s.bgImageId
+                ? createCloudinaryUrl(s.bgImageId)
+                : undefined,
               description: s.description,
-              heroImage: s.heroImageId ? createCloudinaryUrl(s.heroImageId) : undefined,
+              heroImage: s.heroImageId
+                ? createCloudinaryUrl(s.heroImageId)
+                : undefined,
               items: s.items?.map((i) => {
                 const product = { ...i.product } as Product;
-                product.stock = { ...i.stock } as Stock;
+                product.stock = {
+                  ...i.stock,
+                  latestPriceId: i.priceId,
+                  latestPrice: i.price,
+                } as Stock;
                 addToProductsMap(product);
                 return {
                   label: i.label,
@@ -132,7 +144,12 @@ export default function FlyerEditor({}: FlyerEditorSectionProps) {
               className="mb-5"
               key={i}
             >
-              <FlyerPage flyer={flyer} page={p} pageIndex={i} disableEditing={submittedPages.has(i + 1)} />
+              <FlyerPage
+                flyer={flyer}
+                page={p}
+                pageIndex={i}
+                disableEditing={submittedPages.has(i + 1)}
+              />
             </div>
           ))}
 

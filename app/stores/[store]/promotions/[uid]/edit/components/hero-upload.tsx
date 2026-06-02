@@ -1,6 +1,5 @@
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 
 export type HeroUploadProps = {
@@ -83,14 +82,9 @@ export default function HeroUpload({
             <p>Click to upload a Banner Image to make this section pop</p>
           </div>
         ) : (
-          <div className="relative h-40 w-full">
-            <Image
-              src={heroPreview}
-              alt="Section hero preview"
-              fill
-              className="object-cover"
-              unoptimized
-            />
+          <div className="relative w-full">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={heroPreview} alt="Section hero preview" className="w-full" />
           </div>
         )}
       </div>
