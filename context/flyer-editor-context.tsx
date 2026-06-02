@@ -8,6 +8,7 @@ import {
   StorefrontFlyerPageInput,
   StorefrontFlyerSectionInput,
 } from "graphql-utils";
+import { remove } from "nprogress";
 import { createContext, ReactNode, useContext, useMemo, useState } from "react";
 
 export type CurrentStorefrontFlyerPage = {
@@ -79,6 +80,7 @@ export type FlyerEditorContextType = {
 
   submittedPages: Set<number>;
   addToSubmittedPages: (pageNumber: number) => void;
+  removeFromSubmittedPages: (pageNumber: number) => void;
 };
 
 export const FlyerEditorContext = createContext({} as FlyerEditorContextType);
@@ -118,6 +120,38 @@ export default function FlyerEditorProvider({
     }
   }, [internalFlyer.flyerStyles]);
 
+  function _addProductToMap(product: Product) {
+    setProductsMap((prev) => {
+      const newMap = new Map<string, Product>(prev); // Clone the existing map
+      newMap.set(`${product.id}-${product.stock!.id}`, { ...product }); // Update the clone
+      return newMap; // Return the new instance
+    });
+  }
+
+  function _removeProductFromMap(item: StorefrontFlyerItemInput) {
+    setProductsMap((prev) => {
+      const newMap = new Map<string, Product>(prev); // Clone the existing map
+      newMap.delete(`${item.productId}-${item.stockId}`);
+      return newMap; // Return the new instance
+    });
+  }
+
+  function _addToSubmittedPages(pageNumber: number) {
+    setSubmittedPages((sp) => {
+      const newSet = new Set(sp);
+      newSet.add(pageNumber);
+      return newSet;
+    });
+  }
+
+  function _removeFromSubmittedPages(pageNumber: number) {
+    setSubmittedPages((sp) => {
+      const newSet = new Set(sp);
+      newSet.delete(pageNumber);
+      return newSet;
+    });
+  }
+
   function appendPageInput(page?: StorefrontFlyerPageInput) {
     setPagesInput((prev) => [...prev, page ?? { ...defaultPageInput }]);
     setCurrentSelection({
@@ -135,6 +169,7 @@ export default function FlyerEditorProvider({
         pageIndex: pagesInput.length - 1,
         pageInput: { ...pagesInput[pagesInput.length - 1] },
       });
+      _removeFromSubmittedPages(pagesInput.length);
       return;
     }
 
@@ -153,6 +188,7 @@ export default function FlyerEditorProvider({
       });
       return newPagesInput;
     });
+    _removeFromSubmittedPages(index + 1);
   }
 
   function appendSectionToPage(
@@ -232,22 +268,6 @@ export default function FlyerEditorProvider({
     });
   }
 
-  function _addProductToMap(product: Product) {
-    setProductsMap((prev) => {
-      const newMap = new Map<string, Product>(prev); // Clone the existing map
-      newMap.set(`${product.id}-${product.stock!.id}`, { ...product }); // Update the clone
-      return newMap; // Return the new instance
-    });
-  }
-
-  function _removeProductFromMap(item: StorefrontFlyerItemInput) {
-    setProductsMap((prev) => {
-      const newMap = new Map<string, Product>(prev); // Clone the existing map
-      newMap.delete(`${item.productId}-${item.stockId}`);
-      return newMap; // Return the new instance
-    });
-  }
-
   function addItemToPageSection(
     pageIndex: number,
     sectionIndex: number,
@@ -318,13 +338,8 @@ export default function FlyerEditorProvider({
         addToProductsMap: (p: Product) => _addProductToMap(p),
 
         submittedPages,
-        addToSubmittedPages: (pageNumber: number) => {
-          setSubmittedPages((sp) => {
-            const newSet = new Set(sp);
-            newSet.add(pageNumber);
-            return newSet;
-          });
-        },
+        addToSubmittedPages: _addToSubmittedPages,
+        removeFromSubmittedPages: _removeFromSubmittedPages,
       }}
     >
       {children}
