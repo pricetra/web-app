@@ -5,6 +5,7 @@ import {
   StorefrontFlyer,
   CreateStorefrontFlyerPageDocument,
   StorefrontFlyerFormat,
+  DeleteStorefrontFlyerPageDocument,
 } from "graphql-utils";
 import { useEffect, useMemo, useState } from "react";
 import { useFlyerEditor } from "@/context/flyer-editor-context";
@@ -25,7 +26,11 @@ export type FlyerPageProps = {
   disableEditing?: boolean;
 };
 
-export default function FlyerPage({ flyer, pageIndex, disableEditing }: FlyerPageProps) {
+export default function FlyerPage({
+  flyer,
+  pageIndex,
+  disableEditing,
+}: FlyerPageProps) {
   const {
     flyerStyles,
     currentSelection,
@@ -40,6 +45,7 @@ export default function FlyerPage({ flyer, pageIndex, disableEditing }: FlyerPag
   const [submitPage, { error }] = useMutation(
     CreateStorefrontFlyerPageDocument,
   );
+  const [deletePage] = useMutation(DeleteStorefrontFlyerPageDocument);
   const [hidePlaceholder, setHidePlaceholder] = useState(false);
   const isCurrentSectionAction = useMemo(() => {
     if (!currentSelection) return false;
@@ -119,7 +125,23 @@ export default function FlyerPage({ flyer, pageIndex, disableEditing }: FlyerPag
 
             <div className="flex-2 flex flex-row gap-3 items-center justify-end">
               <Button
-                onClick={() => removePageInput(pageIndex)}
+                onClick={() => {
+                  const pIndex = pageIndex + 1;
+                  if (submittedPages.has(pIndex)) {
+                    const confirmDelete = window.confirm(
+                      "This page has already been submitted. Are you sure you want to delete it? This action cannot be undone.",
+                    );
+                    if (!confirmDelete) return;
+
+                    deletePage({
+                      variables: {
+                        flyerId: flyer.id,
+                        pageNumber: pIndex,
+                      },
+                    }).catch(err => toast.error(`Failed to delete page: ${err.message}`));
+                  }
+                  removePageInput(pageIndex);
+                }}
                 variant="destructive"
                 size="xs"
               >
@@ -179,7 +201,8 @@ export default function FlyerPage({ flyer, pageIndex, disableEditing }: FlyerPag
             >
               <button
                 onClick={() => {
-                  if (!submittedPages.has(pageIndex + 1)) handlePageImageGeneration();
+                  if (!submittedPages.has(pageIndex + 1))
+                    handlePageImageGeneration();
                   // TODO: Submit current page (pagesInput[pageIndex]) to API
                   appendPageInput();
                 }}
