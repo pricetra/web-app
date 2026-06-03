@@ -45,6 +45,7 @@ export default function FlyerDetailsEditor() {
         <Input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
+          placeholder="Flyer title"
           className="border-transparent hover:border-input font-bold focus:bg-white"
         />
       </div>
@@ -53,6 +54,7 @@ export default function FlyerDetailsEditor() {
         <Textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
+          placeholder="Flyer description"
           className="border-transparent hover:border-input focus:bg-white shadow-none"
         />
       </div>

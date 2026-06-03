@@ -5,6 +5,7 @@ import { useNavbar } from "@/context/navbar-context";
 import { createCloudinaryUrl } from "@/lib/files";
 import {
   StorefrontFlyer,
+  StorefrontFlyerStatus,
 } from "graphql-utils";
 import { useLayoutEffect } from "react";
 import FlyerEditorProvider from "@/context/flyer-editor-context";
@@ -45,6 +46,12 @@ export default function FlyerEditorClient({ flyer }: FlyerEditorClientProps) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [flyer]);
+
+  if (flyer.status !== StorefrontFlyerStatus.Draft) {
+    return <div className="flex flex-row items-center justify-center h-[50vh] gap-2 text-gray-600 w-full">
+      <p>Flyer is not in draft status and cannot be edited.</p>
+    </div>;
+  }
 
   return (
     <FlyerEditorProvider flyer={flyer}>
