@@ -2,9 +2,7 @@
 
 import { useQuery } from "@apollo/client/react";
 import Link from "next/link";
-import Image from "next/image";
-import dayjs from "dayjs";
-import { Store, StorefrontFlyersDocument, StorefrontFlyerStatus } from "graphql-utils";
+import { Store, StorefrontFlyer, StorefrontFlyersDocument } from "graphql-utils";
 import { Button } from "@/components/ui/button";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useAuth } from "@/context/user-context";
@@ -14,6 +12,7 @@ import { createCloudinaryUrl } from "@/lib/files";
 import { MdModeEditOutline } from "react-icons/md";
 import { useMediaQuery } from "react-responsive";
 import { SmartPagination } from "@/components/ui/smart-pagination";
+import FlyerCard from "@/components/flyer-card";
 
 type PromotionsPageClientProps = {
   storeSlug: string;
@@ -21,7 +20,6 @@ type PromotionsPageClientProps = {
 };
 
 export default function PromotionsPageClient({
-  storeSlug,
   store,
 }: PromotionsPageClientProps) {
   const { myStoreUsers } = useAuth();
@@ -44,19 +42,6 @@ export default function PromotionsPageClient({
   );
   const isSmallScreen = useMediaQuery({ query: "(max-width: 640px)" });
   const flyers = flyersData?.storefrontFlyers?.flyers || [];
-
-  const getStatusBadgeColor = (status: string) => {
-    switch (status) {
-      case "DRAFT":
-        return "bg-gray-200 text-gray-800";
-      case "SCHEDULED":
-        return "bg-yellow-200 text-yellow-800";
-      case "PUBLISHED":
-        return "bg-green-200 text-green-800";
-      default:
-        return "bg-gray-200 text-gray-800";
-    }
-  };
 
   useLayoutEffect(() => {
     resetAll();
@@ -125,72 +110,8 @@ export default function PromotionsPageClient({
               <Link
                 href={`/stores/${store.slug}/promotions/${flyer.uid}`}
                 key={flyer.uid}
-                className="flex flex-col justify-between bg-white rounded-lg border border-gray-200 hover:shadow-xl transition"
               >
-                {/* Flyer Image */}
-                {flyer.flyerImageId && (
-                  <Image
-                    src={createCloudinaryUrl(flyer.flyerImageId)}
-                    alt={flyer.title}
-                    width={600}
-                    height={600}
-                    className="w-full rounded-t-lg"
-                  />
-                )}
-
-                {/* Content */}
-                <div className="p-4">
-                  <h3 className="font-bold text-lg mb-2">{flyer.title}</h3>
-
-                  {flyer.description && (
-                    <p className="text-sm text-gray-600 mb-2 line-clamp-2">
-                      {flyer.description}
-                    </p>
-                  )}
-
-                  {/* Status and Dates */}
-                  <div className="space-y-2 mb-4">
-                    {flyer.status !== StorefrontFlyerStatus.Published && <div className="flex items-center justify-between">
-                      <span
-                        className={`px-2 py-1 rounded text-xs font-semibold ${getStatusBadgeColor(
-                          flyer.status,
-                        )}`}
-                      >
-                        {flyer.status}
-                      </span>
-                    </div>}
-                    <p className="italic text-xs">
-                      <span className="bg-yellow-300/50">
-                        {dayjs(flyer.startsAt).format("MMM D")} -{" "}
-                        {dayjs(flyer.expiresAt).format("MMM D")}
-                      </span>
-                    </p>
-                  </div>
-
-                  {/* Actions */}
-                  <div className="flex gap-2">
-                    {flyer.status === "DRAFT" && (
-                      <>
-                        <Link
-                          href={`/stores/${storeSlug}/promotions/${flyer.uid}/edit`}
-                          className="flex-1"
-                        >
-                          <Button className="w-full" size="sm">
-                            Edit
-                          </Button>
-                        </Link>
-                        <Link
-                          href={`/stores/${storeSlug}/promotions/${flyer.uid}`}
-                          className="flex-1"
-                        >
-                          <Button className="w-full" size="sm">
-                            View
-                          </Button>
-                        </Link>
-                      </>
-                    )}
-                  </div>
-                </div>
+                <FlyerCard flyer={flyer as StorefrontFlyer} />
               </Link>
             ))}
           </div>
