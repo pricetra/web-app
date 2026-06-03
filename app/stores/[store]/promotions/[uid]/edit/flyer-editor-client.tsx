@@ -57,7 +57,7 @@ export default function FlyerEditorClient({ flyer }: FlyerEditorClientProps) {
   }, [flyer]);
 
   useEffect(() => {
-    if (publishData?.publishDraftStorefrontFlyer) return;
+    if (!publishData?.publishDraftStorefrontFlyer) return;
 
     router.push(`/stores/${flyer.store?.slug}/promotions/${flyer.uid}`);
     // eslint-disable-next-line react-hooks/exhaustive-deps

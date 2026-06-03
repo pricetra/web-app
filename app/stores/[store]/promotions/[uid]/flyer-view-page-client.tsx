@@ -68,7 +68,7 @@ export default function FlyerViewPageClient({
     <>
       <div className="w-full max-w-[1000px] mt-0 flex-2">
         <div className="w-full">
-          <div className="px-5">
+          <div className="px-0 lg:px-5">
             <div className="px-5 py-4 bg-gray-100 rounded-lg border border-gray-200 mb-7">
               <h1 className="text-2xl font-bold text-pricetra-green-heavy-dark mb-1">
                 {data.storefrontFlyer.title}
@@ -88,7 +88,7 @@ export default function FlyerViewPageClient({
                 {page.sections.map((section) => (
                   <div key={`section-${section.id}`}>
                     {section.heroImageId && (
-                      <div className="px-5">
+                      <div className="px-0 lg:px-5">
                         {/* eslint-disable-next-line @next/next/no-img-element */}
                         <img
                           src={createCloudinaryUrl(section.heroImageId)}

@@ -4,7 +4,7 @@ import { useQuery } from "@apollo/client/react";
 import Link from "next/link";
 import Image from "next/image";
 import dayjs from "dayjs";
-import { Store, StorefrontFlyersDocument } from "graphql-utils";
+import { Store, StorefrontFlyersDocument, StorefrontFlyerStatus } from "graphql-utils";
 import { Button } from "@/components/ui/button";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useAuth } from "@/context/user-context";
@@ -122,16 +122,19 @@ export default function PromotionsPageClient({
         <div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {flyers.map((flyer) => (
-              <div
+              <Link
+                href={`/stores/${store.slug}/promotions/${flyer.uid}`}
                 key={flyer.uid}
-                className="bg-white rounded-lg shadow hover:shadow-lg transition"
+                className="flex flex-col justify-between bg-white rounded-lg border border-gray-200 hover:shadow-xl transition"
               >
                 {/* Flyer Image */}
                 {flyer.flyerImageId && (
                   <Image
-                    src={flyer.flyerImageId}
+                    src={createCloudinaryUrl(flyer.flyerImageId)}
                     alt={flyer.title}
-                    className="w-full h-40 object-cover rounded-t-lg"
+                    width={600}
+                    height={600}
+                    className="w-full rounded-t-lg"
                   />
                 )}
 
@@ -146,8 +149,8 @@ export default function PromotionsPageClient({
                   )}
 
                   {/* Status and Dates */}
-                  <div className="space-y-1 mb-4 text-xs text-gray-600">
-                    <div className="flex items-center justify-between">
+                  <div className="space-y-2 mb-4">
+                    {flyer.status !== StorefrontFlyerStatus.Published && <div className="flex items-center justify-between">
                       <span
                         className={`px-2 py-1 rounded text-xs font-semibold ${getStatusBadgeColor(
                           flyer.status,
@@ -155,14 +158,12 @@ export default function PromotionsPageClient({
                       >
                         {flyer.status}
                       </span>
-                    </div>
-                    <p>
-                      <strong>Starts:</strong>{" "}
-                      {dayjs(flyer.startsAt).format("MMM D, YYYY")}
-                    </p>
-                    <p>
-                      <strong>Ends:</strong>{" "}
-                      {dayjs(flyer.expiresAt).format("MMM D, YYYY")}
+                    </div>}
+                    <p className="italic text-xs">
+                      <span className="bg-yellow-300/50">
+                        {dayjs(flyer.startsAt).format("MMM D")} -{" "}
+                        {dayjs(flyer.expiresAt).format("MMM D")}
+                      </span>
                     </p>
                   </div>
 
@@ -190,7 +191,7 @@ export default function PromotionsPageClient({
                     )}
                   </div>
                 </div>
-              </div>
+              </Link>
             ))}
           </div>
 
