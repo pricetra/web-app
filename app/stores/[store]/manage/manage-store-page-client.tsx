@@ -14,6 +14,7 @@ import ManageBranchList from "@/components/manage/manage-branch-list";
 import CreateBranchForm from "@/components/manage/create-branch-form";
 import CreateStorefrontFlyerForm from "@/components/manage/create-storefront-flyer-form";
 import { startOfNextSundayUTC } from "@/lib/utils";
+import ShowFlyersStorefront from "./components/show-flyers-storefront";
 
 export default function ManageStorePageClient({ store }: { store: Store }) {
   const {
@@ -146,6 +147,8 @@ export default function ManageStorePageClient({ store }: { store: Store }) {
               <CreateStorefrontFlyerForm store={store} />
             </div>
           )}
+
+          <ShowFlyersStorefront store={store} />
         </section>
       </div>
     </>

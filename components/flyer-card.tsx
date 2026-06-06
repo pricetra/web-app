@@ -1,10 +1,22 @@
 import { createCloudinaryUrl } from "@/lib/files";
 import dayjs from "dayjs";
-import { StorefrontFlyer, StorefrontFlyerStatus } from "graphql-utils";
+import {
+  DeleteStorefrontFlyerDocument,
+  Store,
+  StorefrontFlyer,
+  StorefrontFlyersDocument,
+  StorefrontFlyerStatus,
+} from "graphql-utils";
 import Image from "next/image";
+import { Button } from "./ui/button";
+import { useRouter } from "next/navigation";
+import { useMutation } from "@apollo/client/react";
+import { useEffect } from "react";
+import { toast } from "sonner";
 
 export type FlyerCardProps = {
   flyer: StorefrontFlyer;
+  store: Store;
 };
 
 const getStatusBadgeColor = (status: string) => {
@@ -20,7 +32,19 @@ const getStatusBadgeColor = (status: string) => {
   }
 };
 
-export default function FlyerCard({ flyer }: FlyerCardProps) {
+export default function FlyerCard({ flyer, store }: FlyerCardProps) {
+  const router = useRouter();
+  const [deleteFlyer, { error, loading }] = useMutation(
+    DeleteStorefrontFlyerDocument,
+    { refetchQueries: [StorefrontFlyersDocument] },
+  );
+
+  useEffect(() => {
+    if (!error) return;
+
+    toast.error(`Could not delete flyer: ${error.message}`)
+  }, [error]);
+
   return (
     <div className="flex flex-col justify-between bg-white rounded-lg border border-gray-200 hover:shadow-xl transition">
       {/* Flyer Image */}
@@ -63,6 +87,38 @@ export default function FlyerCard({ flyer }: FlyerCardProps) {
               {dayjs(flyer.expiresAt).format("MMM D")}
             </span>
           </p>
+        </div>
+
+        <div className="flex flex-row items-center gap-2">
+          <Button
+            onClick={(e) => {
+              e.preventDefault();
+              router.push(`/stores/${store.slug}/promotions/${flyer.uid}/edit`);
+            }}
+            variant="outline"
+            size="xs"
+            disabled={loading}
+          >
+            Edit
+          </Button>
+
+          <Button
+            onClick={(e) => {
+              e.preventDefault();
+              const yes = window.confirm(
+                "Are you sure you want to delete this flyer?",
+              );
+              if (!yes) return;
+
+              deleteFlyer({ variables: { flyerId: flyer.id } });
+            }}
+            variant="outline"
+            size="xs"
+            className="border-red-400 text-red-600 hover:border-destructive hover:bg-destructive hover:text-white"
+            disabled={loading}
+          >
+            Delete
+          </Button>
         </div>
       </div>
     </div>

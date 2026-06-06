@@ -2,7 +2,11 @@
 
 import { useQuery } from "@apollo/client/react";
 import Link from "next/link";
-import { Store, StorefrontFlyer, StorefrontFlyersDocument } from "graphql-utils";
+import {
+  Store,
+  StorefrontFlyer,
+  StorefrontFlyersDocument,
+} from "graphql-utils";
 import { Button } from "@/components/ui/button";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { useAuth } from "@/context/user-context";
@@ -105,13 +109,13 @@ export default function PromotionsPageClient({
         </div>
       ) : (
         <div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {flyers.map((flyer) => (
               <Link
                 href={`/stores/${store.slug}/promotions/${flyer.uid}`}
                 key={flyer.uid}
               >
-                <FlyerCard flyer={flyer as StorefrontFlyer} />
+                <FlyerCard flyer={flyer as StorefrontFlyer} store={store} />
               </Link>
             ))}
           </div>
