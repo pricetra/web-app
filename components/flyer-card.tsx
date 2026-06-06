@@ -13,6 +13,7 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "@apollo/client/react";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import useStoreUser from "@/hooks/useStoreUser";
 
 export type FlyerCardProps = {
   flyer: StorefrontFlyer;
@@ -33,11 +34,13 @@ const getStatusBadgeColor = (status: string) => {
 };
 
 export default function FlyerCard({ flyer, store }: FlyerCardProps) {
+  const storeUsers = useStoreUser();
   const router = useRouter();
   const [deleteFlyer, { error, loading }] = useMutation(
     DeleteStorefrontFlyerDocument,
     { refetchQueries: [StorefrontFlyersDocument] },
   );
+  const isStoreUserForFlyer = storeUsers?.find(su => su.storeId === flyer.storeId)
 
   useEffect(() => {
     if (!error) return;
@@ -90,7 +93,7 @@ export default function FlyerCard({ flyer, store }: FlyerCardProps) {
         </div>
 
         <div className="flex flex-row items-center gap-2">
-          <Button
+          {flyer.status === StorefrontFlyerStatus.Draft && <Button
             onClick={(e) => {
               e.preventDefault();
               router.push(`/stores/${store.slug}/promotions/${flyer.uid}/edit`);
@@ -100,9 +103,9 @@ export default function FlyerCard({ flyer, store }: FlyerCardProps) {
             disabled={loading}
           >
             Edit
-          </Button>
+          </Button>}
 
-          <Button
+          {isStoreUserForFlyer && <Button
             onClick={(e) => {
               e.preventDefault();
               const yes = window.confirm(
@@ -118,7 +121,7 @@ export default function FlyerCard({ flyer, store }: FlyerCardProps) {
             disabled={loading}
           >
             Delete
-          </Button>
+          </Button>}
         </div>
       </div>
     </div>
