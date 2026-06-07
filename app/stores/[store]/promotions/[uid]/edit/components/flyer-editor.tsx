@@ -4,24 +4,29 @@ import { useNavbar } from "@/context/navbar-context";
 import { useFlyerEditor } from "@/context/flyer-editor-context";
 import {
   Product,
+  PublishDraftStorefrontFlyerDocument,
   Stock,
   StorefrontFlyerDocument,
   StorefrontFlyerFormat,
   StorefrontFlyerItemInput,
   StorefrontFlyerPageInput,
   StorefrontFlyerSectionInput,
+  StorefrontFlyerStatus,
 } from "graphql-utils";
-import { useLazyQuery } from "@apollo/client/react";
+import { useLazyQuery, useMutation } from "@apollo/client/react";
 import { CgSpinner } from "react-icons/cg";
 import EditorPanel from "./editor-panel";
 import { IoMdAddCircleOutline } from "react-icons/io";
 import useFlyerLayoutSize from "@/hooks/useFlyerLayoutSize";
 import { createCloudinaryUrl } from "@/lib/files";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 export type FlyerEditorSectionProps = object;
 
 export default function FlyerEditor({}: FlyerEditorSectionProps) {
-  const { navbarHeight } = useNavbar();
+  const router = useRouter();
+  const { navbarHeight, setNavTools } = useNavbar();
   const {
     flyer,
     flyerStyles,
@@ -35,6 +40,8 @@ export default function FlyerEditor({}: FlyerEditorSectionProps) {
     addToSubmittedPages,
   } = useFlyerEditor();
   const size = useFlyerLayoutSize(flyerStyles.format as StorefrontFlyerFormat);
+  const [publishDraftFlyer, { data: publishData, loading: publishing }] =
+    useMutation(PublishDraftStorefrontFlyerDocument);
   const [
     getStorefrontFlyerWithPages,
     { data: flyerWithPagesData, loading: flyerWithPagesLoading },
@@ -46,6 +53,40 @@ export default function FlyerEditor({}: FlyerEditorSectionProps) {
     }),
     [navbarHeight],
   );
+
+  function handlePublishFlyer() {
+    const unSubmittedPages = pagesInput.some((_, i) => !submittedPages.has(i+1));
+    if (unSubmittedPages) {
+      const yes = window.confirm("Your last page was not saved. Make sure to save in order to publish your flyer.");
+      if (!yes) return;
+    }
+
+    publishDraftFlyer({ variables: { id: flyer.id } });
+  }
+
+  useEffect(() => {
+    if (flyer.status !== StorefrontFlyerStatus.Draft) return;
+
+    setNavTools(
+      <Button
+        onClick={handlePublishFlyer}
+        variant="pricetra"
+        size="xs"
+        disabled={publishing}
+      >
+        {publishing && <CgSpinner className="animate-spin" />}
+        Publish Flyer
+      </Button>,
+    );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [flyer, handlePublishFlyer, publishing]);
+
+  useEffect(() => {
+    if (!publishData?.publishDraftStorefrontFlyer) return;
+
+    router.push(`/stores/${flyer.store?.slug}/promotions/${flyer.uid}`);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [publishData]);
 
   useEffect(() => {
     getStorefrontFlyerWithPages({
