@@ -28,8 +28,11 @@ import {
 } from "@/components/ui/dialog";
 import BranchPriceForm from "@/components/product-form/branch-price-form";
 import ManualBarcodeForm from "@/app/scan/components/manual-barcode-form";
+import { CreateFlyerForm } from "@/components/flyer/create-flyer-form";
+import { FlyerEditorClient } from "@/components/flyer/flyer-editor-client";
 import { toast } from "sonner";
 import { MdAdd } from "react-icons/md";
+import type { FlyerFormat } from "graphql-utils";
 
 const PRODUCTS_PER_PAGE = 30;
 
@@ -53,6 +56,8 @@ export default function ManageBranchPageClient({
   const [saleOnly, setSaleOnly] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [showCreateFlyer, setShowCreateFlyer] = useState(false);
+  const [activeFlyer, setActiveFlyer] = useState<{ id: string; uid: string; format: FlyerFormat } | null>(null);
 
   const debouncedSetQuery = useMemo(
     () =>
@@ -304,9 +309,63 @@ export default function ManageBranchPageClient({
                   onPageChange={(p) => setPage(p)}
                 />
               </div>
-            )}
-        </section>
-      </div>
-    </>
+
+        {/* Flyers */}
+        <section className="mb-10">
+          <div className="flex flex-row items-center justify-between mb-4">
+            <h2 className="text-lg font-bold">Flyers</h2>
+            <Button
+              variant="pricetra"
+              size="xs"
+              onClick={() => {
+                setShowCreateFlyer(!showCreateFlyer);
+                setActiveFlyer(null);
+              }}
+            >
+              <MdAdd /> Create Flyer
+            </Button>
+          </div>
+
+          {showCreateFlyer && !activeFlyer ? (
+            <div className="mb-6 p-4 border border-gray-200 rounded-lg">
+              <h3 className="font-medium mb-4">Create New Flyer</h3>
+              <CreateFlyerForm
+                storeId={store.id}
+                branchId={branch.id}
+                onFlyerCreated={(flyerId, flyerUID, format) => {
+                  setActiveFlyer({ id: flyerId, uid: flyerUID, format });
+                }}
+              />
+            </div>
+          ) : null}
+
+          {activeFlyer ? (
+            <div className="p-4 border border-gray-200 rounded-lg">
+              <div className="flex gap-2 mb-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setActiveFlyer(null)}
+                >
+                  ← Back to Create
+                </Button>
+              </div>
+              <FlyerEditorClient
+                flyerId={parseInt(activeFlyer.id)}
+                storeId={store.id}
+                branchId={branch.id}
+                storeName={store.name}
+                format={activeFlyer.format}
+                flyerTitle="New Flyer"
+                onPageCreated={() => {
+                  // Refresh flyer data if needed
+                }}
+                onPublishReady={() => {
+                  // Handle publish ready
+                }}
+              />
+            </div>
+          ) : null}
+        </section>   </>
   );
 }

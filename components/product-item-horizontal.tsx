@@ -38,8 +38,15 @@ export default function ProductItemHorizontal({
   });
   const pricePerUnit = usePricePerUnit(calculatedAmount, product);
   const href = useMemo(() => {
-    return `/products/${product.id}-${slugifyProductName(product.name)}${branchSlug ? `/${branchSlug}` : ""}`;
-  }, [product.id, product.name, branchSlug]);
+    let trail = '';
+    if (branchSlug) {
+      trail = `/${branchSlug}`;
+    } else if (product.stock) {
+      trail = `?stockId=${product.stock.id}`;
+    }
+
+    return `/products/${product.id}-${slugifyProductName(product.name)}${trail}`;
+  }, [product.id, product.name, product.stock, branchSlug]);
   const [image, setImage] = useState(productImageUrlWithTimestamp(product, 500));
 
   return (
