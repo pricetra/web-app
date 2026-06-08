@@ -147,7 +147,7 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                   Sign up for Pricetra Business
                 </FieldLegend>
                 <FieldDescription>
-                  Leverage our online store platform and grow your store today.
+                  Leverage our online store platform and grow your retail business today.
                 </FieldDescription>
               </FieldSet>
 
@@ -315,7 +315,7 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                       <FieldDescription>
                         pricetra.com/stores/
                         <b className="text-zinc-700">
-                          {slugify(formik.values.storeName, { lower: true })}
+                          {slugify(formik.values.storeName, { lower: true, strict: true })}
                         </b>
                       </FieldDescription>
                     )}
@@ -449,8 +449,8 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                       required
                     />
 
-                    <FieldDescription className="flex flex-row gap-2">
-                      <HiMiniInformationCircle className="text-2xl inline-block" />{" "}
+                    <FieldDescription className="flex flex-row gap-2 text-sm">
+                      <HiMiniInformationCircle className="inline-block" />{" "}
                       <span className="text-sm">
                         Your website or your primary social media URL
                       </span>
