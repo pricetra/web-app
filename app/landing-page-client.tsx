@@ -32,6 +32,14 @@ import useLocationInput from "@/hooks/useLocationInput";
 import ScrollContainer from "@/components/scroll-container";
 import LandingFooter from "@/components/ui/landing-footer";
 import { useRouter } from "next/navigation";
+import {
+  Search,
+  Barcode,
+  MapPin,
+  TrendingDown,
+  ListChecks,
+  Heart,
+} from "lucide-react";
 
 const paginator: PaginatorInput = { page: 1, limit: 3 };
 const productLimit = 10;
@@ -76,207 +84,519 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
 
   return (
     <div className="min-h-screen flex flex-col bg-white overflow-x-hidden">
+      {/* Header */}
       <LandingHeader />
 
-      {/* Hero */}
-      <section className="relative max-w-full sm:container mx-auto flex flex-row gap-5 justify-between items-center py-6 md:py-10">
-        <div className="px-6 md:px-8 py-12 md:py-20 flex-1">
-          <div className="text-center relative z-10" data-aos="fade-down">
-            <div className="max-w-4xl mx-auto">
-              <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-slate-900 leading-tight">
-                Beat Inflation. <span>Track Prices.</span>{" "}
-                <span className="text-pricetra-green-dark">Save Money.</span>
-              </h1>
-            </div>
-            <p className="mt-5 text-base sm:text-lg md:text-xl text-slate-800 max-w-3xl mx-auto">
-              Pricetra is a community-powered price tracking app that helps
-              shoppers discover the best deals nearby. Compare prices, and get
-              notified when prices change.
+      {/* Hero Section */}
+      <section className="relative py-12 md:py-20 bg-white">
+        <div className="container mx-auto px-6 md:px-8">
+          <div className="max-w-4xl" data-aos="fade-up">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 leading-tight mb-6">
+              Find products. Compare prices. Shop smarter.
+            </h1>
+            <p className="text-lg md:text-xl text-slate-600 mb-8 leading-relaxed max-w-2xl">
+              Search products, compare prices across stores, discover local
+              retailers, and get notified when prices drop.
             </p>
 
             {!loggedIn && (
-              <div>
-                <div className="mt-8 flex flex-row items-center justify-center gap-5 flex-wrap">
-                  <Link
-                    href="/auth/signup"
-                    className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-8 py-3 text-base md:text-lg font-bold rounded-lg shadow-md hover:shadow-lg transition-all"
-                  >
-                    Start for Free
-                  </Link>
-                  <a
-                    href="#showcase"
-                    className="border-slate-300 text-slate-700 hover:text-slate-900 hover:bg-slate-100 px-5 py-3 rounded-lg"
-                  >
-                    Learn More
-                  </a>
-                </div>
-                <p className="mt-3 text-xs md:text-sm text-slate-500">
-                  No credit card required • Free forever
-                </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link
+                  href="/auth/signup"
+                  className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-8 py-3 text-base md:text-lg font-semibold rounded-lg transition-colors inline-block text-center"
+                >
+                  Start Exploring
+                </Link>
+                <a
+                  href="#showcase"
+                  className="border-2 border-slate-300 text-slate-900 hover:bg-slate-50 px-8 py-3 rounded-lg font-semibold transition-colors inline-block text-center"
+                >
+                  Learn More
+                </a>
               </div>
             )}
           </div>
-        </div>
 
-        {/* Floating Phone Background */}
-        <div className="pointer-events-none hidden md:block">
-          <div
-            className="relative rounded-4xl p-2 shadow-2xl transform rotate-6 bg-gray-100"
-            data-aos="fade-up"
-          >
-            <Image
-              src="https://res.cloudinary.com/pricetra-cdn/image/upload/homepage-main-screenshot.png"
-              alt="Pricetra Mobile App"
-              width={280}
-              height={560}
-              quality={100}
-              className="md:w-52 lg:w-60 xl:w-64 h-auto rounded-3xl"
-            />
+          {/* Hero Visual - Mock UI Elements */}
+          <div className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Product Card Mock */}
+            <div
+              className="bg-slate-50 rounded-2xl p-6 border border-slate-200"
+              data-aos="fade-up"
+              data-aos-delay="100"
+            >
+              <div className="bg-slate-200 h-32 rounded-lg mb-4" />
+              <h3 className="font-semibold text-slate-900 mb-2">Product Name</h3>
+              <p className="text-sm text-slate-600 mb-4">Organic milk • 1L</p>
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl font-bold text-pricetra-green-dark">
+                  $2.99
+                </span>
+                <span className="text-sm text-slate-500 line-through">
+                  $3.49
+                </span>
+              </div>
+            </div>
+
+            {/* Store Card Mock */}
+            <div
+              className="bg-slate-50 rounded-2xl p-6 border border-slate-200"
+              data-aos="fade-up"
+              data-aos-delay="150"
+            >
+              <div className="flex items-center gap-3 mb-4">
+                <div className="bg-slate-300 h-12 w-12 rounded-lg" />
+                <h3 className="font-semibold text-slate-900">Store Name</h3>
+              </div>
+              <p className="text-sm text-slate-600 mb-3">📍 0.5 mi away</p>
+              <div className="flex gap-2">
+                <div className="h-2 bg-pricetra-green-dark rounded-full flex-1" />
+                <div className="h-2 bg-slate-200 rounded-full flex-1" />
+              </div>
+              <p className="text-xs text-slate-500 mt-2">3 of 5 items in stock</p>
+            </div>
+
+            {/* Price Comparison Mock */}
+            <div
+              className="bg-slate-50 rounded-2xl p-6 border border-slate-200"
+              data-aos="fade-up"
+              data-aos-delay="200"
+            >
+              <h3 className="font-semibold text-slate-900 mb-4">Available at</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-slate-700">Store A</span>
+                  <span className="font-semibold text-slate-900">$2.99</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-slate-700">Store B</span>
+                  <span className="font-semibold text-slate-900">$3.19</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-slate-700">Store C</span>
+                  <span className="font-semibold text-slate-900">$3.49</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section
-        className="relative w-full max-w-[1000px] mx-auto mt-5 mb-16"
-        data-aos="fade-up"
-      >
-        <section className="grid grid-cols-5 md:grid-cols-10 gap-x-2 gap-y-5 sm:gap-5 px-5 mb-10">
-          {!allStoresData ? (
-            Array(10)
-              .fill(0)
-              .map((_, i) => <StoreMiniLoading key={`store-loading-${i}`} />)
-          ) : (
-            <>
-              {allStoresData.allStores.stores.map((store) => (
-                <StoreMini store={store} key={`store-${store.id}`} />
-              ))}
-              <StoreMiniShowMore />
-            </>
-          )}
-        </section>
-
-        <section className="flex flex-col my-10 relative">
-          {!branchesWithProducts
-            ? Array(3)
-                .fill(0)
-                .map((_, i) => (
-                  <article
-                    className="my-7"
-                    key={`branch-with-product-loading-${i}`}
-                  >
-                    <div className="mb-5 px-5">
-                      <BranchItemWithLogoLoading />
-                    </div>
-
-                    <ScrollContainer hideButtons>
-                      {Array(10)
-                        .fill(0)
-                        .map((_, j) => (
-                          <ProductLoadingItemHorizontal
-                            key={`branch-product-${i}-${j}`}
-                          />
-                        ))}
-                    </ScrollContainer>
-                  </article>
-                ))
-            : branchesWithProducts.branchesWithProducts.branches.map(
-                (branch) => (
-                  <article
-                    className="my-7"
-                    key={`branch-with-product-${branch.id}`}
-                  >
-                    <div className="mb-5 px-5">
-                      <BranchItemWithLogo branch={branch as Branch} />
-                    </div>
-
-                    <ScrollContainer>
-                      {(branch.products ?? []).map((product) => (
-                        <ProductItemHorizontal
-                          product={product as Product}
-                          branchSlug={branch.slug}
-                          key={`branch-product-${branch.id}-${product.id}`}
-                        />
-                      ))}
-                    </ScrollContainer>
-                  </article>
-                ),
-              )}
-
-          <div>
-            <div className="absolute bottom-0 left-0 w-full z-2">
-              <div className="inset-x-0 h-[50vh] bg-gradient-to-t from-white **from-[90%]**" />
-              <div className="h-20 bg-white w-full" />
-            </div>
-            <div className="absolute bottom-20 left-0 flex flex-row items-center justify-center w-full">
-              <Link
-                href="/home"
-                className="block bg-pricetra-green-heavy-dark hover:bg-pricetra-green-heavy-dark-hover text-white font-bold py-3 px-8 md:py-4 md:px-10 rounded-full text-base md:text-lg z-3 shadow-md hover:shadow-lg"
-              >
-                Browse More
-              </Link>
-            </div>
-          </div>
-        </section>
-      </section>
-
-      {/* Mobile App Showcase */}
-      <section className="bg-white py-16 md:py-20" id="showcase">
+      {/* Feature Grid Section */}
+      <section className="py-16 md:py-24 bg-slate-50">
         <div className="container mx-auto px-6 md:px-8">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-4xl font-bold text-slate-900 mb-4">
-              See Pricetra in action
+          <div className="max-w-2xl mx-auto text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+              Everything you need before you shop
             </h2>
-            <p className="text-slate-600 max-w-2xl mx-auto">
-              Our mobile app makes it easy to track prices, compare deals, and
-              contribute to the community from anywhere.
+            <p className="text-slate-600">
+              Discover products and stores with tools designed for smarter
+              shopping.
             </p>
           </div>
-        </div>
 
-        <div className="container mx-auto">
-          <div className="flex overflow-x-auto snap-x snap-mandatory gap-6 pb-10 mask-[linear-gradient(to_right,transparent_0,black_2em,black_calc(100%-2em),transparent_100%)] px-24">
-            {screenshots.map((props, i) => (
-              <ScreenshotShowcasePanel {...props} key={`screenshot-${i}`} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section className="bg-slate-50">
-        <div className="container mx-auto px-6 md:px-8 py-14 md:py-16">
-          <h2 className="text-center text-2xl md:text-4xl font-bold text-slate-900">
-            How Pricetra works
-          </h2>
-          <div className="max-w-4xl mx-auto mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-            {steps.map((props, i) => (
-              <StepsPanel step={i + 1} {...props} key={`step-${i}`} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA */}
-      <section className="bg-white">
-        <div className="container mx-auto px-6 md:px-8 py-12 md:py-16 text-center">
-          <h2 className="text-2xl md:text-4xl font-bold text-slate-900">
-            Start saving on your next grocery run
-          </h2>
-          <p className="mt-3 text-slate-600 max-w-2xl mx-auto">
-            Join the community that keeps prices honest and helps everyone shop
-            smarter.
-          </p>
-          <div className="mt-6">
-            <Link
-              href="/auth/signup"
-              className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-8 py-3 font-semibold rounded-lg"
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {/* Feature 1 */}
+            <div
+              className="bg-white rounded-xl p-8 border border-slate-200 hover:border-slate-300 transition-colors"
+              data-aos="fade-up"
             >
-              Create your free account
+              <Search className="w-8 h-8 text-pricetra-green-dark mb-4" />
+              <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                Discover Products
+              </h3>
+              <p className="text-slate-600">
+                Find products across local and national retailers in seconds.
+              </p>
+            </div>
+
+            {/* Feature 2 */}
+            <div
+              className="bg-white rounded-xl p-8 border border-slate-200 hover:border-slate-300 transition-colors"
+              data-aos="fade-up"
+              data-aos-delay="100"
+            >
+              <TrendingDown className="w-8 h-8 text-pricetra-green-dark mb-4" />
+              <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                Compare Prices
+              </h3>
+              <p className="text-slate-600">
+                See pricing and promotions from multiple stores instantly.
+              </p>
+            </div>
+
+            {/* Feature 3 */}
+            <div
+              className="bg-white rounded-xl p-8 border border-slate-200 hover:border-slate-300 transition-colors"
+              data-aos="fade-up"
+              data-aos-delay="200"
+            >
+              <MapPin className="w-8 h-8 text-pricetra-green-dark mb-4" />
+              <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                Find Availability
+              </h3>
+              <p className="text-slate-600">
+                Know where products are available before leaving home.
+              </p>
+            </div>
+
+            {/* Feature 4 */}
+            <div
+              className="bg-white rounded-xl p-8 border border-slate-200 hover:border-slate-300 transition-colors"
+              data-aos="fade-up"
+              data-aos-delay="300"
+            >
+              <Barcode className="w-8 h-8 text-pricetra-green-dark mb-4" />
+              <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                Scan Barcodes
+              </h3>
+              <p className="text-slate-600">
+                Scan UPC codes to instantly find products and prices.
+              </p>
+            </div>
+
+            {/* Feature 5 */}
+            <div
+              className="bg-white rounded-xl p-8 border border-slate-200 hover:border-slate-300 transition-colors"
+              data-aos="fade-up"
+              data-aos-delay="400"
+            >
+              <ListChecks className="w-8 h-8 text-pricetra-green-dark mb-4" />
+              <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                Create Lists
+              </h3>
+              <p className="text-slate-600">
+                Organize products and plan grocery trips with shopping lists.
+              </p>
+            </div>
+
+            {/* Feature 6 */}
+            <div
+              className="bg-white rounded-xl p-8 border border-slate-200 hover:border-slate-300 transition-colors"
+              data-aos="fade-up"
+              data-aos-delay="500"
+            >
+              <TrendingDown className="w-8 h-8 text-pricetra-green-dark mb-4" />
+              <h3 className="text-xl font-semibold text-slate-900 mb-2">
+                Track Prices
+              </h3>
+              <p className="text-slate-600">
+                Get notified about price drops and sales on your favorite items.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Why Use Pricetra Section */}
+      <section className="py-16 md:py-24 bg-white">
+        <div className="container mx-auto px-6 md:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            {/* Left Side - Benefits List */}
+            <div data-aos="fade-right">
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">
+                Why shoppers choose Pricetra
+              </h2>
+              <ul className="space-y-4">
+                {[
+                  "Compare prices at nearby stores instantly",
+                  "Discover local and national retailers",
+                  "Track sales and special promotions",
+                  "Save your favorite products",
+                  "Build and manage shopping lists",
+                  "Follow stores for new updates",
+                ].map((benefit, i) => (
+                  <li key={i} className="flex items-start gap-3">
+                    <div className="flex-shrink-0 w-6 h-6 rounded-full bg-pricetra-green-dark flex items-center justify-center mt-0.5">
+                      <svg
+                        className="w-4 h-4 text-white"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                    </div>
+                    <span className="text-slate-700">{benefit}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Right Side - Mock Search Results */}
+            <div data-aos="fade-left">
+              <div className="bg-slate-50 rounded-2xl p-8 border border-slate-200">
+                <h3 className="font-semibold text-slate-900 mb-6">
+                  Search example: "Milk"
+                </h3>
+
+                {/* Result Card 1 */}
+                <div className="mb-6 pb-6 border-b border-slate-200">
+                  <h4 className="font-semibold text-slate-900 mb-3">
+                    Whole Milk • 1L
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-600">Jewel-Osco</span>
+                      <span className="font-semibold text-pricetra-green-dark">
+                        $2.99
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-600">Walmart</span>
+                      <span className="font-semibold text-slate-900">$3.19</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-600">Target</span>
+                      <span className="font-semibold text-slate-900">$3.49</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Result Card 2 */}
+                <div>
+                  <h4 className="font-semibold text-slate-900 mb-3">
+                    Almond Milk • 1L
+                  </h4>
+                  <div className="space-y-2 text-sm">
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-600">Whole Foods</span>
+                      <span className="font-semibold text-pricetra-green-dark">
+                        $3.49
+                      </span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-600">Jewel-Osco</span>
+                      <span className="font-semibold text-slate-900">$3.99</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-slate-600">Safeway</span>
+                      <span className="font-semibold text-slate-900">$4.19</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Store Logos Section */}
+      <section
+        className="relative w-full max-w-[1000px] mx-auto py-16 md:py-20"
+        data-aos="fade-up"
+      >
+        <div className="container mx-auto px-6 md:px-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 text-center mb-10">
+            Shop at your favorite stores
+          </h2>
+          <section className="grid grid-cols-5 md:grid-cols-10 gap-x-2 gap-y-5 sm:gap-5">
+            {!allStoresData ? (
+              Array(10)
+                .fill(0)
+                .map((_, i) => <StoreMiniLoading key={`store-loading-${i}`} />)
+            ) : (
+              <>
+                {allStoresData.allStores.stores.map((store) => (
+                  <StoreMini store={store} key={`store-${store.id}`} />
+                ))}
+                <StoreMiniShowMore />
+              </>
+            )}
+          </section>
+        </div>
+      </section>
+
+      {/* Nearby Stores + Products Section */}
+      <section className="bg-slate-50 py-16 md:py-20">
+        <div className="container mx-auto px-6 md:px-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-12">
+            What's available near you
+          </h2>
+
+          <div className="flex flex-col my-10 relative">
+            {!branchesWithProducts
+              ? Array(3)
+                  .fill(0)
+                  .map((_, i) => (
+                    <article className="my-7" key={`branch-with-product-loading-${i}`}>
+                      <div className="mb-5">
+                        <BranchItemWithLogoLoading />
+                      </div>
+
+                      <ScrollContainer hideButtons>
+                        {Array(10)
+                          .fill(0)
+                          .map((_, j) => (
+                            <ProductLoadingItemHorizontal
+                              key={`branch-product-${i}-${j}`}
+                            />
+                          ))}
+                      </ScrollContainer>
+                    </article>
+                  ))
+              : branchesWithProducts.branchesWithProducts.branches.map(
+                  (branch) => (
+                    <article
+                      className="my-7"
+                      key={`branch-with-product-${branch.id}`}
+                    >
+                      <div className="mb-5">
+                        <BranchItemWithLogo branch={branch as Branch} />
+                      </div>
+
+                      <ScrollContainer>
+                        {(branch.products ?? []).map((product) => (
+                          <ProductItemHorizontal
+                            product={product as Product}
+                            branchSlug={branch.slug}
+                            key={`branch-product-${branch.id}-${product.id}`}
+                          />
+                        ))}
+                      </ScrollContainer>
+                    </article>
+                  ),
+                )}
+
+            <div>
+              <div className="absolute bottom-0 left-0 w-full z-2">
+                <div className="inset-x-0 h-[50vh] bg-gradient-to-t from-slate-50 from-[90%]" />
+                <div className="h-20 bg-slate-50 w-full" />
+              </div>
+              <div className="absolute bottom-20 left-0 flex flex-row items-center justify-center w-full">
+                <Link
+                  href="/home"
+                  className="block bg-pricetra-green-heavy-dark hover:bg-pricetra-green-heavy-dark-hover text-white font-semibold py-3 px-8 md:py-4 md:px-10 rounded-full text-base md:text-lg z-3 transition-colors"
+                >
+                  Browse All Products
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Product Discovery Flywheel */}
+      <section className="py-16 md:py-24 bg-white">
+        <div className="container mx-auto px-6 md:px-8">
+          <div className="max-w-2xl mx-auto text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+              Discover more than just prices
+            </h2>
+            <p className="text-slate-600">
+              Pricetra connects you with products, stores, and deals all in one
+              place.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Products Card */}
+            <div
+              className="bg-slate-50 rounded-2xl p-8 border border-slate-200 text-center"
+              data-aos="fade-up"
+            >
+              <div className="w-16 h-16 bg-pricetra-green-dark rounded-full flex items-center justify-center mx-auto mb-6">
+                <Search className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">Products</h3>
+              <p className="text-slate-600">
+                Search and explore thousands of products from your favorite
+                brands.
+              </p>
+            </div>
+
+            {/* Stores Card */}
+            <div
+              className="bg-slate-50 rounded-2xl p-8 border border-slate-200 text-center"
+              data-aos="fade-up"
+              data-aos-delay="100"
+            >
+              <div className="w-16 h-16 bg-pricetra-green-dark rounded-full flex items-center justify-center mx-auto mb-6">
+                <MapPin className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">Stores</h3>
+              <p className="text-slate-600">
+                Discover local and national retailers near you with real-time
+                information.
+              </p>
+            </div>
+
+            {/* Deals Card */}
+            <div
+              className="bg-slate-50 rounded-2xl p-8 border border-slate-200 text-center"
+              data-aos="fade-up"
+              data-aos-delay="200"
+            >
+              <div className="w-16 h-16 bg-pricetra-green-dark rounded-full flex items-center justify-center mx-auto mb-6">
+                <TrendingDown className="w-8 h-8 text-white" />
+              </div>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">Deals</h3>
+              <p className="text-slate-600">
+                Find promotions, sales, and price drops on products you care
+                about.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Business CTA Section */}
+      <section className="py-16 md:py-20 bg-slate-50">
+        <div className="container mx-auto px-6 md:px-8">
+          <div className="max-w-2xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+              Own a store?
+            </h2>
+            <p className="text-slate-600 mb-8 text-lg">
+              Showcase products, prices, inventory, and promotions to shoppers
+              actively searching for what you sell.
+            </p>
+            <Link
+              href="/business"
+              className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-8 py-3 font-semibold rounded-lg inline-block transition-colors"
+            >
+              Learn About Pricetra for Business
             </Link>
           </div>
         </div>
       </section>
 
+      {/* Final CTA Section */}
+      <section className="py-16 md:py-24 bg-white">
+        <div className="container mx-auto px-6 md:px-8">
+          <div className="max-w-2xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+              Start discovering products today
+            </h2>
+            <p className="text-slate-600 mb-8 text-lg">
+              Join shoppers using Pricetra to find products, compare prices,
+              and discover stores nearby.
+            </p>
+
+            {!loggedIn && (
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link
+                  href="/auth/signup"
+                  className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-8 py-3 text-base md:text-lg font-semibold rounded-lg transition-colors inline-block text-center"
+                >
+                  Create Free Account
+                </Link>
+                <Link
+                  href="/home"
+                  className="border-2 border-pricetra-green-dark text-pricetra-green-dark hover:bg-green-50 px-8 py-3 text-base md:text-lg font-semibold rounded-lg transition-colors inline-block text-center"
+                >
+                  Browse Products
+                </Link>
+              </div>
+            )}
+          </div>
+        </div>
+      </section>
+
+      {/* Footer */}
       <LandingFooter />
     </div>
   );
