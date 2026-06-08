@@ -105,7 +105,7 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
           {
             firstName: parsedName?.firstName ?? "",
             lastName: parsedName?.lastName ?? "",
-            email: "",
+            email: user?.email ?? "",
             storeName: "",
             storeAddress: "",
             storeUrl: "",
