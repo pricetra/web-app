@@ -165,12 +165,12 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
 
       {/* Nearby Stores + Products Section */}
       <section className="bg-slate-50 py-16 md:py-20">
-        <div className="container mx-auto px-6 md:px-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-12">
+        <div className="max-w-full md:container mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-12 px-6 md:px-8">
             {`What's`} available near you
           </h2>
 
-          <div className="flex flex-col my-10 relative">
+          <div className="flex flex-col my-10 relative px-0">
             {!branchesWithProducts
               ? Array(3)
                   .fill(0)
@@ -179,7 +179,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                       className="my-7"
                       key={`branch-with-product-loading-${i}`}
                     >
-                      <div className="mb-5">
+                      <div className="mb-5 px-8">
                         <BranchItemWithLogoLoading />
                       </div>
 
@@ -200,7 +200,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                       className="my-7"
                       key={`branch-with-product-${branch.id}`}
                     >
-                      <div className="mb-5">
+                      <div className="mb-5 px-8">
                         <BranchItemWithLogo branch={branch as Branch} />
                       </div>
 
