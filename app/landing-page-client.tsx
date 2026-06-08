@@ -1,10 +1,5 @@
 "use client";
 
-import StepsPanel, { steps } from "@/components/landing-page/screenshot";
-import ScreenshotShowcasePanel, {
-  screenshots,
-} from "@/components/landing-page/steps-panel";
-import Image from "next/image";
 import Link from "@/components/ui/link";
 import {
   AllStoresDocument,
@@ -38,7 +33,6 @@ import {
   MapPin,
   TrendingDown,
   ListChecks,
-  Heart,
 } from "lucide-react";
 
 const paginator: PaginatorInput = { page: 1, limit: 3 };
@@ -116,66 +110,98 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
               </div>
             )}
           </div>
+        </div>
+      </section>
 
-          {/* Hero Visual - Mock UI Elements */}
-          <div className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Product Card Mock */}
-            <div
-              className="bg-slate-50 rounded-2xl p-6 border border-slate-200"
-              data-aos="fade-up"
-              data-aos-delay="100"
-            >
-              <div className="bg-slate-200 h-32 rounded-lg mb-4" />
-              <h3 className="font-semibold text-slate-900 mb-2">Product Name</h3>
-              <p className="text-sm text-slate-600 mb-4">Organic milk • 1L</p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-pricetra-green-dark">
-                  $2.99
-                </span>
-                <span className="text-sm text-slate-500 line-through">
-                  $3.49
-                </span>
-              </div>
-            </div>
+            {/* Store Logos Section */}
+      <section
+        className="relative w-full max-w-[1000px] mx-auto py-16 md:py-20"
+        data-aos="fade-up"
+      >
+        <div className="container mx-auto px-6 md:px-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 text-center mb-10">
+            Shop at your favorite stores
+          </h2>
+          <section className="grid grid-cols-5 md:grid-cols-10 gap-x-2 gap-y-5 sm:gap-5">
+            {!allStoresData ? (
+              Array(10)
+                .fill(0)
+                .map((_, i) => <StoreMiniLoading key={`store-loading-${i}`} />)
+            ) : (
+              <>
+                {allStoresData.allStores.stores.map((store) => (
+                  <StoreMini store={store} key={`store-${store.id}`} />
+                ))}
+                <StoreMiniShowMore />
+              </>
+            )}
+          </section>
+        </div>
+      </section>
 
-            {/* Store Card Mock */}
-            <div
-              className="bg-slate-50 rounded-2xl p-6 border border-slate-200"
-              data-aos="fade-up"
-              data-aos-delay="150"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <div className="bg-slate-300 h-12 w-12 rounded-lg" />
-                <h3 className="font-semibold text-slate-900">Store Name</h3>
-              </div>
-              <p className="text-sm text-slate-600 mb-3">📍 0.5 mi away</p>
-              <div className="flex gap-2">
-                <div className="h-2 bg-pricetra-green-dark rounded-full flex-1" />
-                <div className="h-2 bg-slate-200 rounded-full flex-1" />
-              </div>
-              <p className="text-xs text-slate-500 mt-2">3 of 5 items in stock</p>
-            </div>
+      {/* Nearby Stores + Products Section */}
+      <section className="bg-slate-50 py-16 md:py-20">
+        <div className="container mx-auto px-6 md:px-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-12">
+            {`What's`} available near you
+          </h2>
 
-            {/* Price Comparison Mock */}
-            <div
-              className="bg-slate-50 rounded-2xl p-6 border border-slate-200"
-              data-aos="fade-up"
-              data-aos-delay="200"
-            >
-              <h3 className="font-semibold text-slate-900 mb-4">Available at</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-700">Store A</span>
-                  <span className="font-semibold text-slate-900">$2.99</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-700">Store B</span>
-                  <span className="font-semibold text-slate-900">$3.19</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-700">Store C</span>
-                  <span className="font-semibold text-slate-900">$3.49</span>
-                </div>
+          <div className="flex flex-col my-10 relative">
+            {!branchesWithProducts
+              ? Array(3)
+                  .fill(0)
+                  .map((_, i) => (
+                    <article className="my-7" key={`branch-with-product-loading-${i}`}>
+                      <div className="mb-5">
+                        <BranchItemWithLogoLoading />
+                      </div>
+
+                      <ScrollContainer hideButtons>
+                        {Array(10)
+                          .fill(0)
+                          .map((_, j) => (
+                            <ProductLoadingItemHorizontal
+                              key={`branch-product-${i}-${j}`}
+                            />
+                          ))}
+                      </ScrollContainer>
+                    </article>
+                  ))
+              : branchesWithProducts.branchesWithProducts.branches.map(
+                  (branch) => (
+                    <article
+                      className="my-7"
+                      key={`branch-with-product-${branch.id}`}
+                    >
+                      <div className="mb-5">
+                        <BranchItemWithLogo branch={branch as Branch} />
+                      </div>
+
+                      <ScrollContainer>
+                        {(branch.products ?? []).map((product) => (
+                          <ProductItemHorizontal
+                            product={product as Product}
+                            branchSlug={branch.slug}
+                            key={`branch-product-${branch.id}-${product.id}`}
+                          />
+                        ))}
+                      </ScrollContainer>
+                    </article>
+                  ),
+                )}
+
+            <div>
+              <div className="absolute bottom-0 left-0 w-full z-2">
+                <div className="inset-x-0 h-[50vh] bg-gradient-to-t from-slate-50 **from-[40%]**" />
+                <div className="h-20 bg-slate-50 w-full" />
+              </div>
+              <div className="absolute bottom-20 left-0 flex flex-row items-center justify-center w-full">
+                <Link
+                  href="/home"
+                  className="block bg-pricetra-green-heavy-dark hover:bg-pricetra-green-heavy-dark-hover text-white font-semibold py-3 px-8 md:py-4 md:px-10 rounded-full text-base md:text-lg z-3 transition-colors"
+                >
+                  Browse All Products
+                </Link>
               </div>
             </div>
           </div>
@@ -330,13 +356,13 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
             <div data-aos="fade-left">
               <div className="bg-slate-50 rounded-2xl p-8 border border-slate-200">
                 <h3 className="font-semibold text-slate-900 mb-6">
-                  Search example: "Milk"
+                  Search example: {`"Milk"`}
                 </h3>
 
                 {/* Result Card 1 */}
                 <div className="mb-6 pb-6 border-b border-slate-200">
                   <h4 className="font-semibold text-slate-900 mb-3">
-                    Whole Milk • 1L
+                    Whole Milk • 128 fl oz
                   </h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between items-center">
@@ -359,7 +385,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                 {/* Result Card 2 */}
                 <div>
                   <h4 className="font-semibold text-slate-900 mb-3">
-                    Almond Milk • 1L
+                    Almond Milk • 64 fl oz
                   </h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between items-center">
@@ -378,101 +404,6 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Store Logos Section */}
-      <section
-        className="relative w-full max-w-[1000px] mx-auto py-16 md:py-20"
-        data-aos="fade-up"
-      >
-        <div className="container mx-auto px-6 md:px-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 text-center mb-10">
-            Shop at your favorite stores
-          </h2>
-          <section className="grid grid-cols-5 md:grid-cols-10 gap-x-2 gap-y-5 sm:gap-5">
-            {!allStoresData ? (
-              Array(10)
-                .fill(0)
-                .map((_, i) => <StoreMiniLoading key={`store-loading-${i}`} />)
-            ) : (
-              <>
-                {allStoresData.allStores.stores.map((store) => (
-                  <StoreMini store={store} key={`store-${store.id}`} />
-                ))}
-                <StoreMiniShowMore />
-              </>
-            )}
-          </section>
-        </div>
-      </section>
-
-      {/* Nearby Stores + Products Section */}
-      <section className="bg-slate-50 py-16 md:py-20">
-        <div className="container mx-auto px-6 md:px-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-12">
-            What's available near you
-          </h2>
-
-          <div className="flex flex-col my-10 relative">
-            {!branchesWithProducts
-              ? Array(3)
-                  .fill(0)
-                  .map((_, i) => (
-                    <article className="my-7" key={`branch-with-product-loading-${i}`}>
-                      <div className="mb-5">
-                        <BranchItemWithLogoLoading />
-                      </div>
-
-                      <ScrollContainer hideButtons>
-                        {Array(10)
-                          .fill(0)
-                          .map((_, j) => (
-                            <ProductLoadingItemHorizontal
-                              key={`branch-product-${i}-${j}`}
-                            />
-                          ))}
-                      </ScrollContainer>
-                    </article>
-                  ))
-              : branchesWithProducts.branchesWithProducts.branches.map(
-                  (branch) => (
-                    <article
-                      className="my-7"
-                      key={`branch-with-product-${branch.id}`}
-                    >
-                      <div className="mb-5">
-                        <BranchItemWithLogo branch={branch as Branch} />
-                      </div>
-
-                      <ScrollContainer>
-                        {(branch.products ?? []).map((product) => (
-                          <ProductItemHorizontal
-                            product={product as Product}
-                            branchSlug={branch.slug}
-                            key={`branch-product-${branch.id}-${product.id}`}
-                          />
-                        ))}
-                      </ScrollContainer>
-                    </article>
-                  ),
-                )}
-
-            <div>
-              <div className="absolute bottom-0 left-0 w-full z-2">
-                <div className="inset-x-0 h-[50vh] bg-gradient-to-t from-slate-50 from-[90%]" />
-                <div className="h-20 bg-slate-50 w-full" />
-              </div>
-              <div className="absolute bottom-20 left-0 flex flex-row items-center justify-center w-full">
-                <Link
-                  href="/home"
-                  className="block bg-pricetra-green-heavy-dark hover:bg-pricetra-green-heavy-dark-hover text-white font-semibold py-3 px-8 md:py-4 md:px-10 rounded-full text-base md:text-lg z-3 transition-colors"
-                >
-                  Browse All Products
-                </Link>
               </div>
             </div>
           </div>
