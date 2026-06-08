@@ -34,6 +34,7 @@ import {
   TrendingDown,
   ListChecks,
 } from "lucide-react";
+import { HiMiniBellAlert } from "react-icons/hi2";
 
 const paginator: PaginatorInput = { page: 1, limit: 3 };
 const productLimit = 10;
@@ -85,12 +86,11 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
       <section className="relative py-12 md:py-20 bg-white">
         <div className="container mx-auto px-6 md:px-8">
           <div className="max-w-4xl" data-aos="fade-up">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 leading-tight mb-6">
-              Find products. Compare prices. Shop smarter.
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 leading-tight mb-6">
+              Discover products, prices, and stores near you.
             </h1>
             <p className="text-lg md:text-xl text-slate-600 mb-8 leading-relaxed max-w-2xl">
-              Search products, compare prices across stores, discover local
-              retailers, and get notified when prices drop.
+              Search products, compare prices across stores, discover local and online retailers, and get notified when prices or availability change.
             </p>
 
             {!loggedIn && (
@@ -302,7 +302,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
               data-aos="fade-up"
               data-aos-delay="500"
             >
-              <TrendingDown className="w-8 h-8 text-pricetra-green-dark mb-4" />
+              <HiMiniBellAlert className="w-8 h-8 text-pricetra-green-dark mb-4" />
               <h3 className="text-xl font-semibold text-slate-900 mb-2">
                 Track Prices
               </h3>
