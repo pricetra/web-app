@@ -219,7 +219,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
 
             <div>
               <div className="absolute bottom-0 left-0 w-full z-2">
-                <div className="inset-x-0 h-[50vh] bg-gradient-to-t from-slate-50 **from-[40%]**" />
+                <div className="inset-x-0 h-[30vh] bg-gradient-to-t from-slate-50 **from-[10%]**" />
                 <div className="h-20 bg-slate-50 w-full" />
               </div>
               <div className="absolute bottom-20 left-0 flex flex-row items-center justify-center w-full">
@@ -477,7 +477,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
             </p>
             <Link
               href="/business"
-              className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-8 py-3 font-semibold rounded-lg inline-block transition-colors"
+              className="border-2 border-pricetra-green-heavy-dark hover:border-pricetra-green-heavy-dark text-pricetra-green-heavy-dark hover:text-white hover:bg-pricetra-green-heavy-dark px-8 py-3 font-semibold rounded-xl inline-block transition-colors"
             >
               Learn About Pricetra for Business
             </Link>
