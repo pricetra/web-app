@@ -35,6 +35,7 @@ import {
   ListChecks,
 } from "lucide-react";
 import { HiMiniBellAlert } from "react-icons/hi2";
+import Feature from "@/components/landing-page/features";
 
 const paginator: PaginatorInput = { page: 1, limit: 3 };
 const productLimit = 10;
@@ -90,7 +91,9 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
               Discover products, prices, and stores near you.
             </h1>
             <p className="text-lg md:text-xl text-slate-600 mb-8 leading-relaxed max-w-2xl">
-              Search products, compare prices across stores, discover local and online retailers, and get notified when prices or availability change.
+              Search products, compare prices across stores, discover local and
+              online retailers, and get notified when prices or availability
+              change.
             </p>
 
             {!loggedIn && (
@@ -113,7 +116,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
         </div>
       </section>
 
-            {/* Store Logos Section */}
+      {/* Store Logos Section */}
       <section
         className="relative w-full max-w-[1000px] mx-auto py-16 md:py-20"
         data-aos="fade-up"
@@ -151,7 +154,10 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
               ? Array(3)
                   .fill(0)
                   .map((_, i) => (
-                    <article className="my-7" key={`branch-with-product-loading-${i}`}>
+                    <article
+                      className="my-7"
+                      key={`branch-with-product-loading-${i}`}
+                    >
                       <div className="mb-5">
                         <BranchItemWithLogoLoading />
                       </div>
@@ -223,93 +229,58 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Feature 1 */}
-            <div
-              className="bg-white rounded-xl p-8 border border-slate-200 hover:border-slate-300 transition-colors"
-              data-aos="fade-up"
-            >
-              <Search className="w-8 h-8 text-pricetra-green-dark mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                Discover Products
-              </h3>
-              <p className="text-slate-600">
-                Find products across local and national retailers in seconds.
-              </p>
-            </div>
+            <Feature
+              title="Discover Products"
+              description="Find products across local and national retailers in seconds."
+              icon={
+                <Search className="w-8 h-8" />
+              }
+            />
 
             {/* Feature 2 */}
-            <div
-              className="bg-white rounded-xl p-8 border border-slate-200 hover:border-slate-300 transition-colors"
-              data-aos="fade-up"
-              data-aos-delay="100"
-            >
-              <TrendingDown className="w-8 h-8 text-pricetra-green-dark mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                Compare Prices
-              </h3>
-              <p className="text-slate-600">
-                See pricing and promotions from multiple stores instantly.
-              </p>
-            </div>
+            <Feature
+              title="Compare Prices"
+              description="See pricing and promotions from multiple stores instantly."
+              icon={
+                <TrendingDown className="w-8 h-8" />
+              }
+            />
 
             {/* Feature 3 */}
-            <div
-              className="bg-white rounded-xl p-8 border border-slate-200 hover:border-slate-300 transition-colors"
-              data-aos="fade-up"
-              data-aos-delay="200"
-            >
-              <MapPin className="w-8 h-8 text-pricetra-green-dark mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                Find Availability
-              </h3>
-              <p className="text-slate-600">
-                Know where products are available before leaving home.
-              </p>
-            </div>
+            <Feature
+              title="Find Availability"
+              description="Know where products are available before leaving home."
+              icon={
+                <MapPin className="w-8 h-8" />
+              }
+            />
 
             {/* Feature 4 */}
-            <div
-              className="bg-white rounded-xl p-8 border border-slate-200 hover:border-slate-300 transition-colors"
-              data-aos="fade-up"
-              data-aos-delay="300"
-            >
-              <Barcode className="w-8 h-8 text-pricetra-green-dark mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                Scan Barcodes
-              </h3>
-              <p className="text-slate-600">
-                Scan UPC codes to instantly find products and prices.
-              </p>
-            </div>
+            <Feature
+              title="Scan Barcodes"
+              description="Scan UPC codes to instantly find products and prices."
+              icon={
+                <Barcode className="w-8 h-8" />
+              }
+            />
 
             {/* Feature 5 */}
-            <div
-              className="bg-white rounded-xl p-8 border border-slate-200 hover:border-slate-300 transition-colors"
-              data-aos="fade-up"
-              data-aos-delay="400"
-            >
-              <ListChecks className="w-8 h-8 text-pricetra-green-dark mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                Create Lists
-              </h3>
-              <p className="text-slate-600">
-                Organize products and plan grocery trips with shopping lists.
-              </p>
-            </div>
+            <Feature
+              title="Create Lists"
+              description="Organize products and plan grocery trips with shopping lists."
+              icon={
+                <ListChecks className="w-8 h-8" />
+              }
+            />
 
             {/* Feature 6 */}
-            <div
-              className="bg-white rounded-xl p-8 border border-slate-200 hover:border-slate-300 transition-colors"
-              data-aos="fade-up"
-              data-aos-delay="500"
-            >
-              <HiMiniBellAlert className="w-8 h-8 text-pricetra-green-dark mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                Track Prices
-              </h3>
-              <p className="text-slate-600">
-                Get notified about price drops and sales on your favorite items.
-              </p>
-            </div>
+            <Feature
+              title="Track Prices"
+              description="Get notified about price drops and sales on your favorite items."
+              icon={
+                <HiMiniBellAlert className="w-8 h-8" />
+              }
+            />
           </div>
         </div>
       </section>
@@ -373,11 +344,15 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-slate-600">Walmart</span>
-                      <span className="font-semibold text-slate-900">$3.19</span>
+                      <span className="font-semibold text-slate-900">
+                        $3.19
+                      </span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-slate-600">Target</span>
-                      <span className="font-semibold text-slate-900">$3.49</span>
+                      <span className="font-semibold text-slate-900">
+                        $3.49
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -396,11 +371,15 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-slate-600">Jewel-Osco</span>
-                      <span className="font-semibold text-slate-900">$3.99</span>
+                      <span className="font-semibold text-slate-900">
+                        $3.99
+                      </span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-slate-600">Safeway</span>
-                      <span className="font-semibold text-slate-900">$4.19</span>
+                      <span className="font-semibold text-slate-900">
+                        $4.19
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -432,7 +411,9 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
               <div className="w-16 h-16 bg-pricetra-green-dark rounded-full flex items-center justify-center mx-auto mb-6">
                 <Search className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Products</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">
+                Products
+              </h3>
               <p className="text-slate-600">
                 Search and explore thousands of products from your favorite
                 brands.
@@ -503,8 +484,8 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
               Start discovering products today
             </h2>
             <p className="text-slate-600 mb-8 text-lg">
-              Join shoppers using Pricetra to find products, compare prices,
-              and discover stores nearby.
+              Join shoppers using Pricetra to find products, compare prices, and
+              discover stores nearby.
             </p>
 
             {!loggedIn && (
