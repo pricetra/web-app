@@ -7,6 +7,8 @@ import {
   FieldSeparator,
   FieldSet,
   Field,
+  FieldContent,
+  FieldTitle,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -38,6 +40,7 @@ import {
 import slugify from "slugify";
 import { HiMiniInformationCircle } from "react-icons/hi2";
 import useStoreNameAvailability from "@/hooks/useStoreNameAvailability";
+import { Checkbox } from "@/components/ui/checkbox";
 
 export type BusinessFormProps = {
   onCancel: () => void;
@@ -54,6 +57,8 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
     storeNameAvailable,
     storeNameAvailabilityLoading,
   } = useStoreNameAvailability();
+  const [physicalStoreToggle, setPhysicalStoreToggle] = useState(true);
+  const [onlineStoreToggle, setOnlineStoreToggle] = useState(false);
 
   if (data) {
     return (
@@ -108,8 +113,12 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
             errors.email = "Email is required";
           if (v.storeName === undefined || v.storeName.length === 0)
             errors.storeName = "Store name is required";
-          if (v.storeAddress === undefined || v.storeAddress.length === 0)
-            errors.storeAddress = "Branch address is required";
+          if (!physicalStoreToggle && !onlineStoreToggle)
+            errors.storeAddress = "Either in-person or online store options must be selected"
+          if (physicalStoreToggle && v.storeAddress && v.storeAddress.length === 0)
+            errors.storeAddress = "Store address is required";
+          if (onlineStoreToggle && v.onlineAddressUrl && v.onlineAddressUrl.length === 0)
+            errors.onlineAddressUrl = "Online store URL is required";
           if (v.storeLogo === undefined || v.storeLogo.length === 0)
             errors.storeLogo =
               "Store logo is required. Must be an 1:1 square image";
@@ -225,6 +234,51 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                   Pricetra
                 </FieldDescription>
 
+                <FieldGroup className="flex flex-row">
+                  <FieldLabel>
+                    <Field orientation="horizontal">
+                      <Checkbox
+                        id="toggle-physical-store"
+                        name="toggle-physical-store"
+                        checked={physicalStoreToggle}
+                        onCheckedChange={(c) =>
+                          setPhysicalStoreToggle(c.valueOf() as boolean)
+                        }
+                      />
+                      <FieldContent>
+                        <FieldTitle>
+                          In-person or Brick and mortar Store
+                        </FieldTitle>
+                        <FieldDescription>
+                          Check this option if your store is located and ran at
+                          a specific physical location.
+                        </FieldDescription>
+                      </FieldContent>
+                    </Field>
+                  </FieldLabel>
+
+                  <FieldLabel>
+                    <Field orientation="horizontal">
+                      <Checkbox
+                        id="toggle-online-store"
+                        name="toggle-online-store"
+                        checked={onlineStoreToggle}
+                        onCheckedChange={(c) =>
+                          setOnlineStoreToggle(c.valueOf() as boolean)
+                        }
+                      />
+                      <FieldContent>
+                        <FieldTitle>Online Store</FieldTitle>
+                        <FieldDescription>
+                          Check this option if your store is primarily an online
+                          store. And people access it through your website or
+                          storefront.
+                        </FieldDescription>
+                      </FieldContent>
+                    </Field>
+                  </FieldLabel>
+                </FieldGroup>
+
                 <FieldGroup>
                   <Field>
                     <FieldLabel htmlFor="storeName">Store Name</FieldLabel>
@@ -269,14 +323,14 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                 </FieldGroup>
 
                 <FieldGroup>
-                  <Field>
+                  {physicalStoreToggle && <Field>
                     <FieldLabel htmlFor="storeAddress">
                       Store Address
                     </FieldLabel>
                     <Input
                       id="storeAddress"
                       placeholder="150 Smith Rd, St. Charles, IL 60174"
-                      value={formik.values.storeAddress}
+                      value={formik.values.storeAddress ?? ""}
                       onChange={(v) =>
                         formik.setFieldValue("storeAddress", v.target.value)
                       }
@@ -291,7 +345,32 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                         new locations later.
                       </span>
                     </FieldDescription>
-                  </Field>
+                  </Field>}
+
+                  {onlineStoreToggle && <Field>
+                    <FieldLabel htmlFor="onlineAddressUrl">
+                      Online Store URL
+                    </FieldLabel>
+                    <Input
+                      id="onlineAddressUrl"
+                      placeholder="https://myonlinestore.com"
+                      value={formik.values.onlineAddressUrl ?? ""}
+                      type="url"
+                      onChange={(v) =>
+                        formik.setFieldValue("onlineAddressUrl", v.target.value)
+                      }
+                      required
+                    />
+
+                    <FieldDescription className="flex flex-row gap-2">
+                      <HiMiniInformationCircle className="text-2xl inline-block" />{" "}
+                      <span>
+                        We will automatically add a store at this URL once
+                        your business account is approved. You can always add
+                        new locations and branches later.
+                      </span>
+                    </FieldDescription>
+                  </Field>}
 
                   <Field>
                     <FieldLabel
@@ -371,7 +450,7 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                     />
 
                     <FieldDescription className="flex flex-row gap-2">
-                      <HiMiniInformationCircle className="text-lg inline-block" />{" "}
+                      <HiMiniInformationCircle className="text-2xl inline-block" />{" "}
                       <span className="text-sm">
                         Your website or your primary social media URL
                       </span>
@@ -383,6 +462,7 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                   <Field>
                     <FieldLabel htmlFor="additionalInformation">
                       Additional Information
+                      <small className="text-gray-500">(optional)</small>
                     </FieldLabel>
                     <Textarea
                       id="additionalInformation"
