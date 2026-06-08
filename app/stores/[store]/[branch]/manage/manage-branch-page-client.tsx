@@ -1,12 +1,7 @@
 "use client";
 
 import { useNavbar } from "@/context/navbar-context";
-import {
-  AllProductsDocument,
-  Branch,
-  Product,
-  Store,
-} from "graphql-utils";
+import { AllProductsDocument, Branch, Product, Store } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
 import { useCallback, useLayoutEffect, useMemo, useState } from "react";
 import { useQuery } from "@apollo/client/react";
@@ -28,11 +23,8 @@ import {
 } from "@/components/ui/dialog";
 import BranchPriceForm from "@/components/product-form/branch-price-form";
 import ManualBarcodeForm from "@/app/scan/components/manual-barcode-form";
-import { CreateFlyerForm } from "@/components/flyer/create-flyer-form";
-import { FlyerEditorClient } from "@/components/flyer/flyer-editor-client";
 import { toast } from "sonner";
 import { MdAdd } from "react-icons/md";
-import type { FlyerFormat } from "graphql-utils";
 
 const PRODUCTS_PER_PAGE = 30;
 
@@ -56,8 +48,12 @@ export default function ManageBranchPageClient({
   const [saleOnly, setSaleOnly] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-  const [showCreateFlyer, setShowCreateFlyer] = useState(false);
-  const [activeFlyer, setActiveFlyer] = useState<{ id: string; uid: string; format: FlyerFormat } | null>(null);
+  // const [showCreateFlyer, setShowCreateFlyer] = useState(false);
+  // const [activeFlyer, setActiveFlyer] = useState<{
+  //   id: string;
+  //   uid: string;
+  //   format: FlyerFormat;
+  // } | null>(null);
 
   const debouncedSetQuery = useMemo(
     () =>
@@ -140,9 +136,7 @@ export default function ManageBranchPageClient({
               product={selectedProduct}
               branch={branch}
               onSuccess={() => {
-                toast.success(
-                  `Price added for ${selectedProduct.name}`,
-                );
+                toast.success(`Price added for ${selectedProduct.name}`);
                 setDialogOpen(false);
                 setSelectedProduct(null);
               }}
@@ -178,9 +172,9 @@ export default function ManageBranchPageClient({
                     rel="noopener noreferrer"
                     className="text-xs text-blue-600 hover:underline"
                   >
-                  {cleanUrl(branch.onlineAddress.url)}
-                </a>
-              </div>
+                    {cleanUrl(branch.onlineAddress.url)}
+                  </a>
+                </div>
               )}
               <Button
                 variant="outline"
@@ -197,10 +191,7 @@ export default function ManageBranchPageClient({
         {showBranchDetails && (
           <section className="mb-10 p-4 border border-gray-200 rounded-lg">
             <h2 className="text-lg font-bold mb-4">Branch Details</h2>
-            <ManageBranchInfo
-              branch={branch}
-              storeId={store.id}
-            />
+            <ManageBranchInfo branch={branch} storeId={store.id} />
           </section>
         )}
 
@@ -309,9 +300,11 @@ export default function ManageBranchPageClient({
                   onPageChange={(p) => setPage(p)}
                 />
               </div>
+            )}
+        </section>
 
         {/* Flyers */}
-        <section className="mb-10">
+        {/* <section className="mb-10">
           <div className="flex flex-row items-center justify-between mb-4">
             <h2 className="text-lg font-bold">Flyers</h2>
             <Button
@@ -366,6 +359,8 @@ export default function ManageBranchPageClient({
               />
             </div>
           ) : null}
-        </section>   </>
+        </section> */}
+      </div>
+    </>
   );
 }
