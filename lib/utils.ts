@@ -135,3 +135,16 @@ export function getRandomIntInclusive(min: number, max: number): number {
 
 export const startOfNextSundayUTC = () =>
   dayjs.utc().add(1, "week").startOf("week").toISOString();
+
+export function parseFullname(fullname: string): {
+  firstName: string;
+  lastName: string;
+} {
+  const splitName = fullname.split(" ");
+  const firstName = splitName[0];
+  let lastName = "";
+  if (splitName.at(1)) {
+    lastName = splitName.slice(1).join(" ");
+  }
+  return { firstName, lastName };
+}

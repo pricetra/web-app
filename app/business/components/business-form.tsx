@@ -16,7 +16,7 @@ import { allowedImageTypes } from "@/constants/uploads";
 import { useMutation } from "@apollo/client/react";
 import { Formik, FormikErrors } from "formik";
 import { BusinessFormInput, BusinessSingUpFormDocument } from "graphql-utils";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { CgCheckO, CgCloseO, CgSpinner } from "react-icons/cg";
 import { RiImageCircleFill } from "react-icons/ri";
 import Image from "next/image";
@@ -41,12 +41,15 @@ import slugify from "slugify";
 import { HiMiniInformationCircle } from "react-icons/hi2";
 import useStoreNameAvailability from "@/hooks/useStoreNameAvailability";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useAuth } from "@/context/user-context";
+import { parseFullname } from "@/lib/utils";
 
 export type BusinessFormProps = {
   onCancel: () => void;
 };
 
 export default function BusinessForm({ onCancel }: BusinessFormProps) {
+  const { user, loggedIn } = useAuth();
   const logoUploadInputRef = useRef<HTMLInputElement>(null);
   const [selectedImage, setSelectedImage] = useState<string>();
   const [businessSignUpForm, { data, loading, error }] = useMutation(
@@ -59,6 +62,10 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
   } = useStoreNameAvailability();
   const [physicalStoreToggle, setPhysicalStoreToggle] = useState(true);
   const [onlineStoreToggle, setOnlineStoreToggle] = useState(false);
+  const parsedName = useMemo(
+    () => (user ? parseFullname(user.name) : undefined),
+    [user],
+  );
 
   if (data) {
     return (
@@ -73,14 +80,18 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
               Almost done. You will hear back from us regarding next steps
               within 1-3 business days
             </EmptyDescription>
-            <Separator className="my-5" />
-            <EmptyDescription className="text-gray-700">
-              In the meantime, if you haven&apos;t already, please{" "}
-              <Link href="/auth/signup" className="text-blue-500">
-                click here
-              </Link>{" "}
-              to create an account.
-            </EmptyDescription>
+            {!loggedIn && (
+              <>
+                <Separator className="my-5" />
+                <EmptyDescription className="text-gray-700">
+                  In the meantime, if you haven&apos;t already, please{" "}
+                  <Link href="/auth/signup" className="text-blue-500">
+                    click here
+                  </Link>{" "}
+                  to create an account.
+                </EmptyDescription>
+              </>
+            )}
           </EmptyHeader>
         </Empty>
       </div>
@@ -92,8 +103,8 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
       <Formik
         initialValues={
           {
-            firstName: "",
-            lastName: "",
+            firstName: parsedName?.firstName ?? "",
+            lastName: parsedName?.lastName ?? "",
             email: "",
             storeName: "",
             storeAddress: "",
@@ -114,10 +125,19 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
           if (v.storeName === undefined || v.storeName.length === 0)
             errors.storeName = "Store name is required";
           if (!physicalStoreToggle && !onlineStoreToggle)
-            errors.storeAddress = "Either in-person or online store options must be selected"
-          if (physicalStoreToggle && v.storeAddress && v.storeAddress.length === 0)
+            errors.storeAddress =
+              "Either in-person or online store options must be selected";
+          if (
+            physicalStoreToggle &&
+            v.storeAddress &&
+            v.storeAddress.length === 0
+          )
             errors.storeAddress = "Store address is required";
-          if (onlineStoreToggle && v.onlineAddressUrl && v.onlineAddressUrl.length === 0)
+          if (
+            onlineStoreToggle &&
+            v.onlineAddressUrl &&
+            v.onlineAddressUrl.length === 0
+          )
             errors.onlineAddressUrl = "Online store URL is required";
           if (v.storeLogo === undefined || v.storeLogo.length === 0)
             errors.storeLogo =
@@ -147,7 +167,8 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                   Sign up for Pricetra Business
                 </FieldLegend>
                 <FieldDescription>
-                  Leverage our online store platform and grow your retail business today.
+                  Leverage our online store platform and grow your retail
+                  business today.
                 </FieldDescription>
               </FieldSet>
 
@@ -315,7 +336,10 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                       <FieldDescription>
                         pricetra.com/stores/
                         <b className="text-zinc-700">
-                          {slugify(formik.values.storeName, { lower: true, strict: true })}
+                          {slugify(formik.values.storeName, {
+                            lower: true,
+                            strict: true,
+                          })}
                         </b>
                       </FieldDescription>
                     )}
@@ -323,54 +347,61 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                 </FieldGroup>
 
                 <FieldGroup>
-                  {physicalStoreToggle && <Field>
-                    <FieldLabel htmlFor="storeAddress">
-                      Store Address
-                    </FieldLabel>
-                    <Input
-                      id="storeAddress"
-                      placeholder="150 Smith Rd, St. Charles, IL 60174"
-                      value={formik.values.storeAddress ?? ""}
-                      onChange={(v) =>
-                        formik.setFieldValue("storeAddress", v.target.value)
-                      }
-                      required
-                    />
+                  {physicalStoreToggle && (
+                    <Field>
+                      <FieldLabel htmlFor="storeAddress">
+                        Store Address
+                      </FieldLabel>
+                      <Input
+                        id="storeAddress"
+                        placeholder="150 Smith Rd, St. Charles, IL 60174"
+                        value={formik.values.storeAddress ?? ""}
+                        onChange={(v) =>
+                          formik.setFieldValue("storeAddress", v.target.value)
+                        }
+                        required
+                      />
 
-                    <FieldDescription className="flex flex-row gap-2">
-                      <HiMiniInformationCircle className="text-2xl inline-block" />{" "}
-                      <span>
-                        We will automatically add a store at this address once
-                        your business account is approved. You can always add
-                        new locations later.
-                      </span>
-                    </FieldDescription>
-                  </Field>}
+                      <FieldDescription className="flex flex-row gap-2">
+                        <HiMiniInformationCircle className="text-2xl inline-block" />{" "}
+                        <span>
+                          We will automatically add a store at this address once
+                          your business account is approved. You can always add
+                          new locations later.
+                        </span>
+                      </FieldDescription>
+                    </Field>
+                  )}
 
-                  {onlineStoreToggle && <Field>
-                    <FieldLabel htmlFor="onlineAddressUrl">
-                      Online Store URL
-                    </FieldLabel>
-                    <Input
-                      id="onlineAddressUrl"
-                      placeholder="https://myonlinestore.com"
-                      value={formik.values.onlineAddressUrl ?? ""}
-                      type="url"
-                      onChange={(v) =>
-                        formik.setFieldValue("onlineAddressUrl", v.target.value)
-                      }
-                      required
-                    />
+                  {onlineStoreToggle && (
+                    <Field>
+                      <FieldLabel htmlFor="onlineAddressUrl">
+                        Online Store URL
+                      </FieldLabel>
+                      <Input
+                        id="onlineAddressUrl"
+                        placeholder="https://myonlinestore.com"
+                        value={formik.values.onlineAddressUrl ?? ""}
+                        type="url"
+                        onChange={(v) =>
+                          formik.setFieldValue(
+                            "onlineAddressUrl",
+                            v.target.value,
+                          )
+                        }
+                        required
+                      />
 
-                    <FieldDescription className="flex flex-row gap-2">
-                      <HiMiniInformationCircle className="text-2xl inline-block" />{" "}
-                      <span>
-                        We will automatically add a store at this URL once
-                        your business account is approved. You can always add
-                        new locations and branches later.
-                      </span>
-                    </FieldDescription>
-                  </Field>}
+                      <FieldDescription className="flex flex-row gap-2">
+                        <HiMiniInformationCircle className="text-2xl inline-block" />{" "}
+                        <span>
+                          We will automatically add a store at this URL once
+                          your business account is approved. You can always add
+                          new locations and branches later.
+                        </span>
+                      </FieldDescription>
+                    </Field>
+                  )}
 
                   <Field>
                     <FieldLabel
