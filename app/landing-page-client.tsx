@@ -1,10 +1,5 @@
 "use client";
 
-import StepsPanel, { steps } from "@/components/landing-page/screenshot";
-import ScreenshotShowcasePanel, {
-  screenshots,
-} from "@/components/landing-page/steps-panel";
-import Image from "next/image";
 import Link from "@/components/ui/link";
 import {
   AllStoresDocument,
@@ -38,8 +33,11 @@ import {
   MapPin,
   TrendingDown,
   ListChecks,
-  Heart,
 } from "lucide-react";
+import { HiMiniBellAlert } from "react-icons/hi2";
+import Feature from "@/components/landing-page/features";
+import TaglineWordRender from "@/components/landing-page/tagline-word-render";
+import Image from "next/image";
 
 const paginator: PaginatorInput = { page: 1, limit: 3 };
 const productLimit = 10;
@@ -88,94 +86,149 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
       <LandingHeader />
 
       {/* Hero Section */}
-      <section className="relative py-12 md:py-20 bg-white">
-        <div className="container mx-auto px-6 md:px-8">
+      <section className="relative max-w-full sm:container mx-auto flex flex-row gap-5 justify-between items-center py-6 md:py-10">
+        <div className="px-6 md:px-8 py-12 md:py-20 flex-2">
           <div className="max-w-4xl" data-aos="fade-up">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-slate-900 leading-tight mb-6">
-              Find products. Compare prices. Shop smarter.
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 leading-tight mb-6">
+              Discover{" "}
+              <TaglineWordRender words={["products", "prices", "stores"]} />{" "}
+              <span className="block">near you.</span>
             </h1>
             <p className="text-lg md:text-xl text-slate-600 mb-8 leading-relaxed max-w-2xl">
-              Search products, compare prices across stores, discover local
-              retailers, and get notified when prices drop.
+              Search products, compare prices across stores, discover local and
+              online retailers, and get notified when prices or availability
+              change.
             </p>
 
             {!loggedIn && (
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col xs:flex-row gap-4">
                 <Link
-                  href="/auth/signup"
-                  className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-8 py-3 text-base md:text-lg font-semibold rounded-lg transition-colors inline-block text-center"
+                  href="/home"
+                  className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-8 py-3 text-base md:text-lg font-semibold rounded-xl transition-colors inline-block text-center"
                 >
                   Start Exploring
                 </Link>
                 <a
                   href="#showcase"
-                  className="border-2 border-slate-300 text-slate-900 hover:bg-slate-50 px-8 py-3 rounded-lg font-semibold transition-colors inline-block text-center"
+                  className="border-2 border-slate-300 text-slate-900 hover:bg-slate-50 px-8 py-3 rounded-xl font-semibold transition-colors inline-block text-center"
                 >
                   Learn More
                 </a>
               </div>
             )}
           </div>
+        </div>
 
-          {/* Hero Visual - Mock UI Elements */}
-          <div className="mt-12 md:mt-16 grid grid-cols-1 md:grid-cols-3 gap-4">
-            {/* Product Card Mock */}
-            <div
-              className="bg-slate-50 rounded-2xl p-6 border border-slate-200"
-              data-aos="fade-up"
-              data-aos-delay="100"
-            >
-              <div className="bg-slate-200 h-32 rounded-lg mb-4" />
-              <h3 className="font-semibold text-slate-900 mb-2">Product Name</h3>
-              <p className="text-sm text-slate-600 mb-4">Organic milk • 1L</p>
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-pricetra-green-dark">
-                  $2.99
-                </span>
-                <span className="text-sm text-slate-500 line-through">
-                  $3.49
-                </span>
-              </div>
-            </div>
+        {/* Floating Phone */}
+        <div className="pointer-events-none hidden md:flex flex-1 justify-end">
+          <div
+            className="relative rounded-4xl p-2 shadow-2xl transform rotate-6 bg-gray-100 md:w-52 lg:w-60 xl:w-72 h-auto"
+            data-aos="fade-up"
+          >
+            <Image
+              src="https://res.cloudinary.com/pricetra-cdn/image/upload/homepage-main-screenshot.png"
+              alt="Pricetra Mobile App"
+              width={280}
+              height={560}
+              quality={100}
+              className="rounded-3xl"
+            />
+          </div>
+        </div>
+      </section>
 
-            {/* Store Card Mock */}
-            <div
-              className="bg-slate-50 rounded-2xl p-6 border border-slate-200"
-              data-aos="fade-up"
-              data-aos-delay="150"
-            >
-              <div className="flex items-center gap-3 mb-4">
-                <div className="bg-slate-300 h-12 w-12 rounded-lg" />
-                <h3 className="font-semibold text-slate-900">Store Name</h3>
-              </div>
-              <p className="text-sm text-slate-600 mb-3">📍 0.5 mi away</p>
-              <div className="flex gap-2">
-                <div className="h-2 bg-pricetra-green-dark rounded-full flex-1" />
-                <div className="h-2 bg-slate-200 rounded-full flex-1" />
-              </div>
-              <p className="text-xs text-slate-500 mt-2">3 of 5 items in stock</p>
-            </div>
+      {/* Store Logos Section */}
+      <section
+        className="relative w-full max-w-[1000px] mx-auto py-16 md:py-20"
+        data-aos="fade-up"
+      >
+        <div className="container mx-auto px-6 md:px-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 text-center mb-10">
+            Explore your favorite stores
+          </h2>
+          <section className="grid grid-cols-5 md:grid-cols-10 gap-x-2 gap-y-5 sm:gap-5">
+            {!allStoresData ? (
+              Array(10)
+                .fill(0)
+                .map((_, i) => <StoreMiniLoading key={`store-loading-${i}`} />)
+            ) : (
+              <>
+                {allStoresData.allStores.stores.map((store) => (
+                  <StoreMini store={store} key={`store-${store.id}`} />
+                ))}
+                <StoreMiniShowMore />
+              </>
+            )}
+          </section>
+        </div>
+      </section>
 
-            {/* Price Comparison Mock */}
-            <div
-              className="bg-slate-50 rounded-2xl p-6 border border-slate-200"
-              data-aos="fade-up"
-              data-aos-delay="200"
-            >
-              <h3 className="font-semibold text-slate-900 mb-4">Available at</h3>
-              <div className="space-y-3">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-700">Store A</span>
-                  <span className="font-semibold text-slate-900">$2.99</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-700">Store B</span>
-                  <span className="font-semibold text-slate-900">$3.19</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-slate-700">Store C</span>
-                  <span className="font-semibold text-slate-900">$3.49</span>
-                </div>
+      {/* Nearby Stores + Products Section */}
+      <section className="bg-slate-50 py-16 md:py-20">
+        <div className="container mx-auto px-6 md:px-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-12">
+            {`What's`} available near you
+          </h2>
+
+          <div className="flex flex-col my-10 relative">
+            {!branchesWithProducts
+              ? Array(3)
+                  .fill(0)
+                  .map((_, i) => (
+                    <article
+                      className="my-7"
+                      key={`branch-with-product-loading-${i}`}
+                    >
+                      <div className="mb-5">
+                        <BranchItemWithLogoLoading />
+                      </div>
+
+                      <ScrollContainer hideButtons>
+                        {Array(10)
+                          .fill(0)
+                          .map((_, j) => (
+                            <ProductLoadingItemHorizontal
+                              key={`branch-product-${i}-${j}`}
+                            />
+                          ))}
+                      </ScrollContainer>
+                    </article>
+                  ))
+              : branchesWithProducts.branchesWithProducts.branches.map(
+                  (branch) => (
+                    <article
+                      className="my-7"
+                      key={`branch-with-product-${branch.id}`}
+                    >
+                      <div className="mb-5">
+                        <BranchItemWithLogo branch={branch as Branch} />
+                      </div>
+
+                      <ScrollContainer>
+                        {(branch.products ?? []).map((product) => (
+                          <ProductItemHorizontal
+                            product={product as Product}
+                            branchSlug={branch.slug}
+                            key={`branch-product-${branch.id}-${product.id}`}
+                          />
+                        ))}
+                      </ScrollContainer>
+                    </article>
+                  ),
+                )}
+
+            <div>
+              <div className="absolute bottom-0 left-0 w-full z-2">
+                <div className="inset-x-0 h-[30vh] bg-gradient-to-t from-slate-50 **from-[10%]**" />
+                <div className="h-20 bg-slate-50 w-full" />
+              </div>
+              <div className="absolute bottom-20 left-0 flex flex-row items-center justify-center w-full">
+                <Link
+                  href="/home"
+                  className="block bg-pricetra-green-heavy-dark hover:bg-pricetra-green-heavy-dark-hover text-white font-semibold py-3 px-8 md:py-4 md:px-10 rounded-full text-base md:text-lg z-3 transition-colors"
+                >
+                  Browse All Products
+                </Link>
               </div>
             </div>
           </div>
@@ -197,93 +250,46 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Feature 1 */}
-            <div
-              className="bg-white rounded-xl p-8 border border-slate-200 hover:border-slate-300 transition-colors"
-              data-aos="fade-up"
-            >
-              <Search className="w-8 h-8 text-pricetra-green-dark mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                Discover Products
-              </h3>
-              <p className="text-slate-600">
-                Find products across local and national retailers in seconds.
-              </p>
-            </div>
+            <Feature
+              title="Discover Products"
+              description="Find products across local and national retailers in seconds."
+              icon={<Search className="w-8 h-8" />}
+            />
 
             {/* Feature 2 */}
-            <div
-              className="bg-white rounded-xl p-8 border border-slate-200 hover:border-slate-300 transition-colors"
-              data-aos="fade-up"
-              data-aos-delay="100"
-            >
-              <TrendingDown className="w-8 h-8 text-pricetra-green-dark mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                Compare Prices
-              </h3>
-              <p className="text-slate-600">
-                See pricing and promotions from multiple stores instantly.
-              </p>
-            </div>
+            <Feature
+              title="Compare Prices"
+              description="See pricing and promotions from multiple stores instantly."
+              icon={<TrendingDown className="w-8 h-8" />}
+            />
 
             {/* Feature 3 */}
-            <div
-              className="bg-white rounded-xl p-8 border border-slate-200 hover:border-slate-300 transition-colors"
-              data-aos="fade-up"
-              data-aos-delay="200"
-            >
-              <MapPin className="w-8 h-8 text-pricetra-green-dark mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                Find Availability
-              </h3>
-              <p className="text-slate-600">
-                Know where products are available before leaving home.
-              </p>
-            </div>
+            <Feature
+              title="Find Availability"
+              description="Know where products are available before leaving home."
+              icon={<MapPin className="w-8 h-8" />}
+            />
 
             {/* Feature 4 */}
-            <div
-              className="bg-white rounded-xl p-8 border border-slate-200 hover:border-slate-300 transition-colors"
-              data-aos="fade-up"
-              data-aos-delay="300"
-            >
-              <Barcode className="w-8 h-8 text-pricetra-green-dark mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                Scan Barcodes
-              </h3>
-              <p className="text-slate-600">
-                Scan UPC codes to instantly find products and prices.
-              </p>
-            </div>
+            <Feature
+              title="Scan Barcodes"
+              description="Scan UPC codes to instantly find products and prices."
+              icon={<Barcode className="w-8 h-8" />}
+            />
 
             {/* Feature 5 */}
-            <div
-              className="bg-white rounded-xl p-8 border border-slate-200 hover:border-slate-300 transition-colors"
-              data-aos="fade-up"
-              data-aos-delay="400"
-            >
-              <ListChecks className="w-8 h-8 text-pricetra-green-dark mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                Create Lists
-              </h3>
-              <p className="text-slate-600">
-                Organize products and plan grocery trips with shopping lists.
-              </p>
-            </div>
+            <Feature
+              title="Create Lists"
+              description="Organize products and plan grocery trips with shopping lists."
+              icon={<ListChecks className="w-8 h-8" />}
+            />
 
             {/* Feature 6 */}
-            <div
-              className="bg-white rounded-xl p-8 border border-slate-200 hover:border-slate-300 transition-colors"
-              data-aos="fade-up"
-              data-aos-delay="500"
-            >
-              <TrendingDown className="w-8 h-8 text-pricetra-green-dark mb-4" />
-              <h3 className="text-xl font-semibold text-slate-900 mb-2">
-                Track Prices
-              </h3>
-              <p className="text-slate-600">
-                Get notified about price drops and sales on your favorite items.
-              </p>
-            </div>
+            <Feature
+              title="Track Prices"
+              description="Get notified about price drops and sales on your favorite items."
+              icon={<HiMiniBellAlert className="w-8 h-8" />}
+            />
           </div>
         </div>
       </section>
@@ -330,13 +336,13 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
             <div data-aos="fade-left">
               <div className="bg-slate-50 rounded-2xl p-8 border border-slate-200">
                 <h3 className="font-semibold text-slate-900 mb-6">
-                  Search example: "Milk"
+                  Search example: {`"Milk"`}
                 </h3>
 
                 {/* Result Card 1 */}
                 <div className="mb-6 pb-6 border-b border-slate-200">
                   <h4 className="font-semibold text-slate-900 mb-3">
-                    Whole Milk • 1L
+                    Whole Milk • 128 fl oz
                   </h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between items-center">
@@ -347,11 +353,15 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-slate-600">Walmart</span>
-                      <span className="font-semibold text-slate-900">$3.19</span>
+                      <span className="font-semibold text-slate-900">
+                        $3.19
+                      </span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-slate-600">Target</span>
-                      <span className="font-semibold text-slate-900">$3.49</span>
+                      <span className="font-semibold text-slate-900">
+                        $3.49
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -359,7 +369,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                 {/* Result Card 2 */}
                 <div>
                   <h4 className="font-semibold text-slate-900 mb-3">
-                    Almond Milk • 1L
+                    Almond Milk • 64 fl oz
                   </h4>
                   <div className="space-y-2 text-sm">
                     <div className="flex justify-between items-center">
@@ -370,109 +380,18 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-slate-600">Jewel-Osco</span>
-                      <span className="font-semibold text-slate-900">$3.99</span>
+                      <span className="font-semibold text-slate-900">
+                        $3.99
+                      </span>
                     </div>
                     <div className="flex justify-between items-center">
                       <span className="text-slate-600">Safeway</span>
-                      <span className="font-semibold text-slate-900">$4.19</span>
+                      <span className="font-semibold text-slate-900">
+                        $4.19
+                      </span>
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Store Logos Section */}
-      <section
-        className="relative w-full max-w-[1000px] mx-auto py-16 md:py-20"
-        data-aos="fade-up"
-      >
-        <div className="container mx-auto px-6 md:px-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 text-center mb-10">
-            Shop at your favorite stores
-          </h2>
-          <section className="grid grid-cols-5 md:grid-cols-10 gap-x-2 gap-y-5 sm:gap-5">
-            {!allStoresData ? (
-              Array(10)
-                .fill(0)
-                .map((_, i) => <StoreMiniLoading key={`store-loading-${i}`} />)
-            ) : (
-              <>
-                {allStoresData.allStores.stores.map((store) => (
-                  <StoreMini store={store} key={`store-${store.id}`} />
-                ))}
-                <StoreMiniShowMore />
-              </>
-            )}
-          </section>
-        </div>
-      </section>
-
-      {/* Nearby Stores + Products Section */}
-      <section className="bg-slate-50 py-16 md:py-20">
-        <div className="container mx-auto px-6 md:px-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-12">
-            What's available near you
-          </h2>
-
-          <div className="flex flex-col my-10 relative">
-            {!branchesWithProducts
-              ? Array(3)
-                  .fill(0)
-                  .map((_, i) => (
-                    <article className="my-7" key={`branch-with-product-loading-${i}`}>
-                      <div className="mb-5">
-                        <BranchItemWithLogoLoading />
-                      </div>
-
-                      <ScrollContainer hideButtons>
-                        {Array(10)
-                          .fill(0)
-                          .map((_, j) => (
-                            <ProductLoadingItemHorizontal
-                              key={`branch-product-${i}-${j}`}
-                            />
-                          ))}
-                      </ScrollContainer>
-                    </article>
-                  ))
-              : branchesWithProducts.branchesWithProducts.branches.map(
-                  (branch) => (
-                    <article
-                      className="my-7"
-                      key={`branch-with-product-${branch.id}`}
-                    >
-                      <div className="mb-5">
-                        <BranchItemWithLogo branch={branch as Branch} />
-                      </div>
-
-                      <ScrollContainer>
-                        {(branch.products ?? []).map((product) => (
-                          <ProductItemHorizontal
-                            product={product as Product}
-                            branchSlug={branch.slug}
-                            key={`branch-product-${branch.id}-${product.id}`}
-                          />
-                        ))}
-                      </ScrollContainer>
-                    </article>
-                  ),
-                )}
-
-            <div>
-              <div className="absolute bottom-0 left-0 w-full z-2">
-                <div className="inset-x-0 h-[50vh] bg-gradient-to-t from-slate-50 from-[90%]" />
-                <div className="h-20 bg-slate-50 w-full" />
-              </div>
-              <div className="absolute bottom-20 left-0 flex flex-row items-center justify-center w-full">
-                <Link
-                  href="/home"
-                  className="block bg-pricetra-green-heavy-dark hover:bg-pricetra-green-heavy-dark-hover text-white font-semibold py-3 px-8 md:py-4 md:px-10 rounded-full text-base md:text-lg z-3 transition-colors"
-                >
-                  Browse All Products
-                </Link>
               </div>
             </div>
           </div>
@@ -501,7 +420,9 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
               <div className="w-16 h-16 bg-pricetra-green-dark rounded-full flex items-center justify-center mx-auto mb-6">
                 <Search className="w-8 h-8 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-slate-900 mb-2">Products</h3>
+              <h3 className="text-xl font-bold text-slate-900 mb-2">
+                Products
+              </h3>
               <p className="text-slate-600">
                 Search and explore thousands of products from your favorite
                 brands.
@@ -547,7 +468,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
       <section className="py-16 md:py-20 bg-slate-50">
         <div className="container mx-auto px-6 md:px-8">
           <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-4">
               Own a store?
             </h2>
             <p className="text-slate-600 mb-8 text-lg">
@@ -556,7 +477,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
             </p>
             <Link
               href="/business"
-              className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-8 py-3 font-semibold rounded-lg inline-block transition-colors"
+              className="border-2 border-pricetra-green-heavy-dark hover:border-pricetra-green-heavy-dark text-pricetra-green-heavy-dark hover:text-white hover:bg-pricetra-green-heavy-dark px-8 py-3 font-semibold rounded-xl inline-block transition-colors"
             >
               Learn About Pricetra for Business
             </Link>
@@ -572,21 +493,21 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
               Start discovering products today
             </h2>
             <p className="text-slate-600 mb-8 text-lg">
-              Join shoppers using Pricetra to find products, compare prices,
-              and discover stores nearby.
+              Join shoppers using Pricetra to find products, compare prices, and
+              discover stores nearby.
             </p>
 
             {!loggedIn && (
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   href="/auth/signup"
-                  className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-8 py-3 text-base md:text-lg font-semibold rounded-lg transition-colors inline-block text-center"
+                  className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-8 py-3 text-base md:text-lg font-semibold rounded-xl transition-colors inline-block text-center"
                 >
                   Create Free Account
                 </Link>
                 <Link
                   href="/home"
-                  className="border-2 border-pricetra-green-dark text-pricetra-green-dark hover:bg-green-50 px-8 py-3 text-base md:text-lg font-semibold rounded-lg transition-colors inline-block text-center"
+                  className="border-2 border-gray-400 hover:border-gray-800 text-gray-800 hover:text-white hover:bg-gray-800 px-8 py-3 text-base md:text-lg font-semibold rounded-xl transition-colors inline-block text-center"
                 >
                   Browse Products
                 </Link>

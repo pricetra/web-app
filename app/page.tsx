@@ -6,7 +6,7 @@ import { AUTH_TOKEN_KEY } from "@/lib/cookies";
 import { redirect } from "next/navigation";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const title = "Pricetra - Your Price Tracking Companion";
+  const title = "Explore products, stores, prices, and more at Pricetra";
   const description =
     "Monitor price changes across thousands of products and never overpay again. Get alerts when prices drop and make smarter purchasing decisions. Beat Inflation. Track Prices. Save Money. Start using Pricetra today.";
   return {

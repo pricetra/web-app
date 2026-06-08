@@ -11,9 +11,7 @@ export default function WelcomeHeroBanner() {
           </h1>
         </div>
         <p className="mt-5 text-sm md:text-base text-slate-800 max-w-3xl mx-auto">
-          Pricetra is a community-powered price tracking app that helps shoppers
-          discover the best deals nearby. Compare prices, and get notified when
-          prices change.
+          Search products, compare prices across stores, discover local retailers, and get notified when prices drop. Start shopping smarter with Pricetra today for free.
         </p>
 
         <div className="mt-10">
