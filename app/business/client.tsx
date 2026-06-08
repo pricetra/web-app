@@ -84,7 +84,7 @@ export default function BusinessPageClient() {
           <div>
             <p className="mt-6 text-gray-600 text-base sm:text-lg">
               Many shoppers default to big chains because they can see products,
-              prices, and availability online — even when better local options
+              prices, and availability online, even when better local options
               exist nearby.
             </p>
 
@@ -108,7 +108,7 @@ export default function BusinessPageClient() {
 
         <p className="mt-4 text-center text-gray-600 max-w-3xl mx-auto">
           With Pricetra, shoppers can discover your store based on location,
-          browse your products, and see exact prices — all before leaving home.
+          browse your products, and see exact prices, all before leaving home.
         </p>
 
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3">
@@ -153,7 +153,7 @@ export default function BusinessPageClient() {
             </div>
 
             <p className="mt-6 text-gray-600 text-lg">
-              All clearly labeled — and all pointing customers directly to you.
+              All clearly labeled, and all pointing customers directly to you.
             </p>
           </div>
 
@@ -200,8 +200,8 @@ export default function BusinessPageClient() {
         </h2>
 
         <p className="mt-4 text-base sm:text-lg max-w-2xl mx-auto text-gray-700">
-          Help shoppers discover your store, compare prices, and choose local —
-          all at no upfront cost.
+          Help shoppers discover your store, compare prices, and choose local.
+          All at no upfront cost.
         </p>
 
         <div className="mt-8">
