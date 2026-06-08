@@ -36,6 +36,8 @@ import {
 } from "lucide-react";
 import { HiMiniBellAlert } from "react-icons/hi2";
 import Feature from "@/components/landing-page/features";
+import TaglineWordRender from "@/components/landing-page/tagline-word-render";
+import Image from "next/image";
 
 const paginator: PaginatorInput = { page: 1, limit: 3 };
 const productLimit = 10;
@@ -84,11 +86,13 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
       <LandingHeader />
 
       {/* Hero Section */}
-      <section className="relative py-12 md:py-20 bg-white">
-        <div className="container mx-auto px-6 md:px-8">
+      <section className="relative max-w-full sm:container mx-auto flex flex-row gap-5 justify-between items-center py-6 md:py-10">
+        <div className="px-6 md:px-8 py-12 md:py-20 flex-2">
           <div className="max-w-4xl" data-aos="fade-up">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 leading-tight mb-6">
-              Discover products, prices, and stores near you.
+              Discover{" "}
+              <TaglineWordRender words={["products", "prices", "stores"]} />{" "}
+              <span className="block">near you.</span>
             </h1>
             <p className="text-lg md:text-xl text-slate-600 mb-8 leading-relaxed max-w-2xl">
               Search products, compare prices across stores, discover local and
@@ -97,21 +101,38 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
             </p>
 
             {!loggedIn && (
-              <div className="flex flex-col sm:flex-row gap-4">
+              <div className="flex flex-col xs:flex-row gap-4">
                 <Link
-                  href="/auth/signup"
-                  className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-8 py-3 text-base md:text-lg font-semibold rounded-lg transition-colors inline-block text-center"
+                  href="/home"
+                  className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-8 py-3 text-base md:text-lg font-semibold rounded-xl transition-colors inline-block text-center"
                 >
                   Start Exploring
                 </Link>
                 <a
                   href="#showcase"
-                  className="border-2 border-slate-300 text-slate-900 hover:bg-slate-50 px-8 py-3 rounded-lg font-semibold transition-colors inline-block text-center"
+                  className="border-2 border-slate-300 text-slate-900 hover:bg-slate-50 px-8 py-3 rounded-xl font-semibold transition-colors inline-block text-center"
                 >
                   Learn More
                 </a>
               </div>
             )}
+          </div>
+        </div>
+
+        {/* Floating Phone */}
+        <div className="pointer-events-none hidden md:flex flex-1 justify-end">
+          <div
+            className="relative rounded-4xl p-2 shadow-2xl transform rotate-6 bg-gray-100 md:w-52 lg:w-60 xl:w-72 h-auto"
+            data-aos="fade-up"
+          >
+            <Image
+              src="https://res.cloudinary.com/pricetra-cdn/image/upload/homepage-main-screenshot.png"
+              alt="Pricetra Mobile App"
+              width={280}
+              height={560}
+              quality={100}
+              className="rounded-3xl"
+            />
           </div>
         </div>
       </section>
@@ -123,7 +144,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
       >
         <div className="container mx-auto px-6 md:px-8">
           <h2 className="text-2xl md:text-3xl font-bold text-slate-900 text-center mb-10">
-            Shop at your favorite stores
+            Explore your favorite stores
           </h2>
           <section className="grid grid-cols-5 md:grid-cols-10 gap-x-2 gap-y-5 sm:gap-5">
             {!allStoresData ? (
@@ -232,54 +253,42 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
             <Feature
               title="Discover Products"
               description="Find products across local and national retailers in seconds."
-              icon={
-                <Search className="w-8 h-8" />
-              }
+              icon={<Search className="w-8 h-8" />}
             />
 
             {/* Feature 2 */}
             <Feature
               title="Compare Prices"
               description="See pricing and promotions from multiple stores instantly."
-              icon={
-                <TrendingDown className="w-8 h-8" />
-              }
+              icon={<TrendingDown className="w-8 h-8" />}
             />
 
             {/* Feature 3 */}
             <Feature
               title="Find Availability"
               description="Know where products are available before leaving home."
-              icon={
-                <MapPin className="w-8 h-8" />
-              }
+              icon={<MapPin className="w-8 h-8" />}
             />
 
             {/* Feature 4 */}
             <Feature
               title="Scan Barcodes"
               description="Scan UPC codes to instantly find products and prices."
-              icon={
-                <Barcode className="w-8 h-8" />
-              }
+              icon={<Barcode className="w-8 h-8" />}
             />
 
             {/* Feature 5 */}
             <Feature
               title="Create Lists"
               description="Organize products and plan grocery trips with shopping lists."
-              icon={
-                <ListChecks className="w-8 h-8" />
-              }
+              icon={<ListChecks className="w-8 h-8" />}
             />
 
             {/* Feature 6 */}
             <Feature
               title="Track Prices"
               description="Get notified about price drops and sales on your favorite items."
-              icon={
-                <HiMiniBellAlert className="w-8 h-8" />
-              }
+              icon={<HiMiniBellAlert className="w-8 h-8" />}
             />
           </div>
         </div>
@@ -459,7 +468,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
       <section className="py-16 md:py-20 bg-slate-50">
         <div className="container mx-auto px-6 md:px-8">
           <div className="max-w-2xl mx-auto text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-black text-slate-900 mb-4">
               Own a store?
             </h2>
             <p className="text-slate-600 mb-8 text-lg">
@@ -492,13 +501,13 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
                   href="/auth/signup"
-                  className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-8 py-3 text-base md:text-lg font-semibold rounded-lg transition-colors inline-block text-center"
+                  className="bg-pricetra-green-dark hover:bg-pricetra-green-heavy-dark text-white px-8 py-3 text-base md:text-lg font-semibold rounded-xl transition-colors inline-block text-center"
                 >
                   Create Free Account
                 </Link>
                 <Link
                   href="/home"
-                  className="border-2 border-pricetra-green-dark text-pricetra-green-dark hover:bg-green-50 px-8 py-3 text-base md:text-lg font-semibold rounded-lg transition-colors inline-block text-center"
+                  className="border-2 border-gray-400 hover:border-gray-800 text-gray-800 hover:text-white hover:bg-gray-800 px-8 py-3 text-base md:text-lg font-semibold rounded-xl transition-colors inline-block text-center"
                 >
                   Browse Products
                 </Link>
