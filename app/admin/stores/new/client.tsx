@@ -63,11 +63,12 @@ export default function AddStoreClient({
       .then(({ data }) => {
         if (!data) return;
 
-        const { store, branch, businessForm } =
+        const { store, branches, businessForm } =
           data.createStoreWithBusinessForm;
         toast.success(
           `New store ${store.name} was added for ${businessForm.firstName} ${businessForm.lastName} (${businessForm.email})! Redirecting.`,
         );
+        const branch = branches[0];
         router.push(`/stores/${store.slug}/${branch.slug}`);
       })
       .catch((err) => {
