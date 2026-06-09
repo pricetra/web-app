@@ -129,9 +129,9 @@ export default function BusinessPageClient() {
       </section>
 
       {/* PROBLEM */}
-      <section className="mx-auto max-w-5xl px-6 py-12" id="why">
-        <div className="rounded-2xl bg-gradient-to-tl from-green-200 to-pricetra-green-logo/50 py-10 px-12 shadow-sm">
-          <h2 className="text-3xl font-bold text-black mb-5">
+      <section className="mx-auto max-w-5xl px-0 sm:px-6 py-12" id="why">
+        <div className="rounded-none sm:rounded-2xl bg-gradient-to-tl from-green-200 to-pricetra-green-logo/50 py-10 px-8 sm:px-12 sm:shadow-sm">
+          <h2 className="text-2xl sm:text-3xl font-bold text-black mb-5">
             Customers {`Can't`} Buy What They {`Can't`} Find
           </h2>
           <p className="mt-4 text-gray-800">
