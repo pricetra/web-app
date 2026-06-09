@@ -91,7 +91,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
           <div className="max-w-4xl" data-aos="fade-up">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-black tracking-tight text-slate-900 leading-tight mb-6">
               Discover{" "}
-              <TaglineWordRender words={["products", "prices", "stores"]} />{" "}
+              <TaglineWordRender words={["products", "prices", "stores"]} intervalMs={2000} />{" "}
               <span className="block">near you.</span>
             </h1>
             <p className="text-lg md:text-xl text-slate-600 mb-8 leading-relaxed max-w-2xl">
@@ -109,7 +109,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                   Start Exploring
                 </Link>
                 <a
-                  href="#showcase"
+                  href="#features"
                   className="border-2 border-slate-300 text-slate-900 hover:bg-slate-50 px-8 py-3 rounded-xl font-semibold transition-colors inline-block text-center"
                 >
                   Learn More
@@ -165,12 +165,12 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
 
       {/* Nearby Stores + Products Section */}
       <section className="bg-slate-50 py-16 md:py-20">
-        <div className="container mx-auto px-6 md:px-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-12">
+        <div className="max-w-full md:container mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-12 px-6 md:px-8">
             {`What's`} available near you
           </h2>
 
-          <div className="flex flex-col my-10 relative">
+          <div className="flex flex-col my-10 relative px-0">
             {!branchesWithProducts
               ? Array(3)
                   .fill(0)
@@ -179,7 +179,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                       className="my-7"
                       key={`branch-with-product-loading-${i}`}
                     >
-                      <div className="mb-5">
+                      <div className="mb-5 px-8">
                         <BranchItemWithLogoLoading />
                       </div>
 
@@ -200,7 +200,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
                       className="my-7"
                       key={`branch-with-product-${branch.id}`}
                     >
-                      <div className="mb-5">
+                      <div className="mb-5 px-8">
                         <BranchItemWithLogo branch={branch as Branch} />
                       </div>
 
@@ -236,7 +236,7 @@ export default function LandingPage({ ipAddress }: { ipAddress: string }) {
       </section>
 
       {/* Feature Grid Section */}
-      <section className="py-16 md:py-24 bg-slate-50">
+      <section className="py-16 md:py-24 bg-slate-50" id="features">
         <div className="container mx-auto px-6 md:px-8">
           <div className="max-w-2xl mx-auto text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">
