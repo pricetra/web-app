@@ -25,14 +25,20 @@ export default function AcceptInviteClient({
   const { loggedIn } = useAuth();
   const router = useRouter();
   const [acceptInvite, { loading, error, data: acceptData }] = useMutation(
-    AcceptPendingStoreUserInviteDocument
+    AcceptPendingStoreUserInviteDocument,
   );
 
   useEffect(() => {
     if (!loggedIn) {
       const returnTo = `/auth/store-invite/accept?data=${data}`;
+      const paramsBuilder = new URLSearchParams({
+        email: parsedData.email,
+        name: parsedData.fullName,
+        reason: STORE_INVITE,
+        return: returnTo,
+      })
       router.push(
-        `/auth/signup?email=${encodeURIComponent(parsedData.email)}&reason=${STORE_INVITE}&return=${returnTo}`
+        `/auth/signup?${paramsBuilder.toString()}`,
       );
       return;
     }
@@ -85,7 +91,8 @@ export default function AcceptInviteClient({
           <MdCheckCircle className="size-16 text-green-700" />
           <div>
             <h3 className="font-bold text-lg text-center">
-              Joined {acceptData.acceptPendingStoreUserInvite.store?.name} Successfully!
+              Joined {acceptData.acceptPendingStoreUserInvite.store?.name}{" "}
+              Successfully!
             </h3>
           </div>
         </div>

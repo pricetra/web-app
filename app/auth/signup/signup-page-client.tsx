@@ -32,6 +32,7 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
   const searchParams = useSearchParams();
   const returnPath = searchParams.get("return");
   const emailSearchParam = searchParams.get("email");
+  const nameSearchParam = searchParams.get("name");
   const reasonSearchParam = searchParams.get("reason");
 
   const { launchAppleOAuth, data: appleOAuthSuccessData } = useAppleLogin();
@@ -143,6 +144,11 @@ export default function SignupPage({ ipAddress }: { ipAddress: string }) {
     if (!emailSearchParam) return;
     setEmail(emailSearchParam);
   }, [emailSearchParam]);
+  
+  useEffect(() => {
+    if (!nameSearchParam) return;
+    setName(nameSearchParam);
+  }, [nameSearchParam]);
 
   return (
     <AuthContainer
