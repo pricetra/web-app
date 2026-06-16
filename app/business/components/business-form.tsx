@@ -139,9 +139,6 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
             v.onlineAddressUrl.length === 0
           )
             errors.onlineAddressUrl = "Online store URL is required";
-          if (v.storeLogo === undefined || v.storeLogo.length === 0)
-            errors.storeLogo =
-              "Store logo is required. Must be an 1:1 square image";
           if (v.storeUrl === undefined || v.storeUrl.length === 0)
             errors.storeUrl = "URL is required";
           if (!storeNameAvailable)
