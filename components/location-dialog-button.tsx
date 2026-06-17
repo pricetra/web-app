@@ -14,22 +14,57 @@ import {
 import { useState, useMemo, useEffect, useRef } from "react";
 import debounce from "lodash/debounce";
 import { useCurrentLocation } from "@/context/location-context";
-import { getGoogleMapsPredictions, GoogleMapsAutocompletePlacePrediction, GoogleMapsAutocompleteSuggestion } from "@/lib/google-maps-api";
+import { useLazyQuery } from "@apollo/client/react";
+import {
+  Address,
+  AddressAutocompleteDocument,
+  AddressAutocompleteSuggestion,
+  AddressFromPlaceIdDocument,
+} from "graphql-utils";
+import { toast } from "sonner";
+import convert from "convert-units";
 
 export default function LocationDialogButton() {
   const { currentLocation, setCurrentLocation } = useCurrentLocation();
   const [open, setOpen] = useState(false);
-  const [addressInput, setAddressInput] = useState(currentLocation?.fullAddress ?? "");
-  const [suggestions, setSuggestions] = useState<GoogleMapsAutocompleteSuggestion[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [addressInput, setAddressInput] = useState(
+    currentLocation?.fullAddress ?? "",
+  );
+  const [radiusInput, setRadiusInput] = useState(
+    currentLocation?.locationInput.radiusMeters ?? 50,
+  );
+  const [suggestions, setSuggestions] = useState<
+    AddressAutocompleteSuggestion[]
+  >([]);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const [getAddressSuggestions] = useLazyQuery(AddressAutocompleteDocument, {
+    fetchPolicy: "cache-first",
+  });
+  const [addressFromPlaceId, { loading: addressFromPlaceIdLoading }] =
+    useLazyQuery(AddressFromPlaceIdDocument);
+  const [newSelectedAddress, setNewSelectedAddress] = useState<Address>();
 
-  const debouncedFetch = useMemo(() => debounce(getGoogleMapsPredictions, 300), []);
+  const debouncedFetch = useMemo(
+    () => debounce(getAddressSuggestions, 300),
+    [],
+  );
 
   useEffect(() => {
-    debouncedFetch(addressInput, currentLocation)?.then(data => setSuggestions(data));
+    debouncedFetch({
+      variables: {
+        input: addressInput,
+        locationBias: currentLocation
+          ? {
+              ...currentLocation?.locationInput,
+            }
+          : undefined,
+      },
+    })?.then(({ data }) => {
+      if (!data) return;
+      setSuggestions(data.addressAutocomplete);
+    });
     return () => debouncedFetch.cancel();
-  }, [addressInput, debouncedFetch]);
+  }, [addressInput, currentLocation, debouncedFetch]);
 
   useEffect(() => {
     setAddressInput(currentLocation?.fullAddress ?? "");
@@ -47,15 +82,32 @@ export default function LocationDialogButton() {
     return () => document.removeEventListener("click", onDocClick);
   }, []);
 
-  function selectSuggestion(s: GoogleMapsAutocompletePlacePrediction) {
-    setAddressInput(s.text.text);
+  function selectSuggestion({
+    addressText,
+    placeId,
+  }: AddressAutocompleteSuggestion) {
+    setAddressInput(addressText);
     setSuggestions([]);
-    // TODO: later fetch place details and setCurrentLocation
+    addressFromPlaceId({
+      variables: {
+        placeId,
+      },
+    })
+      .then(({ data }) => {
+        if (!data) return;
+        setNewSelectedAddress(data.addressFromPlaceId as Address);
+      })
+      .catch((err) => toast.error(err));
   }
 
   return (
     <>
-      <Button size="xs" rounded variant="secondary" onClick={() => setOpen(true)}>
+      <Button
+        size="xs"
+        rounded
+        variant="secondary"
+        onClick={() => setOpen(true)}
+      >
         <MdLocationPin /> {currentLocation?.fullAddress?.split(",")[0]}
       </Button>
 
@@ -83,20 +135,24 @@ export default function LocationDialogButton() {
               {suggestions.length > 0 && (
                 <ul className="absolute z-50 mt-1 w-full rounded-md border bg-background shadow-md max-h-60 overflow-auto">
                   {suggestions.map((s) => (
-                    <li key={s.placePrediction.placeId}>
+                    <li key={s.placeId}>
                       <button
                         type="button"
                         className="w-full text-left px-3 py-2 hover:bg-accent text-xs"
-                        onClick={() => selectSuggestion(s.placePrediction)}
+                        onClick={() => selectSuggestion(s)}
                       >
-                        {s.placePrediction.text.text}
+                        {s.addressText}
                       </button>
                     </li>
                   ))}
                 </ul>
               )}
 
-              <Button variant="link" size="xs" className="mt-1.5 text-pricetra-green-heavy-dark px-0">
+              <Button
+                variant="link"
+                size="xs"
+                className="mt-1.5 text-pricetra-green-heavy-dark px-0"
+              >
                 <MdOutlineMyLocation />
                 Use current location
               </Button>
@@ -106,16 +162,49 @@ export default function LocationDialogButton() {
               <label className="text-sm font-medium" htmlFor="searchRadius">
                 Search radius (mi)
               </label>
-              <Input defaultValue="10" type="number" id="searchRadius" />
+              <Input
+                value={radiusInput}
+                onChange={(e) => setRadiusInput(parseInt(e.target.value))}
+                type="number"
+                id="searchRadius"
+              />
             </div>
           </div>
 
           <DialogFooter>
             <div className="flex w-full justify-end gap-2 mt-5">
-              <Button variant="outline" size="sm" onClick={() => setOpen(false)}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setOpen(false)}
+              >
                 Cancel
               </Button>
-              <Button size="sm" variant="pricetra">
+              <Button
+                size="sm"
+                variant="pricetra"
+                disabled={addressFromPlaceIdLoading}
+                onClick={() => {
+                  if (!currentLocation) return;
+
+                  setCurrentLocation({
+                    fullAddress: (newSelectedAddress ?? currentLocation)
+                      .fullAddress,
+                    locationInput: {
+                      latitude: (
+                        newSelectedAddress ?? currentLocation?.locationInput
+                      ).latitude,
+                      longitude: (
+                        newSelectedAddress ?? currentLocation?.locationInput
+                      ).longitude,
+                      radiusMeters: Math.round(
+                        convert(radiusInput).from("mi").to("m"),
+                      ),
+                    },
+                  });
+                  setOpen(false);
+                }}
+              >
                 Save
               </Button>
             </div>
