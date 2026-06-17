@@ -19,13 +19,17 @@ import {
   Address,
   AddressAutocompleteDocument,
   AddressAutocompleteSuggestion,
+  AddressFromLatLonDocument,
   AddressFromPlaceIdDocument,
 } from "graphql-utils";
 import { toast } from "sonner";
 import convert from "convert-units";
+import useLocationService from "@/hooks/useLocation";
+import { CgSpinner } from "react-icons/cg";
 
 export default function LocationDialogButton() {
   const { currentLocation, setCurrentLocation } = useCurrentLocation();
+  const { geocodeWithCallback } = useLocationService();
   const [open, setOpen] = useState(false);
   const [addressInput, setAddressInput] = useState(
     currentLocation?.fullAddress ?? "",
@@ -42,6 +46,9 @@ export default function LocationDialogButton() {
   });
   const [addressFromPlaceId, { loading: addressFromPlaceIdLoading }] =
     useLazyQuery(AddressFromPlaceIdDocument);
+  const [addressFromLatLon, { loading: addressFromLatLonLoading }] =
+    useLazyQuery(AddressFromLatLonDocument);
+  const [currentLocationLoading, setCurrentLocationLoading] = useState(false)
   const [newSelectedAddress, setNewSelectedAddress] = useState<Address>();
 
   const debouncedFetch = useMemo(
@@ -97,7 +104,7 @@ export default function LocationDialogButton() {
         if (!data) return;
         setNewSelectedAddress(data.addressFromPlaceId as Address);
       })
-      .catch((err) => toast.error(err));
+      .catch((err) => toast.error(err.message));
   }
 
   return (
@@ -138,7 +145,7 @@ export default function LocationDialogButton() {
                     <li key={s.placeId}>
                       <button
                         type="button"
-                        className="w-full text-left px-3 py-2 hover:bg-accent text-xs"
+                        className="w-full text-left px-3 py-2 hover:bg-accent text-xs cursor-pointer"
                         onClick={() => selectSuggestion(s)}
                       >
                         {s.addressText}
@@ -152,8 +159,27 @@ export default function LocationDialogButton() {
                 variant="link"
                 size="xs"
                 className="mt-1.5 text-pricetra-green-heavy-dark px-0"
+                onClick={() => {
+                  setCurrentLocationLoading(true);
+                  geocodeWithCallback((location) => {
+                    setCurrentLocationLoading(false);
+                    if (!location) return;
+
+                    addressFromLatLon({
+                      variables: {
+                        latitude: location.coords.latitude,
+                        longitude: location.coords.longitude,
+                      },
+                    }).then(({ data }) => {
+                      if (!data) return;
+                      setNewSelectedAddress(data.addressFromLatLon as Address);
+                      setAddressInput(data.addressFromLatLon.fullAddress);
+                    });
+                  });
+                }}
+                disabled={addressFromLatLonLoading || currentLocationLoading}
               >
-                <MdOutlineMyLocation />
+                {currentLocationLoading ? <CgSpinner className="animate-spin" /> : <MdOutlineMyLocation />}
                 Use current location
               </Button>
             </div>
@@ -183,7 +209,7 @@ export default function LocationDialogButton() {
               <Button
                 size="sm"
                 variant="pricetra"
-                disabled={addressFromPlaceIdLoading}
+                disabled={addressFromPlaceIdLoading || addressFromLatLonLoading}
                 onClick={() => {
                   if (!currentLocation) return;
 
