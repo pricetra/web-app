@@ -65,7 +65,8 @@ export default function LocationDialog({ open, setOpen }: LocationDialogProps) {
         input: addressInput,
         locationBias: currentLocation
           ? {
-              ...currentLocation?.locationInput,
+              latitude: currentLocation.locationInput.latitude,
+              longitude: currentLocation.locationInput.longitude,
             }
           : undefined,
       },
