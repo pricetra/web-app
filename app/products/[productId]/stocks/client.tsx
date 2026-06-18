@@ -1,5 +1,6 @@
 "use client";
 
+import LocationDialogButton from "@/components/location-dialog-button";
 import ProductItem from "@/components/product-item";
 import StockItemMini, { StockItemMiniLoading } from "@/components/stock-item-mini";
 import NavPageIndicator from "@/components/ui/nav-page-indicator";
@@ -42,11 +43,12 @@ export default function ProductSocksPageClient({
   });
 
   useLayoutEffect(() => {
-    setPageIndicator(<NavPageIndicator title="Stocks" icon={MdOutlineListAlt} />)
+    setPageIndicator(<NavPageIndicator title="Stocks" icon={MdOutlineListAlt} />);
 
     return () => {
       resetAll();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -57,6 +59,10 @@ export default function ProductSocksPageClient({
         </div>
 
         <div>
+          <div className="mb-10">
+            <LocationDialogButton size="sm" />
+          </div>
+
           {stocksData ? (
             <>
               {stocksData.getProductStocks.paginator.total !== 0 ? (

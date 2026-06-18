@@ -5,12 +5,15 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/context/user-context";
+import { isRoleAuthorized } from "@/lib/roles";
 import { useMutation, useQuery } from "@apollo/client/react";
 import {
   GetProductNutritionDataDocument,
   Product,
   ProductNutrition,
   UpdateProductNutritionDataDocument,
+  UserRole,
 } from "graphql-utils";
 import { useEffect } from "react";
 import { FiEdit } from "react-icons/fi";
@@ -27,6 +30,7 @@ export default function ProductDetailsNutritionTab({
   product,
   onDataLoaded,
 }: ProductDetailsNutritionTabProps) {
+  const { user } = useAuth();
   const { data: productNutritionData } = useQuery(
     GetProductNutritionDataDocument,
     {
@@ -54,33 +58,37 @@ export default function ProductDetailsNutritionTab({
     <AccordionItem value={TAB_NAME}>
       <AccordionTrigger>Nutrition Facts</AccordionTrigger>
       <AccordionContent className="flex flex-col gap-4 text-balance">
-        <div className="flex flex-row items-center justify-end gap-2">
-          <Button
-            size="xs"
-            variant="default"
-            rounded
-            href={`https://world.openfoodfacts.org/cgi/product.pl?type=edit&code=${product.code}`}
-            target="_blank"
-          >
-            <FiEdit className="size-3.5" />
-            Edit
-          </Button>
+        {user && (
+          <div className="flex flex-row items-center justify-end gap-2">
+            {isRoleAuthorized(UserRole.Contributor, user.role) && (
+              <Button
+                size="xs"
+                variant="default"
+                rounded
+                href={`https://world.openfoodfacts.org/cgi/product.pl?type=edit&code=${product.code}`}
+                target="_blank"
+              >
+                <FiEdit className="size-3.5" />
+                Edit
+              </Button>
+            )}
 
-          <Button
-            size="xs"
-            variant="pricetra"
-            rounded
-            onClick={() =>
-              updateProductNutrition({
-                variables: { productId: product.id },
-              })
-            }
-            disabled={updatingProductNutrition}
-          >
-            <IoRefresh />
-            Refetch
-          </Button>
-        </div>
+            <Button
+              size="xs"
+              variant="pricetra"
+              rounded
+              onClick={() =>
+                updateProductNutrition({
+                  variables: { productId: product.id },
+                })
+              }
+              disabled={updatingProductNutrition}
+            >
+              <IoRefresh />
+              Refetch
+            </Button>
+          </div>
+        )}
 
         <div className="flex flex-col md:flex-row gap-3 lg:gap-7 mb-7">
           {productNutritionData.getProductNutritionData.nutriments && (
