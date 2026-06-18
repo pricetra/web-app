@@ -3,13 +3,10 @@ import {
   BranchesWithProductsDocument,
   BranchesWithProductsQueryVariables,
   FindBranchesByDistanceDocument,
-  GetProductNutritionDataDocument,
   LocationInput,
   Product,
-  ProductNutrition,
   ProductSimple,
   Stock,
-  UpdateProductNutritionDataDocument,
 } from "graphql-utils";
 
 import {
@@ -23,12 +20,8 @@ import BranchItemWithLogo, {
   BranchItemWithLogoLoading,
 } from "@/components/branch-item-with-logo";
 import { ProductLoadingItemHorizontal } from "@/components/product-item-horizontal";
-import NutritionFacts from "@/components/nutrition-facts";
-import { Button } from "@/components/ui/button";
 import ScrollContainer from "@/components/scroll-container";
-import { FiEdit } from "react-icons/fi";
-import { IoRefresh } from "react-icons/io5";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client/react";
+import { useLazyQuery } from "@apollo/client/react";
 import { useAuth, UserListsType } from "@/context/user-context";
 import { useEffect, useMemo, useState } from "react";
 import { LocationInputWithFullAddress } from "@/context/location-context";
@@ -40,6 +33,7 @@ import ProductsContainer from "@/components/ui/products-container";
 import ProductDetailsFavoriteStoresTab from "./product-details-favorite-stores-tab";
 import ProductDetailsInStoreStocksTab from "./product-details-in-store-stocks-tab";
 import ProductDetailsOnlineStocksTab from "./product-details-online-stocks-tab";
+import ProductDetailsNutritionTab from "./product-details-nutrition-tab";
 
 export type ProductDetailsProps = {
   product: Product;
@@ -61,20 +55,6 @@ export default function ProductDetails({
   const [getRelatedBranchProducts, { data: branchesWithProducts }] =
     useLazyQuery(BranchesWithProductsDocument, { fetchPolicy: "no-cache" });
   const [getBranchesByDistance] = useLazyQuery(FindBranchesByDistanceDocument);
-
-  const { data: productNutritionData } = useQuery(
-    GetProductNutritionDataDocument,
-    {
-      variables: {
-        productId: product.id,
-      },
-      fetchPolicy: "network-only",
-    },
-  );
-  const [updateProductNutrition, { loading: updatingProductNutrition }] =
-    useMutation(UpdateProductNutritionDataDocument, {
-      refetchQueries: [GetProductNutritionDataDocument],
-    });
 
   async function getBranchIds(
     lists: UserListsType | undefined,
@@ -158,12 +138,6 @@ export default function ProductDetails({
     "favorite-stores",
     "description",
   ]);
-  useEffect(() => {
-    const defaults: string[] = [];
-    if (productNutritionData) {
-      defaults.push("nutrition-facts");
-    }
-  }, [productNutritionData]);
 
   return (
     <div>
@@ -197,65 +171,12 @@ export default function ProductDetails({
           <MultiplexAds id="product-details-multiplex-1" />
         </div>
 
-        {productNutritionData && (
-          <AccordionItem value="nutrition-facts">
-            <AccordionTrigger>Nutrition Facts</AccordionTrigger>
-            <AccordionContent className="flex flex-col gap-4 text-balance">
-              <div className="flex flex-row items-center justify-end gap-2">
-                <Button
-                  size="xs"
-                  variant="default"
-                  rounded
-                  href={`https://world.openfoodfacts.org/cgi/product.pl?type=edit&code=${product.code}`}
-                  target="_blank"
-                >
-                  <FiEdit className="size-3.5" />
-                  Edit
-                </Button>
-
-                <Button
-                  size="xs"
-                  variant="pricetra"
-                  rounded
-                  onClick={() =>
-                    updateProductNutrition({
-                      variables: { productId: product.id },
-                    })
-                  }
-                  disabled={updatingProductNutrition}
-                >
-                  <IoRefresh />
-                  Refetch
-                </Button>
-              </div>
-
-              <div className="flex flex-col md:flex-row gap-3 lg:gap-7 mb-7">
-                {productNutritionData.getProductNutritionData.nutriments && (
-                  <div className="flex-2 xl:flex-1">
-                    <NutritionFacts
-                      {...(productNutritionData.getProductNutritionData as ProductNutrition)}
-                    />
-                  </div>
-                )}
-
-                {productNutritionData.getProductNutritionData.ingredientList &&
-                  productNutritionData.getProductNutritionData.ingredientList
-                    .length > 0 && (
-                    <div className="flex-2">
-                      <h5 className="mb-1.5 text-base font-semibold">
-                        Ingredients
-                      </h5>
-                      <p className="text-xs">
-                        {productNutritionData.getProductNutritionData.ingredientList
-                          .map((i) => i.toUpperCase())
-                          .join(", ")}
-                      </p>
-                    </div>
-                  )}
-              </div>
-            </AccordionContent>
-          </AccordionItem>
-        )}
+        <ProductDetailsNutritionTab
+          product={product}
+          onDataLoaded={(tabName) => {
+            setAccordionValues((v) => [...v, tabName]);
+          }}
+        />
 
         {product.description.length > 0 && (
           <AccordionItem value="description">
