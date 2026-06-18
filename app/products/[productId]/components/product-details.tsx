@@ -2,9 +2,7 @@ import {
   Branch,
   BranchesWithProductsDocument,
   BranchesWithProductsQueryVariables,
-  BranchListWithPrices,
   BranchType,
-  FavoriteBranchesWithPricesDocument,
   FindBranchesByDistanceDocument,
   GetProductNutritionDataDocument,
   GetProductStocksDocument,
@@ -32,7 +30,6 @@ import { Button } from "@/components/ui/button";
 import StockItemMini, {
   StockItemMiniLoading,
 } from "@/components/stock-item-mini";
-import LoginSignupButtons from "@/components/login-signup-buttons";
 import ScrollContainer from "@/components/scroll-container";
 import { FiEdit } from "react-icons/fi";
 import { IoRefresh } from "react-icons/io5";
@@ -47,26 +44,7 @@ import MultiplexAds from "@/components/ads/multiplex-ads";
 import { slugifyProductName } from "@/lib/strings";
 import ProductsContainer from "@/components/ui/products-container";
 import LocationDialogButton from "@/components/location-dialog-button";
-
-export type StockWithApproximatePrice = Stock & {
-  approximatePrice?: number;
-};
-
-function stockToApproxMap(
-  data: BranchListWithPrices,
-): StockWithApproximatePrice {
-  return {
-    id: data.stock?.id ?? 0,
-    productId: data.stock?.productId,
-    latestPriceId: data.stock?.latestPrice?.id ?? 0,
-    latestPrice: { ...data.stock?.latestPrice },
-    branchId: data.branchId,
-    branch: data.branch,
-    store: data.branch?.store,
-    storeId: data.branch?.storeId,
-    approximatePrice: data.approximatePrice,
-  } as StockWithApproximatePrice;
-}
+import ProductDetailsFavoriteStoresTab from "./product-details-favorite-stores-tab";
 
 export type ProductDetailsProps = {
   product: Product;
@@ -79,7 +57,7 @@ export default function ProductDetails({
   stock,
   locationInput,
 }: ProductDetailsProps) {
-  const { loggedIn, lists } = useAuth();
+  const { lists } = useAuth();
 
   const { data: inStoreStocksData } = useQuery(GetProductStocksDocument, {
     variables: {
@@ -104,13 +82,6 @@ export default function ProductDetails({
     },
     fetchPolicy: "no-cache",
   });
-  const { data: favBranchesPriceData } = useQuery(
-    FavoriteBranchesWithPricesDocument,
-    {
-      variables: { productId: product.id },
-      fetchPolicy: "no-cache",
-    },
-  );
 
   const [relatedProductsSectionRef, relatedProductsSectionInView] = useInView({
     triggerOnce: true,
@@ -134,23 +105,6 @@ export default function ProductDetails({
     useMutation(UpdateProductNutritionDataDocument, {
       refetchQueries: [GetProductNutritionDataDocument],
     });
-
-  const mappedFavBranches = useMemo(
-    () =>
-      (
-        (favBranchesPriceData?.getFavoriteBranchesWithPrices ??
-          []) as BranchListWithPrices[]
-      ).map(stockToApproxMap),
-    [favBranchesPriceData],
-  );
-
-  const availableFavoriteBranches = useMemo(
-    () =>
-      favBranchesPriceData?.getFavoriteBranchesWithPrices?.filter(
-        (d) => d.approximatePrice || d.stock?.latestPriceId,
-      ) as BranchListWithPrices[] | undefined,
-    [favBranchesPriceData],
-  );
 
   async function getBranchIds(
     lists: UserListsType | undefined,
@@ -264,56 +218,7 @@ export default function ProductDetails({
         value={accordionValues}
         onValueChange={setAccordionValues}
       >
-        <AccordionItem value="favorite-stores">
-          <AccordionTrigger badge={availableFavoriteBranches?.length}>
-            Favorite Stores
-          </AccordionTrigger>
-          <AccordionContent>
-            {loggedIn ? (
-              <>
-                {favBranchesPriceData ? (
-                  <section className="grid grid-cols-2 gap-5 mt-5">
-                    {mappedFavBranches.map(({ approximatePrice, ...s }, i) => (
-                      <div
-                        className="mb-3 flex flex-row"
-                        key={`${s.id}-${i}-fav-store-stock`}
-                      >
-                        <StockItemMini
-                          productId={product.id}
-                          product={product}
-                          stock={s as Stock}
-                          approximatePrice={approximatePrice ?? undefined}
-                          disabled={s.id === 0 && !approximatePrice}
-                        />
-                      </div>
-                    ))}
-                  </section>
-                ) : (
-                  <section className="grid grid-cols-2 gap-5 mt-5">
-                    {Array(lists?.favorites.branchList?.length ?? 5)
-                      .fill(0)
-                      .map((_, i) => (
-                        <div
-                          className="mb-3"
-                          key={`favorite-branch-stock-loading-${i}`}
-                        >
-                          <StockItemMiniLoading />
-                        </div>
-                      ))}
-                  </section>
-                )}
-              </>
-            ) : (
-              <div className="my-10">
-                <h3 className="text-center text-lg font-bold mb-5">
-                  View prices from your Favorite Stores
-                </h3>
-
-                <LoginSignupButtons />
-              </div>
-            )}
-          </AccordionContent>
-        </AccordionItem>
+        <ProductDetailsFavoriteStoresTab product={product} />
 
         <AccordionItem value="available-in-stores">
           <AccordionTrigger
