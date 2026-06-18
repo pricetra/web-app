@@ -1,4 +1,3 @@
-import LocationDialogButton from "@/components/location-dialog-button";
 import StockItemMini, {
   StockItemMiniLoading,
 } from "@/components/stock-item-mini";
@@ -7,7 +6,6 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { LocationInputWithFullAddress } from "@/context/location-context";
 import { useQuery } from "@apollo/client/react";
 import {
   BranchType,
@@ -18,60 +16,53 @@ import {
 import Link from "next/link";
 import { useEffect } from "react";
 
-export type ProductDetailsInStoreStocksTabProps = {
+export type ProductDetailsOnlineStocksTabProps = {
   product: Product;
-  locationInput: LocationInputWithFullAddress;
   productUrlPath: string;
   onDataLoaded: (tabName: string) => void;
 };
 
-const TAB_NAME = "available-in-stores"
+const TAB_NAME = "available-online";
 
-export default function ProductDetailsInStoreStocksTab({
+export default function ProductDetailsOnlineStocksTab({
   product,
-  locationInput,
   productUrlPath,
   onDataLoaded,
-}: ProductDetailsInStoreStocksTabProps) {
-  const { data: inStoreStocksData } = useQuery(GetProductStocksDocument, {
+}: ProductDetailsOnlineStocksTabProps) {
+  const { data: onlineStocksData } = useQuery(GetProductStocksDocument, {
     variables: {
       paginator: {
         page: 1,
         limit: 10,
       },
       productId: product.id,
-      location: { ...locationInput.locationInput },
-      branchType: BranchType.Physical,
+      branchType: BranchType.Online,
     },
     fetchPolicy: "no-cache",
   });
 
   useEffect(() => {
-    if (!inStoreStocksData) return;
-    if (inStoreStocksData.getProductStocks.paginator.total == 0) return;
-
-    onDataLoaded(TAB_NAME)
+    if (!onlineStocksData) return;
+    if (onlineStocksData.getProductStocks.paginator.total === 0) return;
+    
+    onDataLoaded(TAB_NAME);
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inStoreStocksData]);
+  }, [onlineStocksData]);
 
   return (
     <AccordionItem value={TAB_NAME}>
       <AccordionTrigger
-        badge={inStoreStocksData?.getProductStocks?.paginator?.total ?? 0}
+        badge={onlineStocksData?.getProductStocks?.paginator?.total ?? 0}
       >
-        Available in Stores
+        Available Online
       </AccordionTrigger>
       <AccordionContent>
-        <div className="flex flex-row gap-5 items-center justify-end mb-10">
-          <LocationDialogButton size="sm" />
-        </div>
-
-        {inStoreStocksData ? (
+        {onlineStocksData ? (
           <>
-            {inStoreStocksData.getProductStocks.paginator.total > 0 ? (
+            {onlineStocksData.getProductStocks.paginator.total > 0 ? (
               <>
                 <section className="grid grid-cols-2 md:grid-cols-3 gap-5 mt-5">
-                  {inStoreStocksData.getProductStocks.stocks.map((s, i) => (
+                  {onlineStocksData.getProductStocks.stocks.map((s, i) => (
                     <div
                       className="mb-3 flex flex-row"
                       key={`${s.id}-${i}-available-stock`}
@@ -85,10 +76,10 @@ export default function ProductDetailsInStoreStocksTab({
                   ))}
                 </section>
 
-                {inStoreStocksData.getProductStocks.paginator.numPages > 1 && (
+                {onlineStocksData.getProductStocks.paginator.numPages > 1 && (
                   <div className="flex flex-row items-center justify-center mt-7 mb-10">
                     <Link
-                      href={`${productUrlPath}/stocks?branchType=${BranchType.Physical}`}
+                      href={`${productUrlPath}/stocks?branchType=${BranchType.Online}`}
                       className="bg-gray-200 hover:bg-gray-300 text-gray-800 hover:text-black flex flex-row items-center justify-center gap-2 px-5 py-2 rounded-full font-bold"
                     >
                       Show All
@@ -98,7 +89,7 @@ export default function ProductDetailsInStoreStocksTab({
               </>
             ) : (
               <p className="py-10 px-5 text-center">
-                No in-store stocks available for this product
+                No online stocks available for this product
               </p>
             )}
           </>

@@ -2,10 +2,8 @@ import {
   Branch,
   BranchesWithProductsDocument,
   BranchesWithProductsQueryVariables,
-  BranchType,
   FindBranchesByDistanceDocument,
   GetProductNutritionDataDocument,
-  GetProductStocksDocument,
   LocationInput,
   Product,
   ProductNutrition,
@@ -27,9 +25,6 @@ import BranchItemWithLogo, {
 import { ProductLoadingItemHorizontal } from "@/components/product-item-horizontal";
 import NutritionFacts from "@/components/nutrition-facts";
 import { Button } from "@/components/ui/button";
-import StockItemMini, {
-  StockItemMiniLoading,
-} from "@/components/stock-item-mini";
 import ScrollContainer from "@/components/scroll-container";
 import { FiEdit } from "react-icons/fi";
 import { IoRefresh } from "react-icons/io5";
@@ -38,13 +33,13 @@ import { useAuth, UserListsType } from "@/context/user-context";
 import { useEffect, useMemo, useState } from "react";
 import { LocationInputWithFullAddress } from "@/context/location-context";
 import { useInView } from "react-intersection-observer";
-import Link from "@/components/ui/link";
 import convert from "convert-units";
 import MultiplexAds from "@/components/ads/multiplex-ads";
 import { slugifyProductName } from "@/lib/strings";
 import ProductsContainer from "@/components/ui/products-container";
 import ProductDetailsFavoriteStoresTab from "./product-details-favorite-stores-tab";
 import ProductDetailsInStoreStocksTab from "./product-details-in-store-stocks-tab";
+import ProductDetailsOnlineStocksTab from "./product-details-online-stocks-tab";
 
 export type ProductDetailsProps = {
   product: Product;
@@ -58,18 +53,6 @@ export default function ProductDetails({
   locationInput,
 }: ProductDetailsProps) {
   const { lists } = useAuth();
-  const { data: onlineStocksData } = useQuery(GetProductStocksDocument, {
-    variables: {
-      paginator: {
-        page: 1,
-        limit: 10,
-      },
-      productId: product.id,
-      branchType: BranchType.Online,
-    },
-    fetchPolicy: "no-cache",
-  });
-
   const [relatedProductsSectionRef, relatedProductsSectionInView] = useInView({
     triggerOnce: true,
     threshold: 0,
@@ -177,16 +160,10 @@ export default function ProductDetails({
   ]);
   useEffect(() => {
     const defaults: string[] = [];
-    if (
-      onlineStocksData &&
-      onlineStocksData.getProductStocks.paginator.total > 0
-    ) {
-      defaults.push("available-online");
-    }
     if (productNutritionData) {
       defaults.push("nutrition-facts");
     }
-  }, [onlineStocksData, productNutritionData]);
+  }, [productNutritionData]);
 
   return (
     <div>
@@ -208,63 +185,13 @@ export default function ProductDetails({
           }}
         />
 
-        <AccordionItem value="available-online">
-          <AccordionTrigger
-            badge={onlineStocksData?.getProductStocks?.paginator?.total ?? 0}
-          >
-            Available Online
-          </AccordionTrigger>
-          <AccordionContent>
-            {onlineStocksData ? (
-              <>
-                {onlineStocksData.getProductStocks.paginator.total > 0 ? (
-                  <>
-                    <section className="grid grid-cols-2 md:grid-cols-3 gap-5 mt-5">
-                      {onlineStocksData.getProductStocks.stocks.map((s, i) => (
-                        <div
-                          className="mb-3 flex flex-row"
-                          key={`${s.id}-${i}-available-stock`}
-                        >
-                          <StockItemMini
-                            productId={product.id}
-                            product={product}
-                            stock={s as Stock}
-                          />
-                        </div>
-                      ))}
-                    </section>
-
-                    {onlineStocksData.getProductStocks.paginator.numPages >
-                      1 && (
-                      <div className="flex flex-row items-center justify-center mt-7 mb-10">
-                        <Link
-                          href={`${productUrlPath}/stocks?branchType=${BranchType.Online}`}
-                          className="bg-gray-200 hover:bg-gray-300 text-gray-800 hover:text-black flex flex-row items-center justify-center gap-2 px-5 py-2 rounded-full font-bold"
-                        >
-                          Show All
-                        </Link>
-                      </div>
-                    )}
-                  </>
-                ) : (
-                  <p className="py-10 px-5 text-center">
-                    No online stocks available for this product
-                  </p>
-                )}
-              </>
-            ) : (
-              <section className="grid grid-cols-2 md:grid-cols-3 gap-5 mt-5">
-                {Array(5)
-                  .fill(0)
-                  .map((_, i) => (
-                    <div className="mb-3" key={`available-stock-loading-${i}`}>
-                      <StockItemMiniLoading />
-                    </div>
-                  ))}
-              </section>
-            )}
-          </AccordionContent>
-        </AccordionItem>
+        <ProductDetailsOnlineStocksTab
+          product={product}
+          productUrlPath={productUrlPath}
+          onDataLoaded={(tabName) => {
+            setAccordionValues((v) => [...v, tabName]);
+          }}
+        />
 
         <div className="my-5 flex flex-row items-center justify-center bg-gray-50">
           <MultiplexAds id="product-details-multiplex-1" />
