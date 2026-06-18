@@ -21,7 +21,7 @@ export type ProductDetailsNutritionTabProps = {
   onDataLoaded: (tabName: string) => void;
 };
 
-const TAB_NAME = "available-online";
+const TAB_NAME = "nutrition-facts";
 
 export default function ProductDetailsNutritionTab({
   product,
