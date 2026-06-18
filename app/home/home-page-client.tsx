@@ -52,7 +52,7 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
         productLimit: 10,
         filters: {
           location: location
-            ? { ...location.locationInput, radiusMeters: undefined }
+            ? { ...location.locationInput }
             : undefined,
         },
       },

@@ -46,6 +46,7 @@ import convert from "convert-units";
 import MultiplexAds from "@/components/ads/multiplex-ads";
 import { slugifyProductName } from "@/lib/strings";
 import ProductsContainer from "@/components/ui/products-container";
+import LocationDialogButton from "@/components/location-dialog-button";
 
 export type StockWithApproximatePrice = Stock & {
   approximatePrice?: number;
@@ -87,7 +88,7 @@ export default function ProductDetails({
         limit: 10,
       },
       productId: product.id,
-      location: locationInput.locationInput,
+      location: {...locationInput.locationInput},
       branchType: BranchType.Physical,
     },
     fetchPolicy: "no-cache",
@@ -321,6 +322,10 @@ export default function ProductDetails({
             Available in Stores
           </AccordionTrigger>
           <AccordionContent>
+            <div className="flex flex-row gap-5 items-center justify-end mb-10">
+              <LocationDialogButton size="sm" />
+            </div>
+
             {inStoreStocksData ? (
               <>
                 {inStoreStocksData.getProductStocks.paginator.total > 0 ? (

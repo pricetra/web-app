@@ -37,7 +37,7 @@ export default function LocationDialog({ open, setOpen }: LocationDialogProps) {
     currentLocation?.fullAddress ?? "",
   );
   const [radiusInput, setRadiusInput] = useState(
-    currentLocation?.locationInput.radiusMeters ?? 50,
+    Math.round(convert(currentLocation?.locationInput.radiusMeters ?? 80467).from('m').to('mi')),
   );
   const [suggestions, setSuggestions] = useState<
     AddressAutocompleteSuggestion[]
