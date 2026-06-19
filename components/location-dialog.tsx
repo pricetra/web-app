@@ -19,6 +19,7 @@ import {
   AddressAutocompleteSuggestion,
   AddressFromLatLonDocument,
   AddressFromPlaceIdDocument,
+  AddressFromRawStringDocument,
 } from "graphql-utils";
 import { toast } from "sonner";
 import convert from "convert-units";
@@ -37,11 +38,16 @@ export default function LocationDialog({ open, setOpen }: LocationDialogProps) {
     currentLocation?.fullAddress ?? "",
   );
   const [radiusInput, setRadiusInput] = useState(
-    Math.round(convert(currentLocation?.locationInput.radiusMeters ?? 80467).from('m').to('mi')),
+    Math.round(
+      convert(currentLocation?.locationInput.radiusMeters ?? 80467)
+        .from("m")
+        .to("mi"),
+    ),
   );
   const [suggestions, setSuggestions] = useState<
     AddressAutocompleteSuggestion[]
   >([]);
+  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const [getAddressSuggestions] = useLazyQuery(AddressAutocompleteDocument, {
     fetchPolicy: "cache-first",
@@ -50,6 +56,8 @@ export default function LocationDialog({ open, setOpen }: LocationDialogProps) {
     useLazyQuery(AddressFromPlaceIdDocument);
   const [addressFromLatLon, { loading: addressFromLatLonLoading }] =
     useLazyQuery(AddressFromLatLonDocument);
+  const [addressFromText, { loading: addressFromTextLoading }] =
+    useLazyQuery(AddressFromRawStringDocument);
   const [currentLocationLoading, setCurrentLocationLoading] = useState(false);
   const [newSelectedAddress, setNewSelectedAddress] = useState<Address>();
 
@@ -86,7 +94,7 @@ export default function LocationDialog({ open, setOpen }: LocationDialogProps) {
     function onDocClick(e: MouseEvent) {
       if (!containerRef.current) return;
       if (!containerRef.current.contains(e.target as Node)) {
-        setSuggestions([]);
+        setSuggestionsOpen(false);
       }
     }
     document.addEventListener("click", onDocClick);
@@ -98,7 +106,7 @@ export default function LocationDialog({ open, setOpen }: LocationDialogProps) {
     placeId,
   }: AddressAutocompleteSuggestion) {
     setAddressInput(addressText);
-    setSuggestions([]);
+    setSuggestionsOpen(false);
     addressFromPlaceId({
       variables: {
         placeId,
@@ -109,6 +117,37 @@ export default function LocationDialog({ open, setOpen }: LocationDialogProps) {
         setNewSelectedAddress(data.addressFromPlaceId as Address);
       })
       .catch((err) => toast.error(err.message));
+  }
+
+  async function selectTextAddress(fullAddress: string) {
+    setAddressInput(fullAddress);
+    setSuggestionsOpen(false);
+    return addressFromText({
+      variables: {
+        fullAddress,
+      },
+    })
+      .then(({ data }) => {
+        if (!data) return;
+        setNewSelectedAddress(data.addressFromRawString as Address);
+      })
+      .catch((err) => toast.error(err.message));
+  }
+
+  function submit() {
+    if (!currentLocation) return;
+
+    setCurrentLocation({
+      fullAddress: (newSelectedAddress ?? currentLocation).fullAddress,
+      locationInput: {
+        latitude: (newSelectedAddress ?? currentLocation?.locationInput)
+          .latitude,
+        longitude: (newSelectedAddress ?? currentLocation?.locationInput)
+          .longitude,
+        radiusMeters: Math.round(convert(radiusInput).from("mi").to("m")),
+      },
+    });
+    setOpen(false);
   }
 
   return (
@@ -129,11 +168,22 @@ export default function LocationDialog({ open, setOpen }: LocationDialogProps) {
             <Input
               id="fullAddress"
               value={addressInput}
-              onChange={(e) => setAddressInput(e.target.value)}
+              onChange={(e) => {
+                setAddressInput(e.target.value);
+                setSuggestionsOpen(true);
+              }}
+              onFocus={() => setSuggestionsOpen(true)}
+              onKeyDown={e => {
+                if (e.key === 'Enter') {
+                  selectTextAddress(e.currentTarget.value).then(() => {
+                    submit();
+                  })
+                }
+              }}
               autoComplete="off"
             />
 
-            {suggestions.length > 0 && (
+            {suggestionsOpen && suggestions.length > 0 && (
               <ul className="absolute z-50 mt-1 w-full rounded-md border bg-background shadow-md max-h-60 overflow-auto">
                 {suggestions.map((s) => (
                   <li key={s.placeId}>
@@ -200,30 +250,12 @@ export default function LocationDialog({ open, setOpen }: LocationDialogProps) {
             <Button variant="outline" size="sm" onClick={() => setOpen(false)}>
               Cancel
             </Button>
+
             <Button
               size="sm"
               variant="pricetra"
-              disabled={addressFromPlaceIdLoading || addressFromLatLonLoading}
-              onClick={() => {
-                if (!currentLocation) return;
-
-                setCurrentLocation({
-                  fullAddress: (newSelectedAddress ?? currentLocation)
-                    .fullAddress,
-                  locationInput: {
-                    latitude: (
-                      newSelectedAddress ?? currentLocation?.locationInput
-                    ).latitude,
-                    longitude: (
-                      newSelectedAddress ?? currentLocation?.locationInput
-                    ).longitude,
-                    radiusMeters: Math.round(
-                      convert(radiusInput).from("mi").to("m"),
-                    ),
-                  },
-                });
-                setOpen(false);
-              }}
+              disabled={addressFromPlaceIdLoading || addressFromLatLonLoading || addressFromTextLoading}
+              onClick={submit}
             >
               Save
             </Button>
