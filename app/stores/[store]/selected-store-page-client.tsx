@@ -28,6 +28,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/user-context";
 import { MdModeEditOutline } from "react-icons/md";
 import { useMediaQuery } from "react-responsive";
+import LocationDialogButton from "@/components/location-dialog-button";
 
 export default function SelectedStorePageClient({ store }: { store: Store }) {
   const { myStoreUsers } = useAuth();
@@ -58,7 +59,7 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
         filters: {
           storeId: store.id,
           location: location
-            ? { ...location.locationInput, radiusMeters: undefined }
+            ? { ...location.locationInput }
             : undefined,
           query: searchQuery ?? undefined,
         },
@@ -122,10 +123,17 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
             <StorefrontBanner store={store} />
           )}
 
-          <div className="px-5 mt-5 mb-16">
-            <h1 className="font-bold text-xl sm:text-2xl">
-              Locations for {store.name}
+          <div className="px-5 mt-5 mb-16 flex flex-col sm:flex-row gap-5 sm:items-center justify-between">
+            <div className="flex-1">
+              <h1 className="font-bold text-xl sm:text-2xl">
+              Explore Location
             </h1>
+            <span>at <u>{store.name}</u></span>
+            </div>
+
+            <div className="flex-1 flex sm:justify-end">
+              <LocationDialogButton size="sm" />
+              </div>
           </div>
 
           {!branchesWithProducts

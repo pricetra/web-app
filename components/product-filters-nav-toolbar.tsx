@@ -1,8 +1,7 @@
 import { Button } from "@/components/ui/button";
-import { MdLocationPin } from "react-icons/md";
 import { Separator } from "@/components/ui/separator";
 import { COMMON_CATEGORIES } from "@/lib/categories";
-import useLocationInput from "@/hooks/useLocationInput";
+import LocationDialogButton from "@/components/location-dialog-button";
 import { useSearchParams } from "next/navigation";
 import { toBoolean } from "@/lib/utils";
 import { useMemo } from "react";
@@ -18,7 +17,6 @@ export default function ProductFilterNavToolbar({
   baseUrl = "/search",
 }: ProductFilterNavToolbarProps) {
   const { user, myStoreUsers } = useAuth();
-  const location = useLocationInput();
   const searchParams = useSearchParams();
   const searchParamsBuilder = useMemo(() => {
     const paramsBuilder = new URLSearchParams(searchParams);
@@ -28,9 +26,7 @@ export default function ProductFilterNavToolbar({
 
   return (
     <div className="flex-1 flex flex-row items-center gap-2 px-5 overflow-x-auto h-full">
-      <Button size="xs" rounded variant="secondary">
-        <MdLocationPin /> {location?.fullAddress.split(",")[0]}
-      </Button>
+      <LocationDialogButton />
 
       {searchParamsBuilder.size > 0 && (
         <div className="flex flex-row items-center gap-2">

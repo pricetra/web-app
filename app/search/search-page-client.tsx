@@ -67,7 +67,7 @@ export default function SearchPageClient({
     () =>
       ({
         query: params.query,
-        location: locationInput?.locationInput,
+        location: {...locationInput?.locationInput},
         categoryId: params?.categoryId ? +params.categoryId : undefined,
         brand: params.brand,
         sortByPrice: params.sortByPrice,
