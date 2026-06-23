@@ -124,7 +124,7 @@ export default function ManageBranchPageClient({
           if (!open) setSelectedProduct(null);
         }}
       >
-        <DialogContent size="lg">
+        <DialogContent size="xl">
           <DialogHeader>
             <DialogTitle>
               {selectedProduct ? "Add Price" : "Search Product"}
@@ -148,6 +148,8 @@ export default function ManageBranchPageClient({
           ) : (
             <ManualBarcodeForm
               onSelectProduct={(product) => setSelectedProduct(product)}
+              limit={20}
+              layout="vertical"
             />
           )}
         </DialogContent>
@@ -206,7 +208,10 @@ export default function ManageBranchPageClient({
         {/* Products */}
         <section className="mb-10">
           <div className="flex flex-row items-center justify-between mb-4">
-            <h2 className="text-lg font-bold">Products</h2>
+            <div>
+              <h2 className="text-lg font-bold">Products</h2>
+              <p>Products you add from here will be shown on your storefront branch page.</p>
+            </div>
             <Button
               variant="pricetra"
               size="xs"
@@ -215,7 +220,7 @@ export default function ManageBranchPageClient({
                 setDialogOpen(true);
               }}
             >
-              <MdAdd /> Add Price
+              <MdAdd /> Add Product
             </Button>
           </div>
 

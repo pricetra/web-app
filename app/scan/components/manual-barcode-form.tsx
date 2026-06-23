@@ -16,14 +16,21 @@ import { handleInputFile } from "@/lib/files";
 import { toast } from "sonner";
 import { CgSpinner } from "react-icons/cg";
 import { slugifyProductName } from "@/lib/strings";
+import ProductItem from "@/components/product-item";
 
-const LIMIT = 10;
+export type ManualBarcodeFormProps = {
+  onSelectProduct?: (product: Product) => void;
+  limit?: number;
+  layout?: "horizontal" | "vertical";
+  searchOnType?: boolean;
+};
 
 export default function ManualBarcodeForm({
   onSelectProduct,
-}: {
-  onSelectProduct?: (product: Product) => void;
-}) {
+  limit = 10,
+  layout = "horizontal",
+  searchOnType = false,
+}: ManualBarcodeFormProps) {
   const router = useRouter();
   const [text, setText] = useState("");
   const [productSearch, { data: searchResults, loading }] = useLazyQuery(
@@ -44,7 +51,7 @@ export default function ManualBarcodeForm({
   function fetchProducts(page = 1) {
     productSearch({
       variables: {
-        paginator: { page, limit: LIMIT },
+        paginator: { page, limit },
         search: text.trim(),
       },
     });
@@ -86,7 +93,7 @@ export default function ManualBarcodeForm({
         />
       </Dialog>
 
-      <div className="p-5 pt-0">
+      <div className="py-5 pt-0">
         <Input
           type="text"
           value={text}
@@ -117,7 +124,7 @@ export default function ManualBarcodeForm({
         <>
           {searchResults.productSearch.products.length > 0 ? (
             <div>
-              <div className="mb-5 flex flex-row items-center justify-between gap-4 px-5">
+              <div className="mb-10 flex flex-row items-center justify-between gap-4">
                 <p className="text-sm color-gray-500">
                   {searchResults.productSearch.paginator.total} results
                 </p>
@@ -151,20 +158,37 @@ export default function ManualBarcodeForm({
                 </div>
               </div>
 
-              <ScrollContainer>
-                {searchResults.productSearch.products.map((p, i) => (
-                  <ProductItemHorizontal
-                    product={p as Product}
-                    key={`product-${p.id}-${i}`}
-                    preventHref={!!onSelectProduct}
-                    onClick={
-                      onSelectProduct
-                        ? () => onSelectProduct(p as Product)
-                        : undefined
-                    }
-                  />
-                ))}
-              </ScrollContainer>
+              {layout == "vertical" ? (
+                <div className="mt-5 grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-7">
+                  {searchResults.productSearch.products.map((p, i) => (
+                    <ProductItem
+                      product={p as Product}
+                      key={`product-${p.id}-${i}`}
+                      preventHref={!!onSelectProduct}
+                      onClick={
+                        onSelectProduct
+                          ? () => onSelectProduct(p as Product)
+                          : undefined
+                      }
+                    />
+                  ))}
+                </div>
+              ) : (
+                <ScrollContainer>
+                  {searchResults.productSearch.products.map((p, i) => (
+                    <ProductItemHorizontal
+                      product={p as Product}
+                      key={`product-${p.id}-${i}`}
+                      preventHref={!!onSelectProduct}
+                      onClick={
+                        onSelectProduct
+                          ? () => onSelectProduct(p as Product)
+                          : undefined
+                      }
+                    />
+                  ))}
+                </ScrollContainer>
+              )}
             </div>
           ) : (
             <div>
@@ -205,10 +229,10 @@ export default function ManualBarcodeForm({
               </p>
             </div>
           )}
+
+          <div style={{ height: "5vh" }} />
         </>
       )}
-
-      <div style={{ height: "5vh" }} />
     </div>
   );
 }
