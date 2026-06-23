@@ -150,6 +150,7 @@ export default function ManageBranchPageClient({
               onSelectProduct={(product) => setSelectedProduct(product)}
               limit={20}
               layout="vertical"
+              searchOnType
             />
           )}
         </DialogContent>

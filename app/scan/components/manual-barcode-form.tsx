@@ -9,7 +9,8 @@ import useAddProductPrompt from "@/hooks/useAddProductPrompt";
 import { useLazyQuery } from "@apollo/client/react";
 import { Product, ProductSearchDocument } from "graphql-utils";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
+import debounce from "lodash/debounce";
 import { MdNavigateBefore, MdNavigateNext } from "react-icons/md";
 import ExtractImageDialog from "./extract-image-dialog";
 import { handleInputFile } from "@/lib/files";
@@ -57,6 +58,28 @@ export default function ManualBarcodeForm({
     });
   }
 
+  // keep a ref to latest text so debounced function reads latest value
+  const textRef = useRef(text);
+  useEffect(() => {
+    textRef.current = text;
+  }, [text]);
+
+  const debouncedFetch = useMemo(
+    () =>
+      debounce(() => {
+        const q = textRef.current.trim();
+        if (!q) return;
+        productSearch({
+          variables: { paginator: { page: 1, limit }, search: q },
+        });
+      }, 350),
+    [productSearch, limit],
+  );
+
+  useEffect(() => {
+    return () => debouncedFetch.cancel();
+  }, [debouncedFetch]);
+
   return (
     <div>
       <Dialog
@@ -100,7 +123,9 @@ export default function ManualBarcodeForm({
           onKeyDown={(e) => {
             if (e.key === "Enter") {
               fetchProducts();
+              return;
             }
+            if (searchOnType) debouncedFetch();
           }}
           onChange={(e) => {
             setText(e.target.value);
