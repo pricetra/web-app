@@ -82,7 +82,7 @@ export default function StorefrontSetupTasksBanner({
   const next = () => setIndex((i) => (total === 0 ? 0 : (i + 1) % total));
 
   return (
-    <Link href={taskLink(current.taskType, store, branch)} className="bg-white rounded-lg overflow-hidden block">
+    <div className="bg-white rounded-lg overflow-hidden block">
       {/* Top */}
       <div className="flex items-center justify-between px-4 py-2 bg-pricetra-green-logo/20">
         <div className="flex items-center gap-3">
@@ -114,7 +114,7 @@ export default function StorefrontSetupTasksBanner({
       </div>
 
       {/* Body */}
-      <div className="flex items-start gap-4 p-4">
+      <Link href={taskLink(current.taskType, store, branch)} className="flex items-start gap-4 p-4">
         <div className="shrink-0">
           <div className="size-10 sm:size-16 text-lg sm:text-3xl rounded-full bg-pricetra-green-dark flex items-center justify-center">
             {(() => {
@@ -147,7 +147,7 @@ export default function StorefrontSetupTasksBanner({
             </div>
           )}
         </div>
-      </div>
-    </Link>
+      </Link>
+    </div>
   );
 }
