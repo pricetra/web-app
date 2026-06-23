@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client/react";
-import { StorefrontSetupTasksDocument } from "graphql-utils";
+import { Branch, Store, StorefrontSetupTasksDocument, StorefrontSetupTaskType } from "graphql-utils";
 import { Button } from "./ui/button";
 import { GoChevronLeft, GoChevronRight } from "react-icons/go";
 import { IconType } from "react-icons";
@@ -8,6 +8,7 @@ import { GiNewspaper, GiPriceTag } from "react-icons/gi";
 import { FaStore, FaBoxOpen } from "react-icons/fa";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import { FiClock, FiImage } from "react-icons/fi";
+import Link from "next/link";
 
 const ICONS: Record<string, IconType | undefined> = {
   BANNER: GiNewspaper,
@@ -38,14 +39,28 @@ const FallbackIcon: React.FC = () => (
   </svg>
 );
 
+function taskLink(taskType: StorefrontSetupTaskType, store: Store, branch?: Branch) {
+  switch (taskType) {
+    case StorefrontSetupTaskType.Logo:
+      return `/stores/${store.slug}/manage#uploadLogo`
+    case StorefrontSetupTaskType.Stocks:
+      return `/stores/${store.slug}${branch ? `/${branch.slug}` : ''}/manage#addProduct`
+  }
+  return `/stores/${store.slug}/manage`
+}
+
 export type StorefrontSetupTasksBannerProps = {
   storeId: number;
+  store: Store;
   branchId?: number;
+  branch?: Branch;
 };
 
 export default function StorefrontSetupTasksBanner({
   storeId,
+  store,
   branchId,
+  branch,
 }: StorefrontSetupTasksBannerProps) {
   const { data } = useQuery(StorefrontSetupTasksDocument, {
     variables: { storeId, branchId },
@@ -67,7 +82,7 @@ export default function StorefrontSetupTasksBanner({
   const next = () => setIndex((i) => (total === 0 ? 0 : (i + 1) % total));
 
   return (
-    <div className="bg-white rounded-lg overflow-hidden">
+    <Link href={taskLink(current.taskType, store, branch)} className="bg-white rounded-lg overflow-hidden block">
       {/* Top */}
       <div className="flex items-center justify-between px-4 py-2 bg-pricetra-green-logo/20">
         <div className="flex items-center gap-3">
@@ -100,7 +115,7 @@ export default function StorefrontSetupTasksBanner({
 
       {/* Body */}
       <div className="flex items-start gap-4 p-4">
-        <div className="flex-shrink-0">
+        <div className="shrink-0">
           <div className="size-10 sm:size-16 text-lg sm:text-3xl rounded-full bg-pricetra-green-dark flex items-center justify-center">
             {(() => {
               const Icon = ICONS[current.taskType as string];
@@ -133,6 +148,6 @@ export default function StorefrontSetupTasksBanner({
           )}
         </div>
       </div>
-    </div>
+    </Link>
   );
 }

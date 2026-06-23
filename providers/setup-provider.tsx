@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import useStoreUser from "@/hooks/useStoreUser";
 import StorefrontSetupTasksBanner from "@/components/storefront-setup-tasks";
+import { Store } from "graphql-utils";
 
 export default function SetupProvider({ children }: { children: ReactNode }) {
   const { loading, user, showWelcomeScreen } = useAuth();
@@ -36,6 +37,8 @@ export default function SetupProvider({ children }: { children: ReactNode }) {
               <div className="max-w-xl shadow-lg rounded-lg" key={`my-branch-task-${b.id}-${i}`}>
                 <StorefrontSetupTasksBanner
                   storeId={b.storeId}
+                  store={b.store! as Store}
+                  branch={b}
                   branchId={b.id}
                 />
               </div>
