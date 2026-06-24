@@ -91,7 +91,7 @@ export default function SectionPanelEditor() {
         <h2 className="text-lg font-bold">Selected Section Details</h2>
 
         {submittedPages.has(currentSelection.pageIndex + 1) && (
-          <p className="text-xs text-muted-foreground italic text-red-500">
+          <p className="text-xs italic text-red-500">
             This page has been submitted and cannot be edited.
           </p>
         )}

@@ -16,6 +16,9 @@ import CreateStorefrontFlyerForm from "@/components/manage/create-storefront-fly
 import { startOfNextSundayUTC } from "@/lib/utils";
 import ShowFlyersStorefront from "./components/show-flyers-storefront";
 
+export const TOGGLE_EDIT_DETAILS_ID = "editDetails";
+export const TOGGLE_CREATE_BRANCH_ID = "createBranch";
+
 export default function ManageStorePageClient({ store }: { store: Store }) {
   const {
     setPageIndicator,
@@ -53,6 +56,22 @@ export default function ManageStorePageClient({ store }: { store: Store }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Open panels based on URL hash fragments (e.g. #uploadLogo, #createBranch)
+  useLayoutEffect(() => {
+    const handleHash = () => {
+      const hash = (typeof window !== "undefined" ? window.location.hash : "").replace('#', '');
+      if (!hash) return;
+      if (hash === TOGGLE_EDIT_DETAILS_ID) setShowStoreDetails(true);
+      if (hash === TOGGLE_CREATE_BRANCH_ID) setShowCreateBranch(true);
+    };
+
+    // check on mount
+    handleHash();
+
+    window.addEventListener("hashchange", handleHash);
+    return () => window.removeEventListener("hashchange", handleHash);
+  }, []);
+
   return (
     <>
       <div className="w-full max-w-[1000px] flex-1 px-5">
@@ -84,7 +103,7 @@ export default function ManageStorePageClient({ store }: { store: Store }) {
         </div>
 
         {showStoreDetails && (
-          <section className="mb-10 p-4 border border-gray-200 rounded-lg">
+          <section className="mb-10 p-4 border border-gray-200 rounded-lg" id={TOGGLE_EDIT_DETAILS_ID}>
             <h2 className="text-lg font-bold mb-4">Store Details</h2>
             <ManageStoreInfo store={store} />
           </section>
@@ -110,7 +129,7 @@ export default function ManageStorePageClient({ store }: { store: Store }) {
           </div>
 
           {showCreateBranch && (
-            <div className="mb-6 p-4 border border-gray-200 rounded-lg">
+            <div className="mb-6 p-4 border border-gray-200 rounded-lg" id={TOGGLE_CREATE_BRANCH_ID}>
               <h3 className="font-medium mb-4">Create New Branch</h3>
               <CreateBranchForm
                 store={store}

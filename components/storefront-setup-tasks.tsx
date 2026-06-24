@@ -9,6 +9,8 @@ import { FaStore, FaBoxOpen } from "react-icons/fa";
 import { AiOutlineInfoCircle } from "react-icons/ai";
 import { FiClock, FiImage } from "react-icons/fi";
 import Link from "next/link";
+import { TOGGLE_CREATE_BRANCH_ID, TOGGLE_EDIT_DETAILS_ID } from "@/app/stores/[store]/manage/manage-store-page-client";
+import { TOGGLE_ADD_PRODUCT_ID } from "@/app/stores/[store]/[branch]/manage/manage-branch-page-client";
 
 const ICONS: Record<string, IconType | undefined> = {
   BANNER: GiNewspaper,
@@ -42,9 +44,11 @@ const FallbackIcon: React.FC = () => (
 function taskLink(taskType: StorefrontSetupTaskType, store: Store, branch?: Branch) {
   switch (taskType) {
     case StorefrontSetupTaskType.Logo:
-      return `/stores/${store.slug}/manage#uploadLogo`
+      return `/stores/${store.slug}/manage#${TOGGLE_EDIT_DETAILS_ID}`
+    case StorefrontSetupTaskType.Branch:
+      return `/stores/${store.slug}/manage#${TOGGLE_CREATE_BRANCH_ID}`
     case StorefrontSetupTaskType.Stocks:
-      return `/stores/${store.slug}${branch ? `/${branch.slug}` : ''}/manage#addProduct`
+      return `/stores/${store.slug}${branch ? `/${branch.slug}` : ''}/manage#${TOGGLE_ADD_PRODUCT_ID}`
   }
   return `/stores/${store.slug}/manage`
 }
