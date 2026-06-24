@@ -18,6 +18,7 @@ import { cleanUrl } from "@/lib/strings";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -25,6 +26,8 @@ import BranchPriceForm from "@/components/product-form/branch-price-form";
 import ManualBarcodeForm from "@/app/scan/components/manual-barcode-form";
 import { toast } from "sonner";
 import { MdAdd } from "react-icons/md";
+
+export const TOGGLE_ADD_PRODUCT_ID = "addProduct";
 
 const PRODUCTS_PER_PAGE = 30;
 
@@ -115,6 +118,23 @@ export default function ManageBranchPageClient({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // Open panels based on URL hash fragments (e.g. #uploadLogo, #createBranch)
+  useLayoutEffect(() => {
+    const handleHash = () => {
+      const hash = (
+        typeof window !== "undefined" ? window.location.hash : ""
+      ).replace("#", "");
+      if (!hash) return;
+      if (hash === TOGGLE_ADD_PRODUCT_ID) setDialogOpen(true);
+    };
+
+    // check on mount
+    handleHash();
+
+    window.addEventListener("hashchange", handleHash);
+    return () => window.removeEventListener("hashchange", handleHash);
+  }, []);
+
   return (
     <>
       <Dialog
@@ -124,10 +144,15 @@ export default function ManageBranchPageClient({
           if (!open) setSelectedProduct(null);
         }}
       >
-        <DialogContent size="lg">
+        <DialogContent size="xl">
           <DialogHeader>
             <DialogTitle>
-              {selectedProduct ? "Add Price" : "Search Product"}
+              {selectedProduct ? "Add Price" : "Add Product"}
+              {!selectedProduct && (
+                <DialogDescription className="font-normal mt-2">
+                  Search for products, then click to set a price and add them to your storefront page.
+                </DialogDescription>
+              )}
             </DialogTitle>
           </DialogHeader>
 
@@ -148,6 +173,9 @@ export default function ManageBranchPageClient({
           ) : (
             <ManualBarcodeForm
               onSelectProduct={(product) => setSelectedProduct(product)}
+              limit={20}
+              layout="vertical"
+              searchOnType
             />
           )}
         </DialogContent>
@@ -204,9 +232,15 @@ export default function ManageBranchPageClient({
         </section>
 
         {/* Products */}
-        <section className="mb-10">
+        <section className="mb-10" id={TOGGLE_ADD_PRODUCT_ID}>
           <div className="flex flex-row items-center justify-between mb-4">
-            <h2 className="text-lg font-bold">Products</h2>
+            <div>
+              <h2 className="text-lg font-bold">Products</h2>
+              <p className="text-xs">
+                Products you add from here will be shown on your storefront
+                branch page.
+              </p>
+            </div>
             <Button
               variant="pricetra"
               size="xs"
@@ -215,7 +249,7 @@ export default function ManageBranchPageClient({
                 setDialogOpen(true);
               }}
             >
-              <MdAdd /> Add Price
+              <MdAdd /> Add Product
             </Button>
           </div>
 
