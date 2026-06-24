@@ -211,7 +211,7 @@ export default function ManageBranchPageClient({
           <div className="flex flex-row items-center justify-between mb-4">
             <div>
               <h2 className="text-lg font-bold">Products</h2>
-              <p>Products you add from here will be shown on your storefront branch page.</p>
+              <p className="text-xs">Products you add from here will be shown on your storefront branch page.</p>
             </div>
             <Button
               variant="pricetra"
