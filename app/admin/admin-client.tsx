@@ -7,6 +7,7 @@ import { RiAdminLine } from "react-icons/ri";
 import { MdStorefront } from "react-icons/md";
 import AdminListItem from "./components/admin-list-item";
 import { FaEye } from "react-icons/fa";
+import { FaWpforms } from "react-icons/fa";
 
 export default function AdminClient() {
   const { setPageIndicator, resetAll } = useNavbar();
@@ -36,6 +37,13 @@ export default function AdminClient() {
             icon={<FaEye />}
             title="Product Views"
             content="View product views entries and metrics"
+          />
+
+          <AdminListItem
+            href="/admin/business-signup"
+            icon={<FaWpforms />}
+            title="Business Signups"
+            content="View and manage business signups"
           />
         </div>
       </div>
