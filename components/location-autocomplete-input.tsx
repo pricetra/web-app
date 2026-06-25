@@ -1,6 +1,8 @@
 import { useLazyQuery } from "@apollo/client/react";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CgSpinner } from "react-icons/cg";
+import { MdOutlineMyLocation } from "react-icons/md";
 import debounce from "lodash/debounce";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -17,6 +19,9 @@ export type LocationAutocompleteInputProps = {
   onChange: (value: string) => void;
   onSelectAddress?: (address: Address) => void;
   onEnter?: (address: Address) => void | Promise<void>;
+  onUseCurrentLocation?: () => void;
+  showCurrentLocationButton?: boolean;
+  currentLocationLoading?: boolean;
   label?: string;
   placeholder?: string;
   inputId?: string;
@@ -32,6 +37,9 @@ export default function LocationAutocompleteInput({
   onChange,
   onSelectAddress,
   onEnter,
+  onUseCurrentLocation,
+  showCurrentLocationButton = false,
+  currentLocationLoading = false,
   label = "Address",
   placeholder = "Ex. 123 Main St, Seattle, WA",
   inputId = "locationAddress",
@@ -178,6 +186,23 @@ export default function LocationAutocompleteInput({
         <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
           <CgSpinner className="animate-spin" /> Resolving address...
         </div>
+      )}
+
+      {showCurrentLocationButton && onUseCurrentLocation && (
+        <Button
+          variant="link"
+          size="xs"
+          className="mt-3 text-pricetra-green-heavy-dark px-0"
+          onClick={onUseCurrentLocation}
+          disabled={currentLocationLoading}
+        >
+          {currentLocationLoading ? (
+            <CgSpinner className="animate-spin" />
+          ) : (
+            <MdOutlineMyLocation />
+          )}
+          Use current location
+        </Button>
       )}
     </div>
   );

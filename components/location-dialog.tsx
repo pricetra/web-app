@@ -7,8 +7,6 @@ import { useCurrentLocation } from "@/context/location-context";
 import { Address, AddressFromLatLonDocument } from "graphql-utils";
 import convert from "convert-units";
 import useLocationService from "@/hooks/useLocation";
-import { CgSpinner } from "react-icons/cg";
-import { MdOutlineMyLocation } from "react-icons/md";
 import LocationAutocompleteInput from "@/components/location-autocomplete-input";
 
 export type LocationDialogProps = {
@@ -82,24 +80,7 @@ export default function LocationDialog({ open, setOpen }: LocationDialogProps) {
               setNewSelectedAddress(address);
               submit(address);
             }}
-            locationBias={
-              currentLocation
-                ? {
-                    latitude: currentLocation.locationInput.latitude,
-                    longitude: currentLocation.locationInput.longitude,
-                  }
-                : undefined
-            }
-            inputId="fullAddress"
-            label="Address"
-            placeholder="Ex. 123 Main St, Seattle, WA"
-          />
-
-          <Button
-            variant="link"
-            size="xs"
-            className="mt-1.5 text-pricetra-green-heavy-dark px-0"
-            onClick={() => {
+            onUseCurrentLocation={() => {
               setCurrentLocationLoading(true);
               geocodeWithCallback((location) => {
                 setCurrentLocationLoading(false);
@@ -117,15 +98,20 @@ export default function LocationDialog({ open, setOpen }: LocationDialogProps) {
                 });
               });
             }}
-            disabled={currentLocationLoading}
-          >
-            {currentLocationLoading ? (
-              <CgSpinner className="animate-spin" />
-            ) : (
-              <MdOutlineMyLocation />
-            )}
-            Use current location
-          </Button>
+            showCurrentLocationButton
+            currentLocationLoading={currentLocationLoading}
+            locationBias={
+              currentLocation
+                ? {
+                    latitude: currentLocation.locationInput.latitude,
+                    longitude: currentLocation.locationInput.longitude,
+                  }
+                : undefined
+            }
+            inputId="fullAddress"
+            label="Address"
+            placeholder="Ex. 123 Main St, Seattle, WA"
+          />
 
           <div>
             <label className="text-sm font-medium" htmlFor="searchRadius">
