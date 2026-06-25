@@ -8,13 +8,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
-import { useLazyQuery, useMutation } from "@apollo/client/react";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { useLazyQuery } from "@apollo/client/react";
 import {
   GetAllUsersDocument,
-  UpdateUserByIdDocument,
   User,
-  UserRole,
 } from "graphql-utils";
 import { SmartPagination } from "@/components/ui/smart-pagination";
 import NavPageIndicator from "@/components/ui/nav-page-indicator";
@@ -29,31 +27,10 @@ import {
 } from "@/components/ui/dialog";
 import ProfileFull from "@/components/profile-full";
 import { Button } from "@/components/ui/button";
-import { Formik } from "formik";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@/components/ui/native-select";
-import { toast } from "sonner";
 import Image from "next/image";
-import { createCloudinaryUrl, convertFileToBase64 } from "@/lib/files";
+import { createCloudinaryUrl } from "@/lib/files";
 import { useSearchParams } from "next/navigation";
-import { diffObjects } from "@/lib/utils";
-import {
-  allowedImageTypes,
-  allowedImageTypesString,
-} from "@/constants/uploads";
-import { FiCamera } from "react-icons/fi";
-
-const roles = [
-  UserRole.SuperAdmin,
-  UserRole.Admin,
-  UserRole.Contributor,
-  UserRole.Consumer,
-];
+import EditUserDialog from "./components/edit-user-dialog";
 
 export default function UsersClient() {
   const { setPageIndicator, resetAll } = useNavbar();
@@ -66,15 +43,6 @@ export default function UsersClient() {
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [viewOpen, setViewOpen] = useState(false);
   const [editOpen, setEditOpen] = useState(false);
-  const imageUploadRef = useRef<HTMLInputElement>(null);
-  const [imagePreview, setImagePreview] = useState<string>();
-
-  const [updateUser, { loading: updating }] = useMutation(
-    UpdateUserByIdDocument,
-    {
-      refetchQueries: [GetAllUsersDocument],
-    },
-  );
 
   useLayoutEffect(() => {
     setPageIndicator(
@@ -88,15 +56,6 @@ export default function UsersClient() {
     getUsers({ variables: { paginator: { limit: 25, page } } });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
-
-  useEffect(() => {
-    if (!selectedUser?.avatar) {
-      setImagePreview(undefined);
-      return;
-    }
-
-    setImagePreview(createCloudinaryUrl(selectedUser.avatar, 100, 100));
-  }, [selectedUser]);
 
   const users = data?.getAllUsers?.users ?? [];
   const paginator = data?.getAllUsers?.paginator;
@@ -227,172 +186,11 @@ export default function UsersClient() {
 
       {/* Edit dialog */}
       {selectedUser && (
-        <Dialog open={editOpen} onOpenChange={setEditOpen}>
-          <DialogContent size="sm">
-            <DialogHeader>
-              <DialogTitle>Edit User</DialogTitle>
-            </DialogHeader>
-
-            <div className="py-2">
-              <Formik
-                enableReinitialize
-                initialValues={{
-                  name: selectedUser.name ?? "",
-                  email: selectedUser.email ?? "",
-                  role: selectedUser.role ?? "",
-                  active: !!selectedUser.active,
-                  avatarBase64: undefined,
-                }}
-                onSubmit={async (values) => {
-                  const input = { ...values } as Record<string, unknown>;
-                  if (!input.avatarBase64) {
-                    delete input.avatarBase64;
-                  }
-
-                  const filteredInput = diffObjects(
-                    input,
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    selectedUser as any,
-                  );
-
-                  if (Object.keys(filteredInput).length === 0) return;
-
-                  updateUser({
-                    variables: {
-                      userId: selectedUser.id,
-                      input: filteredInput,
-                    },
-                  })
-                    .then(() => {
-                      toast.success("User updated");
-                      setEditOpen(false);
-                    })
-                    .catch((e) => toast.error(e.message));
-                }}
-              >
-                {(formik) => (
-                  <form
-                    onSubmit={formik.handleSubmit}
-                    className="flex flex-col gap-3"
-                  >
-                    <div className="flex flex-col gap-3">
-                      <div>
-                        {imagePreview ? (
-                          <Image
-                            src={imagePreview}
-                            width={80}
-                            height={80}
-                            alt="avatar preview"
-                            className="rounded-full object-cover cursor-pointer"
-                            onClick={() => imageUploadRef.current?.click()}
-                          />
-                        ) : (
-                          <div
-                            className="flex h-20 w-20 items-center justify-center rounded-full bg-gray-200 cursor-pointer"
-                            onClick={() => imageUploadRef.current?.click()}
-                          >
-                            <FiCamera className="h-7 w-7 text-gray-600" />
-                          </div>
-                        )}
-
-                        <div className="hidden">
-                          <input
-                            ref={imageUploadRef}
-                            type="file"
-                            accept={allowedImageTypesString}
-                            onChange={async (e) => {
-                              const file = e.target.files?.item(0);
-                              if (!file) return;
-                              if (!allowedImageTypes.includes(file.type)) {
-                                window.alert("invalid file type");
-                                return;
-                              }
-
-                              const base64 = await convertFileToBase64(file);
-                              if (typeof base64 !== "string") return;
-
-                              formik.setFieldValue("avatarBase64", base64);
-                              setImagePreview(URL.createObjectURL(file));
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </div>
-
-                    <div>
-                      <Label>Name</Label>
-                      <Input
-                        name="name"
-                        value={formik.values.name}
-                        onChange={(e) =>
-                          formik.setFieldValue("name", e.target.value)
-                        }
-                      />
-                    </div>
-
-                    <div>
-                      <Label>Email</Label>
-                      <Input
-                        name="email"
-                        value={formik.values.email}
-                        onChange={(e) =>
-                          formik.setFieldValue("email", e.target.value)
-                        }
-                      />
-                    </div>
-
-                    <div>
-                      <Label>Role</Label>
-                      <NativeSelect
-                        name="role"
-                        value={formik.values.role}
-                        onChange={(e) =>
-                          formik.setFieldValue("role", e.target.value)
-                        }
-                      >
-                        {roles.map((role) => (
-                          <NativeSelectOption
-                            key={`role-${role.toString()}`}
-                            value={role.toString()}
-                          >
-                            {role.toString()}
-                          </NativeSelectOption>
-                        ))}
-                      </NativeSelect>
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                      <Checkbox
-                        checked={formik.values.active}
-                        onCheckedChange={(value) =>
-                          formik.setFieldValue("active", !!value)
-                        }
-                      />
-                      <Label className="text-sm">Active</Label>
-                    </div>
-
-                    <div className="flex flex-row gap-2 justify-end mt-4">
-                      <Button
-                        variant="ghost"
-                        onClick={() => setEditOpen(false)}
-                        type="button"
-                      >
-                        Cancel
-                      </Button>
-                      <Button
-                        type="submit"
-                        disabled={updating}
-                        onClick={formik.submitForm}
-                      >
-                        {updating ? "Saving..." : "Save"}
-                      </Button>
-                    </div>
-                  </form>
-                )}
-              </Formik>
-            </div>
-          </DialogContent>
-        </Dialog>
+        <EditUserDialog
+          user={selectedUser}
+          open={editOpen}
+          onOpenChange={setEditOpen}
+        />
       )}
     </div>
   );
