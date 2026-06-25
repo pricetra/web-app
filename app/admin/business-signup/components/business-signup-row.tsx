@@ -1,7 +1,11 @@
 import { TableCell, TableRow } from "@/components/ui/table";
-import { BusinessForm } from "graphql-utils";
+import { useMutation } from "@apollo/client/react";
+import { BusinessForm, AllBusinessFormSignUpsDocument, CreateStoreWithBusinessFormDocument } from "graphql-utils";
+import { Button } from "@/components/ui/button";
 import Link from "@/components/ui/link";
 import Image from "next/image";
+import { CgSpinner } from "react-icons/cg";
+import { toast } from "sonner";
 import { createCloudinaryUrl } from "@/lib/files";
 import { cn } from "@/lib/utils";
 
@@ -10,6 +14,17 @@ export type BusinessSignUpRowProps = {
 };
 
 export default function BusinessSignUpRow({ form }: BusinessSignUpRowProps) {
+  const [createStoreWithBusinessForm, { loading: creatingBusinessFormStore }] = useMutation(
+    CreateStoreWithBusinessFormDocument,
+    {
+      refetchQueries: [{ query: AllBusinessFormSignUpsDocument }],
+      awaitRefetchQueries: true,
+      onError(error) {
+        toast.error(error.message);
+      },
+    },
+  );
+
   const storeLink = form.store
     ? `/admin/stores/${form.store.slug}`
     : `/admin/stores/new?businessFormId=${form.id}`;
@@ -68,13 +83,32 @@ export default function BusinessSignUpRow({ form }: BusinessSignUpRowProps) {
           "N/A"
         )}
       </TableCell>
-      <TableCell className="font-mono text-sm">
-        <Link
-          href={storeLink}
-          className="text-pricetra-green-heavy-dark hover:underline"
-        >
-          {form.store ? "View store" : "Accept"}
-        </Link>
+      <TableCell className="text-sm">
+        {form.store ? (
+          <Link
+            href={storeLink}
+            className="text-pricetra-green-heavy-dark hover:underline font-mono"
+          >
+            View store
+          </Link>
+        ) : (
+          <Button
+            size="xs"
+            variant="pricetra"
+            onClick={() =>
+              createStoreWithBusinessForm({
+                variables: { id: form.id },
+              })
+            }
+            disabled={creatingBusinessFormStore}
+          >
+            {creatingBusinessFormStore ? (
+              <CgSpinner className="animate-spin" />
+            ) : (
+              "Accept"
+            )}
+          </Button>
+        )}
       </TableCell>
     </TableRow>
   );
