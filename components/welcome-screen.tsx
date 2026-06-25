@@ -1,10 +1,19 @@
-import { Address, Branch, BulkAddBranchesToListDocument, FindBranchesByDistanceDocument, GetAllListsDocument, MeDocument, PostAuthUserDataDocument, UpdateProfileDocument, User } from "graphql-utils";
+import {
+  Address,
+  Branch,
+  BulkAddBranchesToListDocument,
+  FindBranchesByDistanceDocument,
+  GetAllListsDocument,
+  MeDocument,
+  PostAuthUserDataDocument,
+  UpdateProfileDocument,
+  User,
+} from "graphql-utils";
 import { Button } from "@/components/ui/button";
 import { GoLocation } from "react-icons/go";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
-import { Input } from "@/components/ui/input";
 import { FiArrowRight } from "react-icons/fi";
 import { CgSpinner } from "react-icons/cg";
 import { MdStorefront } from "react-icons/md";
@@ -13,6 +22,8 @@ import { createCloudinaryUrl } from "@/lib/files";
 import { MdCheck } from "react-icons/md";
 import { useAuth } from "@/context/user-context";
 import { startOfNextSundayUTC } from "@/lib/utils";
+import LocationAutocompleteInput from "./location-autocomplete-input";
+import { toast } from "sonner";
 
 export enum WelcomePageType {
   WELCOME,
@@ -24,22 +35,22 @@ export type WelcomeScreenProps = {
   user: User;
 };
 
-export default function WelcomeScreen({user}: WelcomeScreenProps) {
+const BRANCH_SEARCH_RADIUS_MI = 10;
+
+export default function WelcomeScreen({ user }: WelcomeScreenProps) {
   const { lists, setShowWelcomeScreen } = useAuth();
   const [page, setPage] = useState<WelcomePageType>(WelcomePageType.WELCOME);
   const [addressInput, setAddressInput] = useState<string>(
-    user.address?.fullAddress ?? ""
+    user.address?.fullAddress ?? "",
   );
   const [updateProfile, { loading: profileLoading }] = useMutation(
     UpdateProfileDocument,
-    { refetchQueries: [MeDocument] }
+    { refetchQueries: [MeDocument] },
   );
   const [locating] = useState(false);
   const [newAddress, setNewAddress] = useState<Address>();
-  const [
-    getBranches,
-    { data: branchesData, loading: branchesLoading },
-  ] = useLazyQuery(FindBranchesByDistanceDocument, { fetchPolicy: "no-cache" });
+  const [getBranches, { data: branchesData, loading: branchesLoading }] =
+    useLazyQuery(FindBranchesByDistanceDocument, { fetchPolicy: "no-cache" });
   const [selectedBranches, setSelectedBranches] = useState<Branch[]>([]);
   const [addBranchesToList] = useMutation(BulkAddBranchesToListDocument, {
     refetchQueries: [GetAllListsDocument, PostAuthUserDataDocument],
@@ -50,8 +61,41 @@ export default function WelcomeScreen({user}: WelcomeScreenProps) {
     if (user.address && (lists?.favorites.branchList ?? []).length > 0) {
       setShowWelcomeScreen(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user.address, lists?.favorites?.branchList]);
+
+  useEffect(() => {
+    if (!newAddress) return;
+
+    getBranches({
+      variables: {
+        lat: newAddress.latitude,
+        lon: newAddress.longitude,
+        radiusMeters: Math.round(
+          convert(BRANCH_SEARCH_RADIUS_MI).from("mi").to("m"),
+        ),
+      },
+    });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [newAddress]);
+
+  function submitAddress(address: string) {
+    updateProfile({
+      variables: {
+        input: { address: address.trim() },
+      },
+    }).then(({ data, error }) => {
+      if (!data || error || !data.updateProfile.address) {
+        return toast.error(
+          "Could not save address. Perhaps your address is invalid.",
+        );
+      }
+
+      const address = data.updateProfile.address as Address;
+      setNewAddress(address);
+      setPage(WelcomePageType.BRANCHES);
+    });
+  }
 
   return (
     <div className="flex p-5 flex-col justify-center gap-5 w-full max-w-xl mx-auto min-h-screen">
@@ -112,40 +156,22 @@ export default function WelcomeScreen({user}: WelcomeScreenProps) {
 
           <div>
             <div className="flex flex-row items-center gap-3">
-              <Input
-                placeholder="Enter you Zip Code or Full Address..."
-                value={addressInput}
-                onChange={(e) => setAddressInput(e.target.value)}
-                disabled={profileLoading && locating}
-                className="flex-1"
-              />
+              <div className="flex-1">
+                <LocationAutocompleteInput
+                  value={addressInput}
+                  onChange={(v) => setAddressInput(v)}
+                  disabled={profileLoading && locating}
+                  onSelectAddress={(a) => setAddressInput(a.fullAddress)}
+                  onEnter={(a) => {
+                    setAddressInput(a.fullAddress);
+                    submitAddress(a.fullAddress);
+                  }}
+                  placeholder="Enter your Zip Code or Full Address..."
+                />
+              </div>
 
               <Button
-                onClick={() => {
-                  updateProfile({
-                    variables: {
-                      input: { address: addressInput?.trim() },
-                    },
-                  }).then(({ data, error }) => {
-                    if (!data || error || !data.updateProfile.address)
-                      return window.alert(
-                        "Could not save address. Perhaps your address is invalid."
-                      );
-
-                    const address = data.updateProfile.address as Address;
-                    setNewAddress(address);
-                    getBranches({
-                      variables: {
-                        lat: address.latitude,
-                        lon: address.longitude,
-                        radiusMeters: Math.round(
-                          convert(10).from("mi").to("m")
-                        ),
-                      },
-                    });
-                    setPage(WelcomePageType.BRANCHES);
-                  });
-                }}
+                onClick={() => submitAddress(addressInput)}
                 variant="pricetra"
                 disabled={
                   !addressInput ||
@@ -204,17 +230,17 @@ export default function WelcomeScreen({user}: WelcomeScreenProps) {
                   <div
                     onClick={() => {
                       const foundBranch = selectedBranches.find(
-                        ({ id }) => id === branch.id
+                        ({ id }) => id === branch.id,
                       );
                       if (foundBranch) {
                         setSelectedBranches((branches) =>
-                          branches.filter(({ id }) => id !== branch.id)
+                          branches.filter(({ id }) => id !== branch.id),
                         );
                         return;
                       }
                       setSelectedBranches((branches) => {
                         const newArr = branches.filter(
-                          ({ id }) => id !== branch.id
+                          ({ id }) => id !== branch.id,
                         );
                         newArr.push(branch as Branch);
                         return newArr;
@@ -263,28 +289,28 @@ export default function WelcomeScreen({user}: WelcomeScreenProps) {
                 Back
               </Button>
 
-                <Button
-                  variant="pricetra"
-                  disabled={selectedBranches.length === 0 || addingBranches}
-                  onClick={async () => {
-                    setAddingBranches(true);
-                    addBranchesToList({
-                      variables: {
-                        listId: lists!.favorites.id,
-                        branchIds: selectedBranches.map(({ id }) => id),
-                      },
-                    }).then(({ data }) => {
-                      if (!data)
-                        return window.alert("There was an error while adding the selected branches to your favorites list. Please try again.");
-                      setAddingBranches(false);
-                    });
-                  }}
-                >
-                  {addingBranches && (
-                    <CgSpinner className="animate-spin" />
-                  )}
-                  Finish Setup
-                </Button>
+              <Button
+                variant="pricetra"
+                disabled={selectedBranches.length === 0 || addingBranches}
+                onClick={async () => {
+                  setAddingBranches(true);
+                  addBranchesToList({
+                    variables: {
+                      listId: lists!.favorites.id,
+                      branchIds: selectedBranches.map(({ id }) => id),
+                    },
+                  }).then(({ data }) => {
+                    if (!data)
+                      return window.alert(
+                        "There was an error while adding the selected branches to your favorites list. Please try again.",
+                      );
+                    setAddingBranches(false);
+                  });
+                }}
+              >
+                {addingBranches && <CgSpinner className="animate-spin" />}
+                Finish Setup
+              </Button>
             </div>
           </div>
         </div>

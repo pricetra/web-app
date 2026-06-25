@@ -39,7 +39,7 @@ export default function LocationAutocompleteInput({
   onSelectAddress,
   onEnter,
   showCurrentLocationButton = false,
-  label = "Address",
+  label,
   placeholder = "Ex. 123 Main St, Seattle, WA",
   inputId = "locationAddress",
   locationBias,
@@ -51,14 +51,17 @@ export default function LocationAutocompleteInput({
   const [suggestionsOpen, setSuggestionsOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement | null>(null);
 
-  const [getAddressSuggestions, { loading: suggestionsLoading }] =
-    useLazyQuery(AddressAutocompleteDocument, {
+  const [getAddressSuggestions, { loading: suggestionsLoading }] = useLazyQuery(
+    AddressAutocompleteDocument,
+    {
       fetchPolicy: "cache-first",
-    });
+    },
+  );
   const [addressFromPlaceId, { loading: addressFromPlaceIdLoading }] =
     useLazyQuery(AddressFromPlaceIdDocument);
-  const [addressFromText, { loading: addressFromTextLoading }] =
-    useLazyQuery(AddressFromRawStringDocument);
+  const [addressFromText, { loading: addressFromTextLoading }] = useLazyQuery(
+    AddressFromRawStringDocument,
+  );
   const [addressFromLatLon, { loading: addressFromLatLonLoading }] =
     useLazyQuery(AddressFromLatLonDocument);
   const { geocodeWithCallback } = useLocationService();
@@ -101,7 +104,10 @@ export default function LocationAutocompleteInput({
     return () => document.removeEventListener("click", onDocClick);
   }, []);
 
-  async function selectSuggestion({ addressText, placeId }: AddressAutocompleteSuggestion) {
+  async function selectSuggestion({
+    addressText,
+    placeId,
+  }: AddressAutocompleteSuggestion) {
     onChange(addressText);
     setSuggestionsOpen(false);
 
@@ -172,9 +178,12 @@ export default function LocationAutocompleteInput({
 
   return (
     <div ref={containerRef} className="relative">
-      <label className="text-sm font-bold" htmlFor={inputId}>
-        {label}
-      </label>
+      {label && (
+        <label className="text-sm font-bold" htmlFor={inputId}>
+          {label}
+        </label>
+      )}
+
       <Input
         id={inputId}
         value={value}
@@ -195,7 +204,12 @@ export default function LocationAutocompleteInput({
       />
 
       {(suggestionsOpen || suggestionsLoading) && (
-        <ul className={cn("absolute z-50 mt-1 w-full rounded-md bg-background shadow-md max-h-60 overflow-auto", suggestions.length > 0 ? 'border' : 'border-none')}>
+        <ul
+          className={cn(
+            "absolute z-50 mt-1 w-full rounded-md bg-background shadow-md max-h-60 overflow-auto",
+            suggestions.length > 0 ? "border" : "border-none",
+          )}
+        >
           {suggestions.map((suggestion) => (
             <li key={suggestion.placeId}>
               <button
@@ -212,13 +226,19 @@ export default function LocationAutocompleteInput({
               <CgSpinner className="animate-spin" /> Searching...
             </li>
           )}
-          {suggestions.length === 0 && !suggestionsLoading && value.length > 0 && (
-            <li className="px-3 py-2 text-xs text-gray-500">No suggestions found.</li>
-          )}
+          {suggestions.length === 0 &&
+            !suggestionsLoading &&
+            value.length > 0 && (
+              <li className="px-3 py-2 text-xs text-gray-500">
+                No suggestions found.
+              </li>
+            )}
         </ul>
       )}
 
-      {(addressFromPlaceIdLoading || addressFromTextLoading || addressFromLatLonLoading) && (
+      {(addressFromPlaceIdLoading ||
+        addressFromTextLoading ||
+        addressFromLatLonLoading) && (
         <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
           <CgSpinner className="animate-spin" /> Resolving address...
         </div>
