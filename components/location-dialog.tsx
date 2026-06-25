@@ -1,30 +1,11 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { MdOutlineMyLocation } from "react-icons/md";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
-import { useState, useMemo, useEffect, useRef } from "react";
-import debounce from "lodash/debounce";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { useState, useEffect } from "react";
 import { useCurrentLocation } from "@/context/location-context";
-import { useLazyQuery } from "@apollo/client/react";
-import {
-  Address,
-  AddressAutocompleteDocument,
-  AddressAutocompleteSuggestion,
-  AddressFromLatLonDocument,
-  AddressFromPlaceIdDocument,
-  AddressFromRawStringDocument,
-} from "graphql-utils";
-import { toast } from "sonner";
+import { Address } from "graphql-utils";
 import convert from "convert-units";
-import useLocationService from "@/hooks/useLocation";
-import { CgSpinner } from "react-icons/cg";
+import LocationAutocompleteInput from "@/components/location-autocomplete-input";
 
 export type LocationDialogProps = {
   open: boolean;
@@ -33,7 +14,6 @@ export type LocationDialogProps = {
 
 export default function LocationDialog({ open, setOpen }: LocationDialogProps) {
   const { currentLocation, setCurrentLocation } = useCurrentLocation();
-  const { geocodeWithCallback } = useLocationService();
   const [addressInput, setAddressInput] = useState(
     currentLocation?.fullAddress ?? "",
   );
@@ -44,106 +24,29 @@ export default function LocationDialog({ open, setOpen }: LocationDialogProps) {
         .to("mi"),
     ),
   );
-  const [suggestions, setSuggestions] = useState<
-    AddressAutocompleteSuggestion[]
-  >([]);
-  const [suggestionsOpen, setSuggestionsOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const [getAddressSuggestions] = useLazyQuery(AddressAutocompleteDocument, {
-    fetchPolicy: "cache-first",
-  });
-  const [addressFromPlaceId, { loading: addressFromPlaceIdLoading }] =
-    useLazyQuery(AddressFromPlaceIdDocument);
-  const [addressFromLatLon, { loading: addressFromLatLonLoading }] =
-    useLazyQuery(AddressFromLatLonDocument);
-  const [addressFromText, { loading: addressFromTextLoading }] =
-    useLazyQuery(AddressFromRawStringDocument);
-  const [currentLocationLoading, setCurrentLocationLoading] = useState(false);
   const [newSelectedAddress, setNewSelectedAddress] = useState<Address>();
-
-  const debouncedFetch = useMemo(
-    () => debounce(getAddressSuggestions, 300),
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
-
-  useEffect(() => {
-    debouncedFetch({
-      variables: {
-        input: addressInput,
-        locationBias: currentLocation
-          ? {
-              latitude: currentLocation.locationInput.latitude,
-              longitude: currentLocation.locationInput.longitude,
-            }
-          : undefined,
-      },
-    })?.then(({ data }) => {
-      if (!data) return;
-      setSuggestions(data.addressAutocomplete);
-    });
-    return () => debouncedFetch.cancel();
-  }, [addressInput, currentLocation, debouncedFetch]);
 
   useEffect(() => {
     setAddressInput(currentLocation?.fullAddress ?? "");
   }, [currentLocation?.fullAddress]);
 
-  // close suggestions when clicking outside
-  useEffect(() => {
-    function onDocClick(e: MouseEvent) {
-      if (!containerRef.current) return;
-      if (!containerRef.current.contains(e.target as Node)) {
-        setSuggestionsOpen(false);
-      }
-    }
-    document.addEventListener("click", onDocClick);
-    return () => document.removeEventListener("click", onDocClick);
-  }, []);
-
-  function selectSuggestion({
-    addressText,
-    placeId,
-  }: AddressAutocompleteSuggestion) {
-    setAddressInput(addressText);
-    setSuggestionsOpen(false);
-    addressFromPlaceId({
-      variables: {
-        placeId,
-      },
-    })
-      .then(({ data }) => {
-        if (!data) return;
-        setNewSelectedAddress(data.addressFromPlaceId as Address);
-      })
-      .catch((err) => toast.error(err.message));
-  }
-
-  async function selectTextAddress(fullAddress: string) {
-    setAddressInput(fullAddress);
-    setSuggestionsOpen(false);
-    return addressFromText({
-      variables: {
-        fullAddress,
-      },
-    })
-      .then(({ data }) => {
-        if (!data) return;
-        setNewSelectedAddress(data.addressFromRawString as Address);
-      })
-      .catch((err) => toast.error(err.message));
-  }
-
-  function submit() {
+  function submit(address?: Address) {
     if (!currentLocation) return;
 
+    const selected = address ?? newSelectedAddress ?? currentLocation;
+    const locationInput =
+      "locationInput" in selected
+        ? selected.locationInput
+        : {
+            latitude: selected.latitude,
+            longitude: selected.longitude,
+          };
+
     setCurrentLocation({
-      fullAddress: (newSelectedAddress ?? currentLocation).fullAddress,
+      fullAddress: selected.fullAddress,
       locationInput: {
-        latitude: (newSelectedAddress ?? currentLocation?.locationInput)
-          .latitude,
-        longitude: (newSelectedAddress ?? currentLocation?.locationInput)
-          .longitude,
+        latitude: locationInput.latitude,
+        longitude: locationInput.longitude,
         radiusMeters: Math.round(convert(radiusInput).from("mi").to("m")),
       },
     });
@@ -160,77 +63,31 @@ export default function LocationDialog({ open, setOpen }: LocationDialogProps) {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex flex-col gap-5 mt-5">
-          <div ref={containerRef} className="relative">
-            <label className="text-sm font-medium" htmlFor="fullAddress">
-              Address
-            </label>
-            <Input
-              id="fullAddress"
-              value={addressInput}
-              onChange={(e) => {
-                setAddressInput(e.target.value);
-                setSuggestionsOpen(true);
-              }}
-              onFocus={() => setSuggestionsOpen(true)}
-              onKeyDown={e => {
-                if (e.key === 'Enter') {
-                  selectTextAddress(e.currentTarget.value).then(() => {
-                    submit();
-                  })
-                }
-              }}
-              autoComplete="off"
-            />
-
-            {suggestionsOpen && suggestions.length > 0 && (
-              <ul className="absolute z-50 mt-1 w-full rounded-md border bg-background shadow-md max-h-60 overflow-auto">
-                {suggestions.map((s) => (
-                  <li key={s.placeId}>
-                    <button
-                      type="button"
-                      className="w-full text-left px-3 py-2 hover:bg-accent text-xs cursor-pointer"
-                      onClick={() => selectSuggestion(s)}
-                    >
-                      {s.addressText}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            <Button
-              variant="link"
-              size="xs"
-              className="mt-1.5 text-pricetra-green-heavy-dark px-0"
-              onClick={() => {
-                setCurrentLocationLoading(true);
-                geocodeWithCallback((location) => {
-                  setCurrentLocationLoading(false);
-                  if (!location) return;
-
-                  addressFromLatLon({
-                    variables: {
-                      latitude: location.coords.latitude,
-                      longitude: location.coords.longitude,
-                    },
-                  }).then(({ data }) => {
-                    if (!data) return;
-                    setNewSelectedAddress(data.addressFromLatLon as Address);
-                    setAddressInput(data.addressFromLatLon.fullAddress);
-                  });
-                });
-              }}
-              disabled={addressFromLatLonLoading || currentLocationLoading}
-            >
-              {currentLocationLoading ? (
-                <CgSpinner className="animate-spin" />
-              ) : (
-                <MdOutlineMyLocation />
-              )}
-              Use current location
-            </Button>
-          </div>
+        <div className="flex flex-col gap-5 my-5">
+          <LocationAutocompleteInput
+            value={addressInput}
+            onChange={setAddressInput}
+            onSelectAddress={(address) => {
+              setNewSelectedAddress(address);
+              setAddressInput(address.fullAddress);
+            }}
+            onEnter={(address) => {
+              setNewSelectedAddress(address);
+              submit(address);
+            }}
+            showCurrentLocationButton
+            locationBias={
+              currentLocation
+                ? {
+                    latitude: currentLocation.locationInput.latitude,
+                    longitude: currentLocation.locationInput.longitude,
+                  }
+                : undefined
+            }
+            inputId="fullAddress"
+            label="Address"
+            placeholder="150 Smith Rd, St. Charles, IL 60174"
+          />
 
           <div>
             <label className="text-sm font-medium" htmlFor="searchRadius">
@@ -251,12 +108,7 @@ export default function LocationDialog({ open, setOpen }: LocationDialogProps) {
               Cancel
             </Button>
 
-            <Button
-              size="sm"
-              variant="pricetra"
-              disabled={addressFromPlaceIdLoading || addressFromLatLonLoading || addressFromTextLoading}
-              onClick={submit}
-            >
+            <Button size="sm" variant="pricetra" onClick={() => submit()}>
               Save
             </Button>
           </div>
