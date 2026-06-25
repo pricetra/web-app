@@ -10,7 +10,8 @@ export default function SetupProvider({ children }: { children: ReactNode }) {
   const { loading, user, showWelcomeScreen } = useAuth();
   const storeUserBranches = useStoreUser();
 
-  if (!loading && user && showWelcomeScreen) {
+  // if (!loading && user && showWelcomeScreen) {
+  if (true) {
     return (
       <AnimatePresence>
         <motion.div
