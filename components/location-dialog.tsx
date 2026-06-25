@@ -2,11 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { useState, useEffect } from "react";
-import { useLazyQuery } from "@apollo/client/react";
 import { useCurrentLocation } from "@/context/location-context";
-import { Address, AddressFromLatLonDocument } from "graphql-utils";
+import { Address } from "graphql-utils";
 import convert from "convert-units";
-import useLocationService from "@/hooks/useLocation";
 import LocationAutocompleteInput from "@/components/location-autocomplete-input";
 
 export type LocationDialogProps = {
@@ -16,7 +14,6 @@ export type LocationDialogProps = {
 
 export default function LocationDialog({ open, setOpen }: LocationDialogProps) {
   const { currentLocation, setCurrentLocation } = useCurrentLocation();
-  const { geocodeWithCallback } = useLocationService();
   const [addressInput, setAddressInput] = useState(
     currentLocation?.fullAddress ?? "",
   );
@@ -27,9 +24,7 @@ export default function LocationDialog({ open, setOpen }: LocationDialogProps) {
         .to("mi"),
     ),
   );
-  const [currentLocationLoading, setCurrentLocationLoading] = useState(false);
   const [newSelectedAddress, setNewSelectedAddress] = useState<Address>();
-  const [addressFromLatLon] = useLazyQuery(AddressFromLatLonDocument);
 
   useEffect(() => {
     setAddressInput(currentLocation?.fullAddress ?? "");
@@ -68,7 +63,7 @@ export default function LocationDialog({ open, setOpen }: LocationDialogProps) {
           </DialogDescription>
         </DialogHeader>
 
-        <div className="my-5">
+        <div className="flex flex-col gap-5 my-5">
           <LocationAutocompleteInput
             value={addressInput}
             onChange={setAddressInput}
@@ -80,26 +75,7 @@ export default function LocationDialog({ open, setOpen }: LocationDialogProps) {
               setNewSelectedAddress(address);
               submit(address);
             }}
-            onUseCurrentLocation={() => {
-              setCurrentLocationLoading(true);
-              geocodeWithCallback((location) => {
-                setCurrentLocationLoading(false);
-                if (!location) return;
-
-                addressFromLatLon({
-                  variables: {
-                    latitude: location.coords.latitude,
-                    longitude: location.coords.longitude,
-                  },
-                }).then(({ data }) => {
-                  if (!data) return;
-                  setNewSelectedAddress(data.addressFromLatLon as Address);
-                  setAddressInput(data.addressFromLatLon.fullAddress);
-                });
-              });
-            }}
             showCurrentLocationButton
-            currentLocationLoading={currentLocationLoading}
             locationBias={
               currentLocation
                 ? {

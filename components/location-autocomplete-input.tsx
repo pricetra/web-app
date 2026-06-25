@@ -9,19 +9,19 @@ import {
   Address,
   AddressAutocompleteDocument,
   AddressAutocompleteSuggestion,
+  AddressFromLatLonDocument,
   AddressFromPlaceIdDocument,
   AddressFromRawStringDocument,
 } from "graphql-utils";
 import { toast } from "sonner";
+import useLocationService from "@/hooks/useLocation";
 
 export type LocationAutocompleteInputProps = {
   value: string;
   onChange: (value: string) => void;
   onSelectAddress?: (address: Address) => void;
   onEnter?: (address: Address) => void | Promise<void>;
-  onUseCurrentLocation?: () => void;
   showCurrentLocationButton?: boolean;
-  currentLocationLoading?: boolean;
   label?: string;
   placeholder?: string;
   inputId?: string;
@@ -37,9 +37,7 @@ export default function LocationAutocompleteInput({
   onChange,
   onSelectAddress,
   onEnter,
-  onUseCurrentLocation,
   showCurrentLocationButton = false,
-  currentLocationLoading = false,
   label = "Address",
   placeholder = "Ex. 123 Main St, Seattle, WA",
   inputId = "locationAddress",
@@ -60,6 +58,10 @@ export default function LocationAutocompleteInput({
     useLazyQuery(AddressFromPlaceIdDocument);
   const [addressFromText, { loading: addressFromTextLoading }] =
     useLazyQuery(AddressFromRawStringDocument);
+  const [addressFromLatLon, { loading: addressFromLatLonLoading }] =
+    useLazyQuery(AddressFromLatLonDocument);
+  const { geocodeWithCallback } = useLocationService();
+  const [currentLocationLoading, setCurrentLocationLoading] = useState(false);
 
   const debouncedFetch = useMemo(
     () => debounce((variables) => getAddressSuggestions(variables), 300),
@@ -134,6 +136,39 @@ export default function LocationAutocompleteInput({
     }
   }
 
+  function handleUseCurrentLocation() {
+    setCurrentLocationLoading(true);
+    geocodeWithCallback(async (location) => {
+      setCurrentLocationLoading(false);
+
+      if (!location) {
+        toast.error("Unable to get current location.");
+        return;
+      }
+
+      try {
+        const { data } = await addressFromLatLon({
+          variables: {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+          },
+        });
+
+        if (!data?.addressFromLatLon) {
+          toast.error("Unable to resolve current location address.");
+          return;
+        }
+
+        const selectedAddress = data.addressFromLatLon as Address;
+        onChange(selectedAddress.fullAddress);
+        setSuggestionsOpen(false);
+        onSelectAddress?.(selectedAddress);
+      } catch (err) {
+        toast.error((err as Error).message);
+      }
+    });
+  }
+
   return (
     <div ref={containerRef} className="relative">
       <label className="text-sm font-medium" htmlFor={inputId}>
@@ -182,21 +217,21 @@ export default function LocationAutocompleteInput({
         </ul>
       )}
 
-      {(addressFromPlaceIdLoading || addressFromTextLoading) && (
+      {(addressFromPlaceIdLoading || addressFromTextLoading || addressFromLatLonLoading) && (
         <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
           <CgSpinner className="animate-spin" /> Resolving address...
         </div>
       )}
 
-      {showCurrentLocationButton && onUseCurrentLocation && (
+      {showCurrentLocationButton && (
         <Button
           variant="link"
           size="xs"
-          className="mt-3 text-pricetra-green-heavy-dark px-0"
-          onClick={onUseCurrentLocation}
-          disabled={currentLocationLoading}
+          className="mt-1 text-pricetra-green-heavy-dark px-0"
+          onClick={handleUseCurrentLocation}
+          disabled={currentLocationLoading || addressFromLatLonLoading}
         >
-          {currentLocationLoading ? (
+          {currentLocationLoading || addressFromLatLonLoading ? (
             <CgSpinner className="animate-spin" />
           ) : (
             <MdOutlineMyLocation />
