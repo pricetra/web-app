@@ -86,7 +86,7 @@ export default function LocationDialog({ open, setOpen }: LocationDialogProps) {
             }
             inputId="fullAddress"
             label="Address"
-            placeholder="Ex. 123 Main St, Seattle, WA"
+            placeholder="150 Smith Rd, St. Charles, IL 60174"
           />
 
           <div>

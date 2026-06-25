@@ -43,6 +43,7 @@ import useStoreNameAvailability from "@/hooks/useStoreNameAvailability";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAuth } from "@/context/user-context";
 import { parseFullname } from "@/lib/utils";
+import LocationAutocompleteInput from "@/components/location-autocomplete-input";
 
 export type BusinessFormProps = {
   onCancel: () => void;
@@ -346,17 +347,20 @@ export default function BusinessForm({ onCancel }: BusinessFormProps) {
                 <FieldGroup>
                   {physicalStoreToggle && (
                     <Field>
-                      <FieldLabel htmlFor="storeAddress">
-                        Store Address
-                      </FieldLabel>
-                      <Input
-                        id="storeAddress"
-                        placeholder="150 Smith Rd, St. Charles, IL 60174"
+                      <LocationAutocompleteInput
                         value={formik.values.storeAddress ?? ""}
                         onChange={(v) =>
-                          formik.setFieldValue("storeAddress", v.target.value)
+                          formik.setFieldValue("storeAddress", v)
                         }
-                        required
+                        onSelectAddress={(a) =>
+                          formik.setFieldValue("storeAddress", a.fullAddress)
+                        }
+                        onEnter={(a) => {
+                          formik.setFieldValue("storeAddress", a.fullAddress);
+                        }}
+                        inputId="storeAddress"
+                        label="Store Address"
+                        placeholder="Ex. 123 Main St, Seattle, WA"
                       />
 
                       <FieldDescription className="flex flex-row gap-2">

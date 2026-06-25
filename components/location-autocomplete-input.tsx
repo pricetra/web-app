@@ -15,6 +15,7 @@ import {
 } from "graphql-utils";
 import { toast } from "sonner";
 import useLocationService from "@/hooks/useLocation";
+import { cn } from "@/lib/utils";
 
 export type LocationAutocompleteInputProps = {
   value: string;
@@ -171,7 +172,7 @@ export default function LocationAutocompleteInput({
 
   return (
     <div ref={containerRef} className="relative">
-      <label className="text-sm font-medium" htmlFor={inputId}>
+      <label className="text-sm font-bold" htmlFor={inputId}>
         {label}
       </label>
       <Input
@@ -194,7 +195,7 @@ export default function LocationAutocompleteInput({
       />
 
       {(suggestionsOpen || suggestionsLoading) && (
-        <ul className="absolute z-50 mt-1 w-full rounded-md border bg-background shadow-md max-h-60 overflow-auto">
+        <ul className={cn("absolute z-50 mt-1 w-full rounded-md bg-background shadow-md max-h-60 overflow-auto", suggestions.length > 0 ? 'border' : 'border-none')}>
           {suggestions.map((suggestion) => (
             <li key={suggestion.placeId}>
               <button
