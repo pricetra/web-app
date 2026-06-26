@@ -27,12 +27,12 @@ export default function ProductFilterNavToolbar({
   }, [searchParams]);
 
   const searchParamsWithSale = useMemo(() => {
-    const sale = parseBool(searchParams.get('sale'));
+    const sale = parseBool(searchParams.get("sale"));
     const spb = new URLSearchParams(searchParamsBuilder);
-    if (sale) spb.delete('sale');
-    else spb.set('sale', String(!sale))
-    return `${baseUrl}?${spb.toString()}`
-  }, [baseUrl, searchParams, searchParamsBuilder])
+    if (sale) spb.delete("sale");
+    else spb.set("sale", String(!sale));
+    return `${baseUrl}?${spb.toString()}`;
+  }, [baseUrl, searchParams, searchParamsBuilder]);
 
   return (
     <div className="flex-1 flex flex-row items-center gap-2 px-5 overflow-x-auto h-full">
@@ -128,11 +128,12 @@ export default function ProductFilterNavToolbar({
         </Button>
 
         {COMMON_CATEGORIES.map(({ id, name }) => {
-          if (id) searchParamsBuilder.set("categoryId", id.toString());
-          searchParamsBuilder.set("category", name);
+          const spb = new URLSearchParams(searchParamsBuilder);
+          if (id) spb.set("categoryId", id.toString());
+          spb.set("category", name);
           return (
             <Button
-              href={`${baseUrl}?${searchParamsBuilder.toString()}`}
+              href={`${baseUrl}?${spb.toString()}`}
               variant="outline"
               size="xs"
               rounded
