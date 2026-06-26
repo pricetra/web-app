@@ -8,6 +8,7 @@ import { useMemo } from "react";
 import { useAuth } from "@/context/user-context";
 import { isRoleAuthorized } from "@/lib/roles";
 import { UserRole } from "graphql-utils";
+import { MdOutlineFilterList } from "react-icons/md";
 
 type ProductFilterNavToolbarProps = {
   baseUrl?: string;
@@ -27,6 +28,16 @@ export default function ProductFilterNavToolbar({
   return (
     <div className="flex-1 flex flex-row items-center gap-2 px-5 overflow-x-auto h-full">
       <LocationDialogButton />
+
+      <Button variant="pricetra" size="xs" rounded>
+        <MdOutlineFilterList />
+        Filters
+        {searchParamsBuilder.size > 0 && (
+          <span className="text-[8px] bg-white/80 h-4 px-1.5 flex items-center justify-center rounded-full text-black">
+            {searchParamsBuilder.size}
+          </span>
+        )}
+      </Button>
 
       {searchParamsBuilder.size > 0 && (
         <div className="flex flex-row items-center gap-2">
@@ -78,7 +89,7 @@ export default function ProductFilterNavToolbar({
         {myStoreUsers &&
           myStoreUsers.length > 0 &&
           myStoreUsers.map((s) => {
-            let path = '';
+            let path = "";
             if (s.store && s.branch) {
               path = `${s.store.slug}/${s.branch.slug}`;
             } else if (s.store) {
@@ -86,16 +97,16 @@ export default function ProductFilterNavToolbar({
             }
 
             return (
-            <Button
-              href={`/stores/${path}/manage`}
-              variant="default"
-              size="xs"
-              rounded
-              key={`manage-${s.id}`}
-            >
-              Manage {s.branch?.name || s.store?.name}
-            </Button>
-          )
+              <Button
+                href={`/stores/${path}/manage`}
+                variant="default"
+                size="xs"
+                rounded
+                key={`manage-${s.id}`}
+              >
+                Manage {s.branch?.name || s.store?.name}
+              </Button>
+            );
           })}
 
         {COMMON_CATEGORIES.map(({ id, name }) => (
