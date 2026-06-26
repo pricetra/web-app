@@ -13,6 +13,7 @@ import { NavbarProvider } from "@/context/navbar-context";
 import ShadcnProvider from "./shadcn-provider";
 import SetupProvider from "./setup-provider";
 import SearchContextProvider from "@/context/search-context";
+import ProductFiltersPanelContextProvider from "@/context/product-filters-panel-context";
 
 dayjs.extend(localizedFormat);
 dayjs.extend(relativeTime);
@@ -38,7 +39,9 @@ export default function AppProvider({ children }: AppProviderProps) {
             <ShadcnProvider>
               <SetupProvider>
                 <SearchContextProvider>
-                  <NavbarProvider>{children}</NavbarProvider>
+                  <ProductFiltersPanelContextProvider>
+                    <NavbarProvider>{children}</NavbarProvider>
+                  </ProductFiltersPanelContextProvider>
                 </SearchContextProvider>
               </SetupProvider>
             </ShadcnProvider>
