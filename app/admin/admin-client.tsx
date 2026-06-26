@@ -8,6 +8,7 @@ import { MdStorefront } from "react-icons/md";
 import AdminListItem from "./components/admin-list-item";
 import { FaEye } from "react-icons/fa";
 import { FaWpforms } from "react-icons/fa";
+import { HiUsers } from "react-icons/hi2";
 
 export default function AdminClient() {
   const { setPageIndicator, resetAll } = useNavbar();
@@ -44,6 +45,13 @@ export default function AdminClient() {
             icon={<FaWpforms />}
             title="Business Signups"
             content="View and manage business signups"
+          />
+
+          <AdminListItem
+            href="/admin/users"
+            icon={<HiUsers />}
+            title="Manage Users"
+            content="View and manage users"
           />
         </div>
       </div>
