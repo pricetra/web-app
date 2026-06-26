@@ -9,6 +9,7 @@ import { useAuth } from "@/context/user-context";
 import { isRoleAuthorized } from "@/lib/roles";
 import { UserRole } from "graphql-utils";
 import { MdOutlineFilterList } from "react-icons/md";
+import { parseBool } from "@/lib/strings";
 
 type ProductFilterNavToolbarProps = {
   baseUrl?: string;
@@ -24,6 +25,14 @@ export default function ProductFilterNavToolbar({
     paramsBuilder.delete("page");
     return paramsBuilder;
   }, [searchParams]);
+
+  const searchParamsWithSale = useMemo(() => {
+    const sale = parseBool(searchParams.get('sale'));
+    const spb = new URLSearchParams(searchParamsBuilder);
+    if (sale) spb.delete('sale');
+    else spb.set('sale', String(!sale))
+    return `${baseUrl}?${spb.toString()}`
+  }, [baseUrl, searchParams, searchParamsBuilder])
 
   return (
     <div className="flex-1 flex flex-row items-center gap-2 px-5 overflow-x-auto h-full">
@@ -109,19 +118,30 @@ export default function ProductFilterNavToolbar({
             );
           })}
 
-        {COMMON_CATEGORIES.map(({ id, name }) => (
-          <Button
-            href={`${baseUrl}?categoryId=${id}&category=${encodeURIComponent(
-              name,
-            )}`}
-            variant="outline"
-            size="xs"
-            rounded
-            key={`common-category-${id}`}
-          >
-            {name}
-          </Button>
-        ))}
+        <Button
+          variant={parseBool(searchParams.get("sale")) ? "pricetra" : "outline"}
+          href={searchParamsWithSale}
+          size="xs"
+          rounded
+        >
+          Sale
+        </Button>
+
+        {COMMON_CATEGORIES.map(({ id, name }) => {
+          if (id) searchParamsBuilder.set("categoryId", id.toString());
+          searchParamsBuilder.set("category", name);
+          return (
+            <Button
+              href={`${baseUrl}?${searchParamsBuilder.toString()}`}
+              variant="outline"
+              size="xs"
+              rounded
+              key={`common-category-${id}`}
+            >
+              {name}
+            </Button>
+          );
+        })}
       </div>
     </div>
   );
