@@ -14,8 +14,8 @@ import {
   CategorySearchDocument,
   GetCategoryDocument,
 } from "graphql-utils";
-import Select from "react-dropdown-select";
 import { useRouter, useSearchParams } from "next/navigation";
+import Select from "./ui/custom-select";
 
 export type ProductFiltersDialogProps = {
   open: boolean;
