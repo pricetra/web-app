@@ -1,4 +1,4 @@
-import ProductFiltersDialog from "@/components/ProductFiltersDialog";
+import ProductFiltersDialog from "@/components/product-filters-dialog";
 import { createContext, ReactNode, useContext, useState } from "react";
 
 export type ProductFiltersPanelContextType = {
