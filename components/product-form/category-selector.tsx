@@ -5,7 +5,7 @@ import {
   CreateCategoryDocument,
   GetCategoriesDocument,
 } from "graphql-utils";
-import Select from "../ui/custom-select";
+import Select from "react-dropdown-select";
 
 export type CategoryComboboxData = {
   depth: number;

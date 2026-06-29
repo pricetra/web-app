@@ -15,7 +15,7 @@ import {
   GetCategoryDocument,
 } from "graphql-utils";
 import { useRouter, useSearchParams } from "next/navigation";
-import Select from "./ui/custom-select";
+import Select from "react-dropdown-select";
 
 export type ProductFiltersDialogProps = {
   open: boolean;
@@ -98,7 +98,7 @@ export default function ProductFiltersDialog({
             options={categoriesData?.categorySearch ?? []}
             values={category ? [category] : []}
             labelField="name"
-            valueField="id"
+            valueField="name"
             onChange={(v) => {
               if (v.length === 0) return;
 
