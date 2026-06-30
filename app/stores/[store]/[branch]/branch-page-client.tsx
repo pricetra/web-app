@@ -6,8 +6,8 @@ import {
   Branch,
   CategoriesWithProductsDocument,
   Category,
+  PaginatorInput,
   Product,
-  ProductSearch,
   ProductSimple,
   Store,
 } from "graphql-utils";
@@ -23,7 +23,6 @@ import {
   categoriesFromChild,
   getRandomIntInclusive,
   startOfNextSundayUTC,
-  toBoolean,
 } from "@/lib/utils";
 import { adify } from "@/lib/ads";
 import VerticalProductAd from "@/components/ads/vertical-product-ad";
@@ -39,6 +38,7 @@ import { FiChevronRight } from "react-icons/fi";
 import { cleanUrl } from "@/lib/strings";
 import ProductsContainer from "@/components/ui/products-container";
 import StorefrontBanner from "@/components/storefront-banner";
+import { useProductSearchFilters } from "@/context/product-search-filters-context";
 
 export default function BranchPageClient({
   store,
@@ -60,16 +60,20 @@ export default function BranchPageClient({
     setNavTools,
     setSubHeader,
   } = useNavbar();
+  const { searchFilters } = useProductSearchFilters();
   const isMobile = useMediaQuery({
     query: "(max-width: 640px)",
   });
 
   const paramsBuilder = useMemo(() => {
-    const sp = { ...searchParams };
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sp = { ...searchParams } as any;
     if (sp.query?.length === 0) delete sp.query;
     delete sp.page;
     delete sp.sale;
     delete sp.sortByPrice;
+    delete sp.storeId;
+    delete sp.branchId;
     return new URLSearchParams(sp);
   }, [searchParams]);
 
@@ -145,49 +149,38 @@ export default function BranchPageClient({
   }, [branch, disableNavSettings]);
 
   useEffect(() => {
-    const search = {
-      sortByPrice: searchParams.sortByPrice,
-      sale: searchParams.sale ? toBoolean(searchParams.sale) : undefined,
-    } as ProductSearch;
+    const paginator: PaginatorInput = {
+      page: +(searchParams.page ?? 1),
+      limit: 10,
+    };
 
     if (paramsBuilder.size > 0) {
       // Load all products
       getProducts({
         variables: {
-          paginator: {
-            page: +(searchParams.page ?? 1),
-            limit: +(searchParams.limit ?? 30),
-          },
+          paginator,
           search: {
+            ...searchFilters,
             storeId: store.id,
             branchId: branch.id,
-            query: searchParams.query,
-            brand: searchParams.brand,
-            category: searchParams.category,
-            categoryId: searchParams.categoryId
-              ? +searchParams.categoryId
-              : undefined,
-            ...search,
           },
         },
       });
     } else {
       getCategorizedProducts({
         variables: {
-          paginator: {
-            page: +(searchParams.page ?? 1),
-            limit: 10,
-          },
+          paginator,
           productLimit: 20,
           filters: {
+            ...searchFilters,
+            storeId: store.id,
             branchId: branch.id,
-            ...search,
           },
         },
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paramsBuilder]);
+  }, [paramsBuilder, searchFilters]);
 
   return (
     <>

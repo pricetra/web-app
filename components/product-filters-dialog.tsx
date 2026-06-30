@@ -18,11 +18,13 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Select from "react-dropdown-select";
 
 export type ProductFiltersDialogProps = {
+  searchBaseUrl: string;
   open: boolean;
   onOpenChange: (v: boolean) => void;
 };
 
 export default function ProductFiltersDialog({
+  searchBaseUrl,
   open,
   onOpenChange,
 }: ProductFiltersDialogProps) {
@@ -80,12 +82,12 @@ export default function ProductFiltersDialog({
 
               const spb = new URLSearchParams(urlParamsBuilder);
               spb.set("brand", categorySelect.brand);
-              router.push(`search?${spb.toString()}`);
+              router.push(`${searchBaseUrl}?${spb.toString()}`);
             }}
             onClearAll={() => {
               const spb = new URLSearchParams(urlParamsBuilder);
               spb.delete("brand");
-              router.push(`search?${spb.toString()}`);
+              router.push(`${searchBaseUrl}?${spb.toString()}`);
             }}
             loading={brandsLoading}
             clearable
@@ -108,13 +110,13 @@ export default function ProductFiltersDialog({
               const spb = new URLSearchParams(urlParamsBuilder);
               spb.set("category", categorySelect.name);
               spb.set("categoryId", categorySelect.id.toString());
-              router.push(`search?${spb.toString()}`);
+              router.push(`${searchBaseUrl}?${spb.toString()}`);
             }}
             onClearAll={() => {
               const spb = new URLSearchParams(urlParamsBuilder);
               spb.delete("categoryId");
               spb.delete("category");
-              router.push(`search?${spb.toString()}`);
+              router.push(`${searchBaseUrl}?${spb.toString()}`);
             }}
             loading={categoriesLoading}
             clearable

@@ -1,12 +1,9 @@
-import ProductFiltersDialog from "@/components/product-filters-dialog";
-import { createContext, ReactNode, useContext, useMemo, useState } from "react";
+import { createContext, ReactNode, useContext, useMemo } from "react";
 import { useSearchParams } from "next/navigation";
 import { ProductSearch } from "graphql-utils";
 import { buildSearchParamsFromFilters, parseSearchFilters } from "@/lib/product-search-filters-parsers";
 
 export type ProductSearchFiltersContextType = {
-  panelOpen: boolean;
-  togglePanel: (open?: boolean) => void;
   searchParamKeys: string[];
   searchFilters: ProductSearch;
   searchFiltersUrlParams: URLSearchParams;
@@ -21,7 +18,6 @@ export default function ProductSearchFiltersContextProvider({
 }: {
   children: ReactNode;
 }) {
-  const [panelOpen, setPanelOpen] = useState(false);
   const searchParams = useSearchParams();
 
   const { searchParamKeys, searchFilters, searchFiltersUrlParams } = useMemo(() => {
@@ -39,19 +35,11 @@ export default function ProductSearchFiltersContextProvider({
   return (
     <ProductSearchFiltersContext.Provider
       value={{
-        panelOpen,
-        togglePanel: (open?: boolean) =>
-          setPanelOpen((panelOpen) => open ?? !panelOpen),
         searchParamKeys,
         searchFilters,
         searchFiltersUrlParams,
       }}
     >
-      <ProductFiltersDialog
-        open={panelOpen}
-        onOpenChange={(v) => setPanelOpen(v)}
-      />
-
       {children}
     </ProductSearchFiltersContext.Provider>
   );

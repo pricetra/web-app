@@ -2,12 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { COMMON_CATEGORIES } from "@/lib/categories";
 import LocationDialogButton from "@/components/location-dialog-button";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useAuth } from "@/context/user-context";
 import { isRoleAuthorized } from "@/lib/roles";
 import { UserRole } from "graphql-utils";
 import { MdOutlineFilterList } from "react-icons/md";
 import { useProductSearchFilters } from "@/context/product-search-filters-context";
+import ProductFiltersDialog from "./product-filters-dialog";
 
 type ProductFilterNavToolbarProps = {
   baseUrl?: string;
@@ -16,9 +17,9 @@ type ProductFilterNavToolbarProps = {
 export default function ProductFilterNavToolbar({
   baseUrl = "/search",
 }: ProductFilterNavToolbarProps) {
+  const [searchPanelOpen, setSearchPanelOpen] = useState(false);
   const { user, myStoreUsers } = useAuth();
   const {
-    togglePanel,
     searchParamKeys,
     searchFilters,
     searchFiltersUrlParams,
@@ -39,7 +40,7 @@ export default function ProductFilterNavToolbar({
         variant="pricetra"
         size="xs"
         rounded
-        onClick={() => togglePanel()}
+        onClick={() => setSearchPanelOpen(true)}
       >
         <MdOutlineFilterList />
         Filters
@@ -49,6 +50,12 @@ export default function ProductFilterNavToolbar({
           </span>
         )}
       </Button>
+
+      <ProductFiltersDialog
+        open={searchPanelOpen}
+        onOpenChange={(v) => setSearchPanelOpen(v)}
+        searchBaseUrl={baseUrl}
+      />
 
       <div className="h-full py-2 px-2">
         <Separator orientation="vertical" />
