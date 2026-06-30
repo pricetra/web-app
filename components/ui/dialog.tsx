@@ -105,7 +105,7 @@ const DialogHeader = ({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) => (
-  <div className={cn("flex flex-col space-y-1.5", className)} {...props} />
+  <div className={cn("flex flex-col space-y-1.5 mb-5", className)} {...props} />
 );
 DialogHeader.displayName = "DialogHeader"
 
@@ -130,7 +130,7 @@ const DialogTitle = React.forwardRef<
   <DialogPrimitive.Title
     ref={ref}
     className={cn(
-      "text-lg font-semibold leading-none tracking-tight mb-5",
+      "text-lg font-semibold leading-none tracking-tight mb-2",
       className
     )}
     {...props}
