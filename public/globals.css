@@ -272,7 +272,11 @@
   border-radius: 0.5rem;
   background: transparent;
   color: inherit;
-  font-size: var(--text-lg);
+  font-size: 20px;
+}
+
+.react-dropdown-select-content > span {
+  font-size: var(--text-base);
 }
 
 .react-dropdown-select .react-dropdown-select-input {
