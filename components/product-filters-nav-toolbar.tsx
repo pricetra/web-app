@@ -10,7 +10,7 @@ import { isRoleAuthorized } from "@/lib/roles";
 import { UserRole } from "graphql-utils";
 import { MdOutlineFilterList } from "react-icons/md";
 import { parseBool } from "@/lib/strings";
-import { useProductFiltersPanel } from "@/context/product-filters-panel-context";
+import { useProductSearchFilters } from "@/context/product-search-filters-context";
 
 type ProductFilterNavToolbarProps = {
   baseUrl?: string;
@@ -20,7 +20,7 @@ export default function ProductFilterNavToolbar({
   baseUrl = "/search",
 }: ProductFilterNavToolbarProps) {
   const { user, myStoreUsers } = useAuth();
-  const { togglePanel } = useProductFiltersPanel();
+  const { togglePanel } = useProductSearchFilters();
   const searchParams = useSearchParams();
   const searchParamsBuilder = useMemo(() => {
     const paramsBuilder = new URLSearchParams(searchParams);

@@ -1,16 +1,16 @@
 import ProductFiltersDialog from "@/components/product-filters-dialog";
 import { createContext, ReactNode, useContext, useState } from "react";
 
-export type ProductFiltersPanelContextType = {
+export type ProductSearchFiltersContextType = {
   panelOpen: boolean;
   togglePanel: (open?: boolean) => void;
 };
 
-export const ProductFiltersPanelContext = createContext(
-  {} as ProductFiltersPanelContextType,
+export const ProductSearchFiltersContext = createContext(
+  {} as ProductSearchFiltersContextType,
 );
 
-export default function ProductFiltersPanelContextProvider({
+export default function ProductSearchFiltersContextProvider({
   children,
 }: {
   children: ReactNode;
@@ -18,7 +18,7 @@ export default function ProductFiltersPanelContextProvider({
   const [panelOpen, setPanelOpen] = useState(false);
 
   return (
-    <ProductFiltersPanelContext.Provider
+    <ProductSearchFiltersContext.Provider
       value={{
         panelOpen,
         togglePanel: (open?: boolean) =>
@@ -31,9 +31,9 @@ export default function ProductFiltersPanelContextProvider({
       />
 
       {children}
-    </ProductFiltersPanelContext.Provider>
+    </ProductSearchFiltersContext.Provider>
   );
 }
 
-export const useProductFiltersPanel = () =>
-  useContext(ProductFiltersPanelContext);
+export const useProductSearchFilters = () =>
+  useContext(ProductSearchFiltersContext);
