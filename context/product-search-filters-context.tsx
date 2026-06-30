@@ -7,9 +7,9 @@ import { buildSearchParamsFromFilters, parseSearchFilters } from "@/lib/product-
 export type ProductSearchFiltersContextType = {
   panelOpen: boolean;
   togglePanel: (open?: boolean) => void;
-  keys: string[];
+  searchParamKeys: string[];
   searchFilters: ProductSearch;
-  urlParams: URLSearchParams;
+  searchFiltersUrlParams: URLSearchParams;
 };
 
 export const ProductSearchFiltersContext = createContext(
@@ -24,15 +24,15 @@ export default function ProductSearchFiltersContextProvider({
   const [panelOpen, setPanelOpen] = useState(false);
   const searchParams = useSearchParams();
 
-  const { keys, searchFilters, urlParams } = useMemo(() => {
-    const filters = parseSearchFilters(searchParams);
-    const parsedKeys = Object.keys(filters) as string[];
-    const params = buildSearchParamsFromFilters(filters);
+  const { searchParamKeys, searchFilters, searchFiltersUrlParams } = useMemo(() => {
+    const searchFilters = parseSearchFilters(searchParams);
+    const searchParamKeys = Object.keys(searchFilters) as string[];
+    const searchFiltersUrlParams = buildSearchParamsFromFilters(searchFilters);
 
     return {
-      keys: parsedKeys,
-      searchFilters: filters,
-      urlParams: params,
+      searchParamKeys,
+      searchFilters,
+      searchFiltersUrlParams,
     };
   }, [searchParams]);
 
@@ -42,9 +42,9 @@ export default function ProductSearchFiltersContextProvider({
         panelOpen,
         togglePanel: (open?: boolean) =>
           setPanelOpen((panelOpen) => open ?? !panelOpen),
-        keys,
+        searchParamKeys,
         searchFilters,
-        urlParams,
+        searchFiltersUrlParams,
       }}
     >
       <ProductFiltersDialog

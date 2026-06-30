@@ -1,38 +1,35 @@
-import { SearchRouteParams } from "@/app/search/search-page-client";
-import { Button } from '@/components/ui/button';
-import { toBoolean } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { useProductSearchFilters } from "@/context/product-search-filters-context";
 
-export type SearchFiltersProps = {
-  params: SearchRouteParams;
-};
+export default function SearchFilters() {
+  const { searchFilters } = useProductSearchFilters();
 
-export default function SearchFilters({ params }: SearchFiltersProps) {
   return (
     <>
-      {params.query && (
+      {searchFilters.query && (
         <Button variant="outline" rounded>
-          Search: <b>{params.query}</b>
+          Search: <b>{searchFilters.query}</b>
         </Button>
       )}
-      {params.category && params.categoryId && (
+      {searchFilters.category && searchFilters.categoryId && (
         <Button variant="outline" rounded>
-          Category: <b>{params.category}</b>
+          Category: <b>{searchFilters.category}</b>
         </Button>
       )}
-      {params.brand && (
+      {searchFilters.brand && (
         <Button variant="outline" rounded>
-          Brand: <b>{params.brand}</b>
+          Brand: <b>{searchFilters.brand}</b>
         </Button>
       )}
-      {params.sale && toBoolean(params.sale) && (
+      {searchFilters.sale && (
         <Button variant="pricetra" rounded>
           Sale
         </Button>
       )}
-      {params.sortByPrice && (
+      {searchFilters.sortByPrice && (
         <Button variant="outline" rounded>
           Sort by:
-          <b>{params.sortByPrice === "asc" ? "↓ Price" : "↑ Price"}</b>
+          <b>{searchFilters.sortByPrice === "asc" ? "↓ Price" : "↑ Price"}</b>
         </Button>
       )}
     </>

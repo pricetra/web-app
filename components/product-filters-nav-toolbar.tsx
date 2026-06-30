@@ -2,14 +2,11 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { COMMON_CATEGORIES } from "@/lib/categories";
 import LocationDialogButton from "@/components/location-dialog-button";
-import { useSearchParams } from "next/navigation";
-import { toBoolean } from "@/lib/utils";
 import { useMemo } from "react";
 import { useAuth } from "@/context/user-context";
 import { isRoleAuthorized } from "@/lib/roles";
 import { UserRole } from "graphql-utils";
 import { MdOutlineFilterList } from "react-icons/md";
-import { parseBool } from "@/lib/strings";
 import { useProductSearchFilters } from "@/context/product-search-filters-context";
 
 type ProductFilterNavToolbarProps = {
@@ -20,21 +17,19 @@ export default function ProductFilterNavToolbar({
   baseUrl = "/search",
 }: ProductFilterNavToolbarProps) {
   const { user, myStoreUsers } = useAuth();
-  const { togglePanel } = useProductSearchFilters();
-  const searchParams = useSearchParams();
-  const searchParamsBuilder = useMemo(() => {
-    const paramsBuilder = new URLSearchParams(searchParams);
-    paramsBuilder.delete("page");
-    return paramsBuilder;
-  }, [searchParams]);
-
+  const {
+    togglePanel,
+    searchParamKeys,
+    searchFilters,
+    searchFiltersUrlParams,
+  } = useProductSearchFilters();
   const searchParamsWithSale = useMemo(() => {
-    const sale = parseBool(searchParams.get("sale"));
-    const spb = new URLSearchParams(searchParamsBuilder);
+    const sale = searchFilters.sale;
+    const spb = new URLSearchParams(searchFiltersUrlParams);
     if (sale) spb.delete("sale");
     else spb.set("sale", String(!sale));
     return `${baseUrl}?${spb.toString()}`;
-  }, [baseUrl, searchParams, searchParamsBuilder]);
+  }, [baseUrl, searchFilters.sale, searchFiltersUrlParams]);
 
   return (
     <div className="flex-1 flex flex-row items-center gap-2 px-5 overflow-x-auto h-full">
@@ -48,48 +43,12 @@ export default function ProductFilterNavToolbar({
       >
         <MdOutlineFilterList />
         Filters
-        {searchParamsBuilder.size > 0 && (
+        {searchParamKeys.length > 0 && (
           <span className="text-[8px] bg-white/80 h-4 px-1.5 flex items-center justify-center rounded-full text-black">
-            {searchParamsBuilder.size}
+            {searchParamKeys.length}
           </span>
         )}
       </Button>
-
-      {searchParamsBuilder.size > 0 && (
-        <div className="flex flex-row items-center gap-2">
-          {searchParams.get("query") && (
-            <Button variant="outline" size="xs" rounded>
-              Search: <b>{searchParams.get("query")}</b>
-            </Button>
-          )}
-          {searchParams.get("category") && searchParams.get("categoryId") && (
-            <Button variant="outline" size="xs" rounded>
-              Category: <b>{searchParams.get("category")}</b>
-            </Button>
-          )}
-          {searchParams.get("brand") && (
-            <Button variant="outline" size="xs" rounded>
-              Brand: <b>{searchParams.get("brand")}</b>
-            </Button>
-          )}
-          {searchParams.get("sale") &&
-            toBoolean(searchParams.get("sale") ?? undefined) && (
-              <Button variant="pricetra" size="xs" rounded>
-                Sale
-              </Button>
-            )}
-          {searchParams.get("sortByPrice") && (
-            <Button variant="outline" size="xs" rounded>
-              Sort by:
-              <b>
-                {searchParams.get("sortByPrice") === "asc"
-                  ? "↓ Price"
-                  : "↑ Price"}
-              </b>
-            </Button>
-          )}
-        </div>
-      )}
 
       <div className="h-full py-2 px-2">
         <Separator orientation="vertical" />
@@ -126,7 +85,7 @@ export default function ProductFilterNavToolbar({
           })}
 
         <Button
-          variant={parseBool(searchParams.get("sale")) ? "pricetra" : "outline"}
+          variant={searchFilters.sale ? "pricetra" : "outline"}
           href={searchParamsWithSale}
           size="xs"
           rounded
@@ -135,13 +94,18 @@ export default function ProductFilterNavToolbar({
         </Button>
 
         {COMMON_CATEGORIES.map(({ id, name }) => {
-          const spb = new URLSearchParams(searchParamsBuilder);
+          const spb = new URLSearchParams(searchFiltersUrlParams);
           if (id) spb.set("categoryId", id.toString());
           spb.set("category", name);
           return (
             <Button
               href={`${baseUrl}?${spb.toString()}`}
-              variant="outline"
+              variant={
+                searchFilters.categoryId &&
+                searchFilters.categoryId.toString() === id
+                  ? "pricetra"
+                  : "outline"
+              }
               size="xs"
               rounded
               key={`common-category-${id}`}
