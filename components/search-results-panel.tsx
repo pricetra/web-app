@@ -20,6 +20,7 @@ import { useSearchContext } from "@/context/search-context";
 import SearchResultItem from "./search-result-item";
 import { MobileView } from "react-device-detect";
 import { Button } from "./ui/button";
+import { useNavbar } from "@/context/navbar-context";
 
 export type SearchResultsPanelProps = {
   onClickResult: () => void;
@@ -30,6 +31,7 @@ export default function SearchResultsPanel({
 }: SearchResultsPanelProps) {
   const { loggedIn } = useAuth();
 
+  const { searchQueryPath } = useNavbar();
   const { searchText } = useSearchContext();
   const [searchKeywords] = useLazyQuery(SearchKeywordsDocument, {
     fetchPolicy: "no-cache",
@@ -103,12 +105,14 @@ export default function SearchResultsPanel({
         <div className="flex flex-col gap-2 px-0 xs:px-5">
           {suggestedKeywords.map((searchTerm, i) => (
             <SearchResultItem
+              baseUrl={searchQueryPath}
               searchTerm={searchTerm}
               key={`search-suggestion-${i}-${searchTerm}`}
               handleOnClick={onClickResult}
             />
           ))}
           <SearchResultItem
+            baseUrl={searchQueryPath}
             searchTerm={`search "${searchText}"`}
             customSearchQuery={searchText}
             handleOnClick={onClickResult}
@@ -182,7 +186,7 @@ export default function SearchResultsPanel({
                 <>
                   {keywordsData.popularSearchKeywords.searches.map((k, i) => (
                     <Link
-                      href={`/search?query=${encodeURIComponent(k)}`}
+                      href={`${searchQueryPath}?query=${encodeURIComponent(k)}`}
                       key={`search-keyword-${k}-${i}`}
                       className="px-3 py-1 bg-gray-100 border border-gray-200 rounded-full text-sm"
                       onClick={onClickResult}

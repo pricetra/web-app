@@ -2,19 +2,21 @@ import Link from "@/components/ui/link";
 import { IoIosSearch } from "react-icons/io";
 
 export type SearchResultItemProps = {
+  baseUrl?: string;
   searchTerm: string;
   customSearchQuery?: string;
   handleOnClick: () => void;
 };
 
 export default function SearchResultItem({
+  baseUrl = "/search",
   searchTerm,
   customSearchQuery,
   handleOnClick,
 }: SearchResultItemProps) {
   return (
     <Link
-      href={`/search?query=${encodeURIComponent(
+      href={`${baseUrl}?query=${encodeURIComponent(
         customSearchQuery ?? searchTerm
       )}`}
       className="py-2 px-5 xs:px-4 bg-white hover:bg-gray-100 rounded-none xs:rounded-md"
