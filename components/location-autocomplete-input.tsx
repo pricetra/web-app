@@ -73,6 +73,11 @@ export default function LocationAutocompleteInput({
     [],
   );
 
+  const addressLoading =
+    addressFromPlaceIdLoading ||
+    addressFromTextLoading ||
+    addressFromLatLonLoading;
+
   useEffect(() => {
     if (!value) {
       setSuggestions([]);
@@ -236,23 +241,15 @@ export default function LocationAutocompleteInput({
         </ul>
       )}
 
-      {(addressFromPlaceIdLoading ||
-        addressFromTextLoading ||
-        addressFromLatLonLoading) && (
-        <div className="mt-2 flex items-center gap-2 text-xs text-gray-500">
-          <CgSpinner className="animate-spin" /> Resolving address...
-        </div>
-      )}
-
-      {showCurrentLocationButton && (
+      {(showCurrentLocationButton || addressLoading) && (
         <Button
           variant="link"
           size="xs"
           className="mt-1 text-pricetra-green-heavy-dark px-0"
           onClick={handleUseCurrentLocation}
-          disabled={currentLocationLoading || addressFromLatLonLoading}
+          disabled={currentLocationLoading || addressLoading}
         >
-          {currentLocationLoading || addressFromLatLonLoading ? (
+          {currentLocationLoading || addressLoading ? (
             <CgSpinner className="animate-spin" />
           ) : (
             <MdOutlineMyLocation />
