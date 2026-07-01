@@ -164,7 +164,7 @@ export default function ProductFiltersDialog({
             <Label>Store location</Label>
 
             <NativeSelect
-              value={searchFilters.branchType ?? undefined}
+              value={searchFilters.branchType ?? 'all'}
               onChange={(e) => {
                 const val = e.target.value;
                 const spb = new URLSearchParams(urlParamsBuilder);
@@ -197,7 +197,7 @@ export default function ProductFiltersDialog({
             <Label>Sort</Label>
 
             <NativeSelect
-              value={searchFilters.branchType ?? undefined}
+              value={searchFilters.sortByPrice ?? 'best'}
               onChange={(e) => {
                 const val = e.target.value;
                 const spb = new URLSearchParams(urlParamsBuilder);
