@@ -192,6 +192,34 @@ export default function ProductFiltersDialog({
               </NativeSelectOption>
             </NativeSelect>
           </div>
+
+          <div>
+            <Label>Sort</Label>
+
+            <NativeSelect
+              value={searchFilters.branchType ?? undefined}
+              onChange={(e) => {
+                const val = e.target.value;
+                const spb = new URLSearchParams(urlParamsBuilder);
+                if (val === 'best') {
+                  spb.delete("sortByPrice");
+                } else {
+                  spb.set("sortByPrice", val);
+                }
+                router.push(`${searchBaseUrl}?${spb.toString()}`);
+              }}
+            >
+              <NativeSelectOption value="best">
+                Best Match
+              </NativeSelectOption>
+              <NativeSelectOption value="asc">
+                ↓ Price - Low to High
+              </NativeSelectOption>
+              <NativeSelectOption value="desc">
+                ↑ Price - High to Low
+              </NativeSelectOption>
+            </NativeSelect>
+          </div>
         </div>
 
         <DialogFooter>
