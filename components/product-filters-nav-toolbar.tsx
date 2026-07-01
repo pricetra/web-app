@@ -2,12 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { COMMON_CATEGORIES } from "@/lib/categories";
 import LocationDialogButton from "@/components/location-dialog-button";
-import { useSearchParams } from "next/navigation";
-import { toBoolean } from "@/lib/utils";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useAuth } from "@/context/user-context";
 import { isRoleAuthorized } from "@/lib/roles";
 import { UserRole } from "graphql-utils";
+import { MdOutlineFilterList } from "react-icons/md";
+import { useProductSearchFilters } from "@/context/product-search-filters-context";
+import ProductFiltersDialog from "./product-filters-dialog";
 
 type ProductFilterNavToolbarProps = {
   baseUrl?: string;
@@ -16,53 +17,45 @@ type ProductFilterNavToolbarProps = {
 export default function ProductFilterNavToolbar({
   baseUrl = "/search",
 }: ProductFilterNavToolbarProps) {
+  const [searchPanelOpen, setSearchPanelOpen] = useState(false);
   const { user, myStoreUsers } = useAuth();
-  const searchParams = useSearchParams();
-  const searchParamsBuilder = useMemo(() => {
-    const paramsBuilder = new URLSearchParams(searchParams);
-    paramsBuilder.delete("page");
-    return paramsBuilder;
-  }, [searchParams]);
+  const {
+    searchParamKeys,
+    searchFilters,
+    searchFiltersUrlParams,
+  } = useProductSearchFilters();
+  const searchParamsWithSale = useMemo(() => {
+    const sale = searchFilters.sale;
+    const spb = new URLSearchParams(searchFiltersUrlParams);
+    if (sale) spb.delete("sale");
+    else spb.set("sale", String(!sale));
+    return `${baseUrl}?${spb.toString()}`;
+  }, [baseUrl, searchFilters.sale, searchFiltersUrlParams]);
 
   return (
     <div className="flex-1 flex flex-row items-center gap-2 px-5 overflow-x-auto h-full">
       <LocationDialogButton />
 
-      {searchParamsBuilder.size > 0 && (
-        <div className="flex flex-row items-center gap-2">
-          {searchParams.get("query") && (
-            <Button variant="outline" size="xs" rounded>
-              Search: <b>{searchParams.get("query")}</b>
-            </Button>
-          )}
-          {searchParams.get("category") && searchParams.get("categoryId") && (
-            <Button variant="outline" size="xs" rounded>
-              Category: <b>{searchParams.get("category")}</b>
-            </Button>
-          )}
-          {searchParams.get("brand") && (
-            <Button variant="outline" size="xs" rounded>
-              Brand: <b>{searchParams.get("brand")}</b>
-            </Button>
-          )}
-          {searchParams.get("sale") &&
-            toBoolean(searchParams.get("sale") ?? undefined) && (
-              <Button variant="pricetra" size="xs" rounded>
-                Sale
-              </Button>
-            )}
-          {searchParams.get("sortByPrice") && (
-            <Button variant="outline" size="xs" rounded>
-              Sort by:
-              <b>
-                {searchParams.get("sortByPrice") === "asc"
-                  ? "↓ Price"
-                  : "↑ Price"}
-              </b>
-            </Button>
-          )}
-        </div>
-      )}
+      <Button
+        variant="pricetra"
+        size="xs"
+        rounded
+        onClick={() => setSearchPanelOpen(true)}
+      >
+        <MdOutlineFilterList />
+        Filters
+        {searchParamKeys.length > 0 && (
+          <span className="text-[8px] bg-white/80 h-4 px-1.5 flex items-center justify-center rounded-full text-black">
+            {searchParamKeys.length}
+          </span>
+        )}
+      </Button>
+
+      <ProductFiltersDialog
+        open={searchPanelOpen}
+        onOpenChange={(v) => setSearchPanelOpen(v)}
+        searchBaseUrl={baseUrl}
+      />
 
       <div className="h-full py-2 px-2">
         <Separator orientation="vertical" />
@@ -78,7 +71,7 @@ export default function ProductFilterNavToolbar({
         {myStoreUsers &&
           myStoreUsers.length > 0 &&
           myStoreUsers.map((s) => {
-            let path = '';
+            let path = "";
             if (s.store && s.branch) {
               path = `${s.store.slug}/${s.branch.slug}`;
             } else if (s.store) {
@@ -86,31 +79,48 @@ export default function ProductFilterNavToolbar({
             }
 
             return (
-            <Button
-              href={`/stores/${path}/manage`}
-              variant="default"
-              size="xs"
-              rounded
-              key={`manage-${s.id}`}
-            >
-              Manage {s.branch?.name || s.store?.name}
-            </Button>
-          )
+              <Button
+                href={`/stores/${path}/manage`}
+                variant="default"
+                size="xs"
+                rounded
+                key={`manage-${s.id}`}
+              >
+                Manage {s.branch?.name || s.store?.name}
+              </Button>
+            );
           })}
 
-        {COMMON_CATEGORIES.map(({ id, name }) => (
-          <Button
-            href={`${baseUrl}?categoryId=${id}&category=${encodeURIComponent(
-              name,
-            )}`}
-            variant="outline"
-            size="xs"
-            rounded
-            key={`common-category-${id}`}
-          >
-            {name}
-          </Button>
-        ))}
+        <Button
+          variant={searchFilters.sale ? "pricetra" : "outline"}
+          href={searchParamsWithSale}
+          size="xs"
+          rounded
+        >
+          Sale
+        </Button>
+
+        {COMMON_CATEGORIES.map(({ id, name }) => {
+          const spb = new URLSearchParams(searchFiltersUrlParams);
+          if (id) spb.set("categoryId", id.toString());
+          spb.set("category", name);
+          return (
+            <Button
+              href={`${baseUrl}?${spb.toString()}`}
+              variant={
+                searchFilters.categoryId &&
+                searchFilters.categoryId.toString() === id
+                  ? "pricetra"
+                  : "outline"
+              }
+              size="xs"
+              rounded
+              key={`common-category-${id}`}
+            >
+              {name}
+            </Button>
+          );
+        })}
       </div>
     </div>
   );

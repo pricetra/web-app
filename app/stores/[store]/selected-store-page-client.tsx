@@ -29,13 +29,13 @@ import { useAuth } from "@/context/user-context";
 import { MdModeEditOutline } from "react-icons/md";
 import { useMediaQuery } from "react-responsive";
 import LocationDialogButton from "@/components/location-dialog-button";
+import { useProductSearchFilters } from "@/context/product-search-filters-context";
 
 export default function SelectedStorePageClient({ store }: { store: Store }) {
   const { myStoreUsers } = useAuth();
   const { navbarHeight } = useNavbar();
   const searchParams = useSearchParams();
   const pageString = searchParams.get("page");
-  const searchQuery = searchParams.get("query");
   const {
     setPageIndicator,
     resetAll,
@@ -45,6 +45,7 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
   } = useNavbar();
   const location = useLocationInput();
   const isSmallScreen = useMediaQuery({ query: "(max-width: 640px)" });
+  const { searchFilters } = useProductSearchFilters();
 
   const { data: branchesWithProducts } = useQuery(
     BranchesWithProductsDocument,
@@ -57,11 +58,9 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
         },
         productLimit: 20,
         filters: {
+          ...searchFilters,
           storeId: store.id,
-          location: location
-            ? { ...location.locationInput }
-            : undefined,
-          query: searchQuery ?? undefined,
+          location: location?.locationInput,
         },
       },
     },

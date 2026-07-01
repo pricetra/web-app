@@ -26,14 +26,14 @@ import {
   PopularProductsDocument,
   PopularSearchKeywordsDocument,
   Product,
-  ProductSearch,
   ProductSimple,
 } from "graphql-utils";
 import Link from "@/components/ui/link";
-import { useEffect, useLayoutEffect, useMemo } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { IoIosSearch } from "react-icons/io";
 import Skeleton from "react-loading-skeleton";
 import ProductsContainer from "@/components/ui/products-container";
+import { useProductSearchFilters } from "@/context/product-search-filters-context";
 
 export type SearchRouteParams = {
   query?: string;
@@ -58,37 +58,14 @@ export default function SearchPageClient({
   const { loggedIn } = useAuth();
   const { setPageIndicator, setSubHeader, resetAll } = useNavbar();
   const locationInput = useLocationInput(ipAddress);
-  const paramsBuilder = useMemo(() => {
-    const paramsBuilder = new URLSearchParams(params);
-    paramsBuilder.delete("page");
-    return paramsBuilder;
-  }, [params]);
-  const searchVariables = useMemo(
-    () =>
-      ({
-        query: params.query,
-        location: {...locationInput?.locationInput},
-        categoryId: params?.categoryId ? +params.categoryId : undefined,
-        brand: params.brand,
-        sortByPrice: params.sortByPrice,
-        sale: params.sale === "true" ? true : undefined,
-      }) as ProductSearch,
-    [
-      params.query,
-      params.categoryId,
-      params.brand,
-      params.sortByPrice,
-      params.sale,
-      locationInput?.locationInput,
-    ],
-  );
+  const { searchParamKeys, searchFilters } = useProductSearchFilters();
   const { data: branchesWithProducts } = useQuery(
     BranchesWithProductsDocument,
     {
       variables: {
         paginator: { page: +(params.page ?? 1), limit: 10 },
         productLimit: 10,
-        filters: { ...searchVariables },
+        filters: { ...searchFilters, location: locationInput?.locationInput },
       },
       fetchPolicy: "no-cache",
     },
@@ -124,7 +101,7 @@ export default function SearchPageClient({
   }, []);
 
   useEffect(() => {
-    if (paramsBuilder.size !== 0) return;
+    if (searchParamKeys.length !== 0) return;
 
     getPopularSearchKeywords({
       variables: {
@@ -146,13 +123,13 @@ export default function SearchPageClient({
       },
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paramsBuilder.size]);
+  }, [searchParamKeys.length]);
 
   return (
     <div className="w-full max-w-[1000px] mt-5">
       {!loggedIn && <WelcomeHeroBanner />}
 
-      {!params.page && paramsBuilder.size === 0 && (
+      {!params.page && searchParamKeys.length === 0 && (
         <div className="mb-10">
           <div className="flex flex-col gap-5 mb-10 px-5">
             <h3 className="font-bold text-xl md:text-2xl">Popular searches</h3>
@@ -244,9 +221,9 @@ export default function SearchPageClient({
         </div>
       )}
 
-      {paramsBuilder.size > 0 && (
+      {searchParamKeys.length > 0 && (
         <div className="flex flex-row flex-wrap gap-2 mb-5 px-5">
-          <SearchFilters params={params} />
+          <SearchFilters />
 
           {params.page && +params.page > 1 && (
             <Button variant="link">Page {params.page}</Button>

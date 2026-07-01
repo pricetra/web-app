@@ -100,6 +100,11 @@ export function parseIntOrUndefined(str?: string): number | undefined {
   return parsedVal;
 }
 
+export function parseBool(str?: string | null): boolean {
+  if (str && str.toLowerCase() == 'true') return true;
+  return false;
+}
+
 export function validBrand(brand?: string | null): boolean {
   if (!brand) return false;
   if (brand === "N/A") return false;

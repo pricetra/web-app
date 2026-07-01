@@ -23,7 +23,7 @@ export default function Footer({ disableExtraSpacing = false }: FooterProps) {
       {!disableExtraSpacing && <div className="h-[10vh]" />}
 
       <footer className="bg-gray-50 border-t">
-        <div className="w-full lg:container mx-auto px-5 py-12">
+        <div className="w-full lg:max-w-384 mx-auto px-5 py-12">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             {/* Section 1: Logo & Social */}
             <div className="space-y-4">
