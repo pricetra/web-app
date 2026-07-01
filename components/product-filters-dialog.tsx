@@ -10,6 +10,7 @@ import {
 import { useLazyQuery, useQuery } from "@apollo/client/react";
 import {
   AllBrandsDocument,
+  BranchType,
   Category,
   CategorySearchDocument,
   GetCategoryDocument,
@@ -20,6 +21,8 @@ import { useProductSearchFilters } from "@/context/product-search-filters-contex
 import { Label } from "./ui/label";
 import { Button } from "./ui/button";
 import { Switch } from "./ui/switch";
+import { NativeSelect, NativeSelectOption } from "./ui/native-select";
+import { useCurrentLocation } from "@/context/location-context";
 
 export type ProductFiltersDialogProps = {
   searchBaseUrl: string;
@@ -34,6 +37,7 @@ export default function ProductFiltersDialog({
 }: ProductFiltersDialogProps) {
   const router = useRouter();
   const { searchFilters } = useProductSearchFilters();
+  const { currentLocation, setCurrentLocation } = useCurrentLocation();
   const searchParams = useSearchParams();
   const urlParamsBuilder = useMemo(
     () => new URLSearchParams(searchParams),
@@ -154,6 +158,39 @@ export default function ProductFiltersDialog({
               placeholder="Select category"
               multi={false}
             />
+          </div>
+
+          <div>
+            <Label>Store location</Label>
+
+            <NativeSelect
+              value={searchFilters.branchType ?? undefined}
+              onChange={(e) => {
+                const val = e.target.value;
+                const spb = new URLSearchParams(urlParamsBuilder);
+                if (val === 'All') {
+                  spb.delete("branchType");
+                } else {
+                  if (val === BranchType.Online) {
+                    if (currentLocation && currentLocation.locationInput) {
+                      const newLocation = { ...currentLocation };
+                      newLocation.locationInput.radiusMeters = undefined;
+                      setCurrentLocation(newLocation);
+                    }
+                  }
+                  spb.set("branchType", val);
+                }
+                router.push(`${searchBaseUrl}?${spb.toString()}`);
+              }}
+            >
+              <NativeSelectOption value="All">All - In store & Online</NativeSelectOption>
+              <NativeSelectOption value={BranchType.Physical}>
+                In Store
+              </NativeSelectOption>
+              <NativeSelectOption value={BranchType.Online}>
+                Online
+              </NativeSelectOption>
+            </NativeSelect>
           </div>
         </div>
 
