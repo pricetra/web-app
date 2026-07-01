@@ -249,6 +249,7 @@
   align-items: center!important;
   display: flex!important;
   flex-direction: row;
+  padding: 0!important;
 }
 
 .react-dropdown-select:hover {
@@ -268,7 +269,7 @@
   justify-content: space-between;
   gap: 0.5rem;
   width: 100%;
-  padding: 0.5rem 0.75rem;
+  padding: 0!important;
   border-radius: 0.5rem;
   background: transparent;
   color: inherit;
@@ -277,6 +278,8 @@
 
 .react-dropdown-select-content > span {
   font-size: var(--text-base);
+  padding-inline: calc(var(--spacing)*3);
+  padding-right: 0;
 }
 
 .react-dropdown-select .react-dropdown-select-input {
@@ -290,6 +293,11 @@
   outline: none;
 }
 
+.react-dropdown-select-input {
+  padding-inline: calc(var(--spacing)*3)!important;
+  padding-block: calc(var(--spacing)*1)!important;
+}
+
 .react-dropdown-select .react-dropdown-select-input::placeholder {
   color: var(--muted-foreground);
 }
@@ -297,7 +305,7 @@
 .react-dropdown-select .react-dropdown-select-dropdown {
   z-index: 50;
   min-width: 8rem;
-  overflow: hidden;
+  overflow: scroll;
   border: 1px solid var(--border);
   border-radius: 0.75rem;
   background: var(--popover);
@@ -334,6 +342,11 @@
   align-items: center;
   justify-content: center;
   color: var(--muted-foreground);
+}
+
+.react-dropdown-select-dropdown-handle {
+  padding: 0!important;
+  margin: 0 calc(var(--spacing)*1) 0 0!important;
 }
 
 .react-dropdown-select .react-dropdown-select-clear:hover {
