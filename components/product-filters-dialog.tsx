@@ -16,6 +16,10 @@ import {
 } from "graphql-utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import Select from "react-dropdown-select";
+import { useProductSearchFilters } from "@/context/product-search-filters-context";
+import { Label } from "./ui/label";
+import { Button } from "./ui/button";
+import { Switch } from "./ui/switch";
 
 export type ProductFiltersDialogProps = {
   searchBaseUrl: string;
@@ -29,6 +33,7 @@ export default function ProductFiltersDialog({
   onOpenChange,
 }: ProductFiltersDialogProps) {
   const router = useRouter();
+  const { searchFilters } = useProductSearchFilters();
   const searchParams = useSearchParams();
   const urlParamsBuilder = useMemo(
     () => new URLSearchParams(searchParams),
@@ -36,16 +41,16 @@ export default function ProductFiltersDialog({
   );
   const { data: brandsData, loading: brandsLoading } = useQuery(
     AllBrandsDocument,
-    { variables: { joinStock: true } },
+    { variables: { joinStock: true, filters: searchFilters } },
   );
   const brand = searchParams.get("brand");
   const { data: categoriesData, loading: categoriesLoading } = useQuery(
     CategorySearchDocument,
-    { variables: { search: "" } },
+    { variables: { search: "", filters: searchFilters } },
   );
   const [getCategory] = useLazyQuery(GetCategoryDocument);
   const [category, setCategory] = useState<Category>();
-  const categoryId = searchParams.get("categoryId");
+  const categoryId = searchFilters.categoryId;
 
   useEffect(() => {
     if (!categoryId) return;
@@ -60,7 +65,7 @@ export default function ProductFiltersDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent size="lg">
+      <DialogContent size="sm">
         <DialogHeader>
           <DialogTitle>Filters</DialogTitle>
           <DialogDescription className="text-gray-600 text-xs">
@@ -69,64 +74,108 @@ export default function ProductFiltersDialog({
         </DialogHeader>
 
         <div className="flex flex-col gap-5 my-5">
-          <Select
-            options={brandsData?.allBrands ?? []}
-            values={brand ? [{ brand, products: 0 }] : []}
-            labelField="brand"
-            valueField="brand"
-            onChange={(v) => {
-              if (v.length === 0) return;
+          <div className="flex flex-row justify-between items-center gap-3"></div>
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="sale"
+              checked={searchFilters.sale ?? false}
+              onCheckedChange={() => {
+                const spb = new URLSearchParams(urlParamsBuilder);
+                if (searchFilters.sale === true) {
+                  spb.delete("sale");
+                } else {
+                  spb.set("sale", String(true));
+                }
+                router.push(`${searchBaseUrl}?${spb.toString()}`);
+              }}
+            />
+            <Label htmlFor="sale">Sale</Label>
+          </div>
 
-              const categorySelect = v.at(0);
-              if (!categorySelect) return;
+          <div>
+            <Label>Brands</Label>
 
-              const spb = new URLSearchParams(urlParamsBuilder);
-              spb.set("brand", categorySelect.brand);
-              router.push(`${searchBaseUrl}?${spb.toString()}`);
-            }}
-            onClearAll={() => {
-              const spb = new URLSearchParams(urlParamsBuilder);
-              spb.delete("brand");
-              router.push(`${searchBaseUrl}?${spb.toString()}`);
-            }}
-            loading={brandsLoading}
-            clearable
-            searchable
-            placeholder="Select brand"
-            multi={false}
-          />
+            <Select
+              options={brandsData?.allBrands ?? []}
+              values={brand ? [{ brand, products: 0 }] : []}
+              labelField="brand"
+              valueField="brand"
+              onChange={(v) => {
+                if (v.length === 0) return;
 
-          <Select
-            options={categoriesData?.categorySearch ?? []}
-            values={category ? [category] : []}
-            labelField="name"
-            valueField="name"
-            onChange={(v) => {
-              if (v.length === 0) return;
+                const categorySelect = v.at(0);
+                if (!categorySelect) return;
 
-              const categorySelect = v.at(0);
-              if (!categorySelect) return;
+                const spb = new URLSearchParams(urlParamsBuilder);
+                spb.set("brand", categorySelect.brand);
+                router.push(`${searchBaseUrl}?${spb.toString()}`);
+              }}
+              onClearAll={() => {
+                const spb = new URLSearchParams(urlParamsBuilder);
+                spb.delete("brand");
+                router.push(`${searchBaseUrl}?${spb.toString()}`);
+              }}
+              loading={brandsLoading}
+              clearable
+              searchable
+              placeholder="Select brand"
+              multi={false}
+            />
+          </div>
 
-              const spb = new URLSearchParams(urlParamsBuilder);
-              spb.set("category", categorySelect.name);
-              spb.set("categoryId", categorySelect.id.toString());
-              router.push(`${searchBaseUrl}?${spb.toString()}`);
-            }}
-            onClearAll={() => {
-              const spb = new URLSearchParams(urlParamsBuilder);
-              spb.delete("categoryId");
-              spb.delete("category");
-              router.push(`${searchBaseUrl}?${spb.toString()}`);
-            }}
-            loading={categoriesLoading}
-            clearable
-            searchable
-            placeholder="Select category"
-            multi={false}
-          />
+          <div>
+            <Label>Categories</Label>
+
+            <Select
+              options={categoriesData?.categorySearch ?? []}
+              values={category ? [category] : []}
+              labelField="name"
+              valueField="name"
+              onChange={(v) => {
+                if (v.length === 0) return;
+
+                const categorySelect = v.at(0);
+                if (!categorySelect) return;
+
+                const spb = new URLSearchParams(urlParamsBuilder);
+                spb.set("category", categorySelect.name);
+                spb.set("categoryId", categorySelect.id.toString());
+                router.push(`${searchBaseUrl}?${spb.toString()}`);
+              }}
+              onClearAll={() => {
+                const spb = new URLSearchParams(urlParamsBuilder);
+                spb.delete("categoryId");
+                spb.delete("category");
+                router.push(`${searchBaseUrl}?${spb.toString()}`);
+              }}
+              loading={categoriesLoading}
+              clearable
+              searchable
+              placeholder="Select category"
+              multi={false}
+            />
+          </div>
         </div>
 
-        <DialogFooter></DialogFooter>
+        <DialogFooter>
+          <div className="flex w-full justify-end gap-2 mt-5">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onOpenChange(false)}
+            >
+              Cancel
+            </Button>
+
+            <Button
+              size="sm"
+              variant="pricetra"
+              onClick={() => onOpenChange(false)}
+            >
+              Save
+            </Button>
+          </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
