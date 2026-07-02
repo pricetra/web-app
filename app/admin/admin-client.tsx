@@ -6,11 +6,15 @@ import { useLayoutEffect } from "react";
 import { RiAdminLine } from "react-icons/ri";
 import { MdStorefront } from "react-icons/md";
 import AdminListItem from "./components/admin-list-item";
-import { FaEye } from "react-icons/fa";
+import { FaEye, FaUserLock } from "react-icons/fa";
 import { FaWpforms } from "react-icons/fa";
 import { HiUsers } from "react-icons/hi2";
+import { useAuth } from "@/context/user-context";
+import { isRoleAuthorized } from "@/lib/roles";
+import { UserRole } from "graphql-utils";
 
 export default function AdminClient() {
+  const { user } = useAuth();
   const { setPageIndicator, resetAll } = useNavbar();
 
   useLayoutEffect(() => {
@@ -21,6 +25,8 @@ export default function AdminClient() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  if (!user) return <></>;
 
   return (
     <>
@@ -53,6 +59,15 @@ export default function AdminClient() {
             title="Manage Users"
             content="View and manage users"
           />
+
+          {isRoleAuthorized(UserRole.Admin, user.role) && (
+            <AdminListItem
+              href="/admin/users/auth"
+              icon={<FaUserLock />}
+              title="Manage User Auth Sessions"
+              content="View and manage user authentication sessions"
+            />
+          )}
         </div>
       </div>
     </>
