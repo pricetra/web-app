@@ -35,6 +35,8 @@ import StoreItem from "@/components/store-item";
 import Link from "next/link";
 import { slugifyProductName } from "@/lib/strings";
 
+const LIMIT = 50;
+
 export default function StocksClient() {
   const { setPageIndicator, resetAll } = useNavbar();
   const searchParams = useSearchParams();
@@ -58,7 +60,7 @@ export default function StocksClient() {
   }, []);
 
   useEffect(() => {
-    getStocks({ variables: { paginator: { limit: 25, page }, filters: {} } });
+    getStocks({ variables: { paginator: { limit: LIMIT, page } } });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
@@ -72,7 +74,7 @@ export default function StocksClient() {
       await removeStock({ variables: { stockId: selectedStock.id } });
       setConfirmOpen(false);
       setSelectedStock(null);
-      getStocks({ variables: { paginator: { limit: 25, page }, filters: {} } });
+      getStocks({ variables: { paginator: { limit: LIMIT, page } } });
     } catch (error) {
       console.error("Error removing stock:", error);
     } finally {
