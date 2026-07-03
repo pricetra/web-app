@@ -3,7 +3,7 @@
 import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { useNavbar } from "@/context/navbar-context";
 import { useLayoutEffect } from "react";
-import { RiAdminLine } from "react-icons/ri";
+import { RiAdminLine, RiApps2AiFill } from "react-icons/ri";
 import { MdStorefront } from "react-icons/md";
 import AdminListItem from "./components/admin-list-item";
 import { FaEye, FaUserLock } from "react-icons/fa";
@@ -68,6 +68,13 @@ export default function AdminClient() {
               content="View and manage user authentication sessions"
             />
           )}
+
+          <AdminListItem
+            href="/admin/stocks"
+            icon={<RiApps2AiFill />}
+            title="Store Stocks"
+            content="View and manage store stocks"
+          />
         </div>
       </div>
     </>
