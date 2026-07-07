@@ -175,7 +175,7 @@ export default function StockFull({
             </div>
           )}
 
-          {stock.latestPrice?.amount && pricePerUnit && (
+          {stock.latestPrice?.amount && stock.latestPrice?.unitType && pricePerUnit && (
             <span className="text-right text-[10px] text-gray-500 leading-none">
               {`${currencyFormat(pricePerUnit.amount)} / ${pricePerUnit.unit}`}
             </span>
