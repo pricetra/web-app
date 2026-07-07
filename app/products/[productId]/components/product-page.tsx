@@ -1,8 +1,9 @@
 "use client";
 
-import ProductFull, { ProductFullLoading } from "@/components/product-full";
+import ProductFull from "@/components/product-full";
 import {
   Branch,
+  Price,
   Product,
   ProductDocument,
   ProductReferrer,
@@ -14,9 +15,7 @@ import {
 } from "graphql-utils";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
 import { useEffect, useLayoutEffect, useMemo } from "react";
-import SelectedStock, {
-  SelectedStockLoading,
-} from "@/components/selected-stock";
+import SelectedStock from "@/components/selected-stock";
 
 import { useAuth } from "@/context/user-context";
 import useLocationInput from "@/hooks/useLocationInput";
@@ -71,20 +70,67 @@ export default function ProductPage({
   const { loggedIn, lists } = useAuth();
   const { setPageIndicator, resetAll, setNavTools, setSubHeader } = useNavbar();
   const locationInput = useLocationInput(!loggedIn ? ipAddress : undefined);
-  const { data: productData, loading: productLoading } = useQuery(
-    ProductDocument,
-    {
-      fetchPolicy: "network-only",
-      variables: {
-        productId,
-        viewerTrail: { stockId, referrer, metadata, origin: prevRoute },
-      },
+  const { data: productData } = useQuery(ProductDocument, {
+    fetchPolicy: "network-only",
+    variables: {
+      productId,
+      viewerTrail: { stockId, referrer, metadata, origin: prevRoute },
     },
-  );
+  });
+  const productFromSummary = useMemo(() => {
+    if (productData) return productData.product as Product;
+    return {
+      id: productSummary.id,
+      code: productSummary.code,
+      name: productSummary.name,
+      image: productSummary.image,
+      brand: productSummary.brand,
+    } as Product;
+  }, [productSummary, productData]);
   const [getStock, { data: stockData, error: stockError }] = useLazyQuery(
     StockDocument,
     { fetchPolicy: "no-cache" },
   );
+  const stockFromSummary = useMemo(() => {
+    if (stockData) return stockData.stock as Stock;
+    if (productSummary.stockId) {
+      const store = {
+        id: productSummary.storeId!,
+        slug: productSummary.storeSlug!,
+        name: productSummary.store!,
+        logo: productSummary.storeLogo!,
+      } as Store;
+      const branch = {
+        id: productSummary.branchId!,
+        slug: productSummary.branchSlug!,
+        name: productSummary.branch!,
+      } as Branch;
+      return {
+        id: productSummary.stockId,
+        productId: productSummary.id,
+        storeId: store.id,
+        store,
+        branchId: branch.id,
+        branch,
+        latestPrice: productSummary.price
+          ? ({
+              // id: productSummary.priceId!,
+              id: 0,
+              amount: productSummary.price,
+              sale: productSummary.sale ?? false,
+              expiresAt: productSummary.saleExpiresAt,
+              originalPrice: productSummary.originalPrice,
+              currencyCode: productSummary.priceCurrencyCode,
+              unitType: "item",
+              storeId: store.id,
+              branchId: branch.id,
+              createdAt: productSummary.priceCreatedAt,
+            } as Price)
+          : undefined,
+      } as Stock;
+    }
+    return undefined;
+  }, [productSummary, stockData]);
   const isMediumScreen = useMediaQuery({ query: "(max-width: 640px)" });
 
   const productPanelTopHeight = useMemo(
@@ -99,17 +145,19 @@ export default function ProductPage({
 
   // Get stock from stockId
   useEffect(() => {
-    if (!stockId || !productData) return;
+    if (!stockId) return;
     getStock({
       variables: {
         stockId,
       },
     });
-  }, [stockId, productData, getStock]);
+  }, [stockId, getStock]);
 
   useLayoutEffect(() => {
     if (!stockId) {
-      setPageIndicator(<NavPageIndicator title="Product" icon={AiOutlineProduct} />)
+      setPageIndicator(
+        <NavPageIndicator title="Product" icon={AiOutlineProduct} />,
+      );
       return;
     }
     if (
@@ -196,18 +244,25 @@ export default function ProductPage({
             }}
           >
             <article>
-              {productData && !productLoading ? (
-                <ProductFull
-                  product={productData.product as Product}
-                  hideDescription
-                  stock={stockData?.stock as Stock | undefined}
-                />
-              ) : (
-                <ProductFullLoading />
-              )}
+              <ProductFull
+                product={productFromSummary as Product}
+                hideDescription
+                stock={stockData?.stock as Stock | undefined}
+              />
             </article>
 
-            {stockId &&
+            {stockId && stockFromSummary && (
+              <div className="my-5">
+                <div className="rounded-xl bg-gray-50 p-5">
+                  <SelectedStock
+                    stock={stockFromSummary}
+                    product={productFromSummary}
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* {stockId &&
               (stockData &&
               productData &&
               stockData.stock.productId === productData.product.id ? (
@@ -229,7 +284,7 @@ export default function ProductPage({
                     </div>
                   )}
                 </>
-              ))}
+              ))} */}
           </div>
         </section>
 
