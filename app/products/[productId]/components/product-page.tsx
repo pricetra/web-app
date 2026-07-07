@@ -191,15 +191,14 @@ export default function ProductPage({
   }, [stockError]);
 
   useLayoutEffect(() => {
-    if (!productData) return;
-
     const NavTools = (
       <ProductNavTools
-        product={productData.product}
+        product={productFromSummary}
         stockId={stockId}
         stock={stockData?.stock as Stock}
       />
     );
+
     if (isMediumScreen) {
       if (loggedIn) {
         setSubHeader(
@@ -221,7 +220,7 @@ export default function ProductPage({
     setSubHeader(undefined);
     setNavTools(NavTools);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [productData, stockId, stockData, isMediumScreen, loggedIn]);
+  }, [productFromSummary, stockId, stockData, isMediumScreen, loggedIn]);
 
   useLayoutEffect(() => {
     return () => {

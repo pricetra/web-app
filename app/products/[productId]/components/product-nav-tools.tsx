@@ -75,10 +75,10 @@ export default function ProductNavTools({
   const [shareModalOpen, setShareModalOpen] = useState(false);
 
   useEffect(() => {
-    const fav = product.productList.find((p) => p.type === ListType.Favorites);
+    const fav = product.productList?.find((p) => p.type === ListType.Favorites);
     setFavProductList(fav);
     setFav(!!fav);
-    const watch = product.productList.find(
+    const watch = product.productList?.find(
       (p) => p.type === ListType.WatchList && p.stockId === stockId
     );
     setWatchProductList(watch);
