@@ -162,7 +162,7 @@ export default function StorefrontBanner({
       </Dialog>
 
       {bannerItems.length > 0 ? (
-        <div className="sm:px-5 -mt-5 sm:mt-5 mb-5 sm:mb-10">
+        <div className="sm:px-5 -mt-5 sm:mt-2 mb-5 sm:mb-5">
           <Carousel opts={{ loop: true }} className="w-full">
             <CarouselContent>
               {bannerItems.map((item) => (

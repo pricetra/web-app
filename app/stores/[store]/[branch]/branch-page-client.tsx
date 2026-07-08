@@ -61,7 +61,7 @@ export default function BranchPageClient({
     setNavTools,
     setSubHeader,
   } = useNavbar();
-  const { searchFilters } = useProductSearchFilters();
+  const { searchFilters, searchParamKeys } = useProductSearchFilters();
   const isMobile = useMediaQuery({
     query: "(max-width: 640px)",
   });
@@ -185,168 +185,176 @@ export default function BranchPageClient({
 
   return (
     <>
-      <div className="w-full max-w-[1000px] flex-2">
-        {paramsBuilder.size === 0 ? (
-          <div>
-            <div className="flex flex-col">
-              {(!searchParams.page || searchParams.page === "1") && (
-                <StorefrontBanner store={store} branch={branch} />
-              )}
+      {((!searchParams.page || searchParams.page === "1") && searchParamKeys.length === 0) && (
+        <div className="flex-1 w-full">
+          <StorefrontBanner store={store} branch={branch} />
+        </div>
+      )}
 
-              {!categorizedProductsData
-                ? Array(3)
-                    .fill(0)
-                    .map((_, i) => (
-                      <article
-                        className="my-5"
-                        key={`branch-with-product-loading-${i}`}
-                      >
-                        <div className="mb-3 px-5">
-                          <Skeleton width="20%" height={28} borderRadius={10} />
-                        </div>
-
-                        <ScrollContainer hideButtons>
-                          {Array(10)
-                            .fill(0)
-                            .map((_, j) => (
-                              <ProductLoadingItemHorizontal
-                                key={`branch-product-${i}-${j}`}
-                              />
-                            ))}
-                        </ScrollContainer>
-                      </article>
-                    ))
-                : categorizedProductsData.categoriesWithProducts.categories.map(
-                    (category, i) => {
-                      const categories = categoriesFromChild(
-                        category as Category,
-                      );
-                      const linkBase = `/stores/${store.slug}/${branch.slug}`;
-                      const link = `${linkBase}?categoryId=${category.id}&category=${category.name}`;
-                      const prevCategory =
-                        categories.at(categories.length - 2) ?? category;
-                      return (
+      <div className="w-full max-w-full mx-auto relative flex flex-col lg:flex-row gap-10 flex-wrap">
+        <div className="w-full max-w-[1000px] flex-2">
+          {paramsBuilder.size === 0 ? (
+            <div>
+              <div className="flex flex-col">
+                {!categorizedProductsData
+                  ? Array(3)
+                      .fill(0)
+                      .map((_, i) => (
                         <article
                           className="my-5"
-                          key={`categorized-products-${category.id}-${i}`}
+                          key={`branch-with-product-loading-${i}`}
                         >
-                          <div className="flex flex-row items-center mb-3 px-5 w-full py-1">
-                            <div className="flex flex-col gap-2 flex-2">
-                              <h2 className="text-base xs:text-lg font-bold sm:text-xl leading-none">
-                                <Link href={link} className="hover:underline">
-                                  {category.name}
-                                </Link>
-                              </h2>
-                              <p className="text-xs leading-none">
-                                in{" "}
-                                <Link
-                                  href={`${linkBase}?categoryId=${prevCategory.id}&category=${prevCategory.name}`}
-                                  className="hover:underline"
-                                >
-                                  {prevCategory.name}
-                                </Link>
-                              </p>
-                            </div>
-
-                            <Link href={link} className="p-2">
-                              <FiChevronRight className="size-5" />
-                            </Link>
+                          <div className="mb-3 px-5">
+                            <Skeleton
+                              width="20%"
+                              height={28}
+                              borderRadius={10}
+                            />
                           </div>
 
-                          {category.products && (
-                            <ProductsContainer
-                              products={category.products as ProductSimple[]}
-                              branch={branch as Branch}
-                              itemKeyPrefix={`branch-category-product-${category.id}`}
-                            />
-                          )}
+                          <ScrollContainer hideButtons>
+                            {Array(10)
+                              .fill(0)
+                              .map((_, j) => (
+                                <ProductLoadingItemHorizontal
+                                  key={`branch-product-${i}-${j}`}
+                                />
+                              ))}
+                          </ScrollContainer>
                         </article>
-                      );
-                    },
-                  )}
-            </div>
+                      ))
+                  : categorizedProductsData.categoriesWithProducts.categories.map(
+                      (category, i) => {
+                        const categories = categoriesFromChild(
+                          category as Category,
+                        );
+                        const linkBase = `/stores/${store.slug}/${branch.slug}`;
+                        const link = `${linkBase}?categoryId=${category.id}&category=${category.name}`;
+                        const prevCategory =
+                          categories.at(categories.length - 2) ?? category;
+                        return (
+                          <article
+                            className="my-5"
+                            key={`categorized-products-${category.id}-${i}`}
+                          >
+                            <div className="flex flex-row items-center mb-3 px-5 w-full py-1">
+                              <div className="flex flex-col gap-2 flex-2">
+                                <h2 className="text-base xs:text-lg font-bold sm:text-xl leading-none">
+                                  <Link href={link} className="hover:underline">
+                                    {category.name}
+                                  </Link>
+                                </h2>
+                                <p className="text-xs leading-none">
+                                  in{" "}
+                                  <Link
+                                    href={`${linkBase}?categoryId=${prevCategory.id}&category=${prevCategory.name}`}
+                                    className="hover:underline"
+                                  >
+                                    {prevCategory.name}
+                                  </Link>
+                                </p>
+                              </div>
 
-            {categorizedProductsData?.categoriesWithProducts?.paginator &&
-              categorizedProductsData.categoriesWithProducts.paginator
-                .numPages > 1 && (
-                <div className="mt-20">
-                  <SmartPagination
-                    paginator={
-                      categorizedProductsData.categoriesWithProducts.paginator
-                    }
-                    urlBase={paginatorUrlBase}
-                  />
-                </div>
-              )}
-          </div>
-        ) : (
-          <div className="px-5 mt-5">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-3">
-              {!productsData ? (
-                Array(10)
-                  .fill(0)
-                  .map((_, j) => (
-                    <ProductItemLoading
-                      key={`product-loading-${j}`}
-                      imgWidth={isMobile ? 110 : 130}
+                              <Link href={link} className="p-2">
+                                <FiChevronRight className="size-5" />
+                              </Link>
+                            </div>
+
+                            {category.products && (
+                              <ProductsContainer
+                                products={category.products as ProductSimple[]}
+                                branch={branch as Branch}
+                                itemKeyPrefix={`branch-category-product-${category.id}`}
+                              />
+                            )}
+                          </article>
+                        );
+                      },
+                    )}
+              </div>
+
+              {categorizedProductsData?.categoriesWithProducts?.paginator &&
+                categorizedProductsData.categoriesWithProducts.paginator
+                  .numPages > 1 && (
+                  <div className="mt-20">
+                    <SmartPagination
+                      paginator={
+                        categorizedProductsData.categoriesWithProducts.paginator
+                      }
+                      urlBase={paginatorUrlBase}
                     />
-                  ))
-              ) : (
-                <>
-                  {productsData.allProducts.paginator.total !== 0 ? (
-                    adify(
-                      productsData.allProducts.products,
-                      getRandomIntInclusive(5, 10),
-                    ).map((p, i) =>
-                      typeof p === "object" ? (
-                        <ProductItem
-                          product={p as Product}
-                          branchSlug={branch.slug}
-                          imgWidth={isMobile ? 110 : 130}
-                          key={`product-${p.id}-${i}`}
-                          hideStoreInfo
-                        />
-                      ) : (
-                        <VerticalProductAd
-                          id={i}
-                          key={`vertical-product-ad-${p}-${i}`}
-                        />
-                      ),
-                    )
-                  ) : (
-                    <p className="py-10 px-5 text-center">No results</p>
-                  )}
-                </>
-              )}
+                  </div>
+                )}
+            </div>
+          ) : (
+            <div className="px-5 mt-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-3">
+                {!productsData ? (
+                  Array(10)
+                    .fill(0)
+                    .map((_, j) => (
+                      <ProductItemLoading
+                        key={`product-loading-${j}`}
+                        imgWidth={isMobile ? 110 : 130}
+                      />
+                    ))
+                ) : (
+                  <>
+                    {productsData.allProducts.paginator.total !== 0 ? (
+                      adify(
+                        productsData.allProducts.products,
+                        getRandomIntInclusive(5, 10),
+                      ).map((p, i) =>
+                        typeof p === "object" ? (
+                          <ProductItem
+                            product={p as Product}
+                            branchSlug={branch.slug}
+                            imgWidth={isMobile ? 110 : 130}
+                            key={`product-${p.id}-${i}`}
+                            hideStoreInfo
+                          />
+                        ) : (
+                          <VerticalProductAd
+                            id={i}
+                            key={`vertical-product-ad-${p}-${i}`}
+                          />
+                        ),
+                      )
+                    ) : (
+                      <p className="py-10 px-5 text-center">No results</p>
+                    )}
+                  </>
+                )}
+              </div>
+
+              {productsData?.allProducts?.paginator &&
+                productsData.allProducts.paginator.numPages > 1 && (
+                  <div className="mt-20">
+                    <SmartPagination
+                      paginator={productsData.allProducts.paginator}
+                      urlBase={paginatorUrlBase}
+                    />
+                  </div>
+                )}
+            </div>
+          )}
+        </div>
+
+        <div className="w-full px-2 relative flex-1">
+          <div
+            className="w-full h-screen hidden lg:block lg:sticky top-0"
+            style={{
+              top: topHeight,
+              maxHeight: `calc(100vh - ${topHeight}px)`,
+            }}
+          >
+            <div className="p-5 rounded-lg shadow-sm border border-gray-100 mb-10">
+              <h3 className="font-semibold text-lg">Filters</h3>
+              <ProductFiltersOptions searchBaseUrl={`/stores/${store.slug}/${branch.slug}`} />
             </div>
 
-            {productsData?.allProducts?.paginator &&
-              productsData.allProducts.paginator.numPages > 1 && (
-                <div className="mt-20">
-                  <SmartPagination
-                    paginator={productsData.allProducts.paginator}
-                    urlBase={paginatorUrlBase}
-                  />
-                </div>
-              )}
+            <VerticalSidebarAd id={uniqueId()} />
           </div>
-        )}
-      </div>
-
-      <div className="w-full px-2 relative flex-1">
-        <div
-          className="w-full h-screen hidden lg:block lg:sticky top-0"
-          style={{
-            top: topHeight,
-            maxHeight: `calc(100vh - ${topHeight}px)`,
-          }}
-        >
-          <div className="p-5 rounded-lg shadow-sm border border-gray-100 mb-10">
-            <h3 className="font-semibold text-lg">Filters</h3>
-            <ProductFiltersOptions searchBaseUrl={"/search"} />
-          </div>
-
-          <VerticalSidebarAd id={uniqueId()} />
         </div>
       </div>
     </>
