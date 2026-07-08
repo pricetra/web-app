@@ -30,6 +30,10 @@ import { MdModeEditOutline } from "react-icons/md";
 import { useMediaQuery } from "react-responsive";
 import LocationDialogButton from "@/components/location-dialog-button";
 import { useProductSearchFilters } from "@/context/product-search-filters-context";
+import {
+  GridLayoutContainerMain,
+  GridLayoutContainerSecondary,
+} from "@/components/ui/grid-layout-container";
 
 export default function SelectedStorePageClient({ store }: { store: Store }) {
   const { myStoreUsers } = useAuth();
@@ -101,7 +105,12 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
 
     setNavTools(
       <>
-        <Button href={`/stores/${store.slug}/manage`} variant="pricetra" className="bg-transparent text-pricetra-green-heavy-dark hover:bg-green-50 font-bold border border-transparent hover:border-green-100 shadow-none" size={isSmallScreen ? 'xs' : 'default'}>
+        <Button
+          href={`/stores/${store.slug}/manage`}
+          variant="pricetra"
+          className="bg-transparent text-pricetra-green-heavy-dark hover:bg-green-50 font-bold border border-transparent hover:border-green-100 shadow-none"
+          size={isSmallScreen ? "xs" : "default"}
+        >
           <MdModeEditOutline className="mr-1" />
           {isSmallScreen ? "" : "Manage Store"}
         </Button>
@@ -110,13 +119,13 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
 
     return () => {
       setNavTools(null);
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [myStoreUsers, store.id, store.slug, isSmallScreen]);
 
   return (
     <>
-      <div className="w-full max-w-[1000px] mt-0 flex-2">
+      <GridLayoutContainerMain>
         <section>
           {(!pageString || pageString === "1") && (
             <StorefrontBanner store={store} />
@@ -125,14 +134,16 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
           <div className="px-5 mt-5 mb-16 flex flex-col sm:flex-row gap-5 sm:items-center justify-between">
             <div className="flex-1">
               <h1 className="font-bold text-xl sm:text-2xl">
-              Explore Location
-            </h1>
-            <span>at <u>{store.name}</u></span>
+                Explore Location
+              </h1>
+              <span>
+                at <u>{store.name}</u>
+              </span>
             </div>
 
             <div className="flex-1 flex sm:justify-end">
               <LocationDialogButton size="sm" />
-              </div>
+            </div>
           </div>
 
           {!branchesWithProducts
@@ -189,19 +200,11 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
               />
             </div>
           )}
-      </div>
+      </GridLayoutContainerMain>
 
-      <div className="w-full px-2 relative flex-1">
-        <div
-          className="w-full h-screen hidden lg:block lg:sticky top-0"
-          style={{
-            top: topHeight,
-            maxHeight: `calc(100vh - ${topHeight}px)`,
-          }}
-        >
-          <VerticalSidebarAd id={uniqueId()} />
-        </div>
-      </div>
+      <GridLayoutContainerSecondary sticky stickyTopHeight={topHeight}>
+        <VerticalSidebarAd id={uniqueId()} />
+      </GridLayoutContainerSecondary>
     </>
   );
 }
