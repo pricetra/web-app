@@ -29,11 +29,14 @@ import {
   ProductSimple,
 } from "graphql-utils";
 import Link from "@/components/ui/link";
-import { useEffect, useLayoutEffect } from "react";
+import { useEffect, useLayoutEffect, useMemo } from "react";
 import { IoIosSearch } from "react-icons/io";
 import Skeleton from "react-loading-skeleton";
 import ProductsContainer from "@/components/ui/products-container";
 import { useProductSearchFilters } from "@/context/product-search-filters-context";
+import VerticalSidebarAd from "@/components/ads/vertical-sidebar-ad";
+import ProductFiltersOptions from "@/components/product-filters-options";
+import { uniqueId } from "lodash";
 
 export type SearchRouteParams = {
   query?: string;
@@ -56,7 +59,7 @@ export default function SearchPageClient({
   ipAddress,
 }: SearchPageClientProps) {
   const { loggedIn } = useAuth();
-  const { setPageIndicator, setSubHeader, resetAll } = useNavbar();
+  const { navbarHeight, setPageIndicator, setSubHeader, resetAll } = useNavbar();
   const locationInput = useLocationInput(ipAddress);
   const { searchParamKeys, searchFilters } = useProductSearchFilters();
   const { data: branchesWithProducts } = useQuery(
@@ -85,6 +88,8 @@ export default function SearchPageClient({
   );
 
   const nextWeekDateRange = getNextWeekDateRange();
+
+  const topHeight = useMemo(() => navbarHeight + 65, [navbarHeight]);
 
   useLayoutEffect(() => {
     resetAll();
@@ -126,175 +131,198 @@ export default function SearchPageClient({
   }, [searchParamKeys.length]);
 
   return (
-    <div className="w-full max-w-[1000px] mt-5">
-      {!loggedIn && <WelcomeHeroBanner />}
+    <>
+      <div className="w-full max-w-[1000px] mt-5">
+        {!loggedIn && <WelcomeHeroBanner />}
 
-      {!params.page && searchParamKeys.length === 0 && (
-        <div className="mb-10">
-          <div className="flex flex-col gap-5 mb-10 px-5">
-            <h3 className="font-bold text-xl md:text-2xl">Popular searches</h3>
+        {!params.page && searchParamKeys.length === 0 && (
+          <div className="mb-10">
+            <div className="flex flex-col gap-5 mb-10 px-5">
+              <h3 className="font-bold text-xl md:text-2xl">
+                Popular searches
+              </h3>
 
-            <div className="flex flex-row flex-wrap gap-2 items-center justify-start">
-              {keywordsData ? (
-                <>
-                  {keywordsData.popularSearchKeywords.searches.map((k, i) => (
-                    <Link
-                      href={`?query=${encodeURIComponent(k)}`}
-                      key={`search-keyword-${k}-${i}`}
-                      className="px-4 py-1 bg-gray-100 border border-gray-200 rounded-full"
-                    >
-                      {k}
-                    </Link>
-                  ))}
-                </>
-              ) : (
-                <>
-                  {Array(20)
-                    .fill(0)
-                    .map((_, i) => (
-                      <Skeleton
-                        style={{
-                          borderRadius: 20,
-                          height: 34,
-                          width: getRandomIntInclusive(70, 120),
-                        }}
-                        key={`keyword-loading-${i}`}
-                      />
+              <div className="flex flex-row flex-wrap gap-2 items-center justify-start">
+                {keywordsData ? (
+                  <>
+                    {keywordsData.popularSearchKeywords.searches.map((k, i) => (
+                      <Link
+                        href={`?query=${encodeURIComponent(k)}`}
+                        key={`search-keyword-${k}-${i}`}
+                        className="px-4 py-1 bg-gray-100 border border-gray-200 rounded-full"
+                      >
+                        {k}
+                      </Link>
                     ))}
-                </>
-              )}
+                  </>
+                ) : (
+                  <>
+                    {Array(20)
+                      .fill(0)
+                      .map((_, i) => (
+                        <Skeleton
+                          style={{
+                            borderRadius: 20,
+                            height: 34,
+                            width: getRandomIntInclusive(70, 120),
+                          }}
+                          key={`keyword-loading-${i}`}
+                        />
+                      ))}
+                  </>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-5">
+              <h3 className="font-bold text-xl md:text-2xl px-5">
+                Trending products
+              </h3>
+
+              <div>
+                {popularProductsData ? (
+                  <>
+                    {popularProductsData.popularProducts.paginator.total ===
+                    0 ? (
+                      <div className="py-10">
+                        <h3 className="text-center">No results</h3>
+                      </div>
+                    ) : (
+                      <article>
+                        <ScrollContainer>
+                          {adify(
+                            popularProductsData.popularProducts.products,
+                            getRandomIntInclusive(3, 6),
+                          ).map((product, i) =>
+                            typeof product === "object" ? (
+                              <ProductItemHorizontal
+                                product={product as Product}
+                                branchSlug={product.stock?.branch?.slug}
+                                key={`branch-product-${product.id}-${product.id}`}
+                                hideStoreInfo={false}
+                              />
+                            ) : (
+                              <HorizontalProductAd
+                                id={i}
+                                key={`horizontal-product-ad-${product}-${i}`}
+                              />
+                            ),
+                          )}
+                        </ScrollContainer>
+                      </article>
+                    )}
+                  </>
+                ) : (
+                  <article>
+                    <ScrollContainer hideButtons>
+                      {Array(20)
+                        .fill(0)
+                        .map((_, j) => (
+                          <ProductLoadingItemHorizontal
+                            key={`popular-product-loading-${j}`}
+                          />
+                        ))}
+                    </ScrollContainer>
+                  </article>
+                )}
+              </div>
             </div>
           </div>
+        )}
 
-          <div className="flex flex-col gap-5">
-            <h3 className="font-bold text-xl md:text-2xl px-5">
-              Trending products
-            </h3>
+        {searchParamKeys.length > 0 && (
+          <div className="flex flex-row flex-wrap gap-2 mb-5 px-5">
+            <SearchFilters />
 
-            <div>
-              {popularProductsData ? (
-                <>
-                  {popularProductsData.popularProducts.paginator.total === 0 ? (
-                    <div className="py-10">
-                      <h3 className="text-center">No results</h3>
-                    </div>
-                  ) : (
-                    <article>
-                      <ScrollContainer>
-                        {adify(
-                          popularProductsData.popularProducts.products,
-                          getRandomIntInclusive(3, 6),
-                        ).map((product, i) =>
-                          typeof product === "object" ? (
-                            <ProductItemHorizontal
-                              product={product as Product}
-                              branchSlug={product.stock?.branch?.slug}
-                              key={`branch-product-${product.id}-${product.id}`}
-                              hideStoreInfo={false}
-                            />
-                          ) : (
-                            <HorizontalProductAd
-                              id={i}
-                              key={`horizontal-product-ad-${product}-${i}`}
-                            />
-                          ),
-                        )}
-                      </ScrollContainer>
-                    </article>
-                  )}
-                </>
-              ) : (
-                <article>
+            {params.page && +params.page > 1 && (
+              <Button variant="link">Page {params.page}</Button>
+            )}
+          </div>
+        )}
+
+        <div className="flex flex-col">
+          {!branchesWithProducts ? (
+            Array(3)
+              .fill(0)
+              .map((_, i) => (
+                <article
+                  className="my-7"
+                  key={`branch-with-product-loading-${i}`}
+                >
+                  <div className="mb-5 px-5">
+                    <BranchItemWithLogoLoading />
+                  </div>
+
                   <ScrollContainer hideButtons>
-                    {Array(20)
+                    {Array(10)
                       .fill(0)
                       .map((_, j) => (
                         <ProductLoadingItemHorizontal
-                          key={`popular-product-loading-${j}`}
+                          key={`branch-product-${i}-${j}`}
                         />
                       ))}
                   </ScrollContainer>
                 </article>
+              ))
+          ) : (
+            <>
+              {branchesWithProducts.branchesWithProducts.paginator.total ===
+              0 ? (
+                <div className="py-10">
+                  <h3 className="text-center">No results</h3>
+                </div>
+              ) : (
+                branchesWithProducts.branchesWithProducts.branches.map(
+                  (branch) => (
+                    <article
+                      className="my-7"
+                      key={`branch-with-product-${branch.id}`}
+                    >
+                      <div className="mb-5 px-5">
+                        <BranchItemWithLogo branch={branch as Branch} />
+                      </div>
+
+                      {branch.products && (
+                        <ProductsContainer
+                          products={branch.products as ProductSimple[]}
+                          branch={branch as Branch}
+                          itemKeyPrefix="branch-product-search"
+                        />
+                      )}
+                    </article>
+                  ),
+                )
               )}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {searchParamKeys.length > 0 && (
-        <div className="flex flex-row flex-wrap gap-2 mb-5 px-5">
-          <SearchFilters />
-
-          {params.page && +params.page > 1 && (
-            <Button variant="link">Page {params.page}</Button>
+            </>
           )}
         </div>
-      )}
 
-      <div className="flex flex-col">
-        {!branchesWithProducts ? (
-          Array(3)
-            .fill(0)
-            .map((_, i) => (
-              <article
-                className="my-7"
-                key={`branch-with-product-loading-${i}`}
-              >
-                <div className="mb-5 px-5">
-                  <BranchItemWithLogoLoading />
-                </div>
-
-                <ScrollContainer hideButtons>
-                  {Array(10)
-                    .fill(0)
-                    .map((_, j) => (
-                      <ProductLoadingItemHorizontal
-                        key={`branch-product-${i}-${j}`}
-                      />
-                    ))}
-                </ScrollContainer>
-              </article>
-            ))
-        ) : (
-          <>
-            {branchesWithProducts.branchesWithProducts.paginator.total === 0 ? (
-              <div className="py-10">
-                <h3 className="text-center">No results</h3>
-              </div>
-            ) : (
-              branchesWithProducts.branchesWithProducts.branches.map(
-                (branch) => (
-                  <article
-                    className="my-7"
-                    key={`branch-with-product-${branch.id}`}
-                  >
-                    <div className="mb-5 px-5">
-                      <BranchItemWithLogo branch={branch as Branch} />
-                    </div>
-
-                    {branch.products && (
-                      <ProductsContainer
-                        products={branch.products as ProductSimple[]}
-                        branch={branch as Branch}
-                        itemKeyPrefix="branch-product-search"
-                      />
-                    )}
-                  </article>
-                ),
-              )
-            )}
-          </>
-        )}
+        {branchesWithProducts?.branchesWithProducts?.paginator &&
+          branchesWithProducts.branchesWithProducts.paginator.numPages > 1 && (
+            <div className="mt-20">
+              <SmartPagination
+                paginator={branchesWithProducts.branchesWithProducts.paginator}
+              />
+            </div>
+          )}
       </div>
 
-      {branchesWithProducts?.branchesWithProducts?.paginator &&
-        branchesWithProducts.branchesWithProducts.paginator.numPages > 1 && (
-          <div className="mt-20">
-            <SmartPagination
-              paginator={branchesWithProducts.branchesWithProducts.paginator}
-            />
+      <div className="w-full px-2 relative flex-1">
+        <div
+          className="w-full h-screen hidden lg:block lg:sticky top-0"
+          style={{
+            top: topHeight,
+            maxHeight: `calc(100vh - ${topHeight}px)`,
+          }}
+        >
+          <div className="p-5 rounded-lg shadow-sm border border-gray-100 mb-10">
+            <h3 className="font-semibold text-lg">Filters</h3>
+            <ProductFiltersOptions />
           </div>
-        )}
-    </div>
+
+          <VerticalSidebarAd id={uniqueId()} />
+        </div>
+      </div>
+    </>
   );
 }

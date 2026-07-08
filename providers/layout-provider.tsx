@@ -21,7 +21,7 @@ export default function LayoutProvider({
 
         <div
           className={cn(
-            "w-full max-w-full mx-auto relative flex flex-col lg:flex-row gap-3 flex-wrap",
+            "w-full max-w-full mx-auto relative flex flex-col lg:flex-row gap-10 flex-wrap",
             fullScreen ? "w-full" : "lg:max-w-384 mt-5",
           )}
         >

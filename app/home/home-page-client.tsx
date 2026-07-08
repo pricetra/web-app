@@ -2,9 +2,7 @@
 import BranchItemWithLogo, {
   BranchItemWithLogoLoading,
 } from "@/components/branch-item-with-logo";
-import {
-  ProductLoadingItemHorizontal,
-} from "@/components/product-item-horizontal";
+import { ProductLoadingItemHorizontal } from "@/components/product-item-horizontal";
 import ScrollContainer from "@/components/scroll-container";
 import StoreMini, {
   StoreMiniLoading,
@@ -31,6 +29,7 @@ import { uniqueId } from "lodash";
 import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { FaRegCompass } from "react-icons/fa6";
 import ProductsContainer from "@/components/ui/products-container";
+import ProductFiltersOptions from "@/components/product-filters-options";
 
 export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
   const { setSubHeader, setPageIndicator, resetAll, navbarHeight } =
@@ -51,9 +50,7 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
         paginator: { page: +(pageString ?? 1), limit: 10 },
         productLimit: 10,
         filters: {
-          location: location
-            ? { ...location.locationInput }
-            : undefined,
+          location: location ? { ...location.locationInput } : undefined,
         },
       },
     },
@@ -74,7 +71,7 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
 
   return (
     <>
-      <div className="w-full max-w-[1000px] flex-1">
+      <div className="w-full max-w-[1000px] flex-2">
         {!loggedIn && <WelcomeHeroBanner />}
 
         {(!pageString || pageString === "1") && (
@@ -157,7 +154,7 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
           )}
       </div>
 
-      <div className="w-full px-2 relative">
+      <div className="w-full px-2 relative flex-1">
         <div
           className="w-full h-screen hidden lg:block lg:sticky top-0"
           style={{
@@ -165,6 +162,11 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
             maxHeight: `calc(100vh - ${topHeight}px)`,
           }}
         >
+          <div className="p-5 rounded-lg shadow-sm border border-gray-100 mb-10">
+            <h3 className="font-semibold text-lg">Filters</h3>
+            <ProductFiltersOptions searchBaseUrl={"/search"} />
+          </div>
+
           <VerticalSidebarAd id={uniqueId()} />
         </div>
       </div>

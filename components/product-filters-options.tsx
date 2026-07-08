@@ -16,11 +16,11 @@ import { NativeSelect, NativeSelectOption } from "./ui/native-select";
 import { useCurrentLocation } from "@/context/location-context";
 
 export type ProductFiltersOptionsProps = {
-  searchBaseUrl: string;
+  searchBaseUrl?: string;
 };
 
 export default function ProductFiltersOptions({
-  searchBaseUrl,
+  searchBaseUrl = '/search',
 }: ProductFiltersOptionsProps) {
   const router = useRouter();
   const { searchFilters } = useProductSearchFilters();
@@ -55,7 +55,7 @@ export default function ProductFiltersOptions({
   }, [categoryId]);
 
   return (
-    <div className="flex flex-col gap-5 my-5">
+    <div className="flex flex-col gap-5">
       <div className="flex flex-row justify-between items-center gap-3"></div>
       <div className="flex items-center space-x-2">
         <Switch

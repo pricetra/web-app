@@ -39,6 +39,7 @@ import { cleanUrl } from "@/lib/strings";
 import ProductsContainer from "@/components/ui/products-container";
 import StorefrontBanner from "@/components/storefront-banner";
 import { useProductSearchFilters } from "@/context/product-search-filters-context";
+import ProductFiltersOptions from "@/components/product-filters-options";
 
 export default function BranchPageClient({
   store,
@@ -340,6 +341,11 @@ export default function BranchPageClient({
             maxHeight: `calc(100vh - ${topHeight}px)`,
           }}
         >
+          <div className="p-5 rounded-lg shadow-sm border border-gray-100 mb-10">
+            <h3 className="font-semibold text-lg">Filters</h3>
+            <ProductFiltersOptions searchBaseUrl={"/search"} />
+          </div>
+
           <VerticalSidebarAd id={uniqueId()} />
         </div>
       </div>

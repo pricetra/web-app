@@ -30,7 +30,9 @@ export default function ProductFiltersDialog({
           </DialogDescription>
         </DialogHeader>
 
-        <ProductFiltersOptions searchBaseUrl={searchBaseUrl} />
+        <div className="my-5">
+          <ProductFiltersOptions searchBaseUrl={searchBaseUrl} />
+        </div>
 
         <DialogFooter>
           <div className="flex w-full justify-end gap-2 mt-5">
