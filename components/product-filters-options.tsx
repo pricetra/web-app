@@ -54,6 +54,13 @@ export default function ProductFiltersOptions({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categoryId]);
 
+  function handlePush(urlParams: URLSearchParams, deletePage: boolean = true) {
+    if (deletePage) {
+      urlParams.delete("page");
+    }
+    router.push(`${searchBaseUrl}?${urlParams.toString()}`);
+  }
+
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-row justify-between items-center gap-3"></div>
@@ -68,7 +75,7 @@ export default function ProductFiltersOptions({
             } else {
               spb.set("sale", String(true));
             }
-            router.push(`${searchBaseUrl}?${spb.toString()}`);
+            handlePush(spb);
           }}
         />
         <Label htmlFor="sale">Sale</Label>
@@ -90,12 +97,12 @@ export default function ProductFiltersOptions({
 
             const spb = new URLSearchParams(urlParamsBuilder);
             spb.set("brand", categorySelect.brand);
-            router.push(`${searchBaseUrl}?${spb.toString()}`);
+            handlePush(spb);
           }}
           onClearAll={() => {
             const spb = new URLSearchParams(urlParamsBuilder);
             spb.delete("brand");
-            router.push(`${searchBaseUrl}?${spb.toString()}`);
+            handlePush(spb);
           }}
           loading={brandsLoading}
           clearable
@@ -122,13 +129,13 @@ export default function ProductFiltersOptions({
             const spb = new URLSearchParams(urlParamsBuilder);
             spb.set("category", categorySelect.name);
             spb.set("categoryId", categorySelect.id.toString());
-            router.push(`${searchBaseUrl}?${spb.toString()}`);
+            handlePush(spb);
           }}
           onClearAll={() => {
             const spb = new URLSearchParams(urlParamsBuilder);
             spb.delete("categoryId");
             spb.delete("category");
-            router.push(`${searchBaseUrl}?${spb.toString()}`);
+            handlePush(spb);
           }}
           loading={categoriesLoading}
           clearable
@@ -158,7 +165,7 @@ export default function ProductFiltersOptions({
               }
               spb.set("branchType", val);
             }
-            router.push(`${searchBaseUrl}?${spb.toString()}`);
+            handlePush(spb);
           }}
         >
           <NativeSelectOption value="All">
@@ -186,7 +193,7 @@ export default function ProductFiltersOptions({
             } else {
               spb.set("sortByPrice", val);
             }
-            router.push(`${searchBaseUrl}?${spb.toString()}`);
+            handlePush(spb, false);
           }}
         >
           <NativeSelectOption value="best">Best Match</NativeSelectOption>
