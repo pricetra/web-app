@@ -10,6 +10,9 @@ export type LayoutProviderProps = {
   fullScreen?: boolean;
 };
 
+export const LAYOUT_PROVIDER_MAIN_CONTENT_CLASSNAMES =
+  "w-full max-w-full mx-auto relative flex flex-col lg:flex-row gap-5";
+
 export default function LayoutProvider({
   children,
   fullScreen,
@@ -21,7 +24,7 @@ export default function LayoutProvider({
 
         <div
           className={cn(
-            "w-full max-w-full mx-auto relative flex flex-col lg:flex-row gap-10 flex-wrap",
+            LAYOUT_PROVIDER_MAIN_CONTENT_CLASSNAMES,
             fullScreen ? "w-full" : "lg:max-w-384 mt-5",
           )}
         >

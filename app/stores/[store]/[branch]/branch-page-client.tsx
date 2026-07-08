@@ -40,6 +40,8 @@ import ProductsContainer from "@/components/ui/products-container";
 import StorefrontBanner from "@/components/storefront-banner";
 import { useProductSearchFilters } from "@/context/product-search-filters-context";
 import ProductFiltersOptions from "@/components/product-filters-options";
+import { GridLayoutContainerMain, GridLayoutContainerSecondary } from "@/components/ui/grid-layout-container";
+import { LAYOUT_PROVIDER_MAIN_CONTENT_CLASSNAMES } from "@/providers/layout-provider";
 
 export default function BranchPageClient({
   store,
@@ -184,15 +186,15 @@ export default function BranchPageClient({
   }, [paramsBuilder, searchFilters]);
 
   return (
-    <>
+    <div className="w-full">
       {((!searchParams.page || searchParams.page === "1") && searchParamKeys.length === 0) && (
         <div className="flex-1 w-full">
           <StorefrontBanner store={store} branch={branch} />
         </div>
       )}
 
-      <div className="w-full max-w-full mx-auto relative flex flex-col lg:flex-row gap-10 flex-wrap">
-        <div className="w-full max-w-[1000px] flex-2">
+      <div className={LAYOUT_PROVIDER_MAIN_CONTENT_CLASSNAMES}>
+        <GridLayoutContainerMain>
           {paramsBuilder.size === 0 ? (
             <div>
               <div className="flex flex-col">
@@ -338,25 +340,17 @@ export default function BranchPageClient({
                 )}
             </div>
           )}
-        </div>
+        </GridLayoutContainerMain>
 
-        <div className="w-full px-2 relative flex-1">
-          <div
-            className="w-full h-screen hidden lg:block lg:sticky top-0"
-            style={{
-              top: topHeight,
-              maxHeight: `calc(100vh - ${topHeight}px)`,
-            }}
-          >
+        <GridLayoutContainerSecondary sticky stickyTopHeight={topHeight}>
             <div className="p-5 rounded-lg shadow-sm border border-gray-100 mb-10">
               <h3 className="font-semibold text-lg">Filters</h3>
               <ProductFiltersOptions searchBaseUrl={`/stores/${store.slug}/${branch.slug}`} />
             </div>
 
             <VerticalSidebarAd id={uniqueId()} />
-          </div>
-        </div>
+        </GridLayoutContainerSecondary>
       </div>
-    </>
+    </div>
   );
 }

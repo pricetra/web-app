@@ -30,6 +30,10 @@ import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import { FaRegCompass } from "react-icons/fa6";
 import ProductsContainer from "@/components/ui/products-container";
 import ProductFiltersOptions from "@/components/product-filters-options";
+import {
+  GridLayoutContainerMain,
+  GridLayoutContainerSecondary,
+} from "@/components/ui/grid-layout-container";
 
 export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
   const { setSubHeader, setPageIndicator, resetAll, navbarHeight } =
@@ -71,7 +75,7 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
 
   return (
     <>
-      <div className="w-full max-w-[1000px] flex-2">
+      <GridLayoutContainerMain>
         {!loggedIn && <WelcomeHeroBanner />}
 
         {(!pageString || pageString === "1") && (
@@ -152,24 +156,16 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
               />
             </div>
           )}
-      </div>
+      </GridLayoutContainerMain>
 
-      <div className="w-full px-2 relative flex-1">
-        <div
-          className="w-full h-screen hidden lg:block lg:sticky top-0"
-          style={{
-            top: topHeight,
-            maxHeight: `calc(100vh - ${topHeight}px)`,
-          }}
-        >
-          <div className="p-5 rounded-lg shadow-sm border border-gray-100 mb-10">
-            <h3 className="font-semibold text-lg">Filters</h3>
-            <ProductFiltersOptions searchBaseUrl={"/search"} />
-          </div>
-
-          <VerticalSidebarAd id={uniqueId()} />
+      <GridLayoutContainerSecondary sticky stickyTopHeight={topHeight}>
+        <div className="p-5 rounded-lg shadow-xs border border-gray-200 mb-10">
+          <h3 className="font-semibold text-lg">Filters</h3>
+          <ProductFiltersOptions searchBaseUrl={"/search"} />
         </div>
-      </div>
+
+        <VerticalSidebarAd id={uniqueId()} />
+      </GridLayoutContainerSecondary>
     </>
   );
 }

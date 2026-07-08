@@ -37,6 +37,10 @@ import { useProductSearchFilters } from "@/context/product-search-filters-contex
 import VerticalSidebarAd from "@/components/ads/vertical-sidebar-ad";
 import ProductFiltersOptions from "@/components/product-filters-options";
 import { uniqueId } from "lodash";
+import {
+  GridLayoutContainerMain,
+  GridLayoutContainerSecondary,
+} from "@/components/ui/grid-layout-container";
 
 export type SearchRouteParams = {
   query?: string;
@@ -59,7 +63,8 @@ export default function SearchPageClient({
   ipAddress,
 }: SearchPageClientProps) {
   const { loggedIn } = useAuth();
-  const { navbarHeight, setPageIndicator, setSubHeader, resetAll } = useNavbar();
+  const { navbarHeight, setPageIndicator, setSubHeader, resetAll } =
+    useNavbar();
   const locationInput = useLocationInput(ipAddress);
   const { searchParamKeys, searchFilters } = useProductSearchFilters();
   const { data: branchesWithProducts } = useQuery(
@@ -132,7 +137,7 @@ export default function SearchPageClient({
 
   return (
     <>
-      <div className="w-full max-w-[1000px] mt-5">
+      <GridLayoutContainerMain>
         {!loggedIn && <WelcomeHeroBanner />}
 
         {!params.page && searchParamKeys.length === 0 && (
@@ -305,24 +310,16 @@ export default function SearchPageClient({
               />
             </div>
           )}
-      </div>
+      </GridLayoutContainerMain>
 
-      <div className="w-full px-2 relative flex-1">
-        <div
-          className="w-full h-screen hidden lg:block lg:sticky top-0"
-          style={{
-            top: topHeight,
-            maxHeight: `calc(100vh - ${topHeight}px)`,
-          }}
-        >
-          <div className="p-5 rounded-lg shadow-sm border border-gray-100 mb-10">
-            <h3 className="font-semibold text-lg">Filters</h3>
-            <ProductFiltersOptions />
-          </div>
-
-          <VerticalSidebarAd id={uniqueId()} />
+      <GridLayoutContainerSecondary sticky stickyTopHeight={topHeight}>
+        <div className="p-5 rounded-lg shadow-sm border border-gray-100 mb-10">
+          <h3 className="font-semibold text-lg">Filters</h3>
+          <ProductFiltersOptions />
         </div>
-      </div>
+
+        <VerticalSidebarAd id={uniqueId()} />
+      </GridLayoutContainerSecondary>
     </>
   );
 }
