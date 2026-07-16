@@ -6,12 +6,12 @@ import {
   Price,
   Product,
   ProductDocument,
-  ProductReferrer,
   ProductSummary,
-  ProductViewerMetadata,
+  Referrer,
   Stock,
   StockDocument,
   Store,
+  ViewerMetadata,
 } from "graphql-utils";
 import { useLazyQuery, useQuery } from "@apollo/client/react";
 import { useEffect, useLayoutEffect, useMemo } from "react";
@@ -45,8 +45,8 @@ import { AiOutlineProduct } from "react-icons/ai";
 export type ProductPageProps = {
   productId: number;
   stockId?: number;
-  metadata?: ProductViewerMetadata;
-  referrer?: ProductReferrer;
+  metadata?: ViewerMetadata;
+  referrer?: Referrer;
   ipAddress: string;
   productSummary: ProductSummary;
 };
@@ -149,9 +149,18 @@ export default function ProductPage({
     getStock({
       variables: {
         stockId,
+        viewerTrail: {
+          path: window.location.href,
+          origin: window.origin,
+          metadata: {
+            device: "web",
+            ipAddress,
+          },
+          referrer,
+        },
       },
     });
-  }, [stockId, getStock]);
+  }, [stockId, getStock, ipAddress, referrer]);
 
   useLayoutEffect(() => {
     if (!stockId) {

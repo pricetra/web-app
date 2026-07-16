@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import { SiteCookieValues } from "@/lib/cookies";
 import { ApolloClient, ApolloLink, InMemoryCache } from "@apollo/client";
 import { SetContextLink } from "@apollo/client/link/context";
