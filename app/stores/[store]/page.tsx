@@ -10,8 +10,11 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import SelectedStorePageClient from "./selected-store-page-client";
 import LayoutProvider from "@/providers/layout-provider";
+import { headers } from "next/headers";
+import { getIpAddressFromRequestHeaders } from "@/lib/strings";
 
 export const cachedStore = cache(async (store: string) => {
+  const headerList = await headers();
   const storeId = +store;
   const queryVars: FindStoreQueryVariables = {};
   if (isNaN(storeId)) {
@@ -19,6 +22,16 @@ export const cachedStore = cache(async (store: string) => {
     queryVars.storeSlug = store;
   } else {
     queryVars.storeId = storeId;
+  }
+  
+  queryVars.viewerTrail = {
+    origin: headerList.get('origin'),
+    path: headerList.get('x-url'),
+    metadata: {
+      userAgent: headerList.get('user-agent'),
+      ipAddress: getIpAddressFromRequestHeaders(headerList),
+      device: 'web:ssr'
+    }
   }
 
   const { data } = await fetchGraphql<FindStoreQueryVariables, FindStoreQuery>(

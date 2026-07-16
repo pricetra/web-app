@@ -12,9 +12,11 @@ import { cache } from "react";
 import LayoutProvider from "@/providers/layout-provider";
 import BranchPageClient from "./branch-page-client";
 import { SearchRouteParams } from "@/app/search/search-page-client";
-import { searchParamsTitleBuilder } from "@/lib/strings";
+import { getIpAddressFromRequestHeaders, searchParamsTitleBuilder } from "@/lib/strings";
+import { headers } from "next/headers";
 
 const cachedStoreAndBranch = cache(async (store: string, branch: string) => {
+  const headerList = await headers();
   const storeId = +store;
   const branchId = +branch;
   const queryVars: BranchQueryVariables = {};
@@ -23,6 +25,16 @@ const cachedStoreAndBranch = cache(async (store: string, branch: string) => {
     queryVars.storeSlug = store;
   } else {
     queryVars.storeId = storeId;
+  }
+
+  queryVars.viewerTrail = {
+    origin: headerList.get('origin'),
+    path: headerList.get('x-url'),
+    metadata: {
+      userAgent: headerList.get('user-agent'),
+      ipAddress: getIpAddressFromRequestHeaders(headerList),
+      device: 'web:ssr'
+    }
   }
 
   if (isNaN(branchId)) {

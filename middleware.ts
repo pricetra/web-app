@@ -5,6 +5,9 @@ import { adminAuthorize, authorize } from "@/lib/roles";
 const blockedAgents = ["bytedance", "bytespider"];
 
 export default async function middleware(req: NextRequest) {
+  const reqHeaders = new Headers(req.headers);
+  reqHeaders.set('x-url', req.url);
+
   const userAgent = req.headers.get("user-agent");
   if (userAgent) {
     const agent = userAgent.toLowerCase();
@@ -43,6 +46,12 @@ export default async function middleware(req: NextRequest) {
       }
     }
   }
+
+  return NextResponse.next({
+    request: {
+      headers: reqHeaders,
+    }
+  })
 }
 
 export const config = {
