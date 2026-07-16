@@ -2,8 +2,8 @@ import { SearchRouteParams } from "@/app/search/search-page-client";
 import {
   Price,
   Product,
-  ProductReferrer,
   ProductWeightComponents,
+  Referrer,
   Stock,
   User,
 } from "graphql-utils";
@@ -175,7 +175,7 @@ export function generateProductShareLink(
   user?: User,
 ) {
   const paramBuilder = new URLSearchParams();
-  const referrer: ProductReferrer = {
+  const referrer: Referrer = {
     sharedOn: socialMedia,
     sharedFromPlatform: "web",
   };
