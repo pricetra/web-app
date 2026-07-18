@@ -33,8 +33,8 @@ const cachedStoreAndBranch = cache(async (store: string, branch: string) => {
     metadata: {
       userAgent: headerList.get('user-agent'),
       ipAddress: getIpAddressFromRequestHeaders(headerList),
-      device: 'web:ssr'
-    }
+      device: 'web:ssr',
+    },
   }
 
   if (isNaN(branchId)) {
@@ -91,6 +91,9 @@ export default async function StoreBranchPageServer({
   const { store, branch } = await params;
   const storeData = await cachedStoreAndBranch(store, branch);
   if (!storeData) notFound();
+  
+  const headerList = await headers();
+  const ipAddress = getIpAddressFromRequestHeaders(headerList);
 
   const sp = await searchParams;
   return (
@@ -99,6 +102,7 @@ export default async function StoreBranchPageServer({
         store={storeData.findStore as Store}
         branch={storeData.findBranch as Branch}
         searchParams={sp}
+        ipAddress={ipAddress ?? undefined}
       />
     </LayoutProvider>
   );

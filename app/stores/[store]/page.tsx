@@ -23,21 +23,21 @@ export const cachedStore = cache(async (store: string) => {
   } else {
     queryVars.storeId = storeId;
   }
-  
+
   queryVars.viewerTrail = {
-    origin: headerList.get('origin'),
-    path: headerList.get('x-url'),
+    origin: headerList.get("origin"),
+    path: headerList.get("x-url"),
     metadata: {
-      userAgent: headerList.get('user-agent'),
+      userAgent: headerList.get("user-agent"),
       ipAddress: getIpAddressFromRequestHeaders(headerList),
-      device: 'web:ssr'
-    }
-  }
+      device: "web:ssr",
+    },
+  };
 
   const { data } = await fetchGraphql<FindStoreQueryVariables, FindStoreQuery>(
     FindStoreDocument,
     "query",
-    queryVars
+    queryVars,
   );
   if (!data || !data.findStore) return null;
 
@@ -71,9 +71,15 @@ export default async function SelectedStorePageServer({ params }: Props) {
   const storeData = await cachedStore(store);
   if (!storeData) notFound();
 
+  const headerList = await headers();
+  const ipAddress = getIpAddressFromRequestHeaders(headerList);
+
   return (
     <LayoutProvider>
-      <SelectedStorePageClient store={storeData as Store} />
+      <SelectedStorePageClient
+        store={storeData as Store}
+        ipAddress={ipAddress ?? undefined}
+      />
     </LayoutProvider>
   );
 }
