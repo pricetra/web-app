@@ -5,13 +5,13 @@ import {
   ProductDocument,
   ProductQuery,
   ProductQueryVariables,
-  ProductReferrer,
   ProductSummary,
   ProductSummaryBranchInput,
   ProductSummaryDocument,
   ProductSummaryQuery,
   ProductSummaryQueryVariables,
-  ProductViewerMetadata,
+  Referrer,
+  ViewerMetadata,
 } from "graphql-utils";
 import { ReadonlyHeaders } from "next/dist/server/web/spec-extension/adapters/headers";
 import { userAgentFromString } from "next/server";
@@ -111,7 +111,7 @@ export function pageProductMetrics(
   ipAddress: string,
   sp: ProductPageSearchParams,
 ) {
-  let referrer: ProductReferrer | undefined;
+  let referrer: Referrer | undefined;
   if (sp.sharedBy) {
     if (!referrer) referrer = {};
     referrer.sharedByUser = sp.sharedBy;
@@ -123,7 +123,7 @@ export function pageProductMetrics(
   if (sp.ref) {
     try {
       const raw_ref = atob(sp.ref);
-      referrer = JSON.parse(raw_ref) as ProductReferrer;
+      referrer = JSON.parse(raw_ref) as Referrer;
     } catch {}
   }
 
@@ -140,7 +140,7 @@ export function pageProductMetrics(
   }
   const device =
     deviceComponents.length > 0 ? deviceComponents.join(" ") : undefined;
-  const metadata: ProductViewerMetadata = {
+  const metadata: ViewerMetadata = {
     ipAddress,
     userAgent,
     device,
