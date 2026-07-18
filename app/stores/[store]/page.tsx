@@ -10,8 +10,11 @@ import { notFound } from "next/navigation";
 import { cache } from "react";
 import SelectedStorePageClient from "./selected-store-page-client";
 import LayoutProvider from "@/providers/layout-provider";
+import { headers } from "next/headers";
+import { getIpAddressFromRequestHeaders } from "@/lib/strings";
 
 export const cachedStore = cache(async (store: string) => {
+  const headerList = await headers();
   const storeId = +store;
   const queryVars: FindStoreQueryVariables = {};
   if (isNaN(storeId)) {
@@ -21,10 +24,20 @@ export const cachedStore = cache(async (store: string) => {
     queryVars.storeId = storeId;
   }
 
+  queryVars.viewerTrail = {
+    origin: headerList.get("origin"),
+    path: headerList.get("x-url"),
+    metadata: {
+      userAgent: headerList.get("user-agent"),
+      ipAddress: getIpAddressFromRequestHeaders(headerList),
+      device: "web:ssr",
+    },
+  };
+
   const { data } = await fetchGraphql<FindStoreQueryVariables, FindStoreQuery>(
     FindStoreDocument,
     "query",
-    queryVars
+    queryVars,
   );
   if (!data || !data.findStore) return null;
 
@@ -58,9 +71,15 @@ export default async function SelectedStorePageServer({ params }: Props) {
   const storeData = await cachedStore(store);
   if (!storeData) notFound();
 
+  const headerList = await headers();
+  const ipAddress = getIpAddressFromRequestHeaders(headerList);
+
   return (
     <LayoutProvider>
-      <SelectedStorePageClient store={storeData as Store} />
+      <SelectedStorePageClient
+        store={storeData as Store}
+        ipAddress={ipAddress ?? undefined}
+      />
     </LayoutProvider>
   );
 }

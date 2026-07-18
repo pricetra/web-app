@@ -40,20 +40,27 @@ import ProductsContainer from "@/components/ui/products-container";
 import StorefrontBanner from "@/components/storefront-banner";
 import { useProductSearchFilters } from "@/context/product-search-filters-context";
 import ProductFiltersOptions from "@/components/product-filters-options";
-import { GridLayoutContainerMain, GridLayoutContainerSecondary } from "@/components/ui/grid-layout-container";
+import {
+  GridLayoutContainerMain,
+  GridLayoutContainerSecondary,
+} from "@/components/ui/grid-layout-container";
 import { LAYOUT_PROVIDER_MAIN_CONTENT_CLASSNAMES } from "@/providers/layout-provider";
+
+export type BranchPageClientProps = {
+  store: Store;
+  branch: Branch;
+  searchParams: SearchRouteParams;
+  disableNavSettings?: boolean;
+  ipAddress?: string;
+};
 
 export default function BranchPageClient({
   store,
   branch,
   searchParams,
   disableNavSettings = false,
-}: {
-  store: Store;
-  branch: Branch;
-  searchParams: SearchRouteParams;
-  disableNavSettings?: boolean;
-}) {
+  ipAddress,
+}: BranchPageClientProps) {
   const {
     setPageIndicator,
     resetAll,
@@ -167,6 +174,13 @@ export default function BranchPageClient({
             storeId: store.id,
             branchId: branch.id,
           },
+          viewerTrail: {
+            metadata: {
+              device: "web",
+              ipAddress,
+            },
+            path: window.location.href,
+          },
         },
       });
     } else {
@@ -179,19 +193,27 @@ export default function BranchPageClient({
             storeId: store.id,
             branchId: branch.id,
           },
+          viewerTrail: {
+            metadata: {
+              device: "web",
+              ipAddress,
+            },
+            path: window.location.href,
+          },
         },
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paramsBuilder, searchFilters]);
+  }, [paramsBuilder, searchFilters, ipAddress]);
 
   return (
     <div className="w-full">
-      {((!searchParams.page || searchParams.page === "1") && searchParamKeys.length === 0) && (
-        <div className="flex-1 w-full">
-          <StorefrontBanner store={store} branch={branch} />
-        </div>
-      )}
+      {(!searchParams.page || searchParams.page === "1") &&
+        searchParamKeys.length === 0 && (
+          <div className="flex-1 w-full">
+            <StorefrontBanner store={store} branch={branch} />
+          </div>
+        )}
 
       <div className={LAYOUT_PROVIDER_MAIN_CONTENT_CLASSNAMES}>
         <GridLayoutContainerMain>
@@ -343,12 +365,14 @@ export default function BranchPageClient({
         </GridLayoutContainerMain>
 
         <GridLayoutContainerSecondary sticky stickyTopHeight={topHeight}>
-            <div className="p-5 rounded-lg shadow-sm border border-gray-100 mb-10">
-              <h3 className="font-semibold text-lg">Filters</h3>
-              <ProductFiltersOptions searchBaseUrl={`/stores/${store.slug}/${branch.slug}`} />
-            </div>
+          <div className="p-5 rounded-lg shadow-sm border border-gray-100 mb-10">
+            <h3 className="font-semibold text-lg">Filters</h3>
+            <ProductFiltersOptions
+              searchBaseUrl={`/stores/${store.slug}/${branch.slug}`}
+            />
+          </div>
 
-            <VerticalSidebarAd id={uniqueId()} />
+          <VerticalSidebarAd id={uniqueId()} />
         </GridLayoutContainerSecondary>
       </div>
     </div>

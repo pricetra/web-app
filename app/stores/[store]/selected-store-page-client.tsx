@@ -35,7 +35,15 @@ import {
   GridLayoutContainerSecondary,
 } from "@/components/ui/grid-layout-container";
 
-export default function SelectedStorePageClient({ store }: { store: Store }) {
+export type SelectedStorePageClientProps = {
+  store: Store;
+  ipAddress?: string;
+};
+
+export default function SelectedStorePageClient({
+  store,
+  ipAddress,
+}: SelectedStorePageClientProps) {
   const { myStoreUsers } = useAuth();
   const { navbarHeight } = useNavbar();
   const searchParams = useSearchParams();
@@ -65,6 +73,12 @@ export default function SelectedStorePageClient({ store }: { store: Store }) {
           ...searchFilters,
           storeId: store.id,
           location: location?.locationInput,
+        },
+        viewerTrail: {
+          metadata: {
+            device: "web",
+            ipAddress,
+          },
         },
       },
     },
