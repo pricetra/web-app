@@ -365,7 +365,7 @@ export default function BranchPageClient({
         </GridLayoutContainerMain>
 
         <GridLayoutContainerSecondary sticky stickyTopHeight={topHeight}>
-          <div className="p-5 rounded-lg shadow-sm border border-gray-100 mb-10">
+          <div className="p-5 mb-10">
             <h3 className="font-semibold text-lg">Filters</h3>
             <ProductFiltersOptions
               searchBaseUrl={`/stores/${store.slug}/${branch.slug}`}

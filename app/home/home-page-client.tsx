@@ -159,7 +159,7 @@ export default function HomePageClient({ ipAddress }: { ipAddress?: string }) {
       </GridLayoutContainerMain>
 
       <GridLayoutContainerSecondary sticky stickyTopHeight={topHeight}>
-        <div className="p-5 rounded-lg shadow-xs border border-gray-200 mb-10">
+        <div className="p-5 mb-10">
           <h3 className="font-semibold text-lg">Filters</h3>
           <ProductFiltersOptions searchBaseUrl={"/search"} />
         </div>

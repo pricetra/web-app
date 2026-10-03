@@ -8,7 +8,7 @@ import {
   Store,
 } from "graphql-utils";
 import { createCloudinaryUrl } from "@/lib/files";
-import { useEffect, useLayoutEffect, useMemo } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { useQuery } from "@apollo/client/react";
 import BranchItemWithLogo, {
   BranchItemWithLogoLoading,
@@ -19,8 +19,6 @@ import NavPageIndicator from "@/components/ui/nav-page-indicator";
 import ScrollContainer from "@/components/scroll-container";
 import { SmartPagination } from "@/components/ui/smart-pagination";
 import { useSearchParams } from "next/navigation";
-import VerticalSidebarAd from "@/components/ads/vertical-sidebar-ad";
-import { uniqueId } from "lodash";
 import { startOfNextSundayUTC } from "@/lib/utils";
 import ProductsContainer from "@/components/ui/products-container";
 import StorefrontBanner from "@/components/storefront-banner";
@@ -32,7 +30,6 @@ import LocationDialogButton from "@/components/location-dialog-button";
 import { useProductSearchFilters } from "@/context/product-search-filters-context";
 import {
   GridLayoutContainerMain,
-  GridLayoutContainerSecondary,
 } from "@/components/ui/grid-layout-container";
 
 export type SelectedStorePageClientProps = {
@@ -45,7 +42,7 @@ export default function SelectedStorePageClient({
   ipAddress,
 }: SelectedStorePageClientProps) {
   const { myStoreUsers } = useAuth();
-  const { navbarHeight } = useNavbar();
+  // const { navbarHeight } = useNavbar();
   const searchParams = useSearchParams();
   const pageString = searchParams.get("page");
   const {
@@ -84,7 +81,7 @@ export default function SelectedStorePageClient({
     },
   );
 
-  const topHeight = useMemo(() => navbarHeight + 40, [navbarHeight]);
+  // const topHeight = useMemo(() => navbarHeight + 40, [navbarHeight]);
 
   useLayoutEffect(() => {
     resetAll();
@@ -215,10 +212,6 @@ export default function SelectedStorePageClient({
             </div>
           )}
       </GridLayoutContainerMain>
-
-      <GridLayoutContainerSecondary sticky stickyTopHeight={topHeight}>
-        <VerticalSidebarAd id={uniqueId()} />
-      </GridLayoutContainerSecondary>
     </>
   );
 }
