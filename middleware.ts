@@ -2,7 +2,19 @@ import { NextRequest, NextResponse } from "next/server";
 import { AUTH_TOKEN_KEY } from "@/lib/cookies";
 import { adminAuthorize, authorize } from "@/lib/roles";
 
-const blockedAgents = ["bytedance", "bytespider"];
+const blockedAgents = [
+  "bytedance", 
+  "bytespider", 
+  "reflectionbot", 
+  "brightbot", 
+  "queritbot",
+  "semrushbot", 
+  "ahrefsbot", 
+  "mj12bot", 
+  "dotbot", 
+  "sistrix crawler", 
+  "seokicks"
+];
 
 export default async function middleware(req: NextRequest) {
   const reqHeaders = new Headers(req.headers);
