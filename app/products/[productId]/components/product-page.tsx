@@ -85,6 +85,17 @@ export default function ProductPage({
       name: productSummary.name,
       image: productSummary.image,
       brand: productSummary.brand,
+      description: productSummary.description,
+      weightValue: productSummary.weightValue,
+      weightType: productSummary.weightType,
+      quantityValue: productSummary.quantityValue,
+      quantityType: productSummary.quantityType,
+      category: {
+        id: productSummary.categoryId,
+        name: productSummary.categoryName,
+        expandedPathname: productSummary.categoryExpandedPathname,
+        path: productSummary.categoryPath,
+      },
     } as Product;
   }, [productSummary, productData]);
   const [getStock, { data: stockData, error: stockError }] = useLazyQuery(

@@ -103,6 +103,15 @@ export function productSeoTitleAndDescription(p: ProductSummary) {
   if (p.description && p.description.length > 0) {
     description += `. ${p.description}`;
   }
+  if (p.weightValue && p.weightType) {
+    description += `. Weight: ${p.weightValue} ${p.weightType}`;
+  }
+  if (p.quantityValue && p.quantityType) {
+    description += `. Quantity: ${p.quantityValue} ${p.quantityType}`;
+  }
+  if (p.categoryExpandedPathname) {
+    description += `. Category: ${p.categoryExpandedPathname}`;
+  }
   return { title, description };
 }
 
