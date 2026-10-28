@@ -187,21 +187,27 @@ export default function ProductPage({
     )
       return;
 
+    const stock = stockData?.stock as Stock | undefined;
+    const storeName = stock?.store?.name ?? productSummary.store;
+    const storeLogo = stock?.store?.logo ?? productSummary.storeLogo;
+    const storeSlug = stock?.store?.slug ?? productSummary.storeSlug;
+    const branchName = stock?.branch?.name ?? productSummary.branch;
+    const branchSlug = stock?.branch?.slug ?? productSummary.branchSlug;
     setPageIndicator(
       <NavPageIndicator
-        title={productSummary.store}
-        imgSrc={createCloudinaryUrl(productSummary.storeLogo, 100, 100)}
-        href={`/stores/${productSummary.storeSlug}/${productSummary.branchSlug}`}
+        title={storeName}
+        imgSrc={createCloudinaryUrl(storeLogo, 100, 100)}
+        href={`/stores/${storeSlug}/${branchSlug}`}
       />,
     );
 
-    setSearchBadge(productSummary.branch ?? undefined);
-    setSearchPlaceholder(`Search ${productSummary.branch}`);
+    setSearchBadge(branchName ?? undefined);
+    setSearchPlaceholder(`Search ${branchName}`);
     setSearchQueryPath(
-      `/stores/${productSummary.storeSlug}/${productSummary.branchSlug}`,
+      `/stores/${storeSlug}/${branchSlug}`,
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [stockId, productSummary]);
+  }, [stockId, productSummary, stockData]);
 
   useLayoutEffect(() => {
     if (!stockError) return;
