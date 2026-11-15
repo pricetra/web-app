@@ -69,20 +69,21 @@ export default function NavbarMain({ fullScreen }: NavbarMainProps) {
 
   const onSubmitSearch = useCallback(
     (e: KeyboardEvent<HTMLInputElement>) => {
-      if (e.key === "Escape") {
-        if (document.activeElement instanceof HTMLElement) {
-          document.activeElement.blur();
-        }
-        setSearchPanelOpen(false);
-        return;
-      }
-      if (e.key === "Enter") {
-        setSearchPanelOpen(false);
-        const eventInputValue = e.currentTarget.value.trim();
-        NProgress.start();
-        router.push(
-          `${searchQueryPath}?query=${encodeURIComponent(eventInputValue)}`,
-        );
+      switch (e.key) {
+        case "Enter":
+          setSearchPanelOpen(false);
+          const eventInputValue = e.currentTarget.value.trim();
+          NProgress.start();
+          router.push(
+            `${searchQueryPath}?query=${encodeURIComponent(eventInputValue)}`,
+          );
+          return;
+        case "Escape":
+          if (document.activeElement instanceof HTMLElement) {
+            document.activeElement.blur();
+          }
+          setSearchPanelOpen(false);
+          return;
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -408,7 +409,7 @@ type SearchbarProps = {
 };
 
 function DesktopSearchbar({ placeholder, value, onKeyDown }: SearchbarProps) {
-  const { searchText, setSearchText } = useSearchContext();
+  const { searchText, setSearchText, searchInputRef } = useSearchContext();
 
   useEffect(() => {
     setSearchText(value);
@@ -421,6 +422,7 @@ function DesktopSearchbar({ placeholder, value, onKeyDown }: SearchbarProps) {
       value={searchText}
       onChange={(e) => setSearchText(e.target.value)}
       onKeyDown={(e) => onKeyDown(e)}
+      ref={searchInputRef}
     />
   );
 }
