@@ -66,6 +66,7 @@ export default function BranchPageClient({
     resetAll,
     setSearchPlaceholder,
     setSearchQueryPath,
+    setSearchBadge,
     navbarHeight,
     setNavTools,
     setSubHeader,
@@ -139,7 +140,7 @@ export default function BranchPageClient({
     );
     setSearchPlaceholder(`Search ${branch.name}`);
     setSearchQueryPath(`/stores/${store.slug}/${branch.slug}`);
-
+    setSearchBadge(branch.name ?? store.name ?? undefined);
     setSubHeader(<ProductFilterNavToolbar baseUrl="" />);
 
     return () => {

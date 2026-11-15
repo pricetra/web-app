@@ -21,6 +21,7 @@ import SearchResultItem from "./search-result-item";
 import { MobileView } from "react-device-detect";
 import { Button } from "./ui/button";
 import { useNavbar } from "@/context/navbar-context";
+import { useRouter } from "next/navigation";
 
 export type SearchResultsPanelProps = {
   onClickResult: () => void;
@@ -31,8 +32,10 @@ export default function SearchResultsPanel({
 }: SearchResultsPanelProps) {
   const { loggedIn } = useAuth();
 
+  const router = useRouter();
+
   const { searchQueryPath } = useNavbar();
-  const { searchText } = useSearchContext();
+  const { searchText, setSearchText, searchInputRef } = useSearchContext();
   const [searchKeywords] = useLazyQuery(SearchKeywordsDocument, {
     fetchPolicy: "no-cache",
   });
@@ -40,20 +43,22 @@ export default function SearchResultsPanel({
 
   const [getProductViewHistory, { data: productViewHistory }] = useLazyQuery(
     MyProductViewHistoryDocument,
-    { fetchPolicy: "no-cache" }
+    { fetchPolicy: "no-cache" },
   );
   const [getSearchHistory, { data: searchHistoryData }] = useLazyQuery(
     MySearchHistoryDocument,
-    { fetchPolicy: "cache-and-network" }
+    { fetchPolicy: "cache-and-network" },
   );
   const [getPopularSearchKeywords, { data: keywordsData }] = useLazyQuery(
     PopularSearchKeywordsDocument,
-    { fetchPolicy: "cache-and-network" }
+    { fetchPolicy: "cache-and-network" },
   );
   const [getPopularProducts, { data: popularProductsData }] = useLazyQuery(
     PopularProductsDocument,
-    { fetchPolicy: "no-cache" }
+    { fetchPolicy: "no-cache" },
   );
+
+  const [selectedSuggestionIndex, setSelectedSuggestionIndex] = useState(-1);
 
   useEffect(() => {
     const nextWeekDateRange = getNextWeekDateRange();
@@ -93,11 +98,52 @@ export default function SearchResultsPanel({
   useEffect(() => {
     if (!searchText || searchText.length === 0) return;
 
-    searchKeywords({ variables: { search: searchText } }).then(({ data }) => {
-      if (!data?.searchKeywords) return;
-      setSuggestedKeywords([...data.searchKeywords]);
-    });
+    searchKeywords({ variables: { search: searchText } })
+      .then(({ data }) => {
+        if (!data?.searchKeywords) return;
+        setSuggestedKeywords([...data.searchKeywords]);
+      })
+      .finally(() => setSelectedSuggestionIndex(-1));
   }, [searchKeywords, setSuggestedKeywords, searchText]);
+
+  function cycleSuggestionIndex(direction: 1 | -1) {
+    // TODO: allow starting over the cycle
+    setSelectedSuggestionIndex((index) => {
+      const nextIndex = index + direction;
+      if (nextIndex < 0) return suggestedKeywords.length - 1;
+      if (nextIndex >= suggestedKeywords.length) return 0;
+      return nextIndex;
+    });
+  }
+
+  useEffect(() => {
+    if (!searchInputRef.current) return;
+
+    searchInputRef.current.onkeyup = (e) => {
+      switch (e.key) {
+        case "ArrowDown":
+          e.preventDefault();
+          cycleSuggestionIndex(1);
+          break;
+        case "ArrowUp":
+          e.preventDefault();
+          cycleSuggestionIndex(-1);
+          break;
+        case "Enter":
+          if (selectedSuggestionIndex === -1) break;
+
+          const selectedKeyword = suggestedKeywords.at(selectedSuggestionIndex);
+          if (selectedKeyword) {
+            setSearchText(selectedKeyword);
+            router.push(
+              `${searchQueryPath}?query=${encodeURIComponent(selectedKeyword)}`,
+            );
+          }
+          break;
+      }
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedSuggestionIndex, searchInputRef, suggestedKeywords]);
 
   return (
     <div>
@@ -109,6 +155,7 @@ export default function SearchResultsPanel({
               searchTerm={searchTerm}
               key={`search-suggestion-${i}-${searchTerm}`}
               handleOnClick={onClickResult}
+              isSelected={selectedSuggestionIndex === i}
             />
           ))}
           <SearchResultItem
@@ -130,7 +177,13 @@ export default function SearchResultsPanel({
                         Recently viewed
                       </h3>
 
-                      <Button href={`/profile/lists/history?tab=products`} variant="ghost" size="xs">View all</Button>
+                      <Button
+                        href={`/profile/lists/history?tab=products`}
+                        variant="ghost"
+                        size="xs"
+                      >
+                        View all
+                      </Button>
                     </div>
 
                     <ScrollContainer>
@@ -143,7 +196,7 @@ export default function SearchResultsPanel({
                             hideStoreInfo={false}
                             onClick={onClickResult}
                           />
-                        )
+                        ),
                       )}
                     </ScrollContainer>
                   </div>
@@ -157,7 +210,13 @@ export default function SearchResultsPanel({
                         Recent searches
                       </h3>
 
-                      <Button href={`/profile/lists/history?tab=searches`} variant="ghost" size="xs">View all</Button>
+                      <Button
+                        href={`/profile/lists/history?tab=searches`}
+                        variant="ghost"
+                        size="xs"
+                      >
+                        View all
+                      </Button>
                     </div>
 
                     <div className="flex flex-col gap-2 px-0 xs:px-5">
@@ -167,8 +226,9 @@ export default function SearchResultsPanel({
                             searchTerm={searchTerm}
                             key={`search-keyword-${id}-${i}`}
                             handleOnClick={onClickResult}
+                            baseUrl={searchQueryPath}
                           />
-                        )
+                        ),
                       )}
                     </div>
                   </div>
@@ -234,7 +294,7 @@ export default function SearchResultsPanel({
                               hideStoreInfo={false}
                               onClick={onClickResult}
                             />
-                          )
+                          ),
                         )}
                       </ScrollContainer>
                     </article>

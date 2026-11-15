@@ -51,6 +51,7 @@ export default function SelectedStorePageClient({
     setSearchPlaceholder,
     setSearchQueryPath,
     setNavTools,
+    setSearchBadge,
   } = useNavbar();
   const location = useLocationInput();
   const isSmallScreen = useMediaQuery({ query: "(max-width: 640px)" });
@@ -99,6 +100,8 @@ export default function SelectedStorePageClient({
     );
     setSearchPlaceholder(`Search ${store.name}`);
     setSearchQueryPath(`/stores/${store.slug}`);
+
+    setSearchBadge(store.name ?? undefined);
 
     return () => {
       resetAll();
